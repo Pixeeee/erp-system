@@ -4,7 +4,8 @@ declare(strict_types=1);
 require dirname(__DIR__) . '/app/foundation.php';
 
 $db = bx_db();
-$baseUrl = rtrim((string) (getenv('BUILDERX_TEST_BASE_URL') ?: 'http://127.0.0.1/developer'), '/');
+$defaultProjectPath = '/' . basename(dirname(__DIR__));
+$baseUrl = rtrim((string) (getenv('BUILDERX_TEST_BASE_URL') ?: 'http://127.0.0.1' . $defaultProjectPath), '/');
 $baseRoute = rtrim((string) parse_url($baseUrl, PHP_URL_PATH), '/');
 $baseRoute = $baseRoute === '' ? '' : $baseRoute;
 $testUserKey = bx_uuid();
@@ -159,7 +160,7 @@ try {
         'user_portal_coding_privilege_granted' => false,
     ], JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . PHP_EOL;
 } finally {
-    if ($curl instanceof CurlHandle) {
+    if ($curl instanceof CurlHandle && PHP_VERSION_ID < 80500) {
         curl_close($curl);
     }
     $db->BeginTrans();

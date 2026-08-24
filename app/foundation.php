@@ -180,6 +180,26 @@ function bx_uuid(): string
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
 
+function bx_project_company_standard_departments(): array
+{
+    return [
+        ['administration', 'ADMIN', 'Administration', 'MANAGEMENT', 'Branch administration, governance, coordination, and office management.'],
+        ['finance', 'FINANCE', 'Finance', 'FINANCE', 'Budgeting, cash controls, disbursement review, and financial monitoring.'],
+        ['accounting', 'ACCOUNTING', 'Accounting', 'ACCOUNTING', 'Bookkeeping, ledgers, reconciliations, financial statements, and compliance records.'],
+        ['operations', 'OPS', 'Operations', 'OPERATIONS', 'Daily branch operations, service delivery, schedules, and operating controls.'],
+        ['human-resources', 'HR', 'Human Resources', 'PEOPLE', 'Recruitment, employee records, attendance, performance, and personnel support.'],
+        ['procurement', 'PROCUREMENT', 'Procurement', 'PROCUREMENT', 'Purchasing, vendor coordination, purchase requests, and supply tracking.'],
+        ['sales-client-services', 'CLIENT_SERVICES', 'Sales / Client Services', 'SALES', 'Client onboarding, relationship management, service requests, and sales support.'],
+        ['project-management', 'PROJECT_MGMT', 'Project Management', 'PROJECTS', 'Project planning, milestones, task coordination, and delivery reporting.'],
+        ['compliance-audit', 'COMPLIANCE', 'Compliance / Audit', 'COMPLIANCE', 'Policy compliance, internal checks, audit readiness, and risk controls.'],
+        ['it-system-support', 'IT_SUPPORT', 'IT / System Support', 'TECHNOLOGY', 'System access, technical support, device coordination, and ERP issue handling.'],
+        ['documents-records', 'RECORDS', 'Documents / Records', 'RECORDS', 'Document intake, filing, retention, retrieval, and records quality control.'],
+        ['credit-loan-review', 'CREDIT_REVIEW', 'Credit / Loan Review', 'CREDIT', 'Applicant evaluation, credit checks, loan review, and approval preparation.'],
+        ['collections', 'COLLECTIONS', 'Collections', 'COLLECTIONS', 'Payment follow-up, collection schedules, aging review, and recovery coordination.'],
+        ['field-operations', 'FIELD_OPS', 'Field Operations', 'FIELD', 'Field visits, site validation, client verification, and area operations.'],
+    ];
+}
+
 function bx_csrf_token(): string
 {
     if (empty($_SESSION['builderx_csrf'])) {
@@ -229,6 +249,11 @@ function bx_client_ip(): string
 function bx_user_agent(): string
 {
     return substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? 'cli'), 0, 255);
+}
+
+function bx_project_company_key_hash(string $companyKey): string
+{
+    return hash('sha256', $companyKey);
 }
 
 function bx_add_column_if_missing(string $table, string $column, string $definition): void
@@ -779,6 +804,173 @@ function bx_schema(): void
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             INDEX idx_builder_branch_status (branch_status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            company_key VARCHAR(1500) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            company_code VARCHAR(40) NOT NULL UNIQUE,
+            company_name VARCHAR(160) NOT NULL,
+            company_status ENUM('DRAFT','ACTIVE','INACTIVE','ARCHIVED','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            company_email VARCHAR(190) NULL,
+            company_phone VARCHAR(40) NULL,
+            company_address TEXT NULL,
+            company_description TEXT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_key_hash (company_key_hash),
+            INDEX idx_project_company_status (company_status),
+            INDEX idx_project_company_name (company_name)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $oldCompanyTableExists = (int) $db->GetOne(
+        'SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?',
+        [BUILDERX_DB_NAME, 'builder_company']
+    ) > 0;
+    if ($oldCompanyTableExists) {
+        $db->Execute("
+            INSERT IGNORE INTO project_company (
+                company_key, company_key_hash, company_code, company_name, company_status,
+                company_email, company_phone, company_address, company_description, created_at, updated_at
+            )
+            SELECT
+                company_key, company_key_hash, company_code, company_name, company_status,
+                company_email, company_phone, company_address, company_description, created_at, updated_at
+            FROM builder_company
+        ");
+    }
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_admin (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            admin_key CHAR(36) NOT NULL UNIQUE,
+            company_key VARCHAR(1500) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            admin_login VARCHAR(80) NOT NULL,
+            admin_password_hash VARCHAR(255) NOT NULL,
+            admin_name VARCHAR(160) NOT NULL,
+            admin_email VARCHAR(190) NOT NULL,
+            admin_status ENUM('DRAFT','ACTIVE','INACTIVE','LOCKED','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            admin_failed_login_count INT UNSIGNED NOT NULL DEFAULT 0,
+            admin_last_login_at TIMESTAMP NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_admin_login (company_key_hash, admin_login),
+            INDEX idx_project_company_admin_company (company_key_hash),
+            INDEX idx_project_company_admin_status (admin_status),
+            INDEX idx_project_company_admin_login (admin_login)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+    bx_seed_yovel_east_company_admin();
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_branch (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            branch_key CHAR(36) NOT NULL UNIQUE,
+            company_key VARCHAR(1500) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            branch_code VARCHAR(40) NOT NULL,
+            branch_name VARCHAR(160) NOT NULL,
+            branch_status ENUM('DRAFT','ACTIVE','INACTIVE','ARCHIVED','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            branch_contact VARCHAR(190) NULL,
+            branch_address TEXT NULL,
+            branch_description TEXT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_branch_code (company_key_hash, branch_code),
+            INDEX idx_project_company_branch_company (company_key_hash),
+            INDEX idx_project_company_branch_status (branch_status),
+            INDEX idx_project_company_branch_name (branch_name)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_project (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            project_key CHAR(36) NOT NULL UNIQUE,
+            company_key VARCHAR(1500) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            branch_key CHAR(36) NOT NULL,
+            project_code VARCHAR(40) NOT NULL,
+            project_name VARCHAR(160) NOT NULL,
+            project_status ENUM('DRAFT','ACTIVE','INACTIVE','ARCHIVED','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            project_description TEXT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_project_code (company_key_hash, project_code),
+            INDEX idx_project_company_project_company (company_key_hash),
+            INDEX idx_project_company_project_branch (branch_key),
+            INDEX idx_project_company_project_status (project_status),
+            INDEX idx_project_company_project_name (project_name)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_department_master (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            department_master_key VARCHAR(80) NOT NULL UNIQUE,
+            department_code VARCHAR(40) NOT NULL UNIQUE,
+            department_name VARCHAR(160) NOT NULL,
+            department_type VARCHAR(60) NOT NULL DEFAULT 'OPERATIONS',
+            department_description TEXT NULL,
+            department_status ENUM('ACTIVE','INACTIVE','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            is_fixed TINYINT(1) NOT NULL DEFAULT 1,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_project_company_department_master_status (department_status),
+            INDEX idx_project_company_department_master_name (department_name),
+            INDEX idx_project_company_department_master_fixed (is_fixed)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    foreach (bx_project_company_standard_departments() as [$departmentKey, $departmentCode, $departmentName, $departmentType, $departmentDescription]) {
+        $seededDepartment = $db->Execute(
+            "INSERT INTO project_company_department_master (
+                department_master_key, department_code, department_name, department_type, department_description,
+                department_status, is_fixed
+            ) VALUES (?, ?, ?, ?, ?, 'ACTIVE', 1)
+            ON DUPLICATE KEY UPDATE
+                department_code = VALUES(department_code),
+                department_name = VALUES(department_name),
+                department_type = VALUES(department_type),
+                department_description = VALUES(department_description),
+                department_status = 'ACTIVE',
+                is_fixed = 1",
+            [$departmentKey, $departmentCode, $departmentName, $departmentType, $departmentDescription]
+        );
+        if ($seededDepartment === false) {
+            $databaseError = trim((string) $db->ErrorMsg());
+            throw new RuntimeException('Standard department seed failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+        }
+    }
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_department (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            department_key CHAR(36) NOT NULL UNIQUE,
+            company_key VARCHAR(1500) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            branch_key CHAR(36) NOT NULL,
+            department_code VARCHAR(40) NOT NULL,
+            department_name VARCHAR(160) NOT NULL,
+            department_status ENUM('DRAFT','ACTIVE','INACTIVE','ARCHIVED','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            department_type VARCHAR(60) NOT NULL DEFAULT 'OPERATIONS',
+            department_source ENUM('ERP_DEFAULT','CUSTOM') NOT NULL DEFAULT 'CUSTOM',
+            default_department_key VARCHAR(80) NULL,
+            department_description TEXT NULL,
+            is_default TINYINT(1) NOT NULL DEFAULT 0,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_department_code (branch_key, department_code),
+            INDEX idx_project_company_department_company (company_key_hash),
+            INDEX idx_project_company_department_branch (branch_key),
+            INDEX idx_project_company_department_status (department_status),
+            INDEX idx_project_company_department_name (department_name),
+            INDEX idx_project_company_department_source (department_source)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
 
@@ -1875,6 +2067,80 @@ function bx_logout(): void
 
     bx_audit('LOGOUT', 'authentication', $_SESSION['builderx_user_key'] ?? null);
     unset($_SESSION['builderx_user_key'], $_SESSION['builderx_user_name'], $_SESSION['builderx_session_key']);
+}
+
+function bx_seed_yovel_east_company_admin(): void
+{
+    $db = bx_db();
+    $company = $db->GetRow(
+        "SELECT company_key, company_key_hash, company_code, company_name
+        FROM project_company
+        WHERE company_code = ? AND company_status <> 'DELETED'
+        LIMIT 1",
+        ['YE']
+    );
+    if (!$company) {
+        return;
+    }
+
+    $companyKey = (string) $company['company_key'];
+    $companyKeyHash = (string) ($company['company_key_hash'] ?: bx_project_company_key_hash($companyKey));
+    $existing = $db->GetRow(
+        'SELECT admin_key FROM project_company_admin WHERE company_key_hash = ? AND admin_login = ? LIMIT 1',
+        [$companyKeyHash, 'admin']
+    );
+    if ($existing) {
+        return;
+    }
+
+    $adminKey = bx_uuid();
+    $passwordHash = bx_password_hash('admin12345');
+
+    $db->BeginTrans();
+    try {
+        $saved = $db->Execute(
+            "INSERT INTO project_company_admin (
+                admin_key, company_key, company_key_hash, admin_login, admin_password_hash,
+                admin_name, admin_email, admin_status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, 'ACTIVE')",
+            [
+                $adminKey,
+                $companyKey,
+                $companyKeyHash,
+                'admin',
+                $passwordHash,
+                'Yovel East Company Administrator',
+                'admin@yoveleast.local',
+            ]
+        );
+        if ($saved === false) {
+            $databaseError = trim((string) $db->ErrorMsg());
+            throw new RuntimeException('Yovel East company admin seed insert failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+        }
+
+        bx_audit('CREATE', 'project_company_admin', $adminKey, [
+            'company_code' => (string) $company['company_code'],
+            'company_name' => (string) $company['company_name'],
+            'admin_login' => 'admin',
+        ], 'Seeded Yovel East company administrator.');
+
+        $readBack = $db->GetRow(
+            'SELECT admin_key, company_key_hash, admin_login, admin_password_hash, admin_status FROM project_company_admin WHERE admin_key = ? LIMIT 1',
+            [$adminKey]
+        );
+        if (!$readBack
+            || (string) $readBack['company_key_hash'] !== $companyKeyHash
+            || (string) $readBack['admin_login'] !== 'admin'
+            || (string) $readBack['admin_status'] !== 'ACTIVE'
+            || !password_verify('admin12345', (string) $readBack['admin_password_hash'])) {
+            throw new RuntimeException('Yovel East company admin seed read-back verification failed.');
+        }
+
+        $db->CommitTrans();
+    } catch (Throwable $error) {
+        $db->RollbackTrans();
+        throw $error;
+    }
 }
 
 function bx_create_initial_admin(array $input): bool

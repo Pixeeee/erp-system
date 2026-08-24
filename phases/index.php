@@ -514,10 +514,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($action === 'restart_phase_ai_bridge') {
-            $adapter = new \BuilderX\AI\BuilderXAiBridgeAdapter($projectRoot, null, $projectWorkspaceRoot);
-            $restart = $adapter->restart();
-            bx_audit('UPDATE', 'phase_ai_bridge', hash('sha256', $projectIdentity), ['action' => 'restart', 'workspace' => $projectRoot]);
-            $respondJson(['ok' => true, 'data' => ['restart' => $restart]]);
+            try {
+                $adapter = new \BuilderX\AI\BuilderXAiBridgeAdapter($projectRoot, null, $projectWorkspaceRoot);
+                $restart = $adapter->restart();
+                bx_audit('UPDATE', 'phase_ai_bridge', hash('sha256', $projectIdentity), ['action' => 'restart', 'workspace' => $projectRoot]);
+                $respondJson(['ok' => true, 'data' => ['restart' => $restart]]);
+            } catch (\BuilderX\AI\PhaseAiBridgeException $error) {
+                $status = $error->errorCode() === 'PERMISSION_DENIED' ? 403 : ($error->errorCode() === 'LOCK_CONFLICT' ? 409 : 502);
+                $respondJson(['ok' => false, 'error_code' => $error->errorCode(), 'message' => $error->getMessage()], $status);
+            } catch (Throwable $error) {
+                $respondJson(['ok' => false, 'message' => 'The BuilderX bridge could not be restarted: ' . $error->getMessage()], 422);
+            }
         }
 
         if ($action === 'dispatch_phase_ai_stage') {
@@ -675,6 +682,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'requiredResolution' => 'Specific correction required before persistence.',
                     ]],
                 ];
+                $context['forbidden_response_shapes'] = [
+                    'Do not return the validated artifact from verified_checkpoints.analysis.',
+                    'Do not return any Planning artifact contract such as builderx.system-architecture.v1, builderx.ui-ux-design.v1, or builderx.execution-roadmap.stage.*.',
+                    'Do not return root fields named stage, contractType, source, hierarchy, module_schema, stage_scope, modules, phases, resourcePatches, dependencyGraph, designBlueprint, screens, flowChart, projectBlueprint, or systemInventory.',
+                ];
+                $context['rules'][] = 'Return the exact required_response shape. Do not return contractType, source, review, checks, orchestration, findingId, severity, category, location, issue, recommendation, or any alternate integration-review schema.';
+                $context['rules'][] = 'The integration review response root must contain only schemaVersion, workflowKey, artifactHash, status, and findings. schemaVersion must be builderx.ai-integration-review.v1 and artifactHash must exactly equal artifact_hash.';
             } else {
                 $context['required_response'] = [
                     'schemaVersion' => 'builderx.coding-checkpoint.v1',
@@ -708,6 +722,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $workflowKey = strtolower(trim((string) ($_POST['workflow_key'] ?? '')));
             $engineType = strtoupper(trim((string) ($_POST['engine_type'] ?? '')));
             $draftKey = trim((string) ($_POST['draft_key'] ?? '')) ?: bx_phase_builder_current_draft_key();
+            if ($workflowKey === 'bridge_diagnostic' && $draftKey === '') {
+                $draftKey = 'bridge-diagnostic';
+            }
             $phaseKey = trim((string) ($_POST['phase_key'] ?? '')) ?: null;
             $idempotencyKey = strtolower(trim((string) ($_POST['idempotency_key'] ?? '')));
             $sourceSnapshot = json_decode((string) ($_POST['source_snapshot'] ?? '{}'), true);
@@ -1109,6 +1126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'Do not change, omit, or invent requirement IDs.',
                     'Approve only when terminology, traceability, dependencies, and category placement are internally consistent.',
                     'Findings may be informational or warnings only; a blocking contradiction must stop approval.',
+                    'Return exactly the required_response object shape. Do not return reviewStatus, checks, requirementInventory, requiredFollowUpActions, finalDecision, nested source metadata, findingId, type, location, issue, recommendation, or any alternate review schema.',
                     'Do not edit files, execute SQL, or dispatch another agent.',
                 ],
                 'required_response' => [
@@ -2473,12 +2491,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'hierarchy' => 'phase -> tasks[] -> subTasks[] -> todos[]',
                     'module_schema' => $stageKey === 'modules'
                         ? [
+                            'rootKeys' => ['schemaVersion', 'contractType', 'stage', 'source', 'modules', 'dependencyGraph'],
+                            'payloadField' => 'modules',
                             'requiredFields' => ['moduleId', 'moduleKey', 'moduleTitle', 'moduleDescription', 'moduleType', 'order', 'dependsOn', 'provides', 'consumes', 'uiUxScope', 'phaseCountHint'],
-                            'constraints' => ['2 to 30 cohesive modules', 'moduleKey uses lower_snake_case', 'dependsOn contains module IDs only', 'provides and consumes are compact interface summaries', 'do not include phases, tasks, sub-tasks, todos, or resource arrays'],
+                            'constraints' => ['2 to 30 cohesive modules in the root modules array', 'moduleKey uses lower_snake_case', 'dependsOn contains module IDs only', 'provides and consumes are compact interface summaries', 'do not include phases, tasks, sub-tasks, todos, or resource arrays'],
+                            'forbiddenRootKeys' => ['moduleCatalog', 'module_catalog', 'module_schema', 'stage_scope', 'hierarchy', 'phases', 'tasks', 'subTasks', 'todos', 'resourcePatches'],
                         ]
                         : null,
                     'stage_scope' => $stageKey === 'modules'
-                        ? 'Generate a compact product module catalog and dependency graph from the saved architecture and UI/UX design. Each module must expose only its boundary, UI/UX scope, consumes, provides, and dependency summaries; do not generate phases or implementation resources.'
+                        ? 'Generate a compact product module catalog and dependency graph from the saved architecture and UI/UX design. The catalog payload must be the root field modules, not moduleCatalog or module_catalog. Each module must expose only its boundary, UI/UX scope, consumes, provides, and dependency summaries; do not generate phases or implementation resources.'
                         : ($stageKey === 'phases'
                         ? ($moduleId !== '' ? 'Generate connected standalone phases for only module ' . $moduleId . ' and its declared dependency interfaces. Every returned phase must use moduleId ' . $moduleId . '.' : 'Generate connected standalone phases grouped by the saved module catalog. Each phase must include moduleId and page, view, API, database, background, report, entry, exit, and dependency flow nodes.')
                         : ($stageKey === 'tasks'
@@ -2662,8 +2683,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ((!$isRoadmapV3 && $roadmap['schemaVersion'] !== 'builderx.execution-roadmap.v2') || $roadmap['contractType'] !== 'builderx.execution-roadmap') {
                 $fail('Execution Roadmap returned an unsupported contract version.');
             }
-            if (!is_array($roadmap['source']) || ($roadmap['source']['draftKey'] ?? '') !== $draftKey || !is_array($roadmap['phaseExecutionOverview']) || !is_array($roadmap['phases']) || count($roadmap['phases']) < 5 || count($roadmap['phases']) > 9) {
-                $fail('Execution Roadmap must contain a valid source, overview, and 5 to 9 milestones.');
+            $moduleAwareRoadmap = is_array($roadmap['phases'] ?? null)
+                && array_reduce($roadmap['phases'], static fn (bool $hasModule, $phase): bool => $hasModule || (is_array($phase) && trim((string) ($phase['moduleId'] ?? '')) !== ''), false);
+            $minimumMilestones = $moduleAwareRoadmap ? 1 : 5;
+            $maximumMilestones = $moduleAwareRoadmap ? 60 : 9;
+            if (!is_array($roadmap['source']) || ($roadmap['source']['draftKey'] ?? '') !== $draftKey || !is_array($roadmap['phaseExecutionOverview']) || !is_array($roadmap['phases']) || count($roadmap['phases']) < $minimumMilestones || count($roadmap['phases']) > $maximumMilestones) {
+                $fail('Execution Roadmap must contain a valid source, overview, and ' . $minimumMilestones . ' to ' . $maximumMilestones . ' milestones.');
             }
             $allowedIndicators = ['api', 'background_process', 'database', 'crud', 'authentication', 'authorization', 'validation', 'frontend', 'backend', 'mobile', 'synchronization', 'queue', 'search', 'reporting', 'audit', 'migration', 'testing', 'accessibility', 'external_integration', 'realtime', 'deployment', 'files', 'notifications', 'cache', 'security', 'forms', 'offline'];
             $indicatorAliases = [
@@ -4141,6 +4166,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fail('Unknown phase manager action.');
     } catch (Throwable $error) {
         if ($action === 'verify_phase_runtime_permissions') $respondJson(['ok' => false, 'message' => $error->getMessage()], 422);
+        if (in_array($action, ['transition_phase_ai_stage', 'checkpoint_phase_ai_run'], true)) {
+            $respondJson(['ok' => false, 'message' => $error->getMessage()], 422);
+        }
         $fail('The change could not be saved.', $error->getMessage());
     }
 }

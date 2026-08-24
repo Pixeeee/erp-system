@@ -1109,130 +1109,25 @@ function bx_admin_table_exists(string $table): bool
     ) > 0;
 }
 
-function bx_family_report_filters_from_request(): array
+function bx_validate_firestore_document_id(string $documentId): bool
 {
-    $filters = [];
-    foreach (['family_report_search', 'family_report_status', 'family_report_relationship', 'family_report_date_from', 'family_report_date_to'] as $key) {
-        $filters[$key] = trim((string) ($_GET[$key] ?? ''));
+    if ($documentId === '' || strlen($documentId) > 1500) {
+        return false;
     }
 
-    foreach (['family_report_date_from', 'family_report_date_to'] as $key) {
-        if ($filters[$key] !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $filters[$key])) {
-            $filters[$key] = '';
-        }
+    if (str_contains($documentId, '/') || $documentId === '.' || $documentId === '..') {
+        return false;
     }
 
-    return $filters;
-}
-
-function bx_family_report_csv(array $rows): void
-{
-    header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename="family-member-report.csv"');
-    $output = fopen('php://output', 'w');
-    fputcsv($output, ['member_key', 'full_name', 'relationship', 'email', 'phone', 'vehicles', 'education_records', 'status', 'updated_at']);
-    foreach ($rows as $row) {
-        fputcsv($output, [
-            $row['member_key'] ?? '',
-            $row['full_name'] ?? '',
-            $row['relationship_to_user'] ?? '',
-            $row['contact_email'] ?? '',
-            $row['contact_phone'] ?? '',
-            $row['vehicle_count'] ?? 0,
-            $row['education_count'] ?? 0,
-            $row['member_status'] ?? '',
-            $row['member_updated_at'] ?? $row['member_created_at'] ?? '',
-        ]);
-    }
-    exit;
-}
-
-function bx_family_report_data(?array $user, array $filters, bool $allowed): array
-{
-    $empty = [
-        'allowed' => $allowed,
-        'filters' => $filters,
-        'summary' => ['members' => 0, 'vehicles' => 0, 'education' => 0],
-        'rows' => [],
-        'pagination' => ['page' => 1, 'page_size' => 25, 'total' => 0, 'pages' => 1],
-    ];
-    if (!$allowed || !$user || !bx_admin_table_exists('builder_family_member') || !bx_admin_table_exists('builder_family_member_vehicle') || !bx_admin_table_exists('builder_family_member_education')) {
-        return $empty;
+    if (preg_match('/^__.*__$/', $documentId) === 1) {
+        return false;
     }
 
-    $where = ["m.member_status <> 'DELETED'"];
-    $params = [];
-    if (($filters['family_report_search'] ?? '') !== '') {
-        $where[] = "CONCAT_WS(' ', m.member_key, m.first_name, m.middle_name, m.last_name, m.relationship_to_user, m.contact_email, m.contact_phone) LIKE ?";
-        $params[] = '%' . $filters['family_report_search'] . '%';
-    }
-    if (($filters['family_report_status'] ?? '') !== '') {
-        $where[] = 'm.member_status = ?';
-        $params[] = $filters['family_report_status'];
-    }
-    if (($filters['family_report_relationship'] ?? '') !== '') {
-        $where[] = 'm.relationship_to_user LIKE ?';
-        $params[] = '%' . $filters['family_report_relationship'] . '%';
-    }
-    if (($filters['family_report_date_from'] ?? '') !== '') {
-        $where[] = 'm.member_created_at >= ?';
-        $params[] = $filters['family_report_date_from'] . ' 00:00:00';
-    }
-    if (($filters['family_report_date_to'] ?? '') !== '') {
-        $where[] = 'm.member_created_at <= ?';
-        $params[] = $filters['family_report_date_to'] . ' 23:59:59';
+    if (function_exists('mb_check_encoding')) {
+        return mb_check_encoding($documentId, 'UTF-8');
     }
 
-    $whereSql = implode(' AND ', $where);
-    $total = (int) bx_db()->GetOne("SELECT COUNT(*) FROM builder_family_member m WHERE {$whereSql}", $params);
-    $page = max(1, (int) ($_GET['family_report_page'] ?? 1));
-    $pageSize = 25;
-    $pages = max(1, (int) ceil($total / $pageSize));
-    $page = min($page, $pages);
-    $offset = ($page - 1) * $pageSize;
-    $rows = bx_db()->GetAll(
-        "SELECT
-            m.member_key, m.first_name, m.middle_name, m.last_name, m.suffix, m.relationship_to_user,
-            m.contact_email, m.contact_phone, m.member_status, m.member_created_at, m.member_updated_at,
-            COUNT(DISTINCT CASE WHEN v.vehicle_status <> 'DELETED' THEN v.vehicle_key END) AS vehicle_count,
-            COUNT(DISTINCT CASE WHEN e.education_status <> 'DELETED' THEN e.education_key END) AS education_count
-        FROM builder_family_member m
-        LEFT JOIN builder_family_member_vehicle v ON v.member_key = m.member_key AND v.owner_user_key = m.owner_user_key
-        LEFT JOIN builder_family_member_education e ON e.member_key = m.member_key AND e.owner_user_key = m.owner_user_key
-        WHERE {$whereSql}
-        GROUP BY m.x_id, m.member_key, m.first_name, m.middle_name, m.last_name, m.suffix, m.relationship_to_user,
-            m.contact_email, m.contact_phone, m.member_status, m.member_created_at, m.member_updated_at
-        ORDER BY m.member_updated_at DESC, m.x_id DESC
-        LIMIT {$pageSize} OFFSET {$offset}",
-        $params
-    ) ?: [];
-
-    $safeRows = [];
-    foreach ($rows as $row) {
-        $row['full_name'] = trim(implode(' ', array_filter([
-            (string) ($row['first_name'] ?? ''),
-            (string) ($row['middle_name'] ?? ''),
-            (string) ($row['last_name'] ?? ''),
-            (string) ($row['suffix'] ?? ''),
-        ])));
-        $row['contact_email'] = bx_mask_email((string) ($row['contact_email'] ?? ''));
-        $row['contact_phone'] = bx_mask_phone((string) ($row['contact_phone'] ?? ''));
-        $safeRows[] = $row;
-    }
-
-    $summary = [
-        'members' => (int) bx_db()->GetOne("SELECT COUNT(*) FROM builder_family_member m WHERE {$whereSql}", $params),
-        'vehicles' => (int) bx_db()->GetOne("SELECT COUNT(*) FROM builder_family_member_vehicle v JOIN builder_family_member m ON m.member_key = v.member_key AND m.owner_user_key = v.owner_user_key WHERE v.vehicle_status <> 'DELETED' AND {$whereSql}", $params),
-        'education' => (int) bx_db()->GetOne("SELECT COUNT(*) FROM builder_family_member_education e JOIN builder_family_member m ON m.member_key = e.member_key AND m.owner_user_key = e.owner_user_key WHERE e.education_status <> 'DELETED' AND {$whereSql}", $params),
-    ];
-
-    return [
-        'allowed' => true,
-        'filters' => $filters,
-        'summary' => $summary,
-        'rows' => $safeRows,
-        'pagination' => ['page' => $page, 'page_size' => $pageSize, 'total' => $total, 'pages' => $pages],
-    ];
+    return preg_match('//u', $documentId) === 1;
 }
 
 $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -1285,7 +1180,7 @@ if ($requestMethod === 'POST') {
         exit;
     }
 
-    if (in_array($action, ['save_branch', 'set_branch_status', 'save_project', 'set_project_status', 'save_user', 'set_user_status', 'reset_user_password', 'save_group', 'set_group_status', 'save_role', 'set_role_status', 'set_permission_status', 'save_permission_matrix', 'save_form', 'set_form_status', 'clone_form', 'publish_form', 'unpublish_form', 'import_form_json', 'export_form_json', 'save_form_field', 'set_form_field_status', 'move_form_field', 'save_form_layout', 'set_form_layout_status', 'save_system_settings', 'apply_runtime_project_config', 'save_template_preset', 'run_template_command'], true)) {
+    if (in_array($action, ['save_branch', 'set_branch_status', 'save_company', 'set_company_status', 'save_company_branch', 'set_company_branch_status', 'save_company_project', 'set_company_project_status', 'save_company_department', 'set_company_department_status', 'save_project', 'set_project_status', 'save_user', 'set_user_status', 'reset_user_password', 'save_group', 'set_group_status', 'save_role', 'set_role_status', 'set_permission_status', 'save_permission_matrix', 'save_form', 'set_form_status', 'clone_form', 'publish_form', 'unpublish_form', 'import_form_json', 'export_form_json', 'save_form_field', 'set_form_field_status', 'move_form_field', 'save_form_layout', 'set_form_layout_status', 'save_system_settings', 'apply_runtime_project_config', 'save_template_preset', 'run_template_command'], true)) {
         $currentUser = bx_current_user();
         if (!$currentUser || !bx_is_admin($currentUser)) {
             bx_flash('Administrator role is required.', 'error');
@@ -1393,6 +1288,862 @@ if ($requestMethod === 'POST') {
             bx_flash('Branch status updated.', 'success');
             header('Location: ./?tab=branches');
             exit;
+        }
+
+        if ($action === 'save_company') {
+            $companyKey = trim((string) ($_POST['company_key'] ?? ''));
+            $companyKeyHash = hash('sha256', $companyKey);
+            $companyCode = strtoupper(trim((string) ($_POST['company_code'] ?? '')));
+            $companyName = trim((string) ($_POST['company_name'] ?? ''));
+            $companyStatus = trim((string) ($_POST['company_status'] ?? 'ACTIVE'));
+            $companyEmail = trim((string) ($_POST['company_email'] ?? ''));
+            $companyPhone = trim((string) ($_POST['company_phone'] ?? ''));
+            $companyAddress = trim((string) ($_POST['company_address'] ?? ''));
+            $companyDescription = trim((string) ($_POST['company_description'] ?? ''));
+            $allowedStatuses = ['DRAFT', 'ACTIVE', 'INACTIVE', 'ARCHIVED', 'DELETED'];
+
+            if (!bx_validate_firestore_document_id($companyKey)) {
+                bx_flash('Company key must be a valid Firebase Firestore document ID.', 'error');
+                bx_admin_redirect('companies');
+            }
+
+            if ($companyCode === '' || $companyName === '') {
+                bx_flash('Company code and company name are required.', 'error');
+                bx_admin_redirect('companies');
+            }
+
+            if (!preg_match('/^[A-Z0-9_-]{2,40}$/', $companyCode)) {
+                bx_flash('Company code must use 2-40 uppercase letters, numbers, underscores, or hyphens.', 'error');
+                bx_admin_redirect('companies');
+            }
+
+            if (strlen($companyName) > 160 || strlen($companyEmail) > 190 || strlen($companyPhone) > 40) {
+                bx_flash('Company name, email, or phone exceeds the allowed length.', 'error');
+                bx_admin_redirect('companies');
+            }
+
+            if ($companyEmail !== '' && !filter_var($companyEmail, FILTER_VALIDATE_EMAIL)) {
+                bx_flash('Company email must be a valid email address.', 'error');
+                bx_admin_redirect('companies');
+            }
+
+            if (!in_array($companyStatus, $allowedStatuses, true)) {
+                bx_flash('Invalid company status.', 'error');
+                bx_admin_redirect('companies');
+            }
+
+            $db = bx_db();
+            $duplicateCode = (int) $db->GetOne(
+                'SELECT COUNT(*) FROM project_company WHERE company_code = ? AND company_key_hash <> ?',
+                [$companyCode, $companyKeyHash]
+            );
+            if ($duplicateCode > 0) {
+                bx_flash('Company code already exists.', 'error');
+                bx_admin_redirect('companies');
+            }
+
+            $transactionOpen = false;
+            try {
+                $db->BeginTrans();
+                $transactionOpen = true;
+
+                $existing = $db->GetRow('SELECT * FROM project_company WHERE company_key_hash = ?', [$companyKeyHash]);
+                if ($existing && (string) ($existing['company_key'] ?? '') !== $companyKey) {
+                    throw new RuntimeException('A different company already uses this company key hash.');
+                }
+
+                $saved = $db->Execute(
+                    "INSERT INTO project_company (
+                        company_key, company_key_hash, company_code, company_name, company_status,
+                        company_email, company_phone, company_address, company_description
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                        company_code = VALUES(company_code),
+                        company_name = VALUES(company_name),
+                        company_status = VALUES(company_status),
+                        company_email = VALUES(company_email),
+                        company_phone = VALUES(company_phone),
+                        company_address = VALUES(company_address),
+                        company_description = VALUES(company_description)",
+                    [$companyKey, $companyKeyHash, $companyCode, $companyName, $companyStatus, $companyEmail, $companyPhone, $companyAddress, $companyDescription]
+                );
+                if ($saved === false) {
+                    $databaseError = trim((string) $db->ErrorMsg());
+                    throw new RuntimeException('Company save failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+                }
+
+                bx_audit($existing ? 'UPDATE' : 'CREATE', 'project_company', $companyKey, [
+                    'company_key' => $companyKey,
+                    'company_code' => $companyCode,
+                    'company_name' => $companyName,
+                    'company_status' => $companyStatus,
+                ], $existing ? 'Administrator updated company.' : 'Administrator created company.');
+
+                $savedRow = $db->GetRow('SELECT company_key, company_code, company_name, company_status, company_email, company_phone, company_address, company_description FROM project_company WHERE company_key_hash = ?', [$companyKeyHash]);
+                foreach ([
+                    'company_key' => $companyKey,
+                    'company_code' => $companyCode,
+                    'company_name' => $companyName,
+                    'company_status' => $companyStatus,
+                    'company_email' => $companyEmail,
+                    'company_phone' => $companyPhone,
+                    'company_address' => $companyAddress,
+                    'company_description' => $companyDescription,
+                ] as $column => $expectedValue) {
+                    if (!is_array($savedRow) || (string) ($savedRow[$column] ?? '') !== $expectedValue) {
+                        throw new RuntimeException('Company transaction read-back failed for ' . $column . '.');
+                    }
+                }
+
+                $committed = $db->CommitTrans();
+                $transactionOpen = false;
+                if (!$committed) {
+                    throw new RuntimeException('Company transaction commit failed.');
+                }
+
+                bx_flash($existing ? 'Company updated.' : 'Company created.', 'success');
+            } catch (Throwable $error) {
+                if ($transactionOpen) {
+                    $db->RollbackTrans();
+                }
+                bx_flash('Company save failed before a verified commit.', 'error', $error->getMessage());
+            }
+
+            bx_admin_redirect('companies');
+        }
+
+        if ($action === 'set_company_status') {
+            $companyKey = trim((string) ($_POST['company_key'] ?? ''));
+            $companyKeyHash = hash('sha256', $companyKey);
+            $companyStatus = trim((string) ($_POST['company_status'] ?? ''));
+            $allowedStatuses = ['ACTIVE', 'INACTIVE', 'ARCHIVED', 'DELETED'];
+
+            if (!bx_validate_firestore_document_id($companyKey) || !in_array($companyStatus, $allowedStatuses, true)) {
+                bx_flash('Invalid company status request.', 'error');
+                bx_admin_redirect('companies');
+            }
+
+            $db = bx_db();
+            $transactionOpen = false;
+            try {
+                $db->BeginTrans();
+                $transactionOpen = true;
+
+                $existing = $db->GetRow('SELECT * FROM project_company WHERE company_key_hash = ?', [$companyKeyHash]);
+                if (!$existing || (string) ($existing['company_key'] ?? '') !== $companyKey) {
+                    throw new RuntimeException('Company was not found.');
+                }
+
+                $updated = $db->Execute(
+                    'UPDATE project_company SET company_status = ? WHERE company_key_hash = ?',
+                    [$companyStatus, $companyKeyHash]
+                );
+                if ($updated === false) {
+                    $databaseError = trim((string) $db->ErrorMsg());
+                    throw new RuntimeException('Company status update failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+                }
+
+                bx_audit($companyStatus === 'DELETED' ? 'DELETE' : 'STATUS', 'project_company', $companyKey, [
+                    'company_key' => $companyKey,
+                    'company_code' => $existing['company_code'] ?? '',
+                    'company_status' => $companyStatus,
+                ], 'Administrator changed company status.');
+
+                $savedStatus = (string) $db->GetOne('SELECT company_status FROM project_company WHERE company_key_hash = ?', [$companyKeyHash]);
+                if ($savedStatus !== $companyStatus) {
+                    throw new RuntimeException('Company status transaction read-back failed.');
+                }
+
+                $committed = $db->CommitTrans();
+                $transactionOpen = false;
+                if (!$committed) {
+                    throw new RuntimeException('Company status transaction commit failed.');
+                }
+
+                bx_flash('Company status updated.', 'success');
+            } catch (Throwable $error) {
+                if ($transactionOpen) {
+                    $db->RollbackTrans();
+                }
+                bx_flash('Company status update failed before a verified commit.', 'error', $error->getMessage());
+            }
+
+            bx_admin_redirect('companies');
+        }
+
+        if ($action === 'save_company_branch') {
+            $branchKey = trim((string) ($_POST['branch_key'] ?? ''));
+            $companyKey = trim((string) ($_POST['company_key'] ?? ''));
+            $companyKeyHash = hash('sha256', $companyKey);
+            $branchCode = strtoupper(trim((string) ($_POST['branch_code'] ?? '')));
+            $branchName = trim((string) ($_POST['branch_name'] ?? ''));
+            $branchStatus = trim((string) ($_POST['branch_status'] ?? 'ACTIVE'));
+            $branchContact = trim((string) ($_POST['branch_contact'] ?? ''));
+            $branchAddress = trim((string) ($_POST['branch_address'] ?? ''));
+            $branchDescription = trim((string) ($_POST['branch_description'] ?? ''));
+            $allowedStatuses = ['DRAFT', 'ACTIVE', 'INACTIVE', 'ARCHIVED', 'DELETED'];
+
+            if ($branchKey !== '' && !preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/', $branchKey)) {
+                bx_flash('Invalid branch record key.', 'error');
+                bx_admin_redirect('company-branches');
+            }
+
+            if (!bx_validate_firestore_document_id($companyKey)) {
+                bx_flash('Select a valid company before saving the branch.', 'error');
+                bx_admin_redirect('company-branches');
+            }
+
+            if ($branchCode === '' || $branchName === '') {
+                bx_flash('Branch code and branch name are required.', 'error');
+                bx_admin_redirect('company-branches');
+            }
+
+            if (!preg_match('/^[A-Z0-9_-]{2,40}$/', $branchCode)) {
+                bx_flash('Branch code must use 2-40 uppercase letters, numbers, underscores, or hyphens.', 'error');
+                bx_admin_redirect('company-branches');
+            }
+
+            if (strlen($branchName) > 160 || strlen($branchContact) > 190) {
+                bx_flash('Branch name or contact exceeds the allowed length.', 'error');
+                bx_admin_redirect('company-branches');
+            }
+
+            if (!in_array($branchStatus, $allowedStatuses, true)) {
+                bx_flash('Invalid branch status.', 'error');
+                bx_admin_redirect('company-branches');
+            }
+
+            $db = bx_db();
+            if ($departmentSource === 'ERP_DEFAULT') {
+                $departmentMaster = $db->GetRow(
+                    "SELECT department_master_key FROM project_company_department_master WHERE department_master_key = ? AND department_status = 'ACTIVE'",
+                    [$defaultDepartmentKey]
+                );
+                if (!$departmentMaster) {
+                    bx_flash('Selected standard department was not found.', 'error');
+                    bx_admin_redirect('company-departments');
+                }
+            }
+
+            $company = $db->GetRow(
+                "SELECT company_key, company_code, company_name FROM project_company WHERE company_key_hash = ? AND company_status <> 'DELETED'",
+                [$companyKeyHash]
+            );
+            if (!$company || (string) ($company['company_key'] ?? '') !== $companyKey) {
+                bx_flash('Selected company was not found.', 'error');
+                bx_admin_redirect('company-branches');
+            }
+
+            $duplicateCode = (int) $db->GetOne(
+                'SELECT COUNT(*) FROM project_company_branch WHERE company_key_hash = ? AND branch_code = ? AND branch_key <> ?',
+                [$companyKeyHash, $branchCode, $branchKey ?: '__new__']
+            );
+            if ($duplicateCode > 0) {
+                bx_flash('Branch code already exists for the selected company.', 'error');
+                bx_admin_redirect('company-branches');
+            }
+
+            $transactionOpen = false;
+            try {
+                $db->BeginTrans();
+                $transactionOpen = true;
+
+                $existing = null;
+                if ($branchKey !== '') {
+                    $existing = $db->GetRow('SELECT * FROM project_company_branch WHERE branch_key = ?', [$branchKey]);
+                    if (!$existing) {
+                        throw new RuntimeException('Company branch was not found.');
+                    }
+                } else {
+                    $branchKey = bx_uuid();
+                }
+
+                $saved = $db->Execute(
+                    "INSERT INTO project_company_branch (
+                        branch_key, company_key, company_key_hash, branch_code, branch_name, branch_status,
+                        branch_contact, branch_address, branch_description
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                        company_key = VALUES(company_key),
+                        company_key_hash = VALUES(company_key_hash),
+                        branch_code = VALUES(branch_code),
+                        branch_name = VALUES(branch_name),
+                        branch_status = VALUES(branch_status),
+                        branch_contact = VALUES(branch_contact),
+                        branch_address = VALUES(branch_address),
+                        branch_description = VALUES(branch_description)",
+                    [$branchKey, $companyKey, $companyKeyHash, $branchCode, $branchName, $branchStatus, $branchContact, $branchAddress, $branchDescription]
+                );
+                if ($saved === false) {
+                    $databaseError = trim((string) $db->ErrorMsg());
+                    throw new RuntimeException('Company branch save failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+                }
+
+                bx_audit($existing ? 'UPDATE' : 'CREATE', 'project_company_branch', $branchKey, [
+                    'branch_key' => $branchKey,
+                    'company_key' => $companyKey,
+                    'company_code' => $company['company_code'] ?? '',
+                    'branch_code' => $branchCode,
+                    'branch_name' => $branchName,
+                    'branch_status' => $branchStatus,
+                ], $existing ? 'Administrator updated company branch.' : 'Administrator created company branch.');
+
+                $savedRow = $db->GetRow('SELECT branch_key, company_key, company_key_hash, branch_code, branch_name, branch_status, branch_contact, branch_address, branch_description FROM project_company_branch WHERE branch_key = ?', [$branchKey]);
+                foreach ([
+                    'branch_key' => $branchKey,
+                    'company_key' => $companyKey,
+                    'company_key_hash' => $companyKeyHash,
+                    'branch_code' => $branchCode,
+                    'branch_name' => $branchName,
+                    'branch_status' => $branchStatus,
+                    'branch_contact' => $branchContact,
+                    'branch_address' => $branchAddress,
+                    'branch_description' => $branchDescription,
+                ] as $column => $expectedValue) {
+                    if (!is_array($savedRow) || (string) ($savedRow[$column] ?? '') !== $expectedValue) {
+                        throw new RuntimeException('Company branch transaction read-back failed for ' . $column . '.');
+                    }
+                }
+
+                $committed = $db->CommitTrans();
+                $transactionOpen = false;
+                if (!$committed) {
+                    throw new RuntimeException('Company branch transaction commit failed.');
+                }
+
+                bx_flash($existing ? 'Company branch updated.' : 'Company branch created.', 'success');
+            } catch (Throwable $error) {
+                if ($transactionOpen) {
+                    $db->RollbackTrans();
+                }
+                bx_flash('Company branch save failed before a verified commit.', 'error', $error->getMessage());
+            }
+
+            bx_admin_redirect('company-branches');
+        }
+
+        if ($action === 'set_company_branch_status') {
+            $branchKey = trim((string) ($_POST['branch_key'] ?? ''));
+            $branchStatus = trim((string) ($_POST['branch_status'] ?? ''));
+            $allowedStatuses = ['ACTIVE', 'INACTIVE', 'ARCHIVED', 'DELETED'];
+
+            if (!preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/', $branchKey) || !in_array($branchStatus, $allowedStatuses, true)) {
+                bx_flash('Invalid company branch status request.', 'error');
+                bx_admin_redirect('company-branches');
+            }
+
+            $db = bx_db();
+            $transactionOpen = false;
+            try {
+                $db->BeginTrans();
+                $transactionOpen = true;
+
+                $existing = $db->GetRow('SELECT * FROM project_company_branch WHERE branch_key = ?', [$branchKey]);
+                if (!$existing) {
+                    throw new RuntimeException('Company branch was not found.');
+                }
+
+                $updated = $db->Execute(
+                    'UPDATE project_company_branch SET branch_status = ? WHERE branch_key = ?',
+                    [$branchStatus, $branchKey]
+                );
+                if ($updated === false) {
+                    $databaseError = trim((string) $db->ErrorMsg());
+                    throw new RuntimeException('Company branch status update failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+                }
+
+                bx_audit($branchStatus === 'DELETED' ? 'DELETE' : 'STATUS', 'project_company_branch', $branchKey, [
+                    'branch_key' => $branchKey,
+                    'company_key' => $existing['company_key'] ?? '',
+                    'branch_code' => $existing['branch_code'] ?? '',
+                    'branch_status' => $branchStatus,
+                ], 'Administrator changed company branch status.');
+
+                $savedStatus = (string) $db->GetOne('SELECT branch_status FROM project_company_branch WHERE branch_key = ?', [$branchKey]);
+                if ($savedStatus !== $branchStatus) {
+                    throw new RuntimeException('Company branch status transaction read-back failed.');
+                }
+
+                $committed = $db->CommitTrans();
+                $transactionOpen = false;
+                if (!$committed) {
+                    throw new RuntimeException('Company branch status transaction commit failed.');
+                }
+
+                bx_flash('Company branch status updated.', 'success');
+            } catch (Throwable $error) {
+                if ($transactionOpen) {
+                    $db->RollbackTrans();
+                }
+                bx_flash('Company branch status update failed before a verified commit.', 'error', $error->getMessage());
+            }
+
+            bx_admin_redirect('company-branches');
+        }
+
+        if ($action === 'save_company_project') {
+            $projectKey = trim((string) ($_POST['project_key'] ?? ''));
+            $companyKey = trim((string) ($_POST['company_key'] ?? ''));
+            $companyKeyHash = hash('sha256', $companyKey);
+            $branchKey = trim((string) ($_POST['branch_key'] ?? ''));
+            $projectCode = strtoupper(trim((string) ($_POST['project_code'] ?? '')));
+            $projectName = trim((string) ($_POST['project_name'] ?? ''));
+            $projectStatus = trim((string) ($_POST['project_status'] ?? 'ACTIVE'));
+            $projectDescription = trim((string) ($_POST['project_description'] ?? ''));
+            $allowedStatuses = ['DRAFT', 'ACTIVE', 'INACTIVE', 'ARCHIVED', 'DELETED'];
+
+            if ($projectKey !== '' && !preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/', $projectKey)) {
+                bx_flash('Invalid project record key.', 'error');
+                bx_admin_redirect('company-projects');
+            }
+
+            if (!bx_validate_firestore_document_id($companyKey)) {
+                bx_flash('Select a valid company before saving the project.', 'error');
+                bx_admin_redirect('company-projects');
+            }
+
+            if (!preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/', $branchKey)) {
+                bx_flash('Select a valid branch before saving the project.', 'error');
+                bx_admin_redirect('company-projects');
+            }
+
+            if ($projectCode === '' || $projectName === '') {
+                bx_flash('Project code and project name are required.', 'error');
+                bx_admin_redirect('company-projects');
+            }
+
+            if (!preg_match('/^[A-Z0-9_-]{2,40}$/', $projectCode)) {
+                bx_flash('Project code must use 2-40 uppercase letters, numbers, underscores, or hyphens.', 'error');
+                bx_admin_redirect('company-projects');
+            }
+
+            if (strlen($projectName) > 160) {
+                bx_flash('Project name exceeds the allowed length.', 'error');
+                bx_admin_redirect('company-projects');
+            }
+
+            if (!in_array($projectStatus, $allowedStatuses, true)) {
+                bx_flash('Invalid project status.', 'error');
+                bx_admin_redirect('company-projects');
+            }
+
+            $db = bx_db();
+            $company = $db->GetRow(
+                "SELECT company_key, company_code, company_name FROM project_company WHERE company_key_hash = ? AND company_status <> 'DELETED'",
+                [$companyKeyHash]
+            );
+            if (!$company || (string) ($company['company_key'] ?? '') !== $companyKey) {
+                bx_flash('Selected company was not found.', 'error');
+                bx_admin_redirect('company-projects');
+            }
+
+            $branch = $db->GetRow(
+                "SELECT branch_key, branch_code, branch_name FROM project_company_branch WHERE branch_key = ? AND company_key_hash = ? AND branch_status <> 'DELETED'",
+                [$branchKey, $companyKeyHash]
+            );
+            if (!$branch) {
+                bx_flash('Selected branch was not found under the selected company.', 'error');
+                bx_admin_redirect('company-projects');
+            }
+
+            $duplicateCode = (int) $db->GetOne(
+                'SELECT COUNT(*) FROM project_company_project WHERE company_key_hash = ? AND project_code = ? AND project_key <> ?',
+                [$companyKeyHash, $projectCode, $projectKey ?: '__new__']
+            );
+            if ($duplicateCode > 0) {
+                bx_flash('Project code already exists for the selected company.', 'error');
+                bx_admin_redirect('company-projects');
+            }
+
+            $transactionOpen = false;
+            try {
+                $db->BeginTrans();
+                $transactionOpen = true;
+
+                $existing = null;
+                if ($projectKey !== '') {
+                    $existing = $db->GetRow('SELECT * FROM project_company_project WHERE project_key = ?', [$projectKey]);
+                    if (!$existing) {
+                        throw new RuntimeException('Company project was not found.');
+                    }
+                } else {
+                    $projectKey = bx_uuid();
+                }
+
+                $saved = $db->Execute(
+                    "INSERT INTO project_company_project (
+                        project_key, company_key, company_key_hash, branch_key, project_code, project_name,
+                        project_status, project_description
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                        company_key = VALUES(company_key),
+                        company_key_hash = VALUES(company_key_hash),
+                        branch_key = VALUES(branch_key),
+                        project_code = VALUES(project_code),
+                        project_name = VALUES(project_name),
+                        project_status = VALUES(project_status),
+                        project_description = VALUES(project_description)",
+                    [$projectKey, $companyKey, $companyKeyHash, $branchKey, $projectCode, $projectName, $projectStatus, $projectDescription]
+                );
+                if ($saved === false) {
+                    $databaseError = trim((string) $db->ErrorMsg());
+                    throw new RuntimeException('Company project save failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+                }
+
+                bx_audit($existing ? 'UPDATE' : 'CREATE', 'project_company_project', $projectKey, [
+                    'project_key' => $projectKey,
+                    'company_key' => $companyKey,
+                    'company_code' => $company['company_code'] ?? '',
+                    'branch_key' => $branchKey,
+                    'branch_code' => $branch['branch_code'] ?? '',
+                    'project_code' => $projectCode,
+                    'project_name' => $projectName,
+                    'project_status' => $projectStatus,
+                ], $existing ? 'Administrator updated company project.' : 'Administrator created company project.');
+
+                $savedRow = $db->GetRow('SELECT project_key, company_key, company_key_hash, branch_key, project_code, project_name, project_status, project_description FROM project_company_project WHERE project_key = ?', [$projectKey]);
+                foreach ([
+                    'project_key' => $projectKey,
+                    'company_key' => $companyKey,
+                    'company_key_hash' => $companyKeyHash,
+                    'branch_key' => $branchKey,
+                    'project_code' => $projectCode,
+                    'project_name' => $projectName,
+                    'project_status' => $projectStatus,
+                    'project_description' => $projectDescription,
+                ] as $column => $expectedValue) {
+                    if (!is_array($savedRow) || (string) ($savedRow[$column] ?? '') !== $expectedValue) {
+                        throw new RuntimeException('Company project transaction read-back failed for ' . $column . '.');
+                    }
+                }
+
+                $committed = $db->CommitTrans();
+                $transactionOpen = false;
+                if (!$committed) {
+                    throw new RuntimeException('Company project transaction commit failed.');
+                }
+
+                bx_flash($existing ? 'Company project updated.' : 'Company project created.', 'success');
+            } catch (Throwable $error) {
+                if ($transactionOpen) {
+                    $db->RollbackTrans();
+                }
+                bx_flash('Company project save failed before a verified commit.', 'error', $error->getMessage());
+            }
+
+            bx_admin_redirect('company-projects');
+        }
+
+        if ($action === 'set_company_project_status') {
+            $projectKey = trim((string) ($_POST['project_key'] ?? ''));
+            $projectStatus = trim((string) ($_POST['project_status'] ?? ''));
+            $allowedStatuses = ['ACTIVE', 'INACTIVE', 'ARCHIVED', 'DELETED'];
+
+            if (!preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/', $projectKey) || !in_array($projectStatus, $allowedStatuses, true)) {
+                bx_flash('Invalid company project status request.', 'error');
+                bx_admin_redirect('company-projects');
+            }
+
+            $db = bx_db();
+            $transactionOpen = false;
+            try {
+                $db->BeginTrans();
+                $transactionOpen = true;
+
+                $existing = $db->GetRow('SELECT * FROM project_company_project WHERE project_key = ?', [$projectKey]);
+                if (!$existing) {
+                    throw new RuntimeException('Company project was not found.');
+                }
+
+                $updated = $db->Execute(
+                    'UPDATE project_company_project SET project_status = ? WHERE project_key = ?',
+                    [$projectStatus, $projectKey]
+                );
+                if ($updated === false) {
+                    $databaseError = trim((string) $db->ErrorMsg());
+                    throw new RuntimeException('Company project status update failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+                }
+
+                bx_audit($projectStatus === 'DELETED' ? 'DELETE' : 'STATUS', 'project_company_project', $projectKey, [
+                    'project_key' => $projectKey,
+                    'company_key' => $existing['company_key'] ?? '',
+                    'branch_key' => $existing['branch_key'] ?? '',
+                    'project_code' => $existing['project_code'] ?? '',
+                    'project_status' => $projectStatus,
+                ], 'Administrator changed company project status.');
+
+                $savedStatus = (string) $db->GetOne('SELECT project_status FROM project_company_project WHERE project_key = ?', [$projectKey]);
+                if ($savedStatus !== $projectStatus) {
+                    throw new RuntimeException('Company project status transaction read-back failed.');
+                }
+
+                $committed = $db->CommitTrans();
+                $transactionOpen = false;
+                if (!$committed) {
+                    throw new RuntimeException('Company project status transaction commit failed.');
+                }
+
+                bx_flash('Company project status updated.', 'success');
+            } catch (Throwable $error) {
+                if ($transactionOpen) {
+                    $db->RollbackTrans();
+                }
+                bx_flash('Company project status update failed before a verified commit.', 'error', $error->getMessage());
+            }
+
+            bx_admin_redirect('company-projects');
+        }
+
+        if ($action === 'save_company_department') {
+            $departmentKey = trim((string) ($_POST['department_key'] ?? ''));
+            $companyKey = trim((string) ($_POST['company_key'] ?? ''));
+            $companyKeyHash = hash('sha256', $companyKey);
+            $branchKey = trim((string) ($_POST['branch_key'] ?? ''));
+            $departmentCode = strtoupper(trim((string) ($_POST['department_code'] ?? '')));
+            $departmentName = trim((string) ($_POST['department_name'] ?? ''));
+            $departmentStatus = trim((string) ($_POST['department_status'] ?? 'ACTIVE'));
+            $departmentType = strtoupper(trim((string) ($_POST['department_type'] ?? 'OPERATIONS')));
+            $departmentSource = strtoupper(trim((string) ($_POST['department_source'] ?? 'CUSTOM')));
+            $defaultDepartmentKey = trim((string) ($_POST['default_department_key'] ?? ''));
+            $departmentDescription = trim((string) ($_POST['department_description'] ?? ''));
+            $isDefault = $departmentSource === 'ERP_DEFAULT' ? 1 : 0;
+            $allowedStatuses = ['DRAFT', 'ACTIVE', 'INACTIVE', 'ARCHIVED', 'DELETED'];
+            $allowedSources = ['ERP_DEFAULT', 'CUSTOM'];
+
+            if ($departmentKey !== '' && !preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/', $departmentKey)) {
+                bx_flash('Invalid department record key.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            if (!bx_validate_firestore_document_id($companyKey)) {
+                bx_flash('Select a valid company before saving the department.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            if (!preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/', $branchKey)) {
+                bx_flash('Select a valid branch before saving the department.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            if ($departmentCode === '' || $departmentName === '') {
+                bx_flash('Department code and department name are required.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            if (!preg_match('/^[A-Z0-9_-]{2,40}$/', $departmentCode)) {
+                bx_flash('Department code must use 2-40 uppercase letters, numbers, underscores, or hyphens.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            if (strlen($departmentName) > 160 || strlen($departmentType) > 60 || strlen($defaultDepartmentKey) > 80) {
+                bx_flash('Department name, type, or template key exceeds the allowed length.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            if (!preg_match('/^[A-Z0-9_ -]{2,60}$/', $departmentType)) {
+                bx_flash('Department type must use letters, numbers, spaces, underscores, or hyphens.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            if ($defaultDepartmentKey !== '' && !preg_match('/^[a-z0-9_-]{2,80}$/', $defaultDepartmentKey)) {
+                bx_flash('Invalid ERP department template key.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            if (!in_array($departmentStatus, $allowedStatuses, true)) {
+                bx_flash('Invalid department status.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            if (!in_array($departmentSource, $allowedSources, true)) {
+                bx_flash('Invalid department source.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            if ($departmentSource === 'ERP_DEFAULT' && $defaultDepartmentKey === '') {
+                bx_flash('Select an ERP department before saving.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            if ($departmentSource === 'CUSTOM') {
+                $defaultDepartmentKey = '';
+                $isDefault = 0;
+            }
+
+            $db = bx_db();
+            $company = $db->GetRow(
+                "SELECT company_key, company_code, company_name FROM project_company WHERE company_key_hash = ? AND company_status <> 'DELETED'",
+                [$companyKeyHash]
+            );
+            if (!$company || (string) ($company['company_key'] ?? '') !== $companyKey) {
+                bx_flash('Selected company was not found.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            $branch = $db->GetRow(
+                "SELECT branch_key, branch_code, branch_name FROM project_company_branch WHERE branch_key = ? AND company_key_hash = ? AND branch_status <> 'DELETED'",
+                [$branchKey, $companyKeyHash]
+            );
+            if (!$branch) {
+                bx_flash('Selected branch was not found under the selected company.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            $duplicateCode = (int) $db->GetOne(
+                'SELECT COUNT(*) FROM project_company_department WHERE branch_key = ? AND department_code = ? AND department_key <> ?',
+                [$branchKey, $departmentCode, $departmentKey ?: '__new__']
+            );
+            if ($duplicateCode > 0) {
+                bx_flash('Department code already exists for the selected branch.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            $transactionOpen = false;
+            try {
+                $db->BeginTrans();
+                $transactionOpen = true;
+
+                $existing = null;
+                if ($departmentKey !== '') {
+                    $existing = $db->GetRow('SELECT * FROM project_company_department WHERE department_key = ?', [$departmentKey]);
+                    if (!$existing) {
+                        throw new RuntimeException('Company department was not found.');
+                    }
+                } else {
+                    $departmentKey = bx_uuid();
+                }
+
+                $saved = $db->Execute(
+                    "INSERT INTO project_company_department (
+                        department_key, company_key, company_key_hash, branch_key, department_code, department_name,
+                        department_status, department_type, department_source, default_department_key, department_description, is_default
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                        company_key = VALUES(company_key),
+                        company_key_hash = VALUES(company_key_hash),
+                        branch_key = VALUES(branch_key),
+                        department_code = VALUES(department_code),
+                        department_name = VALUES(department_name),
+                        department_status = VALUES(department_status),
+                        department_type = VALUES(department_type),
+                        department_source = VALUES(department_source),
+                        default_department_key = VALUES(default_department_key),
+                        department_description = VALUES(department_description),
+                        is_default = VALUES(is_default)",
+                    [$departmentKey, $companyKey, $companyKeyHash, $branchKey, $departmentCode, $departmentName, $departmentStatus, $departmentType, $departmentSource, $defaultDepartmentKey, $departmentDescription, $isDefault]
+                );
+                if ($saved === false) {
+                    $databaseError = trim((string) $db->ErrorMsg());
+                    throw new RuntimeException('Company department save failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+                }
+
+                bx_audit($existing ? 'UPDATE' : 'CREATE', 'project_company_department', $departmentKey, [
+                    'department_key' => $departmentKey,
+                    'company_key' => $companyKey,
+                    'company_code' => $company['company_code'] ?? '',
+                    'branch_key' => $branchKey,
+                    'branch_code' => $branch['branch_code'] ?? '',
+                    'department_code' => $departmentCode,
+                    'department_name' => $departmentName,
+                    'department_status' => $departmentStatus,
+                    'department_source' => $departmentSource,
+                ], $existing ? 'Administrator updated company department.' : 'Administrator created company department.');
+
+                $savedRow = $db->GetRow('SELECT department_key, company_key, company_key_hash, branch_key, department_code, department_name, department_status, department_type, department_source, default_department_key, department_description, is_default FROM project_company_department WHERE department_key = ?', [$departmentKey]);
+                foreach ([
+                    'department_key' => $departmentKey,
+                    'company_key' => $companyKey,
+                    'company_key_hash' => $companyKeyHash,
+                    'branch_key' => $branchKey,
+                    'department_code' => $departmentCode,
+                    'department_name' => $departmentName,
+                    'department_status' => $departmentStatus,
+                    'department_type' => $departmentType,
+                    'department_source' => $departmentSource,
+                    'default_department_key' => $defaultDepartmentKey,
+                    'department_description' => $departmentDescription,
+                    'is_default' => (string) $isDefault,
+                ] as $column => $expectedValue) {
+                    if (!is_array($savedRow) || (string) ($savedRow[$column] ?? '') !== (string) $expectedValue) {
+                        throw new RuntimeException('Company department transaction read-back failed for ' . $column . '.');
+                    }
+                }
+
+                $committed = $db->CommitTrans();
+                $transactionOpen = false;
+                if (!$committed) {
+                    throw new RuntimeException('Company department transaction commit failed.');
+                }
+
+                bx_flash($existing ? 'Company department updated.' : 'Company department created.', 'success');
+            } catch (Throwable $error) {
+                if ($transactionOpen) {
+                    $db->RollbackTrans();
+                }
+                bx_flash('Company department save failed before a verified commit.', 'error', $error->getMessage());
+            }
+
+            bx_admin_redirect('company-departments');
+        }
+
+        if ($action === 'set_company_department_status') {
+            $departmentKey = trim((string) ($_POST['department_key'] ?? ''));
+            $departmentStatus = trim((string) ($_POST['department_status'] ?? ''));
+            $allowedStatuses = ['ACTIVE', 'INACTIVE', 'ARCHIVED', 'DELETED'];
+
+            if (!preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/', $departmentKey) || !in_array($departmentStatus, $allowedStatuses, true)) {
+                bx_flash('Invalid company department status request.', 'error');
+                bx_admin_redirect('company-departments');
+            }
+
+            $db = bx_db();
+            $transactionOpen = false;
+            try {
+                $db->BeginTrans();
+                $transactionOpen = true;
+
+                $existing = $db->GetRow('SELECT * FROM project_company_department WHERE department_key = ?', [$departmentKey]);
+                if (!$existing) {
+                    throw new RuntimeException('Company department was not found.');
+                }
+
+                $updated = $db->Execute(
+                    'UPDATE project_company_department SET department_status = ? WHERE department_key = ?',
+                    [$departmentStatus, $departmentKey]
+                );
+                if ($updated === false) {
+                    $databaseError = trim((string) $db->ErrorMsg());
+                    throw new RuntimeException('Company department status update failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+                }
+
+                bx_audit($departmentStatus === 'DELETED' ? 'DELETE' : 'STATUS', 'project_company_department', $departmentKey, [
+                    'department_key' => $departmentKey,
+                    'company_key' => $existing['company_key'] ?? '',
+                    'branch_key' => $existing['branch_key'] ?? '',
+                    'department_code' => $existing['department_code'] ?? '',
+                    'department_status' => $departmentStatus,
+                ], 'Administrator changed company department status.');
+
+                $savedStatus = (string) $db->GetOne('SELECT department_status FROM project_company_department WHERE department_key = ?', [$departmentKey]);
+                if ($savedStatus !== $departmentStatus) {
+                    throw new RuntimeException('Company department status transaction read-back failed.');
+                }
+
+                $committed = $db->CommitTrans();
+                $transactionOpen = false;
+                if (!$committed) {
+                    throw new RuntimeException('Company department status transaction commit failed.');
+                }
+
+                bx_flash('Company department status updated.', 'success');
+            } catch (Throwable $error) {
+                if ($transactionOpen) {
+                    $db->RollbackTrans();
+                }
+                bx_flash('Company department status update failed before a verified commit.', 'error', $error->getMessage());
+            }
+
+            bx_admin_redirect('company-departments');
         }
 
         if ($action === 'save_project') {
@@ -2659,16 +3410,9 @@ $entry = $manifest['index.html'] ?? null;
 $assetsBase = '../frontend/dist/';
 $auditFilters = bx_audit_filters_from_request();
 $audits = $isAdmin ? bx_audit_rows($auditFilters, (string) ($_GET['audit_export'] ?? '') === 'csv' ? 1000 : 250) : [];
-$familyReportFilters = bx_family_report_filters_from_request();
-$familyReportAllowed = $isAdmin && (bx_user_has_permission($user, 'family_members.report') || bx_user_has_permission($user, 'reports.manage'));
-$familyReport = bx_family_report_data($user, $familyReportFilters, $familyReportAllowed);
 
 if ($isAdmin && (string) ($_GET['audit_export'] ?? '') === 'csv') {
     bx_audit_export_csv($audits);
-}
-
-if ($familyReportAllowed && (string) ($_GET['family_report_export'] ?? '') === 'csv') {
-    bx_family_report_csv($familyReport['rows']);
 }
 
 $adminState = $_SESSION['builderx_admin_state'] ?? [];
@@ -2712,6 +3456,11 @@ $payload = [
     ] : null,
     'metrics' => [
         'Users' => bx_count('builder_user', "user_status <> 'DELETED'"),
+        'Companies' => bx_count('project_company', "company_status <> 'DELETED'"),
+        'Company Branches' => bx_count('project_company_branch', "branch_status <> 'DELETED'"),
+        'Company Projects' => bx_count('project_company_project', "project_status <> 'DELETED'"),
+        'Company Departments' => bx_count('project_company_department', "department_status <> 'DELETED'"),
+        'Standard Departments' => bx_count('project_company_department_master', "department_status = 'ACTIVE'"),
         'Branches' => bx_count('builder_branch', "branch_status <> 'DELETED'"),
         'Projects' => bx_count('builder_project', "project_status <> 'DELETED'"),
         'Forms' => bx_count('builder_form', "form_status <> 'DELETED'"),
@@ -2738,6 +3487,107 @@ $payload = [
             COALESCE((SELECT GROUP_CONCAT(p.project_code ORDER BY p.project_code SEPARATOR ', ') FROM builder_user_project up JOIN builder_project p ON p.project_key = up.project_key WHERE up.user_key = u.user_key), '') AS project_codes
         FROM builder_user u
         ORDER BY u.user_name ASC
+    ")),
+    'companies' => bx_admin_payload_rows(bx_db()->GetAll('SELECT company_key, company_code, company_name, company_status, company_email, company_phone, company_address, company_description, created_at, updated_at FROM project_company ORDER BY company_name ASC')),
+    'companyBranches' => bx_admin_payload_rows(bx_db()->GetAll("
+        SELECT
+            b.branch_key,
+            b.company_key,
+            b.branch_code,
+            b.branch_name,
+            b.branch_status,
+            b.branch_contact,
+            b.branch_address,
+            b.branch_description,
+            b.created_at,
+            b.updated_at,
+            COALESCE(c.company_code, '') AS company_code,
+            COALESCE(c.company_name, '') AS company_name,
+            COALESCE(c.company_status, '') AS company_status
+        FROM project_company_branch b
+        LEFT JOIN project_company c ON c.company_key_hash = b.company_key_hash
+        ORDER BY c.company_name ASC, b.branch_name ASC
+    ")),
+    'companyProjects' => bx_admin_payload_rows(bx_db()->GetAll("
+        SELECT
+            p.project_key,
+            p.company_key,
+            p.branch_key,
+            p.project_code,
+            p.project_name,
+            p.project_status,
+            p.project_description,
+            p.created_at,
+            p.updated_at,
+            COALESCE(c.company_code, '') AS company_code,
+            COALESCE(c.company_name, '') AS company_name,
+            COALESCE(c.company_status, '') AS company_status,
+            COALESCE(b.branch_code, '') AS branch_code,
+            COALESCE(b.branch_name, '') AS branch_name,
+            COALESCE(b.branch_status, '') AS branch_status
+        FROM project_company_project p
+        LEFT JOIN project_company c ON c.company_key_hash = p.company_key_hash
+        LEFT JOIN project_company_branch b ON b.branch_key = p.branch_key
+        ORDER BY c.company_name ASC, b.branch_name ASC, p.project_name ASC
+    ")),
+    'companyAdmins' => bx_admin_payload_rows(bx_db()->GetAll("
+        SELECT
+            a.admin_key,
+            a.company_key,
+            a.admin_login,
+            a.admin_name,
+            a.admin_email,
+            a.admin_status,
+            a.admin_last_login_at,
+            a.created_at,
+            a.updated_at,
+            COALESCE(c.company_code, '') AS company_code,
+            COALESCE(c.company_name, '') AS company_name,
+            COALESCE(c.company_status, '') AS company_status
+        FROM project_company_admin a
+        LEFT JOIN project_company c ON c.company_key_hash = a.company_key_hash
+        ORDER BY c.company_name ASC, a.admin_login ASC
+    ")),
+    'companyDepartmentMasters' => bx_admin_payload_rows(bx_db()->GetAll("
+        SELECT
+            department_master_key,
+            department_code,
+            department_name,
+            department_type,
+            department_description,
+            department_status,
+            is_fixed,
+            created_at,
+            updated_at
+        FROM project_company_department_master
+        WHERE department_status <> 'DELETED'
+        ORDER BY is_fixed DESC, department_name ASC
+    ")),
+    'companyDepartments' => bx_admin_payload_rows(bx_db()->GetAll("
+        SELECT
+            d.department_key,
+            d.company_key,
+            d.branch_key,
+            d.department_code,
+            d.department_name,
+            d.department_status,
+            d.department_type,
+            d.department_source,
+            d.default_department_key,
+            d.department_description,
+            d.is_default,
+            d.created_at,
+            d.updated_at,
+            COALESCE(c.company_code, '') AS company_code,
+            COALESCE(c.company_name, '') AS company_name,
+            COALESCE(c.company_status, '') AS company_status,
+            COALESCE(b.branch_code, '') AS branch_code,
+            COALESCE(b.branch_name, '') AS branch_name,
+            COALESCE(b.branch_status, '') AS branch_status
+        FROM project_company_department d
+        LEFT JOIN project_company c ON c.company_key_hash = d.company_key_hash
+        LEFT JOIN project_company_branch b ON b.branch_key = d.branch_key
+        ORDER BY c.company_name ASC, b.branch_name ASC, d.department_name ASC
     ")),
     'branches' => bx_admin_payload_rows(bx_db()->GetAll('SELECT branch_key, branch_code, branch_name, branch_status, branch_address, branch_contact FROM builder_branch ORDER BY branch_name ASC')),
     'projects' => bx_admin_payload_rows(bx_db()->GetAll('SELECT p.project_key, p.branch_key, p.project_code, p.project_name, p.project_status, p.project_description, b.branch_code, b.branch_name FROM builder_project p LEFT JOIN builder_branch b ON b.branch_key = p.branch_key ORDER BY b.branch_name ASC, p.project_name ASC')),
@@ -2859,7 +3709,6 @@ $payload = [
     'auditFilters' => $auditFilters,
     'audits' => $audits,
     'loginHistory' => bx_admin_payload_rows(bx_db()->GetAll('SELECT login_key, user_key, user_login, login_status, ip_address, failure_reason, created_at FROM builder_user_login_history ORDER BY x_id DESC LIMIT 80')),
-    'familyReport' => $familyReport,
     'runtimeHealth' => $isAdmin ? bx_runtime_health_snapshot() : null,
 ];
 ?>

@@ -255,10 +255,11 @@ final class PhaseBuilderNarrativeCleanupStore
         foreach ($patterns as $pattern) {
             if (preg_match_all($pattern, $text, $matches) !== false) {
                 foreach ($matches[0] as $match) {
-                    $anchors[] = strtolower(rtrim($match, '.,;:!?'));
+                    $anchors[strtolower(rtrim($match, '.,;:!?'))] = true;
                 }
             }
         }
+        $anchors = array_keys($anchors);
         sort($anchors);
         return $anchors;
     }

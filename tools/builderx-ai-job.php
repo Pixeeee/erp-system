@@ -8,8 +8,15 @@ if (PHP_SAPI !== 'cli') {
     exit;
 }
 
+ini_set('display_errors', 'stderr');
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+
 define('BUILDERX_SKIP_SESSION_START', true);
+ob_start();
 require dirname(__DIR__) . '/app/foundation.php';
+ob_end_clean();
+ini_set('display_errors', 'stderr');
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 
 $respond = static function (array $payload, int $status = 0): never {
     fwrite($status === 0 ? STDOUT : STDERR, json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) . PHP_EOL);

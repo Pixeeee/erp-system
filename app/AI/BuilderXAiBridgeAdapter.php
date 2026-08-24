@@ -61,7 +61,10 @@ final class CurlBuilderXAiBridgeTransport implements BuilderXAiBridgeTransport
         if (!in_array($method, ['GET', 'POST'], true) || !str_starts_with($path, '/')) {
             throw new InvalidArgumentException('The BuilderX AI Bridge request is invalid.');
         }
-        $handle = curl_init($this->baseUrl . $path);
+        if (!\function_exists('curl_init')) {
+            return $this->requestWithStreams($method, $path, $payload, $timeoutSeconds);
+        }
+        $handle = \curl_init($this->baseUrl . $path);
         if ($handle === false) {
             throw new PhaseAiBridgeException('BRIDGE_UNAVAILABLE', 'The BuilderX AI Bridge transport could not start.');
         }
@@ -78,27 +81,14 @@ final class CurlBuilderXAiBridgeTransport implements BuilderXAiBridgeTransport
             $options[CURLOPT_POSTFIELDS] = $encoded;
             $options[CURLOPT_HTTPHEADER] = [...$headers, 'Content-Type: application/json'];
         }
-        curl_setopt_array($handle, $options);
-        $body = curl_exec($handle);
-        $status = (int) curl_getinfo($handle, CURLINFO_HTTP_CODE);
-        $transportError = trim(curl_error($handle));
-        curl_close($handle);
+        \curl_setopt_array($handle, $options);
+        $body = \curl_exec($handle);
+        $status = (int) \curl_getinfo($handle, CURLINFO_HTTP_CODE);
+        $transportError = trim(\curl_error($handle));
         if ($body === false || $transportError !== '') {
             throw new PhaseAiBridgeException('BRIDGE_UNAVAILABLE', 'The BuilderX AI Bridge did not respond.');
         }
-        try {
-            $decoded = json_decode((string) $body, true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $error) {
-            throw new PhaseAiBridgeException('BRIDGE_UNAVAILABLE', 'The BuilderX AI Bridge returned invalid JSON.', $error);
-        }
-        if (!is_array($decoded) || array_is_list($decoded)) {
-            throw new PhaseAiBridgeException('BRIDGE_UNAVAILABLE', 'The BuilderX AI Bridge returned an invalid response object.');
-        }
-        if ($status < 200 || $status >= 300) {
-            $message = trim((string) ($decoded['message'] ?? '')) ?: 'The BuilderX AI Bridge rejected the request.';
-            throw new PhaseAiBridgeException(BuilderXAiBridgeAdapter::errorCodeForMessage($message), $message);
-        }
-        return $decoded;
+        return $this->decodeResponse((string) $body, $status);
     }
 
     public function stream(string $path, callable $onChunk, int $timeoutSeconds = 3600): void
@@ -106,13 +96,17 @@ final class CurlBuilderXAiBridgeTransport implements BuilderXAiBridgeTransport
         if (!str_starts_with($path, '/')) {
             throw new InvalidArgumentException('The BuilderX AI Bridge stream path is invalid.');
         }
-        $handle = curl_init($this->baseUrl . $path);
+        if (!\function_exists('curl_init')) {
+            $this->streamWithStreams($path, $onChunk, $timeoutSeconds);
+            return;
+        }
+        $handle = \curl_init($this->baseUrl . $path);
         if ($handle === false) {
             throw new PhaseAiBridgeException('BRIDGE_UNAVAILABLE', 'The BuilderX AI Bridge stream could not start.');
         }
         $httpStatus = 0;
         $errorBody = '';
-        curl_setopt_array($handle, [
+        \curl_setopt_array($handle, [
             CURLOPT_CUSTOMREQUEST => 'GET',
             CURLOPT_RETURNTRANSFER => false,
             CURLOPT_CONNECTTIMEOUT => 5,
@@ -133,9 +127,8 @@ final class CurlBuilderXAiBridgeTransport implements BuilderXAiBridgeTransport
                 return strlen($chunk);
             },
         ]);
-        $completed = curl_exec($handle);
-        $transportError = trim(curl_error($handle));
-        curl_close($handle);
+        $completed = \curl_exec($handle);
+        $transportError = trim(\curl_error($handle));
         if ($completed === false || $transportError !== '') {
             throw new PhaseAiBridgeException('BRIDGE_UNAVAILABLE', 'The BuilderX AI Bridge progress stream failed.');
         }
@@ -145,6 +138,112 @@ final class CurlBuilderXAiBridgeTransport implements BuilderXAiBridgeTransport
             $message = $message !== '' ? $message : 'The BuilderX AI Bridge progress stream was rejected.';
             throw new PhaseAiBridgeException(BuilderXAiBridgeAdapter::errorCodeForMessage($message), $message);
         }
+    }
+
+    /** @return array<string, mixed> */
+    private function requestWithStreams(string $method, string $path, ?array $payload, int $timeoutSeconds): array
+    {
+        if (!\filter_var(ini_get('allow_url_fopen'), FILTER_VALIDATE_BOOLEAN)) {
+            throw new PhaseAiBridgeException('BRIDGE_UNAVAILABLE', 'The BuilderX AI Bridge requires either PHP curl or allow_url_fopen for loopback HTTP.');
+        }
+        $headers = ['Accept: application/json'];
+        $content = null;
+        if ($payload !== null) {
+            $content = json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+            $headers[] = 'Content-Type: application/json';
+        }
+        $context = \stream_context_create([
+            'http' => [
+                'method' => $method,
+                'header' => implode("\r\n", $headers),
+                'content' => $content,
+                'ignore_errors' => true,
+                'timeout' => max(1, min($timeoutSeconds, 300)),
+            ],
+        ]);
+        $stream = @\fopen($this->baseUrl . $path, 'rb', false, $context);
+        if (!is_resource($stream)) {
+            throw new PhaseAiBridgeException('BRIDGE_UNAVAILABLE', 'The BuilderX AI Bridge did not respond.');
+        }
+        $meta = \stream_get_meta_data($stream);
+        $responseHeaders = is_array($meta['wrapper_data'] ?? null) ? $meta['wrapper_data'] : [];
+        $body = '';
+        while (!\feof($stream)) {
+            $body .= (string) \fread($stream, 8192);
+        }
+        \fclose($stream);
+        return $this->decodeResponse((string) $body, $this->statusFromHeaders($responseHeaders));
+    }
+
+    /** @param callable(string): void $onChunk */
+    private function streamWithStreams(string $path, callable $onChunk, int $timeoutSeconds): void
+    {
+        if (!\filter_var(ini_get('allow_url_fopen'), FILTER_VALIDATE_BOOLEAN)) {
+            throw new PhaseAiBridgeException('BRIDGE_UNAVAILABLE', 'The BuilderX AI Bridge stream requires either PHP curl or allow_url_fopen for loopback HTTP.');
+        }
+        $context = \stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'header' => 'Accept: text/event-stream',
+                'ignore_errors' => true,
+                'timeout' => max(1, min($timeoutSeconds, 3600)),
+            ],
+        ]);
+        $stream = @\fopen($this->baseUrl . $path, 'rb', false, $context);
+        if (!is_resource($stream)) {
+            throw new PhaseAiBridgeException('BRIDGE_UNAVAILABLE', 'The BuilderX AI Bridge progress stream failed.');
+        }
+        $meta = \stream_get_meta_data($stream);
+        $responseHeaders = is_array($meta['wrapper_data'] ?? null) ? $meta['wrapper_data'] : [];
+        $status = $this->statusFromHeaders($responseHeaders);
+        $body = '';
+        while (!\feof($stream)) {
+            $chunk = (string) \fread($stream, 8192);
+            if ($chunk === '') {
+                continue;
+            }
+            if ($status >= 200 && $status < 300) {
+                $onChunk($chunk);
+            } else {
+                $body .= $chunk;
+            }
+        }
+        \fclose($stream);
+        if ($status < 200 || $status >= 300) {
+            $decoded = json_decode($body, true);
+            $message = is_array($decoded) ? trim((string) ($decoded['message'] ?? '')) : '';
+            $message = $message !== '' ? $message : 'The BuilderX AI Bridge progress stream was rejected.';
+            throw new PhaseAiBridgeException(BuilderXAiBridgeAdapter::errorCodeForMessage($message), $message);
+        }
+    }
+
+    /** @return array<string, mixed> */
+    private function decodeResponse(string $body, int $status): array
+    {
+        try {
+            $decoded = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $error) {
+            throw new PhaseAiBridgeException('BRIDGE_UNAVAILABLE', 'The BuilderX AI Bridge returned invalid JSON.', $error);
+        }
+        if (!is_array($decoded) || array_is_list($decoded)) {
+            throw new PhaseAiBridgeException('BRIDGE_UNAVAILABLE', 'The BuilderX AI Bridge returned an invalid response object.');
+        }
+        if ($status < 200 || $status >= 300) {
+            $message = trim((string) ($decoded['message'] ?? '')) ?: 'The BuilderX AI Bridge rejected the request.';
+            throw new PhaseAiBridgeException(BuilderXAiBridgeAdapter::errorCodeForMessage($message), $message);
+        }
+        return $decoded;
+    }
+
+    /** @param array<int, string> $headers */
+    private function statusFromHeaders(array $headers): int
+    {
+        foreach (array_reverse($headers) as $header) {
+            if (preg_match('/^HTTP\/\S+\s+(\d{3})/', trim($header), $match) === 1) {
+                return (int) $match[1];
+            }
+        }
+        return 200;
     }
 }
 

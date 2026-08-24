@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "763530943592",
+    "project_id": "erpsystem-yoveleast",
+    "storage_bucket": "erpsystem-yoveleast.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763530943592:android:8a814af9bad19a7d4aafdd",
+        "android_client_info": {
+          "package_name": "com.example.erpsystem"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBW70NNrhLlE4dvKnacHPPG2lKp3JwtmUc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

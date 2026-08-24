@@ -68,6 +68,39 @@ try {
         throw new RuntimeException('Database-backed narrative approval validation failed.');
     }
 
+    $pluralizedGrammarSource = $request['source_snapshot'];
+    $pluralizedGrammarSource['database_and_synchronization'] = 'Writes use INSERT, UPDATE, and DELETE. Reads use MySQL. Dashboards update. Reports update.';
+    $pluralizedGrammar = $grammarCheckpoint;
+    $pluralizedGrammar['corrected_sections'] = $pluralizedGrammarSource;
+    $pluralizedGrammar['corrected_sections']['database_and_synchronization'] = 'Writes use INSERT, UPDATE, and DELETE. Reads use MySQL. Dashboards update. Reports update.';
+    $pluralizedGrammar['corrected_sections']['database_and_synchronization'] = str_replace('Reports update.', 'Reports updates.', $pluralizedGrammar['corrected_sections']['database_and_synchronization']);
+    $pluralizedApproval = BuilderX\AI\PhaseBuilderNarrativeCleanupStore::canonicalizePersistedApproval(
+        $draftKey,
+        $approvalCheckpoint,
+        $pluralizedGrammarSource,
+        $pluralizedGrammar
+    );
+    if (($pluralizedApproval['validation']['meaning_preserved'] ?? false) !== true) {
+        throw new RuntimeException('Narrative validation rejected a grammar-only pluralization with the same distinct technical anchors.');
+    }
+
+    $missingAnchorRejected = false;
+    $missingAnchorGrammar = $pluralizedGrammar;
+    $missingAnchorGrammar['corrected_sections']['database_and_synchronization'] = str_replace('Reads use MySQL. ', '', $missingAnchorGrammar['corrected_sections']['database_and_synchronization']);
+    try {
+        BuilderX\AI\PhaseBuilderNarrativeCleanupStore::canonicalizePersistedApproval(
+            $draftKey,
+            $approvalCheckpoint,
+            $pluralizedGrammarSource,
+            $missingAnchorGrammar
+        );
+    } catch (Throwable $expected) {
+        $missingAnchorRejected = str_contains($expected->getMessage(), 'preserve the source meaning');
+    }
+    if (!$missingAnchorRejected) {
+        throw new RuntimeException('Narrative validation accepted a grammar result with a missing technical anchor.');
+    }
+
     $first = $store->start('PLANNING', 'narrative_cleanup', $draftKey, null, $projectIdentity, $idempotencyKey, $request, $testUserKey);
     $runKey = (string) ($first['run_key'] ?? '');
     $runKeys[] = $runKey;

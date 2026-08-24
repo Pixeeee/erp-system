@@ -38,11 +38,9 @@ import {
   MessageCircle,
   Monitor,
   MousePointer2,
-  MoreHorizontal,
   Moon,
   Pencil,
   PenLine,
-  PieChart,
   Play,
   Plus,
   RotateCcw,
@@ -92,7 +90,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Button, buttonVariants as buttonClassName } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Collapsible,
   CollapsibleContent,
@@ -138,7 +136,6 @@ import {
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
@@ -270,6 +267,12 @@ type AdminPayload = {
   metrics: Record<string, number>
   users: Array<Record<string, string>>
   branches: Array<Record<string, string>>
+  companies: Array<Record<string, string>>
+  companyBranches: Array<Record<string, string>>
+  companyProjects: Array<Record<string, string>>
+  companyAdmins: Array<Record<string, string>>
+  companyDepartmentMasters: Array<Record<string, string>>
+  companyDepartments: Array<Record<string, string>>
   projects: Array<Record<string, string>>
   forms: Array<Record<string, string>>
   formVersions: Array<Record<string, string>>
@@ -282,13 +285,6 @@ type AdminPayload = {
   auditFilters: Record<string, string>
   audits: Array<Record<string, string | null>>
   loginHistory: Array<Record<string, string | null>>
-  familyReport: {
-    allowed: boolean
-    filters: Record<string, string>
-    summary: Record<string, number>
-    rows: Array<Record<string, any>>
-    pagination: Record<string, number>
-  }
   runtimeHealth: Record<string, any> | null
 }
 
@@ -481,7 +477,33 @@ function loginSettingValue(name: string, fallback = ''): string {
   return settingValue(`login_${name}`, fallback)
 }
 
-const adminViewKeys = ['dashboard', 'family-reports', 'users', 'groups', 'roles', 'permissions', 'branches', 'projects', 'settings', 'audit', 'health', 'template']
+const adminViewKeys = ['dashboard', 'companies', 'company-branches', 'company-projects', 'company-departments', 'users', 'groups', 'roles', 'permissions', 'branches', 'projects', 'settings', 'audit', 'health', 'template']
+const projectCompanyTabKey = 'project-company'
+const projectCompanyViewPrefix = `${projectCompanyTabKey}:`
+const projectCompanyBranchSeparator = '::'
+
+function projectCompanyViewKey(companyKey: string, branchKey = ''): string {
+  return `${projectCompanyViewPrefix}${companyKey}${branchKey !== '' ? `${projectCompanyBranchSeparator}${branchKey}` : ''}`
+}
+
+function projectCompanyKeyFromView(view: string): string {
+  if (!view.startsWith(projectCompanyViewPrefix)) return ''
+  return view.slice(projectCompanyViewPrefix.length).split(projectCompanyBranchSeparator)[0] || ''
+}
+
+function projectCompanyBranchKeyFromView(view: string): string {
+  if (!view.startsWith(projectCompanyViewPrefix)) return ''
+  return view.slice(projectCompanyViewPrefix.length).split(projectCompanyBranchSeparator)[1] || ''
+}
+
+function activeProjectSidebarCompanies(): Array<Record<string, string>> {
+  return data.companies.filter((company) => company.company_status === 'ACTIVE')
+}
+
+function isKnownAdminView(view: string): boolean {
+  const companyKey = projectCompanyKeyFromView(view)
+  return adminViewKeys.includes(view) || (companyKey !== '' && activeProjectSidebarCompanies().some((company) => company.company_key === companyKey))
+}
 
 const tabs = [
   { key: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -627,7 +649,6 @@ const settingSections: Record<string, SettingSection[]> = {
 
 const sidebarSections = [
   { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { key: 'family-reports', label: 'Family Reports', icon: FileBarChart },
   {
     key: 'platform',
     label: 'Platform',
@@ -637,6 +658,17 @@ const sidebarSections = [
       { key: 'groups', label: 'Groups' },
       { key: 'roles', label: 'Roles' },
       { key: 'permissions', label: 'Permissions' },
+    ],
+  },
+  {
+    key: 'company-management',
+    label: 'Company Management',
+    icon: Building2,
+    items: [
+      { key: 'companies', label: 'Companies' },
+      { key: 'company-branches', label: 'Branches' },
+      { key: 'company-projects', label: 'Projects' },
+      { key: 'company-departments', label: 'Departments' },
     ],
   },
   {
@@ -650,11 +682,6 @@ const sidebarSections = [
       { key: 'audit', label: 'Audit Logs' },
     ],
   },
-]
-
-const projectSidebarSections = [
-  { key: 'branches', label: 'Branches', icon: Frame },
-  { key: 'projects', label: 'Projects', icon: PieChart },
 ]
 
 function SubmissionFeedback({ flash }: { flash: Flash }) {
@@ -838,7 +865,7 @@ function Shell({
           </header>
 
           <main className={cn(
-            'mx-auto flex w-full max-w-[1600px] flex-1 flex-col',
+            'flex w-full flex-1 flex-col',
             'gap-4 p-4'
           )}>
             <FlashMessage />
@@ -1093,23 +1120,54 @@ function NavProjects({
   activeView: string
   onViewChange: (view: string) => void
 }) {
+  const activeCompanies = activeProjectSidebarCompanies()
+  const activeCompanyKey = projectCompanyKeyFromView(activeView)
+  const activeBranchKey = projectCompanyBranchKeyFromView(activeView)
+  const branchesByCompany = data.companyBranches.reduce<Record<string, Array<Record<string, string>>>>((groups, branch) => {
+    if (branch.branch_status !== 'DELETED') {
+      groups[branch.company_key] = groups[branch.company_key] || []
+      groups[branch.company_key].push(branch)
+    }
+    return groups
+  }, {})
+
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Projects</SidebarGroupLabel>
       <SidebarMenu>
-        {projectSidebarSections.map((item) => {
-          const Icon = item.icon
+        {activeCompanies.length === 0 ? (
+          <SidebarMenuItem>
+            <SidebarMenuButton disabled tooltip="No active companies">
+              <Building2 />
+              <span>No active companies</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        ) : activeCompanies.map((company) => {
+          const companyBranches = branchesByCompany[company.company_key] || []
           return (
-            <SidebarMenuItem key={item.key}>
-              <SidebarMenuButton isActive={activeView === item.key} onClick={() => onViewChange(item.key)}>
-                <Icon />
-                <span>{item.label}</span>
-              </SidebarMenuButton>
-              <SidebarMenuAction showOnHover>
-                <MoreHorizontal />
-                <span className="sr-only">More</span>
-              </SidebarMenuAction>
-            </SidebarMenuItem>
+            <Collapsible key={company.company_key} defaultOpen={activeCompanyKey === company.company_key} className="group/company" render={<SidebarMenuItem />}>
+              <CollapsibleTrigger render={<SidebarMenuButton tooltip={company.company_name} isActive={activeCompanyKey === company.company_key} onClick={() => onViewChange(projectCompanyViewKey(company.company_key))} />}>
+                <Building2 />
+                <span>{company.company_name}</span>
+                <ChevronRight className="ml-auto transition-transform duration-200 group-data-open/company:rotate-90" />
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  {companyBranches.length === 0 ? (
+                    <SidebarMenuSubItem>
+                      <span className="block px-2 py-1 text-xs text-muted-foreground">No branches</span>
+                    </SidebarMenuSubItem>
+                  ) : companyBranches.map((branch) => (
+                    <SidebarMenuSubItem key={branch.branch_key}>
+                      <SidebarMenuSubButton isActive={activeBranchKey === branch.branch_key} onClick={() => onViewChange(projectCompanyViewKey(company.company_key, branch.branch_key))}>
+                        <Frame className="size-3.5" />
+                        <span>{branch.branch_name}</span>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </Collapsible>
           )
         })}
       </SidebarMenu>
@@ -1334,12 +1392,27 @@ function MetricGrid() {
   )
 }
 
-function FoundationTable({ headers, children }: { headers: string[]; children: React.ReactNode }) {
+function FoundationTable({
+  headers,
+  children,
+  actionAlign = 'right',
+}: {
+  headers: string[]
+  children: React.ReactNode
+  actionAlign?: 'left' | 'right'
+}) {
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          {headers.map((header) => <TableHead key={header}>{header}</TableHead>)}
+          {headers.map((header) => (
+            <TableHead
+              key={header}
+              className={header === 'Actions' ? cn(actionAlign === 'right' ? 'text-right' : 'text-left', 'w-[204px]') : undefined}
+            >
+              {header}
+            </TableHead>
+          ))}
         </TableRow>
       </TableHeader>
       <TableBody>{children}</TableBody>
@@ -1351,14 +1424,16 @@ function DashboardPanel({
   title,
   description,
   children,
+  className,
 }: {
   title: string
   description?: string
   children: React.ReactNode
+  className?: string
 }) {
   return (
-    <section className="overflow-hidden rounded-lg border bg-card">
-      <div className="border-b px-4 py-3">
+    <section className={cn('flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card', className)}>
+      <div className="shrink-0 border-b px-4 py-3">
         <h3 className="text-base font-semibold tracking-normal">{title}</h3>
         {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
       </div>
@@ -1366,6 +1441,12 @@ function DashboardPanel({
     </section>
   )
 }
+
+const platformTwoPanelClass = 'grid min-h-0 gap-4 xl:h-[clamp(34rem,calc(100svh-15rem),72rem)] xl:grid-cols-[minmax(0,8fr)_minmax(320px,4fr)]'
+const platformLeftPanelStackClass = 'grid min-h-0 gap-4 xl:overflow-y-auto xl:overscroll-contain'
+const platformRightPanelStackClass = 'grid min-h-0 gap-4 xl:overflow-hidden'
+const platformPanelBodyClass = 'min-h-0 flex-1 overflow-y-auto overscroll-contain p-4'
+const platformTableBodyClass = 'min-h-0 flex-1 overflow-auto overscroll-contain'
 
 type ConfirmationState = {
   title: string
@@ -1559,42 +1640,6 @@ function Dashboard() {
           </DashboardPanel>
         </TabsContent>
       </Tabs>
-    </div>
-  )
-}
-
-function FamilyReportsView() {
-  const report = data.familyReport || { allowed: false, filters: {}, summary: {}, rows: [], pagination: {} }
-  const filters = report.filters || {}
-  const currentPage = Number(report.pagination.page || 1)
-  const totalPages = Number(report.pagination.pages || 1)
-  const exportParams = new URLSearchParams({ tab: 'family-reports', family_report_export: 'csv' })
-  Object.entries(filters).forEach(([key, value]) => { if (value) exportParams.set(key, value) })
-  const pageHref = (page: number) => {
-    const params = new URLSearchParams({ tab: 'family-reports', family_report_page: String(page) })
-    Object.entries(filters).forEach(([key, value]) => { if (value) params.set(key, value) })
-    return `./?${params.toString()}`
-  }
-
-  if (!report.allowed) {
-    return <Card><CardHeader><CardTitle>Family Reports</CardTitle><CardDescription>Your account does not have permission to view family member reports.</CardDescription></CardHeader></Card>
-  }
-
-  return (
-    <div className="flex flex-1 flex-col gap-4">
-      <section className="flex flex-col gap-3 rounded-lg border bg-card p-4 lg:flex-row lg:items-end lg:justify-between">
-        <div><Badge variant="secondary" className="w-fit">Administrator / Read Only</Badge><h2 className="mt-2 text-2xl font-semibold tracking-normal">Family Member Reports</h2><p className="mt-1 max-w-3xl text-sm leading-6 text-muted-foreground">Review family member coverage, vehicle totals, and education records with privacy-safe contact values.</p></div>
-        <div className="flex flex-wrap gap-2"><a className={buttonClassName({ variant: 'outline', size: 'sm' })} href={projectUrl()}><Users data-icon="inline-start" />User Portal</a><a className={buttonClassName({ variant: 'outline', size: 'sm' })} href={`./?${exportParams.toString()}`}><Download data-icon="inline-start" />Export CSV</a></div>
-      </section>
-
-      <section className="grid gap-0 rounded-lg border bg-card md:grid-cols-3"><div className="border-b p-4 md:border-b-0 md:border-r"><p className="text-xs text-muted-foreground">Family members</p><strong className="mt-1 block text-2xl">{Number(report.summary.members || 0)}</strong></div><div className="border-b p-4 md:border-b-0 md:border-r"><p className="text-xs text-muted-foreground">Vehicles</p><strong className="mt-1 block text-2xl">{Number(report.summary.vehicles || 0)}</strong></div><div className="p-4"><p className="text-xs text-muted-foreground">Education records</p><strong className="mt-1 block text-2xl">{Number(report.summary.education || 0)}</strong></div></section>
-
-      <Card>
-        <CardHeader><CardTitle>Filters</CardTitle><CardDescription>Search and filter the read-only report. Contact values are masked in the report and export.</CardDescription></CardHeader>
-        <CardContent><form method="get" className="grid gap-4"><input type="hidden" name="tab" value="family-reports" /><div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"><div className="grid gap-2 md:col-span-2"><Label htmlFor="family_report_search">Search</Label><Input id="family_report_search" name="family_report_search" defaultValue={filters.family_report_search || ''} placeholder="Name, relationship, email, phone, or key" /></div><div className="grid gap-2"><Label htmlFor="family_report_status">Status</Label><Input id="family_report_status" name="family_report_status" defaultValue={filters.family_report_status || ''} placeholder="ACTIVE" /></div><div className="grid gap-2"><Label htmlFor="family_report_relationship">Relationship</Label><Input id="family_report_relationship" name="family_report_relationship" defaultValue={filters.family_report_relationship || ''} placeholder="Child, parent, spouse" /></div><div className="grid gap-2"><Label htmlFor="family_report_date_from">Created from</Label><Input id="family_report_date_from" name="family_report_date_from" type="date" defaultValue={filters.family_report_date_from || ''} /></div><div className="grid gap-2"><Label htmlFor="family_report_date_to">Created to</Label><Input id="family_report_date_to" name="family_report_date_to" type="date" defaultValue={filters.family_report_date_to || ''} /></div></div><div className="flex flex-wrap gap-2"><Button type="submit"><Search data-icon="inline-start" />Apply Filters</Button><a className={buttonClassName({ variant: 'ghost' })} href="./?tab=family-reports">Clear</a></div></form></CardContent>
-      </Card>
-
-      <Card><CardHeader><CardTitle>Member Coverage</CardTitle><CardDescription>Page {currentPage} of {totalPages} · {Number(report.pagination.total || 0)} matching members</CardDescription></CardHeader><CardContent><div className="overflow-auto"><Table><TableHeader><TableRow><TableHead>Member</TableHead><TableHead>Relationship</TableHead><TableHead>Contact</TableHead><TableHead>Vehicles</TableHead><TableHead>Education</TableHead><TableHead>Status</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader><TableBody>{report.rows.length === 0 ? <TableRow><TableCell colSpan={7} className="py-10 text-center text-muted-foreground">No family member records match the current filters.</TableCell></TableRow> : report.rows.map((row) => <TableRow key={String(row.member_key)}><TableCell><strong>{String(row.full_name || '')}</strong><p className="font-mono text-xs text-muted-foreground">{String(row.member_key || '')}</p></TableCell><TableCell>{String(row.relationship_to_user || '')}</TableCell><TableCell><div>{String(row.contact_email || 'Hidden')}</div><div className="text-xs text-muted-foreground">{String(row.contact_phone || 'Hidden')}</div></TableCell><TableCell><Badge variant="outline">{Number(row.vehicle_count || 0)}</Badge></TableCell><TableCell><Badge variant="outline">{Number(row.education_count || 0)}</Badge></TableCell><TableCell><Badge variant={String(row.member_status) === 'ACTIVE' ? 'default' : 'secondary'}>{String(row.member_status || '')}</Badge></TableCell><TableCell className="whitespace-nowrap text-xs">{String(row.member_updated_at || row.member_created_at || '')}</TableCell></TableRow>)}</TableBody></Table></div><div className="mt-4 flex flex-wrap items-center justify-between gap-2"><span className="text-xs text-muted-foreground">Showing up to 25 records per page.</span><div className="flex gap-2">{currentPage > 1 ? <a className={buttonClassName({ variant: 'outline', size: 'sm' })} href={pageHref(currentPage - 1)}>Previous</a> : null}{currentPage < totalPages ? <a className={buttonClassName({ variant: 'outline', size: 'sm' })} href={pageHref(currentPage + 1)}>Next</a> : null}</div></div></CardContent></Card>
     </div>
   )
 }
@@ -1943,6 +1988,1797 @@ function ProjectCrudView() {
   )
 }
 
+const firebaseDocumentIdAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
+type CompanyIconButtonTone = 'add' | 'edit' | 'deactivate' | 'restore' | 'archive' | 'delete'
+
+type ErpDepartmentTemplate = {
+  key: string
+  code: string
+  name: string
+  type: string
+  description: string
+}
+
+const companyIconButtonGlowClass: Record<CompanyIconButtonTone, string> = {
+  add: 'text-emerald-400 shadow-[0_0_6px_rgba(34,197,94,0.12)] hover:shadow-[0_0_10px_rgba(34,197,94,0.24)] [&_svg]:drop-shadow-[0_0_4px_rgba(34,197,94,0.55)]',
+  edit: 'text-sky-400 shadow-[0_0_6px_rgba(56,189,248,0.12)] hover:shadow-[0_0_10px_rgba(56,189,248,0.24)] [&_svg]:drop-shadow-[0_0_4px_rgba(56,189,248,0.55)]',
+  deactivate: 'text-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.12)] hover:shadow-[0_0_10px_rgba(251,191,36,0.24)] [&_svg]:drop-shadow-[0_0_4px_rgba(251,191,36,0.55)]',
+  restore: 'text-teal-400 shadow-[0_0_6px_rgba(45,212,191,0.12)] hover:shadow-[0_0_10px_rgba(45,212,191,0.24)] [&_svg]:drop-shadow-[0_0_4px_rgba(45,212,191,0.55)]',
+  archive: 'text-violet-400 shadow-[0_0_6px_rgba(167,139,250,0.12)] hover:shadow-[0_0_10px_rgba(167,139,250,0.24)] [&_svg]:drop-shadow-[0_0_4px_rgba(167,139,250,0.55)]',
+  delete: 'text-rose-400 shadow-[0_0_6px_rgba(251,113,133,0.12)] hover:shadow-[0_0_10px_rgba(251,113,133,0.24)] [&_svg]:drop-shadow-[0_0_4px_rgba(251,113,133,0.55)]',
+}
+
+function companyIconButtonClass(tone: CompanyIconButtonTone): string {
+  return cn('rounded-full transition-shadow [&_svg]:transition-[filter,color]', companyIconButtonGlowClass[tone])
+}
+
+function companyStatusTone(status: string): CompanyIconButtonTone {
+  if (status === 'INACTIVE') return 'deactivate'
+  if (status === 'ACTIVE') return 'restore'
+  if (status === 'ARCHIVED') return 'archive'
+  return 'delete'
+}
+
+function CompanyManagementCountBadge({
+  value,
+  singular,
+  plural,
+}: {
+  value: number
+  singular: string
+  plural: string
+}) {
+  return (
+    <Badge variant="outline" className="inline-flex min-w-20 justify-center gap-1 px-2 tabular-nums">
+      <span>{value}</span>
+      <span>{value === 1 ? singular : plural}</span>
+    </Badge>
+  )
+}
+
+function createFirebaseDocumentId(): string {
+  const bytes = new Uint8Array(20)
+  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    crypto.getRandomValues(bytes)
+  } else {
+    for (let index = 0; index < bytes.length; index += 1) {
+      bytes[index] = Math.floor(Math.random() * 256)
+    }
+  }
+
+  return Array.from(bytes, (byte) => firebaseDocumentIdAlphabet[byte % firebaseDocumentIdAlphabet.length]).join('')
+}
+
+function CompanyCrudView() {
+  const [editingCompanyKey, setEditingCompanyKey] = React.useState('')
+  const [companyFormOpen, setCompanyFormOpen] = React.useState(false)
+  const [newCompanyKey, setNewCompanyKey] = React.useState(createFirebaseDocumentId)
+  const [confirmation, setConfirmation] = React.useState<ConfirmationState>(null)
+  const companyFormRef = React.useRef<HTMLFormElement>(null)
+  const editingCompany = data.companies.find((company) => company.company_key === editingCompanyKey)
+  const companyFormKey = editingCompany?.company_key || newCompanyKey
+  const companySummary = React.useMemo(() => {
+    const total = data.companies.length
+    const active = data.companies.filter((company) => company.company_status === 'ACTIVE').length
+    const draft = data.companies.filter((company) => company.company_status === 'DRAFT').length
+    const inactive = data.companies.filter((company) => company.company_status === 'INACTIVE').length
+    const archived = data.companies.filter((company) => company.company_status === 'ARCHIVED').length
+    const deleted = data.companies.filter((company) => company.company_status === 'DELETED').length
+
+    return { total, active, draft, inactive, archived, deleted }
+  }, [data.companies])
+  const companyBranchCounts = React.useMemo(() => {
+    return data.companyBranches.reduce<Record<string, number>>((counts, branch) => {
+      if (branch.branch_status === 'ACTIVE') {
+        counts[branch.company_key] = (counts[branch.company_key] || 0) + 1
+      }
+      return counts
+    }, {})
+  }, [data.companyBranches])
+
+  function openCompanyForm(companyKey = '') {
+    setEditingCompanyKey(companyKey)
+    if (companyKey === '') {
+      setNewCompanyKey(createFirebaseDocumentId())
+    }
+    setCompanyFormOpen(true)
+  }
+
+  function handleCompanyDialogOpen(open: boolean) {
+    setCompanyFormOpen(open)
+    if (!open) {
+      setEditingCompanyKey('')
+    }
+  }
+
+  function confirmCompanyForm() {
+    if (!companyFormRef.current?.reportValidity()) {
+      return
+    }
+
+    setConfirmation({
+      title: editingCompany ? 'Confirm company update' : 'Confirm company creation',
+      message: editingCompany
+        ? `Update company ${editingCompany.company_code}?`
+        : 'Create this company record?',
+      confirmLabel: editingCompany ? 'Update Company' : 'Create Company',
+      onConfirm: () => companyFormRef.current?.requestSubmit(),
+    })
+  }
+
+  return (
+    <>
+      <ConfirmationModal confirmation={confirmation} onClose={() => setConfirmation(null)} />
+
+      <div className="mb-5">
+        <div>
+          <Badge>Company Management</Badge>
+          <h2 className="mt-2 text-2xl font-bold tracking-normal">Companies</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Create, edit, archive, restore, and soft-delete project companies.</p>
+        </div>
+      </div>
+
+      <div className="grid min-h-0 gap-4 xl:h-[calc(100svh-15rem)] xl:grid-cols-[minmax(0,8fr)_minmax(320px,4fr)]">
+        <Card className="flex min-w-0 flex-col overflow-hidden">
+          <CardHeader className="border-b">
+            <CardTitle>Companies</CardTitle>
+            <CardDescription>Review saved companies from the project company database.</CardDescription>
+            <CardAction>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                className={companyIconButtonClass('add')}
+                aria-label="Add new company"
+                title="Add new company"
+                onClick={() => openCompanyForm()}
+              >
+                <Plus />
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-0">
+            <FoundationTable headers={['Company', 'Contact', 'Branches', 'Status', 'Actions']} actionAlign="left">
+              {data.companies.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">No companies have been created yet.</TableCell>
+                </TableRow>
+              ) : data.companies.map((company) => (
+                <TableRow key={company.company_key}>
+                  <TableCell>
+                    <strong>{company.company_name}</strong>
+                    {company.company_description ? <p className="mt-1 text-xs text-muted-foreground">{company.company_description}</p> : null}
+                  </TableCell>
+                  <TableCell>
+                    <div>{company.company_email || 'No email'}</div>
+                    <div className="text-xs text-muted-foreground">{company.company_phone || 'No phone'}</div>
+                  </TableCell>
+                  <TableCell><CompanyManagementCountBadge value={companyBranchCounts[company.company_key] || 0} singular="Branch" plural="Branches" /></TableCell>
+                  <TableCell><Badge>{company.company_status}</Badge></TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap justify-start gap-1.5">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        className={companyIconButtonClass('edit')}
+                        aria-label={`Edit ${company.company_code}`}
+                        title={`Edit ${company.company_code}`}
+                        onClick={() => openCompanyForm(company.company_key)}
+                      >
+                        <Pencil aria-hidden="true" />
+                      </Button>
+                      <CompanyStatusButton company={company} status="INACTIVE" label="Deactivate" icon={<Ban className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      <CompanyStatusButton company={company} status="ACTIVE" label="Restore" icon={<RotateCcw className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      <CompanyStatusButton company={company} status="ARCHIVED" label="Archive" icon={<Archive className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      <CompanyStatusButton company={company} status="DELETED" label="Delete" icon={<Trash2 className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </FoundationTable>
+          </CardContent>
+        </Card>
+
+        <Card className="flex min-w-0 flex-col overflow-hidden">
+          <CardHeader className="border-b">
+            <CardTitle>Summary</CardTitle>
+            <CardDescription>Project company records stored in the project layer.</CardDescription>
+          </CardHeader>
+          <CardContent className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+            <dl className="grid gap-3">
+              <div className="bg-muted/20 p-3">
+                <dt className="text-xs font-medium text-muted-foreground">Total companies</dt>
+                <dd className="mt-1 text-2xl font-semibold tracking-normal">{companySummary.total}</dd>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-emerald-500/10 p-3 text-emerald-700 dark:text-emerald-300">
+                  <dt className="text-xs font-medium">Active</dt>
+                  <dd className="mt-1 text-xl font-semibold">{companySummary.active}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Draft</dt>
+                  <dd className="mt-1 text-xl font-semibold">{companySummary.draft}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Inactive</dt>
+                  <dd className="mt-1 text-xl font-semibold">{companySummary.inactive}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Archived</dt>
+                  <dd className="mt-1 text-xl font-semibold">{companySummary.archived}</dd>
+                </div>
+              </div>
+              <div className="bg-muted/20 p-3">
+                <dt className="text-xs font-medium text-muted-foreground">Deleted</dt>
+                <dd className="mt-1 text-xl font-semibold">{companySummary.deleted}</dd>
+              </div>
+            </dl>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Dialog open={companyFormOpen} onOpenChange={handleCompanyDialogOpen}>
+        <DialogContent showCloseButton={false} className="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
+          <DialogHeader className="sticky top-0 z-30 shrink-0 border-b bg-popover px-6 py-5 pr-14">
+            <DialogClose render={<Button type="button" variant="ghost" size="icon-sm" className="absolute right-4 top-4 text-muted-foreground hover:text-foreground" aria-label="Close company form" title="Close company form" />}>
+              <X />
+            </DialogClose>
+            <DialogTitle>{editingCompany ? 'Edit Company' : 'Create Company'}</DialogTitle>
+            <DialogDescription>Company identity is stored automatically with the project record.</DialogDescription>
+          </DialogHeader>
+          <form key={companyFormKey} ref={companyFormRef} method="post" className="contents">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-6">
+              <div className="grid gap-4">
+                <input type="hidden" name="csrf" value={data.csrf} />
+                <input type="hidden" name="action" value="save_company" />
+                <input type="hidden" name="company_key" value={companyFormKey} readOnly />
+                <div className="grid gap-2">
+                  <Label htmlFor="company_code">Company Code</Label>
+                  <Input id="company_code" name="company_code" defaultValue={editingCompany?.company_code || ''} maxLength={40} pattern="[A-Za-z0-9_-]{2,40}" placeholder="ACME" required />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_name">Company Name</Label>
+                  <Input id="company_name" name="company_name" defaultValue={editingCompany?.company_name || ''} maxLength={160} placeholder="Acme Corporation" required />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_status">Status</Label>
+                  <select
+                    id="company_status"
+                    name="company_status"
+                    defaultValue={editingCompany?.company_status || 'ACTIVE'}
+                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+                  >
+                    <option value="DRAFT">DRAFT</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="INACTIVE">INACTIVE</option>
+                    <option value="ARCHIVED">ARCHIVED</option>
+                    <option value="DELETED">DELETED</option>
+                  </select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_email">Email</Label>
+                  <Input id="company_email" name="company_email" type="email" defaultValue={editingCompany?.company_email || ''} maxLength={190} placeholder="admin@example.com" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_phone">Phone</Label>
+                  <Input id="company_phone" name="company_phone" defaultValue={editingCompany?.company_phone || ''} maxLength={40} placeholder="+1 555 0100" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_address">Address</Label>
+                  <Textarea id="company_address" name="company_address" defaultValue={editingCompany?.company_address || ''} rows={3} />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_description">Description</Label>
+                  <Textarea id="company_description" name="company_description" defaultValue={editingCompany?.company_description || ''} rows={4} />
+                </div>
+              </div>
+            </div>
+            <DialogFooter className="sticky bottom-0 z-30 m-0 w-full shrink-0 flex-row items-center justify-between gap-3 rounded-none border-t bg-popover px-6 py-4 sm:justify-between">
+              <span className="text-xs text-muted-foreground">{editingCompany ? 'Updates require confirmation before saving.' : 'New records require confirmation before saving.'}</span>
+              <div className="flex shrink-0 items-center">
+                <Button type="button" onClick={confirmCompanyForm}>
+                  <Plus className="h-4 w-4" aria-hidden="true" />
+                  {editingCompany ? 'Save Company' : 'Create Company'}
+                </Button>
+              </div>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
+
+function CompanyStatusButton({
+  company,
+  status,
+  label,
+  icon,
+  setConfirmation,
+}: {
+  company: Record<string, string>
+  status: string
+  label: string
+  icon: React.ReactNode
+  setConfirmation: (confirmation: ConfirmationState) => void
+}) {
+  const formRef = React.useRef<HTMLFormElement>(null)
+  const destructive = status === 'DELETED' || status === 'ARCHIVED'
+
+  return (
+    <form ref={formRef} method="post">
+      <input type="hidden" name="csrf" value={data.csrf} />
+      <input type="hidden" name="action" value="set_company_status" />
+      <input type="hidden" name="company_key" value={company.company_key} />
+      <input type="hidden" name="company_status" value={status} />
+      <Button
+        type="button"
+        variant="outline"
+        size="icon-sm"
+        className={companyIconButtonClass(companyStatusTone(status))}
+        aria-label={`${label} ${company.company_code}`}
+        title={`${label} ${company.company_code}`}
+        onClick={() => setConfirmation({
+          title: `${label} company`,
+          message: destructive
+            ? `${label} company ${company.company_code}? This changes availability for administrator workflows.`
+            : `${label} company ${company.company_code}?`,
+          confirmLabel: label,
+          destructive,
+          onConfirm: () => formRef.current?.requestSubmit(),
+        })}
+      >
+        {icon}
+      </Button>
+    </form>
+  )
+}
+
+function CompanyBranchCrudView() {
+  const [editingBranchKey, setEditingBranchKey] = React.useState('')
+  const [branchFormOpen, setBranchFormOpen] = React.useState(false)
+  const [confirmation, setConfirmation] = React.useState<ConfirmationState>(null)
+  const branchFormRef = React.useRef<HTMLFormElement>(null)
+  const activeCompanies = React.useMemo(
+    () => data.companies.filter((company) => company.company_status !== 'DELETED'),
+    [data.companies],
+  )
+  const editingBranch = data.companyBranches.find((branch) => branch.branch_key === editingBranchKey)
+  const branchFormKey = editingBranch?.branch_key || `new-branch-${activeCompanies[0]?.company_key || 'none'}`
+  const branchSummary = React.useMemo(() => {
+    const total = data.companyBranches.length
+    const active = data.companyBranches.filter((branch) => branch.branch_status === 'ACTIVE').length
+    const draft = data.companyBranches.filter((branch) => branch.branch_status === 'DRAFT').length
+    const inactive = data.companyBranches.filter((branch) => branch.branch_status === 'INACTIVE').length
+    const archived = data.companyBranches.filter((branch) => branch.branch_status === 'ARCHIVED').length
+    const deleted = data.companyBranches.filter((branch) => branch.branch_status === 'DELETED').length
+
+    return { total, active, draft, inactive, archived, deleted }
+  }, [data.companyBranches])
+  const branchProjectCounts = React.useMemo(() => {
+    return data.companyProjects.reduce<Record<string, number>>((counts, project) => {
+      if (project.project_status !== 'DELETED') {
+        counts[project.branch_key] = (counts[project.branch_key] || 0) + 1
+      }
+      return counts
+    }, {})
+  }, [data.companyProjects])
+
+  function openBranchForm(branchKey = '') {
+    if (branchKey === '' && activeCompanies.length === 0) {
+      return
+    }
+    setEditingBranchKey(branchKey)
+    setBranchFormOpen(true)
+  }
+
+  function handleBranchDialogOpen(open: boolean) {
+    setBranchFormOpen(open)
+    if (!open) {
+      setEditingBranchKey('')
+    }
+  }
+
+  function confirmBranchForm() {
+    if (!branchFormRef.current?.reportValidity()) {
+      return
+    }
+
+    setConfirmation({
+      title: editingBranch ? 'Confirm branch update' : 'Confirm branch creation',
+      message: editingBranch
+        ? `Update branch ${editingBranch.branch_code}?`
+        : 'Create this branch under the selected company?',
+      confirmLabel: editingBranch ? 'Update Branch' : 'Create Branch',
+      onConfirm: () => branchFormRef.current?.requestSubmit(),
+    })
+  }
+
+  return (
+    <>
+      <ConfirmationModal confirmation={confirmation} onClose={() => setConfirmation(null)} />
+
+      <div className="mb-5">
+        <div>
+          <Badge>Company Management</Badge>
+          <h2 className="mt-2 text-2xl font-bold tracking-normal">Branches</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Create, edit, archive, restore, and soft-delete branches under project companies.</p>
+        </div>
+      </div>
+
+      <div className="grid min-h-0 gap-4 xl:h-[calc(100svh-15rem)] xl:grid-cols-[minmax(0,8fr)_minmax(320px,4fr)]">
+        <Card className="flex min-w-0 flex-col overflow-hidden">
+          <CardHeader className="border-b">
+            <CardTitle>Branches</CardTitle>
+            <CardDescription>Review saved branches from the project company branch database.</CardDescription>
+            <CardAction>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                className={companyIconButtonClass('add')}
+                aria-label="Add new company branch"
+                title={activeCompanies.length > 0 ? 'Add new company branch' : 'Create a company first'}
+                disabled={activeCompanies.length === 0}
+                onClick={() => openBranchForm()}
+              >
+                <Plus />
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-0">
+            <FoundationTable headers={['Company', 'Branch', 'Projects', 'Status', 'Actions']} actionAlign="left">
+              {data.companyBranches.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">No company branches have been created yet.</TableCell>
+                </TableRow>
+              ) : data.companyBranches.map((branch) => (
+                <TableRow key={branch.branch_key}>
+                  <TableCell>
+                    <strong>{branch.company_name || 'Company unavailable'}</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>{branch.branch_name}</strong>
+                  </TableCell>
+                  <TableCell><CompanyManagementCountBadge value={branchProjectCounts[branch.branch_key] || 0} singular="Project" plural="Projects" /></TableCell>
+                  <TableCell><Badge>{branch.branch_status}</Badge></TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap justify-start gap-1.5">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        className={companyIconButtonClass('edit')}
+                        aria-label={`Edit ${branch.branch_code}`}
+                        title={`Edit ${branch.branch_code}`}
+                        onClick={() => openBranchForm(branch.branch_key)}
+                      >
+                        <Pencil aria-hidden="true" />
+                      </Button>
+                      <CompanyBranchStatusButton branch={branch} status="INACTIVE" label="Deactivate" icon={<Ban className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      <CompanyBranchStatusButton branch={branch} status="ACTIVE" label="Restore" icon={<RotateCcw className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      <CompanyBranchStatusButton branch={branch} status="ARCHIVED" label="Archive" icon={<Archive className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      <CompanyBranchStatusButton branch={branch} status="DELETED" label="Delete" icon={<Trash2 className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </FoundationTable>
+          </CardContent>
+        </Card>
+
+        <Card className="flex min-w-0 flex-col overflow-hidden">
+          <CardHeader className="border-b">
+            <CardTitle>Summary</CardTitle>
+            <CardDescription>Project branch records attached to project companies.</CardDescription>
+          </CardHeader>
+          <CardContent className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+            <dl className="grid gap-3">
+              <div className="bg-muted/20 p-3">
+                <dt className="text-xs font-medium text-muted-foreground">Total branches</dt>
+                <dd className="mt-1 text-2xl font-semibold tracking-normal">{branchSummary.total}</dd>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-emerald-500/10 p-3 text-emerald-700 dark:text-emerald-300">
+                  <dt className="text-xs font-medium">Active</dt>
+                  <dd className="mt-1 text-xl font-semibold">{branchSummary.active}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Draft</dt>
+                  <dd className="mt-1 text-xl font-semibold">{branchSummary.draft}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Inactive</dt>
+                  <dd className="mt-1 text-xl font-semibold">{branchSummary.inactive}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Archived</dt>
+                  <dd className="mt-1 text-xl font-semibold">{branchSummary.archived}</dd>
+                </div>
+              </div>
+              <div className="bg-muted/20 p-3">
+                <dt className="text-xs font-medium text-muted-foreground">Deleted</dt>
+                <dd className="mt-1 text-xl font-semibold">{branchSummary.deleted}</dd>
+              </div>
+            </dl>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Dialog open={branchFormOpen} onOpenChange={handleBranchDialogOpen}>
+        <DialogContent showCloseButton={false} className="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
+          <DialogHeader className="sticky top-0 z-30 shrink-0 border-b bg-popover px-6 py-5 pr-14">
+            <DialogClose render={<Button type="button" variant="ghost" size="icon-sm" className="absolute right-4 top-4 text-muted-foreground hover:text-foreground" aria-label="Close branch form" title="Close branch form" />}>
+              <X />
+            </DialogClose>
+            <DialogTitle>{editingBranch ? 'Edit Branch' : 'Create Branch'}</DialogTitle>
+            <DialogDescription>Select an existing company, then save the branch under that project company.</DialogDescription>
+          </DialogHeader>
+          <form key={branchFormKey} ref={branchFormRef} method="post" className="contents">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-6">
+              <div className="grid gap-4">
+                <input type="hidden" name="csrf" value={data.csrf} />
+                <input type="hidden" name="action" value="save_company_branch" />
+                <input type="hidden" name="branch_key" value={editingBranch?.branch_key || ''} readOnly />
+                <div className="grid gap-2">
+                  <Label htmlFor="company_branch_company_key">Company</Label>
+                  <select
+                    id="company_branch_company_key"
+                    name="company_key"
+                    defaultValue={editingBranch?.company_key || activeCompanies[0]?.company_key || ''}
+                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+                    required
+                  >
+                    {activeCompanies.length === 0 ? <option value="">Create a company first</option> : null}
+                    {activeCompanies.map((company) => (
+                      <option key={company.company_key} value={company.company_key}>
+                        {company.company_code} - {company.company_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_branch_code">Branch Code</Label>
+                  <Input id="company_branch_code" name="branch_code" defaultValue={editingBranch?.branch_code || ''} maxLength={40} pattern="[A-Za-z0-9_-]{2,40}" placeholder="HQ" required />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_branch_name">Branch Name</Label>
+                  <Input id="company_branch_name" name="branch_name" defaultValue={editingBranch?.branch_name || ''} maxLength={160} placeholder="Head Office" required />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_branch_status">Status</Label>
+                  <select
+                    id="company_branch_status"
+                    name="branch_status"
+                    defaultValue={editingBranch?.branch_status || 'ACTIVE'}
+                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+                  >
+                    <option value="DRAFT">DRAFT</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="INACTIVE">INACTIVE</option>
+                    <option value="ARCHIVED">ARCHIVED</option>
+                    <option value="DELETED">DELETED</option>
+                  </select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_branch_contact">Contact</Label>
+                  <Input id="company_branch_contact" name="branch_contact" defaultValue={editingBranch?.branch_contact || ''} maxLength={190} placeholder="operations@example.com" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_branch_address">Address</Label>
+                  <Textarea id="company_branch_address" name="branch_address" defaultValue={editingBranch?.branch_address || ''} rows={3} />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_branch_description">Description</Label>
+                  <Textarea id="company_branch_description" name="branch_description" defaultValue={editingBranch?.branch_description || ''} rows={4} />
+                </div>
+              </div>
+            </div>
+            <DialogFooter className="sticky bottom-0 z-30 m-0 w-full shrink-0 flex-row items-center justify-between gap-3 rounded-none border-t bg-popover px-6 py-4 sm:justify-between">
+              <span className="text-xs text-muted-foreground">{editingBranch ? 'Updates require confirmation before saving.' : 'New records require confirmation before saving.'}</span>
+              <div className="flex shrink-0 items-center">
+                <Button type="button" onClick={confirmBranchForm}>
+                  <Plus className="h-4 w-4" aria-hidden="true" />
+                  {editingBranch ? 'Save Branch' : 'Create Branch'}
+                </Button>
+              </div>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
+
+function CompanyBranchStatusButton({
+  branch,
+  status,
+  label,
+  icon,
+  setConfirmation,
+}: {
+  branch: Record<string, string>
+  status: string
+  label: string
+  icon: React.ReactNode
+  setConfirmation: (confirmation: ConfirmationState) => void
+}) {
+  const formRef = React.useRef<HTMLFormElement>(null)
+  const destructive = status === 'DELETED' || status === 'ARCHIVED'
+
+  return (
+    <form ref={formRef} method="post">
+      <input type="hidden" name="csrf" value={data.csrf} />
+      <input type="hidden" name="action" value="set_company_branch_status" />
+      <input type="hidden" name="branch_key" value={branch.branch_key} />
+      <input type="hidden" name="branch_status" value={status} />
+      <Button
+        type="button"
+        variant="outline"
+        size="icon-sm"
+        className={companyIconButtonClass(companyStatusTone(status))}
+        aria-label={`${label} ${branch.branch_code}`}
+        title={`${label} ${branch.branch_code}`}
+        onClick={() => setConfirmation({
+          title: `${label} branch`,
+          message: destructive
+            ? `${label} branch ${branch.branch_code}? This changes availability under ${branch.company_code || 'the selected company'}.`
+            : `${label} branch ${branch.branch_code}?`,
+          confirmLabel: label,
+          destructive,
+          onConfirm: () => formRef.current?.requestSubmit(),
+        })}
+      >
+        {icon}
+      </Button>
+    </form>
+  )
+}
+
+function CompanyProjectCrudView() {
+  const [editingProjectKey, setEditingProjectKey] = React.useState('')
+  const [projectFormOpen, setProjectFormOpen] = React.useState(false)
+  const [selectedCompanyKey, setSelectedCompanyKey] = React.useState('')
+  const [selectedBranchKey, setSelectedBranchKey] = React.useState('')
+  const [confirmation, setConfirmation] = React.useState<ConfirmationState>(null)
+  const projectFormRef = React.useRef<HTMLFormElement>(null)
+  const activeCompanies = React.useMemo(
+    () => data.companies.filter((company) => company.company_status !== 'DELETED'),
+    [data.companies],
+  )
+  const activeCompanyBranches = React.useMemo(
+    () => data.companyBranches.filter((branch) => branch.branch_status !== 'DELETED'),
+    [data.companyBranches],
+  )
+  const editingProject = data.companyProjects.find((project) => project.project_key === editingProjectKey)
+  const projectCompanyKey = selectedCompanyKey || editingProject?.company_key || activeCompanies[0]?.company_key || ''
+  const filteredBranches = React.useMemo(
+    () => activeCompanyBranches.filter((branch) => branch.company_key === projectCompanyKey),
+    [activeCompanyBranches, projectCompanyKey],
+  )
+  const projectBranchKey = filteredBranches.some((branch) => branch.branch_key === selectedBranchKey)
+    ? selectedBranchKey
+    : filteredBranches[0]?.branch_key || ''
+  const projectFormKey = editingProject?.project_key || `new-project-${projectCompanyKey || 'none'}`
+  const projectSummary = React.useMemo(() => {
+    const total = data.companyProjects.length
+    const active = data.companyProjects.filter((project) => project.project_status === 'ACTIVE').length
+    const draft = data.companyProjects.filter((project) => project.project_status === 'DRAFT').length
+    const inactive = data.companyProjects.filter((project) => project.project_status === 'INACTIVE').length
+    const archived = data.companyProjects.filter((project) => project.project_status === 'ARCHIVED').length
+    const deleted = data.companyProjects.filter((project) => project.project_status === 'DELETED').length
+
+    return { total, active, draft, inactive, archived, deleted }
+  }, [data.companyProjects])
+
+  function openProjectForm(projectKey = '') {
+    const project = data.companyProjects.find((item) => item.project_key === projectKey)
+    const nextCompanyKey = project?.company_key || activeCompanies[0]?.company_key || ''
+    if (projectKey === '' && (activeCompanies.length === 0 || activeCompanyBranches.length === 0)) {
+      return
+    }
+    const nextBranches = activeCompanyBranches.filter((branch) => branch.company_key === nextCompanyKey)
+    setEditingProjectKey(projectKey)
+    setSelectedCompanyKey(nextCompanyKey)
+    setSelectedBranchKey(project?.branch_key || nextBranches[0]?.branch_key || '')
+    setProjectFormOpen(true)
+  }
+
+  function handleProjectDialogOpen(open: boolean) {
+    setProjectFormOpen(open)
+    if (!open) {
+      setEditingProjectKey('')
+      setSelectedCompanyKey('')
+      setSelectedBranchKey('')
+    }
+  }
+
+  function handleProjectCompanyChange(companyKey: string) {
+    const nextBranches = activeCompanyBranches.filter((branch) => branch.company_key === companyKey)
+    setSelectedCompanyKey(companyKey)
+    setSelectedBranchKey(nextBranches[0]?.branch_key || '')
+  }
+
+  function confirmProjectForm() {
+    if (!projectFormRef.current?.reportValidity()) {
+      return
+    }
+
+    setConfirmation({
+      title: editingProject ? 'Confirm project update' : 'Confirm project creation',
+      message: editingProject
+        ? `Update project ${editingProject.project_code}?`
+        : 'Create this project under the selected company and branch?',
+      confirmLabel: editingProject ? 'Update Project' : 'Create Project',
+      onConfirm: () => projectFormRef.current?.requestSubmit(),
+    })
+  }
+
+  return (
+    <>
+      <ConfirmationModal confirmation={confirmation} onClose={() => setConfirmation(null)} />
+
+      <div className="mb-5">
+        <div>
+          <Badge>Company Management</Badge>
+          <h2 className="mt-2 text-2xl font-bold tracking-normal">Projects</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Create, edit, archive, restore, and soft-delete projects under company branches.</p>
+        </div>
+      </div>
+
+      <div className="grid min-h-0 gap-4 xl:h-[calc(100svh-15rem)] xl:grid-cols-[minmax(0,8fr)_minmax(320px,4fr)]">
+        <Card className="flex min-w-0 flex-col overflow-hidden">
+          <CardHeader className="border-b">
+            <CardTitle>Projects</CardTitle>
+            <CardDescription>Review saved projects from the project company project database.</CardDescription>
+            <CardAction>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                className={companyIconButtonClass('add')}
+                aria-label="Add new company project"
+                title={activeCompanies.length === 0 ? 'Create a company first' : activeCompanyBranches.length === 0 ? 'Create a company branch first' : 'Add new company project'}
+                disabled={activeCompanies.length === 0 || activeCompanyBranches.length === 0}
+                onClick={() => openProjectForm()}
+              >
+                <Plus />
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-0">
+            <FoundationTable headers={['Company', 'Branch', 'Project', 'Status', 'Actions']} actionAlign="left">
+              {data.companyProjects.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">No company projects have been created yet.</TableCell>
+                </TableRow>
+              ) : data.companyProjects.map((project) => (
+                <TableRow key={project.project_key}>
+                  <TableCell>
+                    <strong>{project.company_name || 'Company unavailable'}</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>{project.branch_name || 'Branch unavailable'}</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>{project.project_name}</strong>
+                    {project.project_description ? <p className="mt-1 text-xs text-muted-foreground">{project.project_description}</p> : null}
+                  </TableCell>
+                  <TableCell><Badge>{project.project_status}</Badge></TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap justify-start gap-1.5">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        className={companyIconButtonClass('edit')}
+                        aria-label={`Edit ${project.project_code}`}
+                        title={`Edit ${project.project_code}`}
+                        onClick={() => openProjectForm(project.project_key)}
+                      >
+                        <Pencil aria-hidden="true" />
+                      </Button>
+                      <CompanyProjectStatusButton project={project} status="INACTIVE" label="Deactivate" icon={<Ban className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      <CompanyProjectStatusButton project={project} status="ACTIVE" label="Restore" icon={<RotateCcw className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      <CompanyProjectStatusButton project={project} status="ARCHIVED" label="Archive" icon={<Archive className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      <CompanyProjectStatusButton project={project} status="DELETED" label="Delete" icon={<Trash2 className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </FoundationTable>
+          </CardContent>
+        </Card>
+
+        <Card className="flex min-w-0 flex-col overflow-hidden">
+          <CardHeader className="border-b">
+            <CardTitle>Summary</CardTitle>
+            <CardDescription>Project records attached to company branches.</CardDescription>
+          </CardHeader>
+          <CardContent className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+            <dl className="grid gap-3">
+              <div className="bg-muted/20 p-3">
+                <dt className="text-xs font-medium text-muted-foreground">Total projects</dt>
+                <dd className="mt-1 text-2xl font-semibold tracking-normal">{projectSummary.total}</dd>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-emerald-500/10 p-3 text-emerald-700 dark:text-emerald-300">
+                  <dt className="text-xs font-medium">Active</dt>
+                  <dd className="mt-1 text-xl font-semibold">{projectSummary.active}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Draft</dt>
+                  <dd className="mt-1 text-xl font-semibold">{projectSummary.draft}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Inactive</dt>
+                  <dd className="mt-1 text-xl font-semibold">{projectSummary.inactive}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Archived</dt>
+                  <dd className="mt-1 text-xl font-semibold">{projectSummary.archived}</dd>
+                </div>
+              </div>
+              <div className="bg-muted/20 p-3">
+                <dt className="text-xs font-medium text-muted-foreground">Deleted</dt>
+                <dd className="mt-1 text-xl font-semibold">{projectSummary.deleted}</dd>
+              </div>
+            </dl>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Dialog open={projectFormOpen} onOpenChange={handleProjectDialogOpen}>
+        <DialogContent showCloseButton={false} className="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
+          <DialogHeader className="sticky top-0 z-30 shrink-0 border-b bg-popover px-6 py-5 pr-14">
+            <DialogClose render={<Button type="button" variant="ghost" size="icon-sm" className="absolute right-4 top-4 text-muted-foreground hover:text-foreground" aria-label="Close project form" title="Close project form" />}>
+              <X />
+            </DialogClose>
+            <DialogTitle>{editingProject ? 'Edit Project' : 'Create Project'}</DialogTitle>
+            <DialogDescription>Select an existing company and branch, then save the project under that branch.</DialogDescription>
+          </DialogHeader>
+          <form key={projectFormKey} ref={projectFormRef} method="post" className="contents">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-6">
+              <div className="grid gap-4">
+                <input type="hidden" name="csrf" value={data.csrf} />
+                <input type="hidden" name="action" value="save_company_project" />
+                <input type="hidden" name="project_key" value={editingProject?.project_key || ''} readOnly />
+                <div className="grid gap-2">
+                  <Label htmlFor="company_project_company_key">Company</Label>
+                  <select
+                    id="company_project_company_key"
+                    name="company_key"
+                    value={projectCompanyKey}
+                    onChange={(event) => handleProjectCompanyChange(event.target.value)}
+                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+                    required
+                  >
+                    {activeCompanies.length === 0 ? <option value="">Create a company first</option> : null}
+                    {activeCompanies.map((company) => (
+                      <option key={company.company_key} value={company.company_key}>
+                        {company.company_code} - {company.company_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_project_branch_key">Branch</Label>
+                  <select
+                    id="company_project_branch_key"
+                    name="branch_key"
+                    value={projectBranchKey}
+                    onChange={(event) => setSelectedBranchKey(event.target.value)}
+                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+                    required
+                  >
+                    {filteredBranches.length === 0 ? <option value="">Create a branch for this company first</option> : null}
+                    {filteredBranches.map((branch) => (
+                      <option key={branch.branch_key} value={branch.branch_key}>
+                        {branch.branch_code} - {branch.branch_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_project_code">Project Code</Label>
+                  <Input id="company_project_code" name="project_code" defaultValue={editingProject?.project_code || ''} maxLength={40} pattern="[A-Za-z0-9_-]{2,40}" placeholder="CORE" required />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_project_name">Project Name</Label>
+                  <Input id="company_project_name" name="project_name" defaultValue={editingProject?.project_name || ''} maxLength={160} placeholder="Core Platform" required />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_project_status">Status</Label>
+                  <select
+                    id="company_project_status"
+                    name="project_status"
+                    defaultValue={editingProject?.project_status || 'ACTIVE'}
+                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+                  >
+                    <option value="DRAFT">DRAFT</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="INACTIVE">INACTIVE</option>
+                    <option value="ARCHIVED">ARCHIVED</option>
+                    <option value="DELETED">DELETED</option>
+                  </select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_project_description">Description</Label>
+                  <Textarea id="company_project_description" name="project_description" defaultValue={editingProject?.project_description || ''} rows={4} />
+                </div>
+              </div>
+            </div>
+            <DialogFooter className="sticky bottom-0 z-30 m-0 w-full shrink-0 flex-row items-center justify-between gap-3 rounded-none border-t bg-popover px-6 py-4 sm:justify-between">
+              <span className="text-xs text-muted-foreground">{editingProject ? 'Updates require confirmation before saving.' : 'New records require confirmation before saving.'}</span>
+              <div className="flex shrink-0 items-center">
+                <Button type="button" onClick={confirmProjectForm}>
+                  <Plus className="h-4 w-4" aria-hidden="true" />
+                  {editingProject ? 'Save Project' : 'Create Project'}
+                </Button>
+              </div>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
+
+function CompanyProjectStatusButton({
+  project,
+  status,
+  label,
+  icon,
+  setConfirmation,
+}: {
+  project: Record<string, string>
+  status: string
+  label: string
+  icon: React.ReactNode
+  setConfirmation: (confirmation: ConfirmationState) => void
+}) {
+  const formRef = React.useRef<HTMLFormElement>(null)
+  const destructive = status === 'DELETED' || status === 'ARCHIVED'
+
+  return (
+    <form ref={formRef} method="post">
+      <input type="hidden" name="csrf" value={data.csrf} />
+      <input type="hidden" name="action" value="set_company_project_status" />
+      <input type="hidden" name="project_key" value={project.project_key} />
+      <input type="hidden" name="project_status" value={status} />
+      <Button
+        type="button"
+        variant="outline"
+        size="icon-sm"
+        className={companyIconButtonClass(companyStatusTone(status))}
+        aria-label={`${label} ${project.project_code}`}
+        title={`${label} ${project.project_code}`}
+        onClick={() => setConfirmation({
+          title: `${label} project`,
+          message: destructive
+            ? `${label} project ${project.project_code}? This changes availability under ${project.branch_code || 'the selected branch'}.`
+            : `${label} project ${project.project_code}?`,
+          confirmLabel: label,
+          destructive,
+          onConfirm: () => formRef.current?.requestSubmit(),
+        })}
+      >
+        {icon}
+      </Button>
+    </form>
+  )
+}
+
+function CompanyDepartmentCrudView() {
+  const standardDepartments = React.useMemo<ErpDepartmentTemplate[]>(() => (
+    data.companyDepartmentMasters
+      .filter((department) => department.department_status === 'ACTIVE')
+      .map((department) => ({
+        key: department.department_master_key,
+        code: department.department_code,
+        name: department.department_name,
+        type: department.department_type,
+        description: department.department_description || '',
+      }))
+  ), [data.companyDepartmentMasters])
+  const [editingDepartmentKey, setEditingDepartmentKey] = React.useState('')
+  const [departmentFormOpen, setDepartmentFormOpen] = React.useState(false)
+  const [selectedCompanyKey, setSelectedCompanyKey] = React.useState('')
+  const [selectedBranchKey, setSelectedBranchKey] = React.useState('')
+  const [departmentMode, setDepartmentMode] = React.useState<'ERP_DEFAULT' | 'CUSTOM'>('ERP_DEFAULT')
+  const [selectedTemplateKey, setSelectedTemplateKey] = React.useState('')
+  const [departmentCode, setDepartmentCode] = React.useState('')
+  const [departmentName, setDepartmentName] = React.useState('')
+  const [departmentType, setDepartmentType] = React.useState('')
+  const [departmentStatus, setDepartmentStatus] = React.useState('ACTIVE')
+  const [departmentDescription, setDepartmentDescription] = React.useState('')
+  const [confirmation, setConfirmation] = React.useState<ConfirmationState>(null)
+  const departmentFormRef = React.useRef<HTMLFormElement>(null)
+  const activeCompanies = React.useMemo(
+    () => data.companies.filter((company) => company.company_status !== 'DELETED'),
+    [data.companies],
+  )
+  const activeCompanyBranches = React.useMemo(
+    () => data.companyBranches.filter((branch) => branch.branch_status !== 'DELETED'),
+    [data.companyBranches],
+  )
+  const editingDepartment = data.companyDepartments.find((department) => department.department_key === editingDepartmentKey)
+  const departmentCompanyKey = selectedCompanyKey || editingDepartment?.company_key || activeCompanies[0]?.company_key || ''
+  const filteredBranches = React.useMemo(
+    () => activeCompanyBranches.filter((branch) => branch.company_key === departmentCompanyKey),
+    [activeCompanyBranches, departmentCompanyKey],
+  )
+  const departmentBranchKey = filteredBranches.some((branch) => branch.branch_key === selectedBranchKey)
+    ? selectedBranchKey
+    : filteredBranches[0]?.branch_key || ''
+  const departmentFormKey = editingDepartment?.department_key || `new-department-${departmentCompanyKey || 'none'}`
+  const departmentSummary = React.useMemo(() => {
+    const total = data.companyDepartments.length
+    const active = data.companyDepartments.filter((department) => department.department_status === 'ACTIVE').length
+    const draft = data.companyDepartments.filter((department) => department.department_status === 'DRAFT').length
+    const inactive = data.companyDepartments.filter((department) => department.department_status === 'INACTIVE').length
+    const archived = data.companyDepartments.filter((department) => department.department_status === 'ARCHIVED').length
+    const deleted = data.companyDepartments.filter((department) => department.department_status === 'DELETED').length
+    const fromDefaults = data.companyDepartments.filter((department) => department.department_source === 'ERP_DEFAULT').length
+    const custom = data.companyDepartments.filter((department) => department.department_source === 'CUSTOM').length
+
+    return { total, active, draft, inactive, archived, deleted, fromDefaults, custom, standard: standardDepartments.length }
+  }, [data.companyDepartments, standardDepartments.length])
+
+  function applyDepartmentTemplate(templateKey: string) {
+    const template = standardDepartments.find((item) => item.key === templateKey) || standardDepartments[0]
+    if (!template) return
+    setSelectedTemplateKey(template.key)
+    setDepartmentCode(template.code)
+    setDepartmentName(template.name)
+    setDepartmentType(template.type)
+    setDepartmentDescription(template.description)
+  }
+
+  function openDepartmentForm(departmentKey = '') {
+    const department = data.companyDepartments.find((item) => item.department_key === departmentKey)
+    const nextCompanyKey = department?.company_key || activeCompanies[0]?.company_key || ''
+    if (departmentKey === '' && (activeCompanies.length === 0 || activeCompanyBranches.length === 0)) {
+      return
+    }
+    const nextBranches = activeCompanyBranches.filter((branch) => branch.company_key === nextCompanyKey)
+    const nextMode = department?.department_source === 'CUSTOM' ? 'CUSTOM' : 'ERP_DEFAULT'
+    const nextTemplate = department?.default_department_key || standardDepartments[0]?.key || ''
+    const template = standardDepartments.find((item) => item.key === nextTemplate) || standardDepartments[0]
+
+    setEditingDepartmentKey(departmentKey)
+    setSelectedCompanyKey(nextCompanyKey)
+    setSelectedBranchKey(department?.branch_key || nextBranches[0]?.branch_key || '')
+    setDepartmentMode(nextMode)
+    setSelectedTemplateKey(nextMode === 'ERP_DEFAULT' ? nextTemplate : '')
+    setDepartmentCode(department?.department_code || template?.code || '')
+    setDepartmentName(department?.department_name || template?.name || '')
+    setDepartmentType(department?.department_type || template?.type || 'OPERATIONS')
+    setDepartmentStatus(department?.department_status || 'ACTIVE')
+    setDepartmentDescription(department?.department_description || template?.description || '')
+    setDepartmentFormOpen(true)
+  }
+
+  function handleDepartmentDialogOpen(open: boolean) {
+    setDepartmentFormOpen(open)
+    if (!open) {
+      setEditingDepartmentKey('')
+      setSelectedCompanyKey('')
+      setSelectedBranchKey('')
+      setDepartmentMode('ERP_DEFAULT')
+      setSelectedTemplateKey('')
+      setDepartmentCode('')
+      setDepartmentName('')
+      setDepartmentType('')
+      setDepartmentStatus('ACTIVE')
+      setDepartmentDescription('')
+    }
+  }
+
+  function handleDepartmentCompanyChange(companyKey: string) {
+    const nextBranches = activeCompanyBranches.filter((branch) => branch.company_key === companyKey)
+    setSelectedCompanyKey(companyKey)
+    setSelectedBranchKey(nextBranches[0]?.branch_key || '')
+  }
+
+  function handleDepartmentModeChange(mode: 'ERP_DEFAULT' | 'CUSTOM') {
+    setDepartmentMode(mode)
+    if (mode === 'ERP_DEFAULT') {
+      applyDepartmentTemplate(selectedTemplateKey || standardDepartments[0]?.key || '')
+      return
+    }
+
+    setSelectedTemplateKey('')
+    if (!editingDepartment) {
+      setDepartmentCode('')
+      setDepartmentName('')
+      setDepartmentType('OPERATIONS')
+      setDepartmentDescription('')
+    }
+  }
+
+  function confirmDepartmentForm() {
+    if (!departmentFormRef.current?.reportValidity()) {
+      return
+    }
+
+    setConfirmation({
+      title: editingDepartment ? 'Confirm department update' : 'Confirm department creation',
+      message: editingDepartment
+        ? `Update department ${editingDepartment.department_code}?`
+        : departmentMode === 'ERP_DEFAULT'
+          ? 'Create this branch department from the selected standard department?'
+          : 'Create this custom department under the selected branch?',
+      confirmLabel: editingDepartment ? 'Update Department' : 'Create Department',
+      onConfirm: () => departmentFormRef.current?.requestSubmit(),
+    })
+  }
+
+  return (
+    <>
+      <ConfirmationModal confirmation={confirmation} onClose={() => setConfirmation(null)} />
+
+      <div className="mb-5">
+        <div>
+          <Badge>Company Management</Badge>
+          <h2 className="mt-2 text-2xl font-bold tracking-normal">Departments</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Use fixed standard departments or add custom departments under company branches.</p>
+        </div>
+      </div>
+
+      <div className="grid min-h-0 gap-4 xl:h-[calc(100svh-15rem)] xl:grid-cols-[minmax(0,8fr)_minmax(320px,4fr)]">
+        <Card className="flex min-w-0 flex-col overflow-hidden">
+          <CardHeader className="border-b">
+            <CardTitle>Departments</CardTitle>
+            <CardDescription>Review saved departments from the project company department database.</CardDescription>
+            <CardAction>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                className={companyIconButtonClass('add')}
+                aria-label="Add new company department"
+                title={activeCompanies.length === 0 ? 'Create a company first' : activeCompanyBranches.length === 0 ? 'Create a company branch first' : 'Add new company department'}
+                disabled={activeCompanies.length === 0 || activeCompanyBranches.length === 0}
+                onClick={() => openDepartmentForm()}
+              >
+                <Plus />
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-0">
+            <FoundationTable headers={['Company', 'Branch', 'Department', 'Type', 'Source', 'Status', 'Actions']} actionAlign="left">
+              {data.companyDepartments.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">No company departments have been created yet.</TableCell>
+                </TableRow>
+              ) : data.companyDepartments.map((department) => (
+                <TableRow key={department.department_key}>
+                  <TableCell><strong>{department.company_name || 'Company unavailable'}</strong></TableCell>
+                  <TableCell><strong>{department.branch_name || 'Branch unavailable'}</strong></TableCell>
+                  <TableCell>
+                    <strong>{department.department_name}</strong>
+                    {department.department_description ? <p className="mt-1 text-xs text-muted-foreground">{department.department_description}</p> : null}
+                  </TableCell>
+                  <TableCell>{department.department_type}</TableCell>
+                  <TableCell><Badge variant="outline">{department.department_source === 'ERP_DEFAULT' ? 'Standard' : 'Custom'}</Badge></TableCell>
+                  <TableCell><Badge>{department.department_status}</Badge></TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap justify-start gap-1.5">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        className={companyIconButtonClass('edit')}
+                        aria-label={`Edit ${department.department_code}`}
+                        title={`Edit ${department.department_code}`}
+                        onClick={() => openDepartmentForm(department.department_key)}
+                      >
+                        <Pencil aria-hidden="true" />
+                      </Button>
+                      <CompanyDepartmentStatusButton department={department} status="INACTIVE" label="Deactivate" icon={<Ban className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      <CompanyDepartmentStatusButton department={department} status="ACTIVE" label="Restore" icon={<RotateCcw className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      <CompanyDepartmentStatusButton department={department} status="ARCHIVED" label="Archive" icon={<Archive className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      <CompanyDepartmentStatusButton department={department} status="DELETED" label="Delete" icon={<Trash2 className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </FoundationTable>
+          </CardContent>
+        </Card>
+
+        <Card className="flex min-w-0 flex-col overflow-hidden">
+          <CardHeader className="border-b">
+            <CardTitle>Summary</CardTitle>
+            <CardDescription>Branch department records available for project ERP workspaces.</CardDescription>
+          </CardHeader>
+          <CardContent className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+            <dl className="grid gap-3">
+              <div className="bg-muted/20 p-3">
+                <dt className="text-xs font-medium text-muted-foreground">Total departments</dt>
+                <dd className="mt-1 text-2xl font-semibold tracking-normal">{departmentSummary.total}</dd>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-emerald-500/10 p-3 text-emerald-700 dark:text-emerald-300">
+                  <dt className="text-xs font-medium">Active</dt>
+                  <dd className="mt-1 text-xl font-semibold">{departmentSummary.active}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Draft</dt>
+                  <dd className="mt-1 text-xl font-semibold">{departmentSummary.draft}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Inactive</dt>
+                  <dd className="mt-1 text-xl font-semibold">{departmentSummary.inactive}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Archived</dt>
+                  <dd className="mt-1 text-xl font-semibold">{departmentSummary.archived}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Standard used</dt>
+                  <dd className="mt-1 text-xl font-semibold">{departmentSummary.fromDefaults}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Custom</dt>
+                  <dd className="mt-1 text-xl font-semibold">{departmentSummary.custom}</dd>
+                </div>
+              </div>
+              <div className="bg-muted/20 p-3">
+                <dt className="text-xs font-medium text-muted-foreground">Fixed standards</dt>
+                <dd className="mt-1 text-xl font-semibold">{departmentSummary.standard}</dd>
+              </div>
+              <div className="grid gap-2 bg-muted/20 p-3">
+                <dt className="text-xs font-medium text-muted-foreground">Standard departments</dt>
+                <dd className="grid max-h-56 gap-2 overflow-y-auto pr-1">
+                  {standardDepartments.map((department) => (
+                    <span key={department.key} className="grid gap-0.5 bg-background/60 p-2">
+                      <span className="text-sm font-medium">{department.name}</span>
+                      <span className="text-xs text-muted-foreground">{department.code} · {department.type}</span>
+                    </span>
+                  ))}
+                </dd>
+              </div>
+              <div className="bg-muted/20 p-3">
+                <dt className="text-xs font-medium text-muted-foreground">Deleted</dt>
+                <dd className="mt-1 text-xl font-semibold">{departmentSummary.deleted}</dd>
+              </div>
+            </dl>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Dialog open={departmentFormOpen} onOpenChange={handleDepartmentDialogOpen}>
+        <DialogContent showCloseButton={false} className="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
+          <DialogHeader className="sticky top-0 z-30 shrink-0 border-b bg-popover px-6 py-5 pr-14">
+            <DialogClose render={<Button type="button" variant="ghost" size="icon-sm" className="absolute right-4 top-4 text-muted-foreground hover:text-foreground" aria-label="Close department form" title="Close department form" />}>
+              <X />
+            </DialogClose>
+            <DialogTitle>{editingDepartment ? 'Edit Department' : 'Create Department'}</DialogTitle>
+            <DialogDescription>Select a company and branch, then save a fixed standard department copy or a custom department.</DialogDescription>
+          </DialogHeader>
+          <form key={departmentFormKey} ref={departmentFormRef} method="post" className="contents">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-6">
+              <div className="grid gap-4">
+                <input type="hidden" name="csrf" value={data.csrf} />
+                <input type="hidden" name="action" value="save_company_department" />
+                <input type="hidden" name="department_key" value={editingDepartment?.department_key || ''} readOnly />
+                <input type="hidden" name="department_source" value={departmentMode} readOnly />
+                <input type="hidden" name="default_department_key" value={departmentMode === 'ERP_DEFAULT' ? selectedTemplateKey : ''} readOnly />
+                <div className="grid gap-2">
+                  <Label>Department Source</Label>
+                  <div className="flex flex-wrap gap-2">
+                    <Button type="button" variant={departmentMode === 'ERP_DEFAULT' ? 'default' : 'outline'} disabled={standardDepartments.length === 0} onClick={() => handleDepartmentModeChange('ERP_DEFAULT')}>Use Standard Department</Button>
+                    <Button type="button" variant={departmentMode === 'CUSTOM' ? 'default' : 'outline'} onClick={() => handleDepartmentModeChange('CUSTOM')}>Create Custom Department</Button>
+                  </div>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_department_company_key">Company</Label>
+                  <select
+                    id="company_department_company_key"
+                    name="company_key"
+                    value={departmentCompanyKey}
+                    onChange={(event) => handleDepartmentCompanyChange(event.target.value)}
+                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+                    required
+                  >
+                    {activeCompanies.length === 0 ? <option value="">Create a company first</option> : null}
+                    {activeCompanies.map((company) => (
+                      <option key={company.company_key} value={company.company_key}>
+                        {company.company_code} - {company.company_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_department_branch_key">Branch</Label>
+                  <select
+                    id="company_department_branch_key"
+                    name="branch_key"
+                    value={departmentBranchKey}
+                    onChange={(event) => setSelectedBranchKey(event.target.value)}
+                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+                    required
+                  >
+                    {filteredBranches.length === 0 ? <option value="">Create a branch for this company first</option> : null}
+                    {filteredBranches.map((branch) => (
+                      <option key={branch.branch_key} value={branch.branch_key}>
+                        {branch.branch_code} - {branch.branch_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {departmentMode === 'ERP_DEFAULT' ? (
+                  <div className="grid gap-2">
+                    <Label htmlFor="company_department_template">Standard Department</Label>
+                    <select
+                      id="company_department_template"
+                      value={selectedTemplateKey}
+                      onChange={(event) => applyDepartmentTemplate(event.target.value)}
+                      className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+                      required
+                    >
+                      {standardDepartments.length === 0 ? <option value="">No standard departments available</option> : null}
+                      {standardDepartments.map((template) => (
+                        <option key={template.key} value={template.key}>
+                          {template.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : null}
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid gap-2">
+                    <Label htmlFor="company_department_code">Department Code</Label>
+                    <Input id="company_department_code" name="department_code" value={departmentCode} onChange={(event) => setDepartmentCode(event.target.value.toUpperCase())} maxLength={40} pattern="[A-Za-z0-9_-]{2,40}" placeholder="HR" required />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="company_department_type">Type</Label>
+                    <Input id="company_department_type" name="department_type" value={departmentType} onChange={(event) => setDepartmentType(event.target.value.toUpperCase())} maxLength={60} pattern="[A-Za-z0-9_ -]{2,60}" placeholder="OPERATIONS" required />
+                  </div>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_department_name">Department Name</Label>
+                  <Input id="company_department_name" name="department_name" value={departmentName} onChange={(event) => setDepartmentName(event.target.value)} maxLength={160} placeholder="Human Resources" required />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_department_status">Status</Label>
+                  <select
+                    id="company_department_status"
+                    name="department_status"
+                    value={departmentStatus}
+                    onChange={(event) => setDepartmentStatus(event.target.value)}
+                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+                  >
+                    <option value="DRAFT">DRAFT</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="INACTIVE">INACTIVE</option>
+                    <option value="ARCHIVED">ARCHIVED</option>
+                    <option value="DELETED">DELETED</option>
+                  </select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_department_description">Description</Label>
+                  <Textarea id="company_department_description" name="department_description" value={departmentDescription} onChange={(event) => setDepartmentDescription(event.target.value)} rows={4} />
+                </div>
+              </div>
+            </div>
+            <DialogFooter className="sticky bottom-0 z-30 m-0 w-full shrink-0 flex-row items-center justify-between gap-3 rounded-none border-t bg-popover px-6 py-4 sm:justify-between">
+              <span className="text-xs text-muted-foreground">{editingDepartment ? 'Updates require confirmation before saving.' : 'New records require confirmation before saving.'}</span>
+              <div className="flex shrink-0 items-center">
+                <Button type="button" onClick={confirmDepartmentForm}>
+                  <Plus className="h-4 w-4" aria-hidden="true" />
+                  {editingDepartment ? 'Save Department' : 'Create Department'}
+                </Button>
+              </div>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
+
+function CompanyDepartmentStatusButton({
+  department,
+  status,
+  label,
+  icon,
+  setConfirmation,
+}: {
+  department: Record<string, string>
+  status: string
+  label: string
+  icon: React.ReactNode
+  setConfirmation: (confirmation: ConfirmationState) => void
+}) {
+  const formRef = React.useRef<HTMLFormElement>(null)
+  const destructive = status === 'DELETED' || status === 'ARCHIVED'
+
+  return (
+    <form ref={formRef} method="post">
+      <input type="hidden" name="csrf" value={data.csrf} />
+      <input type="hidden" name="action" value="set_company_department_status" />
+      <input type="hidden" name="department_key" value={department.department_key} />
+      <input type="hidden" name="department_status" value={status} />
+      <Button
+        type="button"
+        variant="outline"
+        size="icon-sm"
+        className={companyIconButtonClass(companyStatusTone(status))}
+        aria-label={`${label} ${department.department_code}`}
+        title={`${label} ${department.department_code}`}
+        onClick={() => setConfirmation({
+          title: `${label} department`,
+          message: destructive
+            ? `${label} department ${department.department_code}? This changes availability under ${department.branch_name || 'the selected branch'}.`
+            : `${label} department ${department.department_code}?`,
+          confirmLabel: label,
+          destructive,
+          onConfirm: () => formRef.current?.requestSubmit(),
+        })}
+      >
+        {icon}
+      </Button>
+    </form>
+  )
+}
+
+function CompanyAdminSummary({
+  companyAdmins,
+  companyAdminUrl,
+}: {
+  companyAdmins: Array<Record<string, string>>
+  companyAdminUrl: string
+}) {
+  return (
+    <div className="bg-muted/20 p-3">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-sm font-semibold">Company Admin</p>
+        <a className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:underline" href={companyAdminUrl}>
+          Company Dashboard
+          <ExternalLink className="size-3" aria-hidden="true" />
+        </a>
+      </div>
+      <div className="grid gap-2">
+        {companyAdmins.length === 0 ? (
+          <p className="text-xs text-muted-foreground">No company admin has been created yet.</p>
+        ) : companyAdmins.map((admin) => (
+          <div key={admin.admin_key} className="bg-background/50 p-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <strong className="text-sm">{admin.admin_login}</strong>
+              <Badge variant="outline">{admin.admin_status}</Badge>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">{admin.admin_name}</p>
+            <p className="text-xs text-muted-foreground">{admin.admin_email}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function ProjectDetailsDialog({
+  open,
+  onOpenChange,
+  project,
+  company,
+  branch,
+  companyAdmins,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  project: Record<string, string> | null
+  company: Record<string, string>
+  branch: Record<string, string>
+  companyAdmins: Array<Record<string, string>>
+}) {
+  if (!project) {
+    return null
+  }
+
+  const projectDescription = project.project_description || 'No description set.'
+  const createdAt = project.created_at || 'Not recorded'
+  const updatedAt = project.updated_at || 'Not recorded'
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent showCloseButton={false} className="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
+        <DialogHeader className="sticky top-0 z-30 shrink-0 border-b bg-popover px-6 py-5 pr-14">
+          <DialogClose render={<Button type="button" variant="ghost" size="icon-sm" className="absolute right-4 top-4 text-muted-foreground hover:text-foreground" aria-label="Close project details" title="Close project details" />}>
+            <X aria-hidden="true" />
+          </DialogClose>
+          <DialogTitle>{project.project_name}</DialogTitle>
+          <DialogDescription>Read-only project details for {branch.branch_name}.</DialogDescription>
+        </DialogHeader>
+
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-6">
+          <div className="grid gap-4">
+            <div className="bg-muted/20 p-3">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold">{project.project_name}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{project.project_code || 'No project code'}</p>
+                </div>
+                <Badge>{project.project_status}</Badge>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">{projectDescription}</p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="bg-muted/20 p-3">
+                <p className="text-xs font-medium text-muted-foreground">Company</p>
+                <p className="mt-1 text-sm font-semibold">{company.company_name}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{company.company_code || 'No company code'}</p>
+              </div>
+              <div className="bg-muted/20 p-3">
+                <p className="text-xs font-medium text-muted-foreground">Branch</p>
+                <p className="mt-1 text-sm font-semibold">{branch.branch_name}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{branch.branch_code || 'No branch code'}</p>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="bg-muted/20 p-3">
+                <p className="text-xs font-medium text-muted-foreground">Created</p>
+                <p className="mt-1 text-sm font-semibold">{createdAt}</p>
+              </div>
+              <div className="bg-muted/20 p-3">
+                <p className="text-xs font-medium text-muted-foreground">Updated</p>
+                <p className="mt-1 text-sm font-semibold">{updatedAt}</p>
+              </div>
+            </div>
+
+            <div className="bg-muted/20 p-3">
+              <p className="text-sm font-semibold">Company Admin</p>
+              <div className="mt-2 grid gap-2">
+                {companyAdmins.length === 0 ? (
+                  <p className="text-xs text-muted-foreground">No company admin has been created yet.</p>
+                ) : companyAdmins.map((admin) => (
+                  <div key={admin.admin_key} className="bg-background/50 p-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <strong className="text-sm">{admin.admin_login}</strong>
+                      <Badge variant="outline">{admin.admin_status}</Badge>
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">{admin.admin_name}</p>
+                    <p className="text-xs text-muted-foreground">{admin.admin_email}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="bg-muted/20 p-3">
+                <p className="text-sm font-semibold">Project Users</p>
+                <p className="mt-1 text-xs leading-5 text-muted-foreground">Project users will be assigned inside the Company Dashboard.</p>
+              </div>
+              <div className="bg-muted/20 p-3">
+                <p className="text-sm font-semibold">Project Roles</p>
+                <p className="mt-1 text-xs leading-5 text-muted-foreground">Project roles and access rules will be managed inside the Company Dashboard.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <DialogFooter className="sticky bottom-0 z-30 m-0 w-full shrink-0 rounded-none border-t bg-popover px-6 py-4 sm:justify-start">
+          <p className="text-xs text-muted-foreground">Read-only project details. Use the header X to close.</p>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function ProjectCompanyOverviewView({
+  companyKey,
+  selectedBranchKey,
+  onBranchSelect,
+}: {
+  companyKey: string
+  selectedBranchKey: string
+  onBranchSelect: (branchKey: string) => void
+}) {
+  const company = data.companies.find((item) => item.company_key === companyKey && item.company_status === 'ACTIVE')
+  const branches = data.companyBranches.filter((branch) => branch.company_key === companyKey && branch.branch_status !== 'DELETED')
+  const branchKeys = new Set(branches.map((branch) => branch.branch_key))
+  const projects = data.companyProjects.filter((project) => (
+    project.company_key === companyKey
+    && branchKeys.has(project.branch_key)
+    && project.project_status !== 'DELETED'
+  ))
+  const projectsByBranch = projects.reduce<Record<string, Array<Record<string, string>>>>((groups, project) => {
+    groups[project.branch_key] = groups[project.branch_key] || []
+    groups[project.branch_key].push(project)
+    return groups
+  }, {})
+  const companyAdmins = data.companyAdmins.filter((admin) => admin.company_key === companyKey && admin.admin_status !== 'DELETED')
+  const selectedBranch = branches.find((branch) => branch.branch_key === selectedBranchKey) || null
+  const selectedBranchProjects = selectedBranch ? (projectsByBranch[selectedBranch.branch_key] || []) : []
+  const activeBranchCount = branches.filter((branch) => branch.branch_status === 'ACTIVE').length
+  const activeProjectCount = projects.filter((project) => project.project_status === 'ACTIVE').length
+  const companySlug = company?.company_code === 'YE' ? 'yovel-east' : (company?.company_code || company?.company_name || 'company').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  const companyAdminUrl = projectUrl(`company/${companySlug}/admin/`)
+  const [projectDetailKey, setProjectDetailKey] = React.useState('')
+  const projectDetail = selectedBranchProjects.find((project) => project.project_key === projectDetailKey) || null
+  const handleProjectDetailsOpenChange = React.useCallback((open: boolean) => {
+    if (!open) {
+      setProjectDetailKey('')
+    }
+  }, [])
+
+  React.useEffect(() => {
+    if (projectDetailKey !== '' && !projectDetail) {
+      setProjectDetailKey('')
+    }
+  }, [projectDetailKey, projectDetail])
+
+  if (!company) {
+    return (
+      <DashboardPanel title="Company unavailable" description="Select an active company from the Projects menu.">
+        <div className={platformPanelBodyClass}>
+          <p className="text-sm text-muted-foreground">This company is not active or is no longer available.</p>
+        </div>
+      </DashboardPanel>
+    )
+  }
+
+  return (
+    <div className="flex min-h-0 flex-1 flex-col gap-4">
+      <div>
+        <Badge>Projects</Badge>
+        <h2 className="mt-2 text-2xl font-bold tracking-normal">{company.company_name}</h2>
+        <p className="mt-1 text-sm text-muted-foreground">Review company branches, admin URL, project counts, and branch-level project context.</p>
+      </div>
+
+      <div className={platformTwoPanelClass}>
+        <DashboardPanel
+          title={selectedBranch ? `${selectedBranch.branch_name} Projects` : 'Company'}
+          description={selectedBranch ? 'Projects inside the selected branch.' : 'Company branch access for the selected company. Select a branch to review its projects.'}
+          className="xl:min-h-0"
+        >
+          <div className={platformTableBodyClass}>
+            {selectedBranch ? (
+              <FoundationTable headers={['Project', 'Status']}>
+                {selectedBranchProjects.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={2} className="py-10 text-center text-muted-foreground">No projects are connected to this branch yet.</TableCell>
+                  </TableRow>
+                ) : selectedBranchProjects.map((project) => (
+                  <TableRow key={project.project_key}>
+                    <TableCell>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-2 text-left font-semibold hover:underline"
+                        aria-label={`View details for ${project.project_name}`}
+                        title={`View details for ${project.project_name}`}
+                        onClick={() => setProjectDetailKey(project.project_key)}
+                      >
+                        <Eye className="size-3.5" aria-hidden="true" />
+                        <span>{project.project_name}</span>
+                      </button>
+                      {project.project_description ? <p className="mt-1 text-xs leading-5 text-muted-foreground">{project.project_description}</p> : null}
+                    </TableCell>
+                    <TableCell><Badge>{project.project_status}</Badge></TableCell>
+                  </TableRow>
+                ))}
+              </FoundationTable>
+            ) : (
+              <FoundationTable headers={['Company', 'URL Link', 'Branch', 'Status']}>
+                {branches.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="py-10 text-center text-muted-foreground">No branches are connected to this company.</TableCell>
+                  </TableRow>
+                ) : branches.map((branch) => {
+                  return (
+                    <TableRow key={branch.branch_key}>
+                      <TableCell>
+                        <div className="font-semibold">{company.company_name}</div>
+                        {company.company_code ? <p className="mt-1 text-xs text-muted-foreground">{company.company_code}</p> : null}
+                      </TableCell>
+                      <TableCell>
+                        <a className="inline-flex items-center gap-2 text-sm font-medium hover:underline" href={companyAdminUrl}>
+                          Company Admin
+                          <ExternalLink className="size-3.5" aria-hidden="true" />
+                        </a>
+                      </TableCell>
+                      <TableCell>
+                        <button
+                          type="button"
+                          className="text-left font-semibold hover:underline"
+                          onClick={() => onBranchSelect(branch.branch_key)}
+                        >
+                          {branch.branch_name}
+                        </button>
+                        {branch.branch_description ? <p className="mt-1 text-xs text-muted-foreground">{branch.branch_description}</p> : null}
+                      </TableCell>
+                      <TableCell><Badge>{branch.branch_status}</Badge></TableCell>
+                    </TableRow>
+                  )
+                })}
+              </FoundationTable>
+            )}
+          </div>
+        </DashboardPanel>
+
+        <DashboardPanel title={selectedBranch ? selectedBranch.branch_name : 'Company Admin'} description={selectedBranch ? 'Admin, user, and role context for the selected branch.' : `Company-level administrator context for ${company.company_name}.`} className="xl:min-h-0">
+          <div className={platformPanelBodyClass}>
+            {!selectedBranch ? (
+              <div className="grid gap-3">
+                <div className="bg-muted/20 p-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <p className="text-sm font-semibold">{company.company_name}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">Company overview</p>
+                    </div>
+                    <Badge>{company.company_status}</Badge>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <CompanyManagementCountBadge value={activeBranchCount} singular="Branch" plural="Branches" />
+                    <CompanyManagementCountBadge value={activeProjectCount} singular="Project" plural="Projects" />
+                  </div>
+                </div>
+
+                <CompanyAdminSummary companyAdmins={companyAdmins} companyAdminUrl={companyAdminUrl} />
+
+                <div className="bg-muted/20 p-3">
+                  <p className="text-sm font-semibold">Admin Flow</p>
+                  <p className="mt-1 text-xs leading-5 text-muted-foreground">Administrator creates the company admin. The company admin then creates company users, assigns roles, and manages branch/project access inside the Company Dashboard.</p>
+                </div>
+              </div>
+            ) : (
+              <div className="grid gap-3">
+                <div className="bg-muted/20 p-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <p className="text-sm font-semibold">{selectedBranch.branch_name}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{company.company_name}</p>
+                    </div>
+                    <Badge>{selectedBranch.branch_status}</Badge>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <CompanyManagementCountBadge value={selectedBranchProjects.length} singular="Project" plural="Projects" />
+                  </div>
+                </div>
+
+                <CompanyAdminSummary companyAdmins={companyAdmins} companyAdminUrl={companyAdminUrl} />
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="bg-muted/20 p-3">
+                    <p className="text-sm font-semibold">Company Users</p>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground">Company users will be created by the company admin inside the Company Dashboard.</p>
+                  </div>
+                  <div className="bg-muted/20 p-3">
+                    <p className="text-sm font-semibold">Company Roles</p>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground">Company roles and access rules will be managed inside the Company Dashboard.</p>
+                  </div>
+                </div>
+
+                <div className="bg-muted/20 p-3">
+                  <p className="text-sm font-semibold">Admin Flow</p>
+                  <p className="mt-1 text-xs leading-5 text-muted-foreground">Administrator creates the company admin. The company admin then creates company users, assigns roles, and manages branch/project access inside the Company Dashboard.</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </DashboardPanel>
+      </div>
+
+      {selectedBranch ? (
+        <ProjectDetailsDialog
+          open={projectDetail !== null}
+          onOpenChange={handleProjectDetailsOpenChange}
+          project={projectDetail}
+          company={company}
+          branch={selectedBranch}
+          companyAdmins={companyAdmins}
+        />
+      ) : null}
+    </div>
+  )
+}
+
 function ProjectStatusButton({
   project,
   status,
@@ -2070,10 +3906,10 @@ function AssignmentCheckboxGrid({
   return (
     <div className="grid gap-2">
       <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search assignments" />
-      <div className="grid max-h-[28rem] gap-2 overflow-y-auto rounded-md border border-input bg-background p-3 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid max-h-[28rem] gap-2 overflow-y-auto bg-muted/20 p-3 sm:grid-cols-2 xl:grid-cols-3">
         {filteredOptions.length === 0 && <p className="text-sm text-muted-foreground">{emptyText}</p>}
         {filteredOptions.map((option) => (
-          <label key={option[valueKey]} className="flex min-h-16 items-start gap-2 rounded-md border border-border bg-card p-3 text-sm hover:bg-muted">
+          <label key={option[valueKey]} className="flex min-h-16 items-start gap-2 bg-background/70 p-3 text-sm hover:bg-muted">
             <input
               type="checkbox"
               name={name}
@@ -2189,10 +4025,10 @@ function UserCrudView() {
           </div>
         </DashboardPanel>
       ) : (
-      <div className="grid gap-4 lg:grid-cols-12">
-        <div className="grid gap-4 lg:col-span-3">
-          <DashboardPanel title={editingUser ? 'Edit User' : 'Create User'} description="Assign roles, groups, branches, and projects from the same user record.">
-            <div className="p-4">
+      <div className={platformTwoPanelClass}>
+        <div className={cn(platformRightPanelStackClass, 'xl:order-2')}>
+          <DashboardPanel title={editingUser ? 'Edit User' : 'Create User'} description="Assign roles, groups, branches, and projects from the same user record." className="xl:min-h-0">
+            <div className={platformPanelBodyClass}>
               <form key={editingUser?.user_key || 'new-user'} ref={userFormRef} method="post" className="grid gap-4">
                 <input type="hidden" name="csrf" value={data.csrf} />
                 <input type="hidden" name="action" value="save_user" />
@@ -2260,8 +4096,8 @@ function UserCrudView() {
           </DashboardPanel>
 
           {editingUser && (
-            <DashboardPanel title="Reset Password" description="Sets a new password and flags the password as not yet changed by the user.">
-              <div className="p-4">
+            <DashboardPanel title="Reset Password" description="Sets a new password and flags the password as not yet changed by the user." className="xl:min-h-0">
+              <div className={platformPanelBodyClass}>
                 <form ref={resetFormRef} method="post" className="grid gap-4">
                   <input type="hidden" name="csrf" value={data.csrf} />
                   <input type="hidden" name="action" value="reset_user_password" />
@@ -2290,10 +4126,10 @@ function UserCrudView() {
           )}
         </div>
 
-        <div className="grid gap-4 lg:col-span-9">
-          <DashboardPanel title="Users" description="Manage user account state and access assignments.">
-            <div className="overflow-auto">
-            <FoundationTable headers={['User', 'Status', 'Assignments', 'Last Login', 'Actions']}>
+        <div className={cn(platformLeftPanelStackClass, 'xl:order-1')}>
+          <DashboardPanel title="Users" description="Manage user account state and access assignments." className="xl:min-h-0">
+            <div className={platformTableBodyClass}>
+            <FoundationTable headers={['User', 'Status', 'Assignments', 'Last Login', 'Actions']} actionAlign="left">
               {data.users.map((user) => (
                 <TableRow key={user.user_key}>
                   <TableCell>
@@ -2331,8 +4167,8 @@ function UserCrudView() {
             </div>
           </DashboardPanel>
 
-          <DashboardPanel title="Login History" description={editingUser ? `Recent activity for ${editingUser.user_login}.` : 'Select a user to focus this table.'}>
-            <div className="overflow-auto">
+          <DashboardPanel title="Login History" description={editingUser ? `Recent activity for ${editingUser.user_login}.` : 'Select a user to focus this table.'} className="xl:min-h-0">
+            <div className={platformTableBodyClass}>
             <FoundationTable headers={['Time', 'Login', 'Status', 'IP', 'Reason']}>
               {loginHistory.map((entry) => (
                 <TableRow key={entry.login_key || `${entry.created_at}-${entry.user_login}`}>
@@ -2468,10 +4304,10 @@ function GroupCrudView() {
           </div>
         </DashboardPanel>
       ) : (
-      <div className="grid gap-4 lg:grid-cols-12">
-        <div className="lg:col-span-3">
-          <DashboardPanel title={editingGroup ? 'Edit Group' : 'Create Group'} description="Group membership is stored in the user-group assignment table.">
-            <div className="p-4">
+      <div className={platformTwoPanelClass}>
+        <div className={cn(platformRightPanelStackClass, 'xl:order-2')}>
+          <DashboardPanel title={editingGroup ? 'Edit Group' : 'Create Group'} description="Group membership is stored in the user-group assignment table." className="xl:min-h-0">
+            <div className={platformPanelBodyClass}>
             <form key={editingGroup?.group_key || 'new-group'} ref={groupFormRef} method="post" className="grid gap-4">
               <input type="hidden" name="csrf" value={data.csrf} />
               <input type="hidden" name="action" value="save_group" />
@@ -2537,10 +4373,10 @@ function GroupCrudView() {
           </DashboardPanel>
         </div>
 
-        <div className="lg:col-span-9">
-          <DashboardPanel title="Groups" description="Manage groups and membership without leaving the Groups side-menu view.">
-            <div className="overflow-auto">
-          <FoundationTable headers={['Group', 'Status', 'Members', 'Actions']}>
+        <div className={cn(platformLeftPanelStackClass, 'xl:order-1')}>
+          <DashboardPanel title="Groups" description="Manage groups and membership without leaving the Groups side-menu view." className="xl:min-h-0">
+            <div className={platformTableBodyClass}>
+          <FoundationTable headers={['Group', 'Status', 'Members', 'Actions']} actionAlign="left">
             {data.groups.map((group) => (
               <TableRow key={group.group_key}>
                 <TableCell>
@@ -2641,9 +4477,9 @@ function PermissionScopePicker({
   return (
     <div className="grid gap-2">
       <Label>Permissions by Scope</Label>
-      <div className="mt-2 grid max-h-[32rem] gap-3 overflow-y-auto rounded-md border border-input bg-background p-3">
+      <div className="mt-2 grid max-h-[32rem] gap-3 overflow-y-auto bg-muted/20 p-3">
         {Object.entries(grouped).map(([scope, scopePermissions]) => (
-          <div key={scope} className="rounded-md border border-border bg-card p-3">
+          <div key={scope} className="bg-background/70 p-3">
             <div className="mb-2 flex items-center justify-between gap-2">
               <strong className="text-sm">{scope}</strong>
               <Badge>{scopePermissions.length} available</Badge>
@@ -2743,10 +4579,10 @@ function RoleCrudView() {
           </div>
         </DashboardPanel>
       ) : (
-      <div className="grid gap-4 lg:grid-cols-12">
-        <div className="lg:col-span-3">
-          <DashboardPanel title={editingRole ? 'Edit Role' : 'Create Role'} description="Permission assignment stays backend-owned through role permission keys.">
-            <div className="p-4">
+      <div className={platformTwoPanelClass}>
+        <div className={cn(platformRightPanelStackClass, 'xl:order-2')}>
+          <DashboardPanel title={editingRole ? 'Edit Role' : 'Create Role'} description="Permission assignment stays backend-owned through role permission keys." className="xl:min-h-0">
+            <div className={platformPanelBodyClass}>
             <form key={editingRole?.role_key || 'new-role'} ref={roleFormRef} method="post" className="grid gap-4">
               <input type="hidden" name="csrf" value={data.csrf} />
               <input type="hidden" name="action" value="save_role" />
@@ -2804,10 +4640,10 @@ function RoleCrudView() {
           </DashboardPanel>
         </div>
 
-        <div className="lg:col-span-9">
-          <DashboardPanel title="Roles" description="Manage roles from the Roles side-menu view without opening the future permission matrix target.">
-            <div className="overflow-auto">
-          <FoundationTable headers={['Role', 'Status', 'Permissions', 'Actions']}>
+        <div className={cn(platformLeftPanelStackClass, 'xl:order-1')}>
+          <DashboardPanel title="Roles" description="Manage roles from the Roles side-menu view without opening the future permission matrix target." className="xl:min-h-0">
+            <div className={platformTableBodyClass}>
+          <FoundationTable headers={['Role', 'Status', 'Permissions', 'Actions']} actionAlign="left">
             {data.roles.map((role) => (
               <TableRow key={role.role_key}>
                 <TableCell>
@@ -2914,104 +4750,146 @@ function PermissionMatrixView() {
         </div>
       </div>
 
-      <Tabs defaultValue="matrix" className="flex flex-col gap-4">
+      <Tabs defaultValue="matrix" className="flex min-h-0 flex-col gap-4">
         <div className="border-b pb-3">
           <TabsList>
             <TabsTrigger value="matrix">Matrix</TabsTrigger>
             <TabsTrigger value="permissions">Permissions</TabsTrigger>
           </TabsList>
         </div>
-        <TabsContent value="matrix" className="m-0">
-          <DashboardPanel title="Role-Permission Matrix" description="Rows are permission scopes and codes. Columns are active roles. Save replaces only role-permission assignments for listed roles.">
-            <div className="p-4">
-              <form ref={matrixFormRef} method="post" className="flex flex-col gap-4">
-                <input type="hidden" name="csrf" value={data.csrf} />
-                <input type="hidden" name="action" value="save_permission_matrix" />
-                {activeRoles.map((role) => <input key={role.role_key} type="hidden" name="matrix_role_keys[]" value={role.role_key} />)}
-                {matrixPermissions.map((permission) => <input key={permission.permission_key} type="hidden" name="matrix_permission_keys[]" value={permission.permission_key} />)}
-                <div className="overflow-x-auto rounded-lg border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="min-w-72">Permission</TableHead>
-                        {activeRoles.map((role) => (
-                          <TableHead key={role.role_key} className="min-w-40 text-center">{role.role_name}</TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {Object.entries(groupedPermissions).map(([scope, permissions]) => (
-                        <React.Fragment key={scope}>
-                          <TableRow>
-                            <TableCell colSpan={activeRoles.length + 1} className="bg-muted font-medium">{scope}</TableCell>
-                          </TableRow>
-                          {permissions.map((permission) => (
-                            <TableRow key={permission.permission_key}>
-                              <TableCell>
-                                <strong>{permission.permission_code}</strong>
-                                <p className="text-muted-foreground">{permission.permission_name}</p>
-                                <Badge variant={permission.permission_status === 'ACTIVE' ? 'default' : 'secondary'}>{permission.permission_status}</Badge>
-                              </TableCell>
-                              {activeRoles.map((role) => (
-                                <TableCell key={`${role.role_key}-${permission.permission_key}`} className="text-center">
-                                  <label className="inline-flex min-h-9 items-center justify-center">
-                                    <input
-                                      type="checkbox"
-                                      name={`role_permissions[${role.role_key}][]`}
-                                      value={permission.permission_key}
-                                      defaultChecked={csvToArray(permission.role_keys).includes(role.role_key)}
-                                      className="size-4 rounded border-input"
-                                    />
-                                    <span className="sr-only">{role.role_name} can use {permission.permission_code}</span>
-                                  </label>
-                                </TableCell>
-                              ))}
-                            </TableRow>
+        <TabsContent value="matrix" className="m-0 min-h-0">
+          <div className={platformTwoPanelClass}>
+            <DashboardPanel title="Role-Permission Matrix" description="Rows are permission scopes and codes. Columns are active roles. Save replaces only role-permission assignments for listed roles." className="xl:min-h-0">
+              <div className={platformPanelBodyClass}>
+                <form ref={matrixFormRef} method="post" className="flex min-h-full flex-col gap-4">
+                  <input type="hidden" name="csrf" value={data.csrf} />
+                  <input type="hidden" name="action" value="save_permission_matrix" />
+                  {activeRoles.map((role) => <input key={role.role_key} type="hidden" name="matrix_role_keys[]" value={role.role_key} />)}
+                  {matrixPermissions.map((permission) => <input key={permission.permission_key} type="hidden" name="matrix_permission_keys[]" value={permission.permission_key} />)}
+                  <div className="min-h-0 flex-1 overflow-auto overscroll-contain">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="min-w-72">Permission</TableHead>
+                          {activeRoles.map((role) => (
+                            <TableHead key={role.role_key} className="min-w-40 text-center">{role.role_name}</TableHead>
                           ))}
-                        </React.Fragment>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-                <Button
-                  type="button"
-                  onClick={() => setConfirmation({
-                    title: 'Confirm permission matrix update',
-                    message: 'Save this role-permission matrix? This replaces permission assignments for the listed roles.',
-                    confirmLabel: 'Save Matrix',
-                    onConfirm: () => matrixFormRef.current?.requestSubmit(),
-                  })}
-                >
-                  Save Matrix
-                </Button>
-              </form>
-            </div>
-          </DashboardPanel>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {Object.entries(groupedPermissions).map(([scope, permissions]) => (
+                          <React.Fragment key={scope}>
+                            <TableRow>
+                              <TableCell colSpan={activeRoles.length + 1} className="bg-muted font-medium">{scope}</TableCell>
+                            </TableRow>
+                            {permissions.map((permission) => (
+                              <TableRow key={permission.permission_key}>
+                                <TableCell>
+                                  <strong>{permission.permission_code}</strong>
+                                  <p className="text-muted-foreground">{permission.permission_name}</p>
+                                  <Badge variant={permission.permission_status === 'ACTIVE' ? 'default' : 'secondary'}>{permission.permission_status}</Badge>
+                                </TableCell>
+                                {activeRoles.map((role) => (
+                                  <TableCell key={`${role.role_key}-${permission.permission_key}`} className="text-center">
+                                    <label className="inline-flex min-h-9 items-center justify-center">
+                                      <input
+                                        type="checkbox"
+                                        name={`role_permissions[${role.role_key}][]`}
+                                        value={permission.permission_key}
+                                        defaultChecked={csvToArray(permission.role_keys).includes(role.role_key)}
+                                        className="size-4 rounded border-input"
+                                      />
+                                      <span className="sr-only">{role.role_name} can use {permission.permission_code}</span>
+                                    </label>
+                                  </TableCell>
+                                ))}
+                              </TableRow>
+                            ))}
+                          </React.Fragment>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={() => setConfirmation({
+                      title: 'Confirm permission matrix update',
+                      message: 'Save this role-permission matrix? This replaces permission assignments for the listed roles.',
+                      confirmLabel: 'Save Matrix',
+                      onConfirm: () => matrixFormRef.current?.requestSubmit(),
+                    })}
+                  >
+                    Save Matrix
+                  </Button>
+                </form>
+              </div>
+            </DashboardPanel>
+
+            <DashboardPanel title="Matrix Summary" description="Permission matrix helper details." className="xl:min-h-0">
+              <div className={platformPanelBodyClass}>
+                <dl className="grid gap-3">
+                  <div className="bg-muted/20 p-3">
+                    <dt className="text-xs font-medium text-muted-foreground">Active roles</dt>
+                    <dd className="mt-1 text-2xl font-semibold tracking-normal">{activeRoles.length}</dd>
+                  </div>
+                  <div className="bg-muted/20 p-3">
+                    <dt className="text-xs font-medium text-muted-foreground">Permissions</dt>
+                    <dd className="mt-1 text-2xl font-semibold tracking-normal">{matrixPermissions.length}</dd>
+                  </div>
+                  <div className="bg-muted/20 p-3">
+                    <dt className="text-xs font-medium text-muted-foreground">Scopes</dt>
+                    <dd className="mt-1 text-2xl font-semibold tracking-normal">{Object.keys(groupedPermissions).length}</dd>
+                  </div>
+                </dl>
+              </div>
+            </DashboardPanel>
+          </div>
         </TabsContent>
-        <TabsContent value="permissions" className="m-0">
-          <DashboardPanel title="Permissions by Scope" description="Toggle permission availability without changing permission codes or building role CRUD.">
-            <div className="overflow-auto">
-              <FoundationTable headers={['Scope', 'Permission', 'Status', 'Mapped Roles', 'Actions']}>
-                {matrixPermissions.map((permission) => (
-                  <TableRow key={permission.permission_key}>
-                    <TableCell><Badge variant="secondary">{permission.permission_scope}</Badge></TableCell>
-                    <TableCell>
-                      <strong>{permission.permission_code}</strong>
-                      <p className="text-muted-foreground">{permission.permission_name}</p>
-                    </TableCell>
-                    <TableCell><Badge variant={permission.permission_status === 'ACTIVE' ? 'default' : 'secondary'}>{permission.permission_status}</Badge></TableCell>
-                    <TableCell>{permission.role_names || 'No roles mapped'}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-2">
-                        <PermissionStatusButton permission={permission} status="ACTIVE" label="Activate" setConfirmation={setConfirmation} />
-                        <PermissionStatusButton permission={permission} status="INACTIVE" label="Deactivate" setConfirmation={setConfirmation} />
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </FoundationTable>
-            </div>
-          </DashboardPanel>
+        <TabsContent value="permissions" className="m-0 min-h-0">
+          <div className={platformTwoPanelClass}>
+            <DashboardPanel title="Permissions by Scope" description="Toggle permission availability without changing permission codes or building role CRUD." className="xl:min-h-0">
+              <div className={platformTableBodyClass}>
+                <FoundationTable headers={['Scope', 'Permission', 'Status', 'Mapped Roles', 'Actions']} actionAlign="left">
+                  {matrixPermissions.map((permission) => (
+                    <TableRow key={permission.permission_key}>
+                      <TableCell><Badge variant="secondary">{permission.permission_scope}</Badge></TableCell>
+                      <TableCell>
+                        <strong>{permission.permission_code}</strong>
+                        <p className="text-muted-foreground">{permission.permission_name}</p>
+                      </TableCell>
+                      <TableCell><Badge variant={permission.permission_status === 'ACTIVE' ? 'default' : 'secondary'}>{permission.permission_status}</Badge></TableCell>
+                      <TableCell>{permission.role_names || 'No roles mapped'}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-2">
+                          <PermissionStatusButton permission={permission} status="ACTIVE" label="Activate" setConfirmation={setConfirmation} />
+                          <PermissionStatusButton permission={permission} status="INACTIVE" label="Deactivate" setConfirmation={setConfirmation} />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </FoundationTable>
+              </div>
+            </DashboardPanel>
+
+            <DashboardPanel title="Permission Summary" description="Scope and role coverage for the permission list." className="xl:min-h-0">
+              <div className={platformPanelBodyClass}>
+                <dl className="grid gap-3">
+                  <div className="bg-muted/20 p-3">
+                    <dt className="text-xs font-medium text-muted-foreground">Permissions</dt>
+                    <dd className="mt-1 text-2xl font-semibold tracking-normal">{matrixPermissions.length}</dd>
+                  </div>
+                  <div className="bg-muted/20 p-3">
+                    <dt className="text-xs font-medium text-muted-foreground">Scopes</dt>
+                    <dd className="mt-1 text-2xl font-semibold tracking-normal">{Object.keys(groupedPermissions).length}</dd>
+                  </div>
+                  <div className="bg-muted/20 p-3">
+                    <dt className="text-xs font-medium text-muted-foreground">Active roles</dt>
+                    <dd className="mt-1 text-2xl font-semibold tracking-normal">{activeRoles.length}</dd>
+                  </div>
+                </dl>
+              </div>
+            </DashboardPanel>
+          </div>
         </TabsContent>
       </Tabs>
     </>
@@ -4540,7 +6418,7 @@ function PortalWorkspace({ theme, onThemeToggle }: { theme: AdminThemeMode; onTh
         <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-7xl flex-col gap-5">
           <header className="flex flex-wrap items-center justify-between gap-3 border-b pb-4">
             <div className="flex items-center gap-3"><div className="flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground"><Users /></div><div><p className="font-semibold">{portalData?.softwareName || 'BuilderX'}</p><p className="text-xs text-muted-foreground">Family Member User Portal</p></div></div>
-            <div className="flex flex-wrap items-center gap-2"><a className={buttonClassName({ variant: 'outline', size: 'sm' })} href={portalHref('phases/?view=flow&ui_ux_flow=user&ui_ux_section=body')}><Sparkles data-icon="inline-start" />UI - UX Flow</a>{portalData?.isAdmin ? <a className={buttonClassName({ variant: 'outline', size: 'sm' })} href={portalHref('administrator/?tab=family-reports')}><FileBarChart data-icon="inline-start" />Admin Reports</a> : null}<SharinganHeaderToggle /><Tooltip><TooltipTrigger render={<Button type="button" variant="outline" size="icon-sm" aria-label={nextThemeLabel} onClick={onThemeToggle} />}>{theme === 'dark' ? <Sun /> : <Moon />}</TooltipTrigger><TooltipContent>{nextThemeLabel}</TooltipContent></Tooltip><form method="post" action={portalHref('')}><input type="hidden" name="csrf" value={portalData?.csrf || ''} /><input type="hidden" name="action" value="logout_portal" /><Button type="submit" variant="ghost" size="sm">Sign Out</Button></form></div>
+            <div className="flex flex-wrap items-center gap-2"><a className={buttonClassName({ variant: 'outline', size: 'sm' })} href={portalHref('phases/?view=flow&ui_ux_flow=user&ui_ux_section=body')}><Sparkles data-icon="inline-start" />UI - UX Flow</a><SharinganHeaderToggle /><Tooltip><TooltipTrigger render={<Button type="button" variant="outline" size="icon-sm" aria-label={nextThemeLabel} onClick={onThemeToggle} />}>{theme === 'dark' ? <Sun /> : <Moon />}</TooltipTrigger><TooltipContent>{nextThemeLabel}</TooltipContent></Tooltip><form method="post" action={portalHref('')}><input type="hidden" name="csrf" value={portalData?.csrf || ''} /><input type="hidden" name="action" value="logout_portal" /><Button type="submit" variant="ghost" size="sm">Sign Out</Button></form></div>
           </header>
           {portalData?.flash ? <div className="rounded-md border border-primary/30 bg-primary/5 px-3 py-2 text-sm">{portalData.flash.message}</div> : null}
           <AiRephraseCard />
@@ -25108,14 +26986,16 @@ function AdminApp() {
   const configuredDefaultView = settingValue('admin_default_tab', 'dashboard')
   const urlParams = new URLSearchParams(window.location.search)
   const hasExplicitTab = urlParams.has('tab')
+  const requestedProjectCompanyKey = urlParams.get('company_key') || ''
+  const requestedProjectCompanyBranchKey = urlParams.get('branch_key') || ''
   const savedAdminView = window.localStorage.getItem('builderx:administrator:lastTab') || ''
   const requestedInitialView = hasExplicitTab
-    ? data.initialTab
-    : (adminViewKeys.includes(savedAdminView) ? savedAdminView : configuredDefaultView)
-  const initialView = adminViewKeys.includes(requestedInitialView) ? requestedInitialView : 'dashboard'
+    ? (data.initialTab === projectCompanyTabKey ? projectCompanyViewKey(requestedProjectCompanyKey, requestedProjectCompanyBranchKey) : data.initialTab)
+    : (isKnownAdminView(savedAdminView) ? savedAdminView : configuredDefaultView)
+  const initialView = isKnownAdminView(requestedInitialView) ? requestedInitialView : 'dashboard'
   const [activeView, setActiveView] = React.useState(initialView)
   const handleViewChange = React.useCallback((view: string) => {
-    if (!adminViewKeys.includes(view)) {
+    if (!isKnownAdminView(view)) {
       return
     }
 
@@ -25123,7 +27003,21 @@ function AdminApp() {
     window.localStorage.setItem('builderx:administrator:lastTab', view)
 
     const nextUrl = new URL(window.location.href)
-    nextUrl.searchParams.set('tab', view)
+    const projectCompanyKey = projectCompanyKeyFromView(view)
+    const projectCompanyBranchKey = projectCompanyBranchKeyFromView(view)
+    if (projectCompanyKey) {
+      nextUrl.searchParams.set('tab', projectCompanyTabKey)
+      nextUrl.searchParams.set('company_key', projectCompanyKey)
+      if (projectCompanyBranchKey) {
+        nextUrl.searchParams.set('branch_key', projectCompanyBranchKey)
+      } else {
+        nextUrl.searchParams.delete('branch_key')
+      }
+    } else {
+      nextUrl.searchParams.set('tab', view)
+      nextUrl.searchParams.delete('company_key')
+      nextUrl.searchParams.delete('branch_key')
+    }
     window.history.pushState({ tab: view }, '', `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`)
   }, [])
 
@@ -25133,9 +27027,11 @@ function AdminApp() {
 
   React.useEffect(() => {
     const syncFromBrowserNavigation = () => {
-      const tab = new URLSearchParams(window.location.search).get('tab') || ''
-      if (adminViewKeys.includes(tab)) {
-        setActiveView(tab)
+      const params = new URLSearchParams(window.location.search)
+      const tab = params.get('tab') || ''
+      const nextView = tab === projectCompanyTabKey ? projectCompanyViewKey(params.get('company_key') || '', params.get('branch_key') || '') : tab
+      if (isKnownAdminView(nextView)) {
+        setActiveView(nextView)
       }
     }
 
@@ -25153,30 +27049,43 @@ function AdminApp() {
     )
   }
 
-  const viewTitle = activeView === 'branches'
-    ? 'Branches'
-    : activeView === 'family-reports'
-      ? 'Family Reports'
-    : activeView === 'projects'
-      ? 'Projects'
-      : activeView === 'users'
-        ? 'Users'
-        : activeView === 'groups'
-          ? 'Groups'
-          : activeView === 'roles'
-            ? 'Roles'
-            : activeView === 'permissions'
-              ? 'Permissions'
-              : activeView === 'settings'
-                ? 'System Settings'
-                : activeView === 'health'
-                  ? 'Runtime Health'
-                  : activeView === 'audit'
-                    ? 'Audit Logs'
-                    : activeView === 'template'
-                        ? 'Template'
-                        : 'Dashboard'
-  const buildTarget = activeView === 'family-reports' ? 'P1-T4' : activeView === 'template' ? 'TEMPLATE' : activeView === 'health' ? 'P1-T17' : activeView === 'audit' ? 'P1-T15' : activeView === 'settings' ? 'P1-T14' : activeView === 'permissions' ? 'P1-T13' : activeView === 'roles' ? 'P1-T12' : activeView === 'groups' ? 'P1-T11' : activeView === 'users' ? 'P1-T10' : activeView === 'projects' ? 'P1-T9' : activeView === 'branches' ? 'P1-T8' : 'P1'
+  const activeProjectCompanyKey = projectCompanyKeyFromView(activeView)
+  const activeProjectCompanyBranchKey = projectCompanyBranchKeyFromView(activeView)
+  const activeProjectCompany = activeProjectCompanyKey
+    ? data.companies.find((company) => company.company_key === activeProjectCompanyKey)
+    : undefined
+  const viewTitle = activeProjectCompany
+    ? activeProjectCompany.company_name
+    : activeView === 'branches'
+      ? 'Branches'
+      : activeView === 'companies'
+      ? 'Companies'
+      : activeView === 'company-branches'
+        ? 'Company Branches'
+        : activeView === 'company-projects'
+          ? 'Company Projects'
+          : activeView === 'company-departments'
+            ? 'Company Departments'
+            : activeView === 'projects'
+              ? 'Projects'
+              : activeView === 'users'
+                ? 'Users'
+                : activeView === 'groups'
+                  ? 'Groups'
+                  : activeView === 'roles'
+                    ? 'Roles'
+                    : activeView === 'permissions'
+                      ? 'Permissions'
+                      : activeView === 'settings'
+                        ? 'System Settings'
+                        : activeView === 'health'
+                          ? 'Runtime Health'
+                          : activeView === 'audit'
+                            ? 'Audit Logs'
+                            : activeView === 'template'
+                                ? 'Template'
+                                : 'Dashboard'
+  const buildTarget = activeProjectCompanyKey ? 'P1-PROJECT-COMPANY' : activeView === 'companies' ? 'P1-COMPANY' : activeView === 'company-branches' ? 'P1-COMPANY-BRANCH' : activeView === 'company-projects' ? 'P1-COMPANY-PROJECT' : activeView === 'company-departments' ? 'P1-COMPANY-DEPARTMENT' : activeView === 'template' ? 'TEMPLATE' : activeView === 'health' ? 'P1-T17' : activeView === 'audit' ? 'P1-T15' : activeView === 'settings' ? 'P1-T14' : activeView === 'permissions' ? 'P1-T13' : activeView === 'roles' ? 'P1-T12' : activeView === 'groups' ? 'P1-T11' : activeView === 'users' ? 'P1-T10' : activeView === 'projects' ? 'P1-T9' : activeView === 'branches' ? 'P1-T8' : 'P1'
   const breadcrumbItems = ['Administrator', viewTitle]
 
   return (
@@ -25190,29 +27099,37 @@ function AdminApp() {
       onThemeToggle={handleThemeToggle}
     >
       {data.isSignedIn && data.isAdmin ? (
-        activeView === 'branches'
-          ? <BranchCrudView />
-          : activeView === 'family-reports'
-            ? <FamilyReportsView />
-          : activeView === 'projects'
-            ? <ProjectCrudView />
-            : activeView === 'users'
-              ? <UserCrudView />
-              : activeView === 'groups'
-                ? <GroupCrudView />
-                : activeView === 'roles'
-                  ? <RoleCrudView />
-                  : activeView === 'permissions'
-                    ? <PermissionMatrixView />
-                    : activeView === 'settings'
-                      ? <SystemSettingsView />
-                      : activeView === 'health'
-                      ? <RuntimeHealthView />
-                      : activeView === 'audit'
-                        ? <AuditLogView />
-                        : activeView === 'template'
-                            ? <TemplateCommandView />
-                            : <Dashboard />
+        activeProjectCompanyKey
+          ? <ProjectCompanyOverviewView companyKey={activeProjectCompanyKey} selectedBranchKey={activeProjectCompanyBranchKey} onBranchSelect={(branchKey) => handleViewChange(projectCompanyViewKey(activeProjectCompanyKey, branchKey))} />
+          : activeView === 'branches'
+            ? <BranchCrudView />
+            : activeView === 'companies'
+            ? <CompanyCrudView />
+            : activeView === 'company-branches'
+              ? <CompanyBranchCrudView />
+              : activeView === 'company-projects'
+                ? <CompanyProjectCrudView />
+                : activeView === 'company-departments'
+                  ? <CompanyDepartmentCrudView />
+                  : activeView === 'projects'
+                    ? <ProjectCrudView />
+                    : activeView === 'users'
+                      ? <UserCrudView />
+                      : activeView === 'groups'
+                        ? <GroupCrudView />
+                        : activeView === 'roles'
+                          ? <RoleCrudView />
+                        : activeView === 'permissions'
+                          ? <PermissionMatrixView />
+                          : activeView === 'settings'
+                            ? <SystemSettingsView />
+                            : activeView === 'health'
+                            ? <RuntimeHealthView />
+                            : activeView === 'audit'
+                              ? <AuditLogView />
+                              : activeView === 'template'
+                                  ? <TemplateCommandView />
+                                  : <Dashboard />
       ) : (
         <AuthLanding theme={theme} onThemeToggle={handleThemeToggle} />
       )}
@@ -25406,7 +27323,7 @@ function ShadcnPhaseBuilderApp() {
   const [bridgeInfoOpen, setBridgeInfoOpen] = React.useState(false)
   const [bridgeHealthDetails, setBridgeHealthDetails] = React.useState<Record<string, any>>({})
   const [bridgeCapabilities, setBridgeCapabilities] = React.useState<Record<string, any>>({})
-  const [bridgeHealth, setBridgeHealth] = React.useState<{ status: 'checking' | 'ready' | 'not-ready' | 'error'; readyToSend: boolean; threadBusy: boolean | null }>({ status: 'checking', readyToSend: false, threadBusy: null })
+  const [bridgeHealth, setBridgeHealth] = React.useState<{ status: 'checking' | 'ready' | 'not-ready' | 'error'; readyToSend: boolean; threadBusy: boolean | null; message: string }>({ status: 'checking', readyToSend: false, threadBusy: null, message: '' })
   const [runtimePermissions, setRuntimePermissions] = React.useState<{ status: 'idle' | 'checking' | 'success' | 'error'; message: string; repairCommand: string }>({ status: 'idle', message: '', repairCommand: '' })
   const detectedWorkspaceRoot = String(phaseData?.projectRoot || '')
   const workspaceRoot = detectedWorkspaceRoot.replace(/\\+$/, '')
@@ -25595,23 +27512,26 @@ function ShadcnPhaseBuilderApp() {
       const readyToSend = response.ok
         && healthPayload?.ok === true
         && health?.ok === true
-        && health?.workspace === workspaceRoot
-        && health?.code_ready === true
-        && health?.context_ready === true
-        && health?.companion_extension_installed === true
-        && health?.builderx_extension_active === true
-        && health?.extension_workspace_ready === true
-        && health?.codex_command_ready === true
-        && health?.extension_probe_state === 'ready'
+        && health?.ready_to_send === true
+        && health?.active_thread_ready === true
         && health?.active_thread_busy === false
-      setBridgeHealth({ status: readyToSend ? 'ready' : 'not-ready', readyToSend, threadBusy: health?.active_thread_busy === true })
+      const healthMessage = String(
+        health?.extension_probe_message
+        || healthPayload?.message
+        || capabilitiesPayload?.message
+        || (readyToSend ? 'BuilderX AI Bridge is ready.' : 'The bridge health check did not report ready.'),
+      )
+      setBridgeHealth({ status: readyToSend ? 'ready' : 'not-ready', readyToSend, threadBusy: health?.active_thread_busy === true, message: healthMessage })
+      if (readyToSend) {
+        setBridgeRestart((current) => current.status === 'idle' ? current : { status: 'success', message: 'BuilderX AI Bridge is ready.' })
+      }
       return readyToSend
-    } catch {
+    } catch (error) {
       setBridgeHealthDetails({ ok: false })
-      setBridgeHealth({ status: 'error', readyToSend: false, threadBusy: null })
+      setBridgeHealth({ status: 'error', readyToSend: false, threadBusy: null, message: error instanceof Error ? error.message : 'The bridge health check could not be read.' })
       return false
     }
-  }, [workspaceRoot])
+  }, [])
   const verifyRuntimePermissions = async () => {
     setRuntimePermissions({ status: 'checking', message: 'Verifying the current project MySQL AI transport…', repairCommand: '' })
     const body = new URLSearchParams()
@@ -25868,7 +27788,8 @@ function ShadcnPhaseBuilderApp() {
             'BuilderX persistent Planning Engine final integration review.',
             `Read the exact merged-contract review context: ${String(reviewContext.context_path || '')}`,
             'Check contradictions, duplicates, terminology, dependencies, category placement, and source traceability.',
-            'Preserve every immutable requirement ID and return exactly the required review JSON to the supplied MySQL job result.',
+            'Preserve every immutable requirement ID and return exactly the required_response JSON object from the context to the supplied MySQL job result.',
+            'Do not return reviewStatus, checks, requirementInventory, requiredFollowUpActions, finalDecision, nested source metadata, findingId, type, location, issue, recommendation, or any alternate review schema.',
             'Do not edit files, execute SQL, call another provider, or dispatch another agent.',
           ].join('\n')
           const dispatched = await dispatchPersistentPhaseAiBridgeStage(runKey, 'integration_review', { context_path: reviewContext.context_path, context_sha256: reviewContext.sha256, merged_contract_hash: mergeStage?.result?.contractHash }, reviewCommand, reviewTaskLabel, setRequirementsPersistentRun)
@@ -25992,14 +27913,16 @@ function ShadcnPhaseBuilderApp() {
           csrf: phaseData?.csrf || '',
           runKey,
           stageKey: 'integration_review',
-          command: `BuilderX System Architecture integration review. Read ${reviewContext.context_path}. Review only the validated artifact for contradictions, duplicate boundaries, naming conflicts, missing dependencies, and traceability gaps. Do not replace the artifact or edit files. Return exactly the required builderx.ai-integration-review.v1 JSON object to the MySQL job result.`,
+          command: `BuilderX System Architecture integration review. Read ${reviewContext.context_path}. Review only the validated artifact for contradictions, duplicate boundaries, naming conflicts, missing dependencies, and traceability gaps. Do not replace the artifact or edit files. Return exactly the required_response JSON object from the context to the MySQL job result. Do not return contractType, source, review, checks, orchestration, findingId, severity, category, location, issue, recommendation, or any alternate integration-review schema.`,
           onProgress: (message) => addArchitectureEvent(message, 'active'),
         })
         persistentRun = review.run
-        reviewResult = review.result
+        reviewResult = (phaseAiStage(review.run, 'integration_review')?.result as Record<string, any> | undefined) || review.result
       }
       if (phaseAiIntegrationReviewStatus(reviewResult) === 'blocked') {
-        persistentRun = await completePersistentPhaseAiPersistence(endpoint, phaseData?.csrf || '', runKey, 'system_architecture', parsed, 'blocked', runKey)
+        if (!phaseAiPersistenceCheckpointed(persistentRun, 'system_architecture', 'blocked')) {
+          persistentRun = await completePersistentPhaseAiPersistence(endpoint, phaseData?.csrf || '', runKey, 'system_architecture', parsed, 'blocked', runKey)
+        }
         const detail = phaseAiIntegrationReviewBlockedDetail(reviewResult)
         addArchitectureEvent('Integration review findings were checkpointed; no architecture database write was attempted.', 'error')
         setArchitectureWorkflow((current) => ({
@@ -26113,12 +28036,14 @@ function ShadcnPhaseBuilderApp() {
       let reviewResult = phaseAiStage(persistentRun, 'integration_review')?.result as Record<string, any> | undefined
       if (!reviewResult) {
         const reviewContext = await preparePersistentPhaseAiCheckpointContext(endpoint, phaseData?.csrf || '', runKey, 'integration_review')
-        const review = await dispatchPersistentPhaseAiStage({ endpoint, csrf: phaseData?.csrf || '', runKey, stageKey: 'integration_review', command: `BuilderX UI/UX Design integration review. Read ${reviewContext.context_path}. Review only the validated artifact for route, screen-state, responsive, accessibility, naming, dependency, and upstream traceability conflicts. Do not replace the artifact or edit files. Return exactly the required builderx.ai-integration-review.v1 JSON object to the MySQL job result.`, onProgress: (message) => addUiUxEvent(message, 'active') })
+        const review = await dispatchPersistentPhaseAiStage({ endpoint, csrf: phaseData?.csrf || '', runKey, stageKey: 'integration_review', command: `BuilderX UI/UX Design integration review. Read ${reviewContext.context_path}. Review only the validated artifact for route, screen-state, responsive, accessibility, naming, dependency, and upstream traceability conflicts. Do not replace the artifact or edit files. Return exactly the required_response JSON object from the context to the MySQL job result. Do not return contractType, source, review, checks, orchestration, findingId, severity, category, location, issue, recommendation, or any alternate integration-review schema.`, onProgress: (message) => addUiUxEvent(message, 'active') })
         persistentRun = review.run
-        reviewResult = review.result
+        reviewResult = (phaseAiStage(review.run, 'integration_review')?.result as Record<string, any> | undefined) || review.result
       }
       if (phaseAiIntegrationReviewStatus(reviewResult) === 'blocked') {
-        persistentRun = await completePersistentPhaseAiPersistence(endpoint, phaseData?.csrf || '', runKey, 'ui_ux_design', parsed, 'blocked', runKey)
+        if (!phaseAiPersistenceCheckpointed(persistentRun, 'ui_ux_design', 'blocked')) {
+          persistentRun = await completePersistentPhaseAiPersistence(endpoint, phaseData?.csrf || '', runKey, 'ui_ux_design', parsed, 'blocked', runKey)
+        }
         const detail = phaseAiIntegrationReviewBlockedDetail(reviewResult)
         addUiUxEvent('Integration review findings were checkpointed; no UI/UX database write was attempted.', 'error')
         setUiUxWorkflow((current) => ({
@@ -26357,6 +28282,10 @@ function ShadcnPhaseBuilderApp() {
   const validateExecutionRoadmapModuleResult = (value: unknown, contextArchitectureHash: string): Record<string, any> => {
     if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Define product modules returned invalid JSON.')
     const catalog = value as Record<string, any>
+    if (!Array.isArray(catalog.modules) && Array.isArray(catalog.moduleCatalog)) {
+      catalog.modules = catalog.moduleCatalog
+      delete catalog.moduleCatalog
+    }
     if (catalog.schemaVersion !== 'builderx.execution-roadmap.stage.modules.v1' || catalog.contractType !== 'builderx.execution-roadmap-stage' || catalog.stage !== 'modules' || !catalog.source || typeof catalog.source !== 'object' || catalog.source.draftKey !== phaseBuilderDraftKey || catalog.source.architectureHash !== contextArchitectureHash || !Array.isArray(catalog.modules) || catalog.modules.length < 2 || catalog.modules.length > 30) throw new Error('Define product modules must return a verified module catalog containing 2 to 30 modules.')
     const moduleIds = new Set<string>()
     const moduleKeys = new Set<string>()
@@ -26570,7 +28499,7 @@ function ShadcnPhaseBuilderApp() {
     const stageNumber = ({ modules: 0, phases: 1, tasks: 2, subtasks: 3, resources: 4 } as Record<string, number>)[stageKey]
     const stageStep = stageKey === 'modules' ? 'stage1' : `stage${stageNumber}` as 'stage1' | 'stage2' | 'stage3' | 'stage4'
     const targetInstruction = stageKey === 'modules'
-      ? 'Read the saved System Architecture and UI/UX design once. Generate only a compact module catalog and dependency graph. Return 2 to 30 modules, each with moduleId, unique lower_snake_case moduleKey, moduleTitle, moduleDescription, moduleType, order, dependsOn, provides, consumes, uiUxScope with routes/screens/sharedComponents arrays, and phaseCountHint. Each provides or consumes entry must include interfaceId, name, kind, and contractSummary. Do not generate phases, tasks, sub-tasks, todos, forms, tables, APIs, or resource arrays. A later module must be able to consume the compact interface summaries from its dependencies without rereading unrelated modules.'
+      ? 'Read the saved System Architecture and UI/UX design once. Generate only a compact module catalog and dependency graph. Return exactly one JSON object with these root keys: schemaVersion, contractType, stage, source, modules, dependencyGraph. The payload field must be modules; modules must be a non-empty JSON array with 2 to 30 module objects. Do not use moduleCatalog, module_catalog, catalog, module_schema, stage_scope, hierarchy, phases, tasks, subTasks, todos, or resourcePatches as root keys. Each modules item must include moduleId, unique lower_snake_case moduleKey, moduleTitle, moduleDescription, moduleType, order, dependsOn, provides, consumes, uiUxScope with routes/screens/sharedComponents arrays, and phaseCountHint. Each provides or consumes entry must include interfaceId, name, kind, and contractSummary. Do not generate phases, tasks, sub-tasks, todos, forms, tables, APIs, or resource arrays. A later module must be able to consume the compact interface summaries from its dependencies without rereading unrelated modules.'
       : stageKey === 'phases'
       ? `${moduleId !== '' ? `Process only module ${moduleId} from the scoped context. Every phaseId must be unique and must begin with ${moduleId}- so module checkpoints can be merged safely. ` : ''}Analyze the saved narrative, requirements, architecture, and UI/UX direction. Generate only the standalone chronological phases and their connections. Each phase must have a systemFlow with page/view/API/database/background/report nodes, entry and exit conditions, dependencies, and a clear outcome. Do not generate tasks yet.`
         : stageKey === 'tasks'
@@ -26621,12 +28550,31 @@ function ShadcnPhaseBuilderApp() {
     let reviewResult = phaseAiStage(persistentRun, 'integration_review')?.result as Record<string, any> | undefined
     if (!reviewResult) {
       const reviewContext = await preparePersistentPhaseAiCheckpointContext(endpoint, phaseData?.csrf || '', runKey, 'integration_review')
-      const review = await dispatchPersistentPhaseAiStage({ endpoint, csrf: phaseData?.csrf || '', runKey, stageKey: 'integration_review', command: `BuilderX Execution Roadmap integration review. Read ${reviewContext.context_path}. Review only this validated semantic chunk for immutable-ID, dependency, naming, traceability, duplicate, and relationship conflicts. Do not replace the artifact or edit files. Return exactly the required builderx.ai-integration-review.v1 JSON object to the MySQL job result.`, onProgress: (message) => addRoadmapStageEvent(stageKey, message, 'active') })
+      const review = await dispatchPersistentPhaseAiStage({
+        endpoint,
+        csrf: phaseData?.csrf || '',
+        runKey,
+        stageKey: 'integration_review',
+        command: [
+          'BuilderX Execution Roadmap integration review.',
+          `Read ${reviewContext.context_path}.`,
+          'Review only the validated semantic chunk in verified_checkpoints.analysis for immutable-ID, dependency, naming, traceability, duplicate, and relationship conflicts.',
+          'Do not replace the artifact, summarize the artifact schema, or edit files.',
+          'Return exactly one JSON object with only these root keys: schemaVersion, workflowKey, artifactHash, status, findings.',
+          'schemaVersion must be builderx.ai-integration-review.v1, workflowKey must be execution_roadmap, artifactHash must exactly equal required_response.artifactHash, status must be approved or blocked, and findings must be an array.',
+          'When approved, return findings as an empty array. When blocked, every finding must contain only summary and requiredResolution.',
+          'Do not return any execution-roadmap-stage artifact or schema. Forbidden root keys include stage, contractType, source, hierarchy, module_schema, stage_scope, modules, phases, resourcePatches, dependencyGraph, review, checks, orchestration, findingId, severity, category, location, issue, and recommendation.',
+          'Write only that integration-review JSON object to the MySQL job result.',
+        ].join('\n'),
+        onProgress: (message) => addRoadmapStageEvent(stageKey, message, 'active'),
+      })
       persistentRun = review.run
-      reviewResult = review.result
+      reviewResult = (phaseAiStage(review.run, 'integration_review')?.result as Record<string, any> | undefined) || review.result
     }
     if (phaseAiIntegrationReviewStatus(reviewResult) === 'blocked') {
-      persistentRun = await completePersistentPhaseAiPersistence(endpoint, phaseData?.csrf || '', runKey, 'execution_roadmap', raw as Record<string, any>, 'blocked', runKey)
+      if (!phaseAiPersistenceCheckpointed(persistentRun, 'execution_roadmap', 'blocked')) {
+        persistentRun = await completePersistentPhaseAiPersistence(endpoint, phaseData?.csrf || '', runKey, 'execution_roadmap', raw as Record<string, any>, 'blocked', runKey)
+      }
       const detail = phaseAiIntegrationReviewBlockedDetail(reviewResult)
       addRoadmapStageEvent(stageKey, 'Integration review findings were checkpointed; no roadmap database write was attempted.', 'error')
       setRoadmapWorkflow((current) => ({ ...current, report: JSON.stringify({ status: 'blocked', run_key: runKey, run_status: persistentRun.status, persistence: 'blocked_no_write', integration_review: reviewResult }, null, 2) }))
@@ -26635,7 +28583,9 @@ function ShadcnPhaseBuilderApp() {
     addRoadmapStageEvent(stageKey, 'Bounded integration review approved this semantic chunk.', 'complete')
     if (persist) {
       const savedStage = await saveExecutionRoadmapStage(stageKey, parsed, context.source_architecture_hash)
-      persistentRun = await completePersistentPhaseAiPersistence(endpoint, phaseData?.csrf || '', runKey, 'execution_roadmap', raw, 'updated', savedStage.roadmap_key)
+      if (!phaseAiPersistenceCheckpointed(persistentRun, 'execution_roadmap', 'updated')) {
+        persistentRun = await completePersistentPhaseAiPersistence(endpoint, phaseData?.csrf || '', runKey, 'execution_roadmap', raw, 'updated', savedStage.roadmap_key)
+      }
       addRoadmapStageEvent(stageKey, `${executionRoadmapStageLabels[stageKey]} saved and read back with transaction verification.`, 'complete')
       addRoadmapStageEvent(stageKey, 'Saved checkpoint read back; Phase Builder state refreshed.', 'complete')
     }
@@ -26670,12 +28620,14 @@ function ShadcnPhaseBuilderApp() {
     let reviewResult = phaseAiStage(persistentRun, 'integration_review')?.result as Record<string, any> | undefined
     if (!reviewResult) {
       const reviewContext = await preparePersistentPhaseAiCheckpointContext(endpoint, phaseData?.csrf || '', runKey, 'integration_review')
-      const review = await dispatchPersistentPhaseAiStage({ endpoint, csrf: phaseData?.csrf || '', runKey, stageKey: 'integration_review', command: `BuilderX Execution Roadmap resource integration review. Read ${reviewContext.context_path}. Review the single verified phase resource patch for immutable phase identity, table and form identifiers, route and API boundaries, dependency conflicts, duplicates, and upstream traceability. Return exactly the required builderx.ai-integration-review.v1 JSON object to the MySQL job result.`, onProgress: (message) => addRoadmapStageEvent('resources', message, 'active') })
+      const review = await dispatchPersistentPhaseAiStage({ endpoint, csrf: phaseData?.csrf || '', runKey, stageKey: 'integration_review', command: `BuilderX Execution Roadmap resource integration review. Read ${reviewContext.context_path}. Review the single verified phase resource patch for immutable phase identity, table and form identifiers, route and API boundaries, dependency conflicts, duplicates, and upstream traceability. Return exactly the required_response JSON object from the context to the MySQL job result. Do not return contractType, source, review, checks, orchestration, findingId, severity, category, location, issue, recommendation, or any alternate integration-review schema.`, onProgress: (message) => addRoadmapStageEvent('resources', message, 'active') })
       persistentRun = review.run
-      reviewResult = review.result
+      reviewResult = (phaseAiStage(review.run, 'integration_review')?.result as Record<string, any> | undefined) || review.result
     }
     if (phaseAiIntegrationReviewStatus(reviewResult) === 'blocked') {
-      persistentRun = await completePersistentPhaseAiPersistence(endpoint, phaseData?.csrf || '', runKey, 'execution_roadmap', raw as Record<string, any>, 'blocked', runKey)
+      if (!phaseAiPersistenceCheckpointed(persistentRun, 'execution_roadmap', 'blocked')) {
+        persistentRun = await completePersistentPhaseAiPersistence(endpoint, phaseData?.csrf || '', runKey, 'execution_roadmap', raw as Record<string, any>, 'blocked', runKey)
+      }
       const detail = phaseAiIntegrationReviewBlockedDetail(reviewResult)
       addRoadmapStageEvent('resources', `Phase ${phaseIndex} of ${phaseCount} integration review findings were checkpointed; no resource database write was attempted.`, 'error')
       setRoadmapWorkflow((current) => ({ ...current, report: JSON.stringify({ status: 'blocked', run_key: runKey, run_status: persistentRun.status, persistence: 'blocked_no_write', integration_review: reviewResult }, null, 2) }))
@@ -27096,7 +29048,7 @@ function ShadcnPhaseBuilderApp() {
         'If the file is missing or incomplete, stop immediately and return only TASK_CONTEXT_UNAVAILABLE. Do not infer or continue.',
       ].join('\n')
       const endpoint = route('phases/')
-      const run = await startPersistentPhaseAiWorkflow({ endpoint, csrf: phaseData?.csrf || '', engineType: 'PLANNING', workflowKey: 'bridge_diagnostic', draftKey: phaseBuilderDraftKey, phaseKey: phaseData?.selectedPhaseKey || '', semanticChunkKey: 'single_chat_specialists', context })
+      const run = await startPersistentPhaseAiWorkflow({ endpoint, csrf: phaseData?.csrf || '', engineType: 'PLANNING', workflowKey: 'bridge_diagnostic', draftKey: phaseBuilderDraftKey || 'bridge-diagnostic', phaseKey: phaseData?.selectedPhaseKey || '', semanticChunkKey: 'single_chat_specialists', context })
       const runKey = String(run.run_key || '')
       const dispatched = await dispatchPersistentPhaseAiStage({ endpoint, csrf: phaseData?.csrf || '', runKey, stageKey: 'analysis', command: coordinatorTestPrompt, onProgress: (message) => setCodexTest((current) => ({ ...current, status: 'sending', message })) })
       await completePersistentPhaseAiPersistence(endpoint, phaseData?.csrf || '', runKey, 'bridge_diagnostic', dispatched.result, 'completed', runKey)
@@ -27197,6 +29149,18 @@ function ShadcnPhaseBuilderApp() {
   const phaseAiStage = (run: Record<string, any> | null, stageKey: string) => Array.isArray(run?.stages)
     ? run.stages.find((stage: Record<string, any>) => String(stage.stage_key || '') === stageKey) || null
     : null
+  const phaseAiPersistenceCheckpointed = (run: Record<string, any> | null, workflowKey: string, status: string) => {
+    const stage = phaseAiStage(run, 'persistence')
+    const result = stage?.result
+    return stage?.status === 'SUCCEEDED'
+      && result
+      && typeof result === 'object'
+      && !Array.isArray(result)
+      && result.schemaVersion === 'builderx.ai-persistence.v1'
+      && result.workflowKey === workflowKey
+      && result.status === status
+      && result.readBackVerified === true
+  }
   const startPersistentPhase2Run = async (sourceSnapshot: Record<string, string>) => {
     const randomBytes = new Uint8Array(16)
     crypto.getRandomValues(randomBytes)
@@ -27580,7 +29544,7 @@ function ShadcnPhaseBuilderApp() {
                   </DialogHeader>
                   <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-6">
                     <div className="grid gap-5">
-                      <div className="flex items-center justify-between gap-3 border-b pb-4"><div><p className="text-sm font-medium">Current status</p><p className="mt-1 text-xs text-muted-foreground">The icon color reflects this state.</p></div><span className={cn('text-sm font-semibold', bridgeIndicatorClass)}>{bridgeStatusLabel}</span></div>{bridgeRestart.status !== 'idle' ? <p className={cn('text-xs', bridgeRestart.status === 'error' ? 'text-destructive' : bridgeRestart.status === 'success' ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground')} role={bridgeRestart.status === 'error' ? 'alert' : 'status'} aria-live="polite">{bridgeRestart.message}</p> : null}
+                      <div className="flex items-center justify-between gap-3 border-b pb-4"><div><p className="text-sm font-medium">Current status</p><p className="mt-1 text-xs text-muted-foreground">The icon color reflects this state.</p></div><span className={cn('text-sm font-semibold', bridgeIndicatorClass)}>{bridgeStatusLabel}</span></div>{bridgeHealth.message ? <p className={cn('text-xs', bridgeHealth.status === 'ready' ? 'text-emerald-600 dark:text-emerald-400' : bridgeHealth.status === 'error' ? 'text-destructive' : 'text-muted-foreground')} role={bridgeHealth.status === 'ready' ? 'status' : 'alert'} aria-live="polite">{bridgeHealth.message}</p> : null}{bridgeRestart.status !== 'idle' ? <p className={cn('text-xs', bridgeRestart.status === 'error' ? 'text-destructive' : bridgeRestart.status === 'success' ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground')} role={bridgeRestart.status === 'error' ? 'alert' : 'status'} aria-live="polite">{bridgeRestart.message}</p> : null}
                       {bridgeReconnectInstructionsVisible ? <section className="grid gap-3 bg-amber-500/10 p-4" aria-labelledby="bridge-reconnect-title"><div className="flex items-start gap-3"><TerminalSquare className="mt-0.5 size-4 shrink-0 text-amber-700 dark:text-amber-300" aria-hidden="true" /><div><h3 id="bridge-reconnect-title" className="text-sm font-semibold">BuilderX companion is not ready</h3><p className="mt-1 text-xs leading-5 text-muted-foreground">No project command, service setup, or workspace path is required. Install the BuilderX companion once from the browser installer, open this project folder in VS Code with visible signed-in Codex Chat, run <span className="font-medium text-foreground">Developer: Reload Window</span>, then select <span className="font-medium text-foreground">Refresh details</span>. The companion follows the active workspace automatically.</p></div></div></section> : null}
                       <dl className="grid gap-x-6 gap-y-4 text-sm sm:grid-cols-2">
                         <div><dt className="text-xs text-muted-foreground">Bridge version</dt><dd className="mt-1 font-medium">{String(bridgeCapabilities.version || 'Unknown')}</dd></div>
@@ -28058,15 +30022,20 @@ async function preparePersistentPhaseAiCheckpointContext(endpoint: string, csrf:
 }
 
 function phaseAiIntegrationReviewStatus(result: Record<string, any> | undefined): 'approved' | 'blocked' {
-  return result?.status === 'blocked' ? 'blocked' : 'approved'
+  const status = String(result?.status || '').toLowerCase()
+  const review = result?.review && typeof result.review === 'object' && !Array.isArray(result.review) ? result.review as Record<string, any> : {}
+  const reviewStatus = String(review.status || result?.reviewStatus || '').toLowerCase()
+  const checks = result?.checks && typeof result.checks === 'object' && !Array.isArray(result.checks) ? result.checks as Record<string, any> : {}
+  const blockingIssueCount = Number(checks.blockingIssueCount || 0)
+  return status === 'blocked' || reviewStatus === 'requires_revision' || blockingIssueCount > 0 ? 'blocked' : 'approved'
 }
 
 function phaseAiIntegrationReviewBlockedDetail(result: Record<string, any> | undefined): string {
   const findings = Array.isArray(result?.findings) ? result.findings : []
   if (findings.length === 0) return 'The integration review blocked persistence without returning a usable finding.'
   return findings.map((finding: Record<string, any>, index: number) => {
-    const summary = String(finding?.summary || `Finding ${index + 1}`).trim()
-    const resolution = String(finding?.requiredResolution || '').trim()
+    const summary = String(finding?.summary || finding?.issue || `Finding ${index + 1}`).trim()
+    const resolution = String(finding?.requiredResolution || finding?.recommendation || '').trim()
     return `${index + 1}. ${summary}${resolution !== '' ? `\n   Required resolution: ${resolution}` : ''}`
   }).join('\n')
 }

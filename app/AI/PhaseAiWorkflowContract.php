@@ -130,6 +130,10 @@ final class PhaseAiWorkflowContract
         if (!isset($allowedSchemas[$baseChunk]) || $schema !== $allowedSchemas[$baseChunk] || $contract !== 'builderx.execution-roadmap-stage' || (string) ($result['stage'] ?? '') !== $baseChunk) {
             throw new RuntimeException('The Execution Roadmap chunk returned the wrong versioned stage contract.');
         }
+        if ($baseChunk === 'modules' && !isset($result['modules']) && is_array($result['moduleCatalog'] ?? null) && array_is_list($result['moduleCatalog'])) {
+            $result['modules'] = $result['moduleCatalog'];
+            unset($result['moduleCatalog']);
+        }
         self::requireObject($result, 'source');
         self::assertSource($run, $result['source'], 'architecture_hash', 'architectureHash');
         $payloadKey = $baseChunk === 'modules' ? 'modules' : ($baseChunk === 'resources' ? 'resourcePatches' : 'phases');
@@ -230,6 +234,7 @@ final class PhaseAiWorkflowContract
             throw new RuntimeException('The integration review has no validated artifact checkpoint.');
         }
         $artifactHash = self::hash($analysis);
+        $result = self::canonicalizeVerboseIntegrationReview($workflowKey, $run, $analysis, $artifactHash, $result);
         if (
             ($result['schemaVersion'] ?? '') !== 'builderx.ai-integration-review.v1'
             || ($result['workflowKey'] ?? '') !== $workflowKey
@@ -248,6 +253,66 @@ final class PhaseAiWorkflowContract
             throw new RuntimeException('A blocked AI integration review must explain its findings.');
         }
         return $result;
+    }
+
+    /** @param array<string, mixed> $run @param array<string, mixed> $analysis @param array<string, mixed> $result @return array<string, mixed> */
+    private static function canonicalizeVerboseIntegrationReview(string $workflowKey, array $run, array $analysis, string $artifactHash, array $result): array
+    {
+        if (isset($result['artifactHash'], $result['status'])) {
+            return $result;
+        }
+        $source = is_array($result['source'] ?? null) ? $result['source'] : [];
+        $review = is_array($result['review'] ?? null) ? $result['review'] : [];
+        $checks = is_array($result['checks'] ?? null) ? $result['checks'] : [];
+        $expectedContextRef = 'mysql:phase_builder_ai_context/phase-ai-integration_review-' . (string) ($run['run_key'] ?? '');
+        if (
+            ($result['schemaVersion'] ?? '') !== 'builderx.ai-integration-review.v1'
+            || ($result['contractType'] ?? '') !== 'builderx.ai-integration-review'
+            || ($source['draftKey'] ?? '') !== ($run['draft_key'] ?? '')
+            || ($source['reviewedContextRef'] ?? '') !== $expectedContextRef
+            || ($source['reviewedArtifactSchemaVersion'] ?? '') !== ($analysis['schemaVersion'] ?? '')
+            || ($source['reviewedArtifactContractType'] ?? '') !== ($analysis['contractType'] ?? '')
+            || ($review['artifactReplaced'] ?? true) !== false
+            || ($review['filesEdited'] ?? true) !== false
+            || !is_array($result['findings'] ?? null)
+        ) {
+            return $result;
+        }
+        $hashKey = match ($workflowKey) {
+            'system_architecture' => 'requirementsHash',
+            'ui_ux_design' => 'architectureHash',
+            default => '',
+        };
+        if ($hashKey !== '' && isset($analysis['source'][$hashKey]) && ($source[lcfirst($hashKey)] ?? $source[$hashKey] ?? null) !== $analysis['source'][$hashKey]) {
+            return $result;
+        }
+        $findings = [];
+        foreach ($result['findings'] as $finding) {
+            if (!is_array($finding) || trim((string) ($finding['issue'] ?? $finding['summary'] ?? '')) === '') {
+                return $result;
+            }
+            $severity = strtolower(trim((string) ($finding['severity'] ?? 'medium')));
+            $category = trim((string) ($finding['category'] ?? 'integration_review'));
+            $location = trim((string) ($finding['location'] ?? 'validated artifact'));
+            $issue = trim((string) ($finding['issue'] ?? $finding['summary'] ?? ''));
+            $recommendation = trim((string) ($finding['recommendation'] ?? $finding['requiredResolution'] ?? ''));
+            $findings[] = [
+                'summary' => substr('[' . ($severity !== '' ? $severity : 'medium') . '] ' . ($category !== '' ? $category : 'integration_review') . ' at ' . ($location !== '' ? $location : 'validated artifact') . ': ' . $issue, 0, 4000),
+                'requiredResolution' => substr($recommendation !== '' ? $recommendation : 'Resolve this integration review finding before persistence.', 0, 4000),
+            ];
+        }
+        $reviewStatus = strtolower(trim((string) ($review['status'] ?? $result['reviewStatus'] ?? '')));
+        $blockingCount = max(0, (int) ($checks['blockingIssueCount'] ?? 0));
+        $status = $blockingCount > 0
+            ? 'blocked'
+            : (($reviewStatus === 'approved' || $reviewStatus === '') ? 'approved' : 'blocked');
+        return [
+            'schemaVersion' => 'builderx.ai-integration-review.v1',
+            'workflowKey' => $workflowKey,
+            'artifactHash' => $artifactHash,
+            'status' => $status,
+            'findings' => $findings,
+        ];
     }
 
     /** @param array<string, mixed> $run @param array<string, mixed> $result @return array<string, mixed> */
@@ -353,7 +418,7 @@ final class PhaseAiWorkflowContract
     private static function requireList(array $result, string $key, bool $nonEmpty = false): void
     {
         if (!is_array($result[$key] ?? null) || !array_is_list($result[$key]) || ($nonEmpty && count($result[$key]) === 0)) {
-            throw new RuntimeException(sprintf('The AI result field %s must be %sa list.', $key, $nonEmpty ? 'a non-empty ' : ''));
+            throw new RuntimeException(sprintf('The AI result field %s must be %s.', $key, $nonEmpty ? 'a non-empty list' : 'a list'));
         }
     }
 

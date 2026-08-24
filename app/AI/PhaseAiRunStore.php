@@ -190,12 +190,22 @@ final class PhaseAiRunStore
         $requestJson = self::encodeJson($request, 'AI run request');
         $sourceHash = hash('sha256', $requestJson);
         $db = \bx_db();
-        $resumable = $db->GetRow(
-            "SELECT run_key FROM phase_builder_ai_run WHERE project_identity = ? AND created_by_user_key = ? AND route_key = ? AND engine_type = ? AND workflow_key = ? AND draft_key = ? AND source_hash = ? AND status IN ('QUEUED','RUNNING','VALIDATING','FAILED','SUCCEEDED') ORDER BY x_id DESC LIMIT 1",
+        $resumableRows = $db->GetAll(
+            "SELECT run_key FROM phase_builder_ai_run WHERE project_identity = ? AND created_by_user_key = ? AND route_key = ? AND engine_type = ? AND workflow_key = ? AND draft_key = ? AND source_hash = ? AND status IN ('QUEUED','RUNNING','VALIDATING','FAILED','SUCCEEDED') ORDER BY x_id DESC LIMIT 10",
             [$projectIdentity, $userKey, $routeKey, $engineType, $workflowKey, $draftKey, $sourceHash]
         );
-        if (is_array($resumable) && self::validRecordKey((string) ($resumable['run_key'] ?? ''))) {
-            return $this->read((string) $resumable['run_key'], $projectIdentity);
+        if (!is_array($resumableRows)) {
+            throw new RuntimeException('The resumable AI run lookup failed.');
+        }
+        foreach ($resumableRows as $resumable) {
+            $resumableRunKey = (string) ($resumable['run_key'] ?? '');
+            if (!self::validRecordKey($resumableRunKey)) {
+                continue;
+            }
+            if (self::isBlockedPlanningPersistenceRun($db, $workflowKey, $resumableRunKey)) {
+                continue;
+            }
+            return $this->read($resumableRunKey, $projectIdentity);
         }
         $existing = $db->GetRow(
             'SELECT run_key, engine_type, workflow_key, route_key, draft_key, phase_key, source_hash, created_by_user_key FROM phase_builder_ai_run WHERE project_identity = ? AND idempotency_key = ? LIMIT 1',
@@ -671,6 +681,26 @@ final class PhaseAiRunStore
     private static function validRecordKey(string $value): bool
     {
         return preg_match('/^[A-Za-z0-9._:-]{1,36}$/', $value) === 1;
+    }
+
+    private static function isBlockedPlanningPersistenceRun(object $db, string $workflowKey, string $runKey): bool
+    {
+        if (!in_array($workflowKey, ['system_architecture', 'ui_ux_design', 'execution_roadmap'], true)) {
+            return false;
+        }
+        $stage = $db->GetRow(
+            'SELECT result_json FROM phase_builder_ai_run_stage WHERE run_key = ? AND stage_key = ? AND status = ? LIMIT 1',
+            [$runKey, 'persistence', 'SUCCEEDED']
+        );
+        if (!is_array($stage) || trim((string) ($stage['result_json'] ?? '')) === '') {
+            return false;
+        }
+        $result = self::decodeJson((string) $stage['result_json'], 'AI persistence checkpoint');
+        return is_array($result)
+            && ($result['schemaVersion'] ?? '') === 'builderx.ai-persistence.v1'
+            && ($result['workflowKey'] ?? '') === $workflowKey
+            && ($result['status'] ?? '') === 'blocked'
+            && ($result['readBackVerified'] ?? false) === true;
     }
 
     private static function optionalScopeId(mixed $value, string $label): ?string

@@ -16,7 +16,11 @@ Use this skill for the shared BuilderX page frame. Reuse the existing shadcn/ui 
 - Let the main area own page scrolling. For cards with long content, create an independent `overflow-y-auto` region so persistent card controls remain visible.
 - Size long workspaces from the available flex height rather than `100vh` offsets that also include the header, footer, and padding. Keep overflow on the intended content region with `min-h-0`, `flex-1`, and `overscroll-contain`.
 - Use responsive grid columns for secondary panels; let the primary workspace take the remaining width and avoid fixed widths that cause clipping.
-- Do not stack bordered cards or boxes inside another bordered surface. Use spacing, typography, separators, or a different background surface for internal grouping.
+- In Platform screens and Project company views, the left panel is the main panel and the right panel is the side panel. Match the Company Management proportion: a wider `col-8` main panel on the left and a narrower `col-4` side panel on the right. Main tables, matrices, branch/project lists, or primary work areas belong on the left; forms, summaries, history, selected-item helpers, or secondary controls belong on the right.
+- In two-panel body layouts, give both the left and right panel headers a bottom border so each panel has a clear header/body separation. Use the shared panel header style when available; otherwise add `border-b` to each `CardHeader`.
+- In two-panel body layouts, keep scrolling only inside each panel body. The panel root must use `min-h-0 overflow-hidden`, the header must remain outside the scroll region, and the body must own `min-h-0 flex-1 overflow-y-auto overscroll-contain`.
+- In data tables, match the screen family alignment. Company Management-style and Platform main tables use left-aligned Actions headers with a stable left-aligned action row. Tables that have not adopted that family can keep right-aligned action columns. Keep accessible labels and no decorative glow unless the screen specifically requests a glow treatment.
+- Strictly do not place a `Card`, bordered card, or bordered box inside another bordered card/panel. For internal grouping, use unbordered `div`, spacing, typography, separators, or a subtle background without an added border.
 
 ## Sticky footer
 
@@ -30,5 +34,7 @@ Use this skill for the shared BuilderX page frame. Reuse the existing shadcn/ui 
 
 - Check sidebar collapse, header alignment, breadcrumb readability, and the full-width workspace at desktop and narrow widths.
 - Confirm long content scrolls without hiding the header or footer.
+- Confirm two-panel screens scroll only inside the left and right panel bodies; panel headers stay visible and do not scroll away inside the panel.
+- Confirm icon-only row actions in table Actions columns follow the screen family alignment, are keyboard reachable, are labeled, and only use glow effects when specifically requested.
 - Confirm the footer background is opaque, the left and right labels are present, and the mobile layout does not clip either label.
-- Check that no nested bordered cards were introduced and run the relevant frontend build and route check.
+- Check that no `Card` inside `Card`, nested bordered card, or bordered box inside a bordered panel was introduced, then run the relevant frontend build and route check.

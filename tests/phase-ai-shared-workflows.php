@@ -170,6 +170,10 @@ try {
         'recordKey' => bx_uuid(),
         'readBackVerified' => true,
     ]);
+    $resumedApprovedArchitecture = $store->start('PLANNING', 'system_architecture', (string) $architecture['draft_key'], null, $projectIdentity, bin2hex(random_bytes(16)), $architecture['request'], $testUserKey);
+    if (($resumedApprovedArchitecture['run_key'] ?? '') !== ($architecture['run_key'] ?? '')) {
+        throw new RuntimeException('A successful approved Planning run was not resumed for the same source.');
+    }
 
     $blockedArchitecture = $start('PLANNING', 'system_architecture', 'phases:builder', 'blocked-system-boundaries', ['requirements_hash' => $requirementsHash]);
     $blockedArchitecture = $completeContext($blockedArchitecture);
@@ -187,13 +191,24 @@ try {
     $blockedArchitecture = $completeStage($blockedArchitecture, 'analysis', $blockedArchitectureResult);
     $blockedArchitecture = $completeStage($blockedArchitecture, 'integration_review', [
         'schemaVersion' => 'builderx.ai-integration-review.v1',
-        'workflowKey' => 'system_architecture',
-        'artifactHash' => PhaseAiWorkflowContract::hash($blockedArchitectureResult),
-        'status' => 'blocked',
+        'contractType' => 'builderx.ai-integration-review',
+        'source' => [
+            'draftKey' => $blockedArchitecture['draft_key'],
+            'requirementsHash' => $requirementsHash,
+            'reviewedContextRef' => 'mysql:phase_builder_ai_context/phase-ai-integration_review-' . $blockedArchitecture['run_key'],
+            'reviewedArtifactSchemaVersion' => 'builderx.system-architecture.v1',
+            'reviewedArtifactContractType' => 'builderx.system-architecture',
+        ],
+        'review' => ['status' => 'requires_revision', 'artifactReplaced' => false, 'filesEdited' => false],
         'findings' => [[
-            'summary' => 'A required API boundary has no declared owner.',
-            'requiredResolution' => 'Assign the boundary to one system component before persistence.',
+            'findingId' => 'IR-001',
+            'severity' => 'high',
+            'category' => 'missing_owner',
+            'location' => 'projectBlueprint.boundaries',
+            'issue' => 'A required API boundary has no declared owner.',
+            'recommendation' => 'Assign the boundary to one system component before persistence.',
         ]],
+        'checks' => ['blockingIssueCount' => 1, 'nonBlockingIssueCount' => 0],
     ]);
     $blockedArchitecture = $completeStage($blockedArchitecture, 'persistence', [
         'schemaVersion' => 'builderx.ai-persistence.v1',
@@ -212,6 +227,11 @@ try {
     }
     if (($blockedArchitecture['status'] ?? '') !== 'SUCCEEDED' || ($blockedReview['status'] ?? '') !== 'blocked' || count($blockedReview['findings'] ?? []) !== 1) {
         throw new RuntimeException('A valid blocked Planning integration review was not retained as a durable terminal checkpoint.');
+    }
+    $retryBlockedArchitecture = $store->start('PLANNING', 'system_architecture', (string) $blockedArchitecture['draft_key'], null, $projectIdentity, bin2hex(random_bytes(16)), $blockedArchitecture['request'], $testUserKey);
+    $runKeys[] = (string) $retryBlockedArchitecture['run_key'];
+    if (($retryBlockedArchitecture['run_key'] ?? '') === ($blockedArchitecture['run_key'] ?? '') || ($retryBlockedArchitecture['status'] ?? '') !== 'QUEUED') {
+        throw new RuntimeException('A blocked no-write Planning run trapped the next attempt instead of allowing a fresh retry.');
     }
 
     $blockedReviewWithoutFindingsRejected = false;

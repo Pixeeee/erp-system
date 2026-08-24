@@ -26,7 +26,8 @@ if (!is_string($projectRoot)) {
     throw new RuntimeException('The live Sharingan test project root could not be resolved.');
 }
 $projectRoot = rtrim(str_replace('\\', '/', $projectRoot), '/');
-$baseUrl = rtrim((string) (getenv('BUILDERX_TEST_BASE_URL') ?: 'http://127.0.0.1/developer'), '/');
+$defaultProjectPath = '/' . basename($projectRoot);
+$baseUrl = rtrim((string) (getenv('BUILDERX_TEST_BASE_URL') ?: 'http://127.0.0.1' . $defaultProjectPath), '/');
 $baseRoute = rtrim((string) parse_url($baseUrl, PHP_URL_PATH), '/');
 $screenshotPath = $projectRoot . '/frontend/src/assets/hero.png';
 if (!is_file($screenshotPath)) {
@@ -247,7 +248,9 @@ try {
     ], JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . PHP_EOL;
 } finally {
     $adminPassword = str_repeat("\0", strlen($adminPassword));
-    curl_close($curl);
+    if (PHP_VERSION_ID < 80500) {
+        curl_close($curl);
+    }
     foreach ($runKeys as $runKey) {
         $db->BeginTrans();
         try {

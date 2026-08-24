@@ -81,7 +81,7 @@ $chunkResult = static function (array $run, string $stageKey, int $index): array
         ]] : [],
         'requirements' => [[
             'requirementId' => $configuration['id_prefix'] . '-001',
-            'category' => $configuration['categories'][0],
+            'category' => $stageKey === 'req_android_mobile' ? 'availabilityAndRecoveryRequirements' : $configuration['categories'][0],
             'title' => $configuration['label'] . ' requirement',
             'description' => 'The product must satisfy the bounded ' . strtolower($configuration['label']) . ' requirement.',
             'priority' => 'Must',
@@ -164,6 +164,38 @@ try {
     ];
     $orchestrator->begin($runKey, $projectIdentity, 'integration_review', ['contract_hash' => $merge['contractHash']]);
     $run = $orchestrator->complete($runKey, $projectIdentity, 'integration_review', $review);
+
+    $verboseReview = [
+        'schemaVersion' => 'builderx.requirements-analysis.integration-review.v1',
+        'workflowKey' => RequirementsAnalysisWorkflow::WORKFLOW_KEY,
+        'stageKey' => 'integration_review',
+        'source' => ['draftKey' => $draftKey, 'narrativeHash' => $request['source_narrative_hash'], 'mergedContractHash' => $merge['contractHash']],
+        'reviewStatus' => 'changes_required',
+        'immutableRequirementIdsPreserved' => true,
+        'summary' => 'Verbose review shape returned by the model.',
+        'checks' => ['duplicates' => 'warning'],
+        'requirementInventory' => ['totalImmutableRequirementIdsReviewed' => count($requirementIds), 'duplicateRequirementIds' => [], 'missingSourceRequirementIds' => [], 'orphanDependencyIds' => []],
+        'findings' => [[
+            'findingId' => 'IR-001',
+            'type' => 'duplicates',
+            'severity' => 'high',
+            'location' => 'requirements',
+            'requirementIds' => [$requirementIds[0]],
+            'issue' => 'A verbose integration review finding should be preserved as a warning.',
+            'recommendation' => 'Keep immutable IDs and record the cleanup guidance.',
+        ]],
+        'requiredFollowUpActions' => ['Record cleanup guidance.'],
+        'finalDecision' => 'review_completed_with_required_cleanup',
+    ];
+    $canonicalVerboseReview = RequirementsAnalysisWorkflow::validateReview($run, $verboseReview);
+    if (
+        ($canonicalVerboseReview['schemaVersion'] ?? '') !== RequirementsAnalysisWorkflow::REVIEW_SCHEMA
+        || ($canonicalVerboseReview['status'] ?? '') !== 'approved'
+        || ($canonicalVerboseReview['confirmedRequirementIds'] ?? []) !== $requirementIds
+        || ($canonicalVerboseReview['findings'][0]['severity'] ?? '') !== 'warning'
+    ) {
+        throw new RuntimeException('A verbose Requirements Analysis integration review was not canonicalized safely.');
+    }
 
     $analysisKey = bx_uuid();
     $orchestrator->begin($runKey, $projectIdentity, 'persistence', ['operation' => 'test_read_back']);
