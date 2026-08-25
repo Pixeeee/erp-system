@@ -91,7 +91,8 @@ foreach ([
     buying_test_assert(str_contains($supplierMarkup, $marker), 'Buying supplier workspace is missing marker: ' . $marker);
 }
 buying_test_assert(strpos($supplierMarkup, 'data-buying-main-panel') < strpos($supplierMarkup, 'data-buying-tools-panel'), 'Buying workspace does not stack the main panel first.');
-buying_test_assert(!preg_match('/\b(?:Add|New|Create|Insert)\b[^<]*(?:<\/button>|<\/a>)/i', $supplierMarkup), 'Foundation workspace exposes an unsupported create command.');
+buying_test_assert(str_contains($supplierMarkup, 'data-record-modal-open="buying-supplier-modal"'), 'Add Supplier does not open its owned record modal.');
+buying_test_assert(str_contains($supplierMarkup, 'Add Supplier'), 'Buying supplier workspace is missing the approved Add Supplier command.');
 buying_test_assert(!str_contains(strtolower($supplierMarkup), 'queued'), 'Buying workspace contains a queued placeholder state.');
 buying_test_assert(!str_contains($supplierMarkup, 'project_company_finance_'), 'Buying workspace directly references a Finance table.');
 buying_test_assert(!str_contains($supplierMarkup, 'project_company_inventory_'), 'Buying workspace directly references an Inventory table.');
@@ -121,7 +122,7 @@ buying_test_expect_error(
         'save_buying_supplier',
         ['action' => 'save_buying_supplier', 'section' => 'suppliers']
     ),
-    'not available'
+    'supplier name'
 );
 $afterSeriesCount = (int) $db->GetOne(
     'SELECT COUNT(*) FROM project_company_buying_number_series WHERE company_key_hash = ?',

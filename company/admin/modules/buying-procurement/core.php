@@ -35,6 +35,88 @@ function yovel_admin_buying_scope(array $company, array $admin): array
     return [$companyKey, $companyKeyHash, $adminKey];
 }
 
+function yovel_admin_buying_read_scope(array $company): array
+{
+    $companyKey = trim((string) ($company['company_key'] ?? ''));
+    $companyKeyHash = strtolower(trim((string) ($company['company_key_hash'] ?? '')));
+    if ($companyKey === '' || strlen($companyKey) > 1500 || preg_match('/^[0-9a-f]{64}$/', $companyKeyHash) !== 1) {
+        throw new InvalidArgumentException('Buying / Procurement company scope is invalid.');
+    }
+
+    $active = bx_db()->GetOne(
+        "SELECT company_key FROM project_company
+        WHERE company_key = ? AND company_key_hash = ? AND company_status = 'ACTIVE'
+        LIMIT 1",
+        [$companyKey, $companyKeyHash]
+    );
+    if ((string) $active !== $companyKey) {
+        throw new RuntimeException('An active company is required for Buying / Procurement.');
+    }
+
+    return [$companyKey, $companyKeyHash];
+}
+
+function yovel_admin_buying_in_transaction(ADOConnection $db, callable $callback): mixed
+{
+    if ($db->BeginTrans() === false) {
+        throw new RuntimeException('Buying / Procurement transaction could not start.');
+    }
+
+    try {
+        $result = $callback();
+        if ($db->CommitTrans() === false) {
+            throw new RuntimeException('Buying / Procurement transaction could not commit.');
+        }
+        return $result;
+    } catch (Throwable $error) {
+        $db->RollbackTrans();
+        throw $error;
+    }
+}
+
+function yovel_admin_buying_bool(array $input, string $key): int
+{
+    $value = $input[$key] ?? null;
+    return in_array($value, [1, '1', true, 'true', 'TRUE', 'on', 'ON', 'yes', 'YES'], true) ? 1 : 0;
+}
+
+function yovel_admin_buying_optional_uuid(array $input, string $key, string $label): ?string
+{
+    $value = trim((string) ($input[$key] ?? ''));
+    if ($value === '') {
+        return null;
+    }
+    if (!yovel_admin_is_uuid($value)) {
+        throw new InvalidArgumentException($label . ' must be a valid record key.');
+    }
+    return strtolower($value);
+}
+
+function yovel_admin_buying_text(array $input, string $key, string $label, int $maximum, bool $required = false): ?string
+{
+    $value = trim((string) ($input[$key] ?? ''));
+    if ($required && $value === '') {
+        throw new InvalidArgumentException($label . ' is required.');
+    }
+    if (strlen($value) > $maximum) {
+        throw new InvalidArgumentException($label . ' cannot exceed ' . $maximum . ' characters.');
+    }
+    return $value === '' ? null : $value;
+}
+
+function yovel_admin_buying_allowance(array $input, string $key, string $label): string
+{
+    $value = trim((string) ($input[$key] ?? '0'));
+    if ($value === '' || preg_match('/^\d{1,3}(?:\.\d{1,4})?$/', $value) !== 1) {
+        throw new InvalidArgumentException($label . ' must be a number from 0 to 100 with up to four decimals.');
+    }
+    $normalized = number_format((float) $value, 4, '.', '');
+    if (bccomp($normalized, '0.0000', 4) < 0 || bccomp($normalized, '100.0000', 4) > 0) {
+        throw new InvalidArgumentException($label . ' must be between 0 and 100.');
+    }
+    return $normalized;
+}
+
 function yovel_admin_buying_number(
     ADOConnection $db,
     array $company,

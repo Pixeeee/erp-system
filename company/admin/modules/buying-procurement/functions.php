@@ -4,6 +4,8 @@ declare(strict_types=1);
 require_once __DIR__ . '/schema.php';
 require_once __DIR__ . '/core.php';
 require_once __DIR__ . '/forms.php';
+require_once __DIR__ . '/settings.php';
+require_once __DIR__ . '/suppliers.php';
 
 function yovel_admin_buying_procurement_sections(): array
 {
@@ -106,23 +108,8 @@ function yovel_admin_buying_procurement_data(array $company, ?array $admin = nul
             [$companyKeyHash]
         ),
     ];
-    $suppliers = $db->GetAll(
-        "SELECT supplier_key, supplier_code, supplier_name, supplier_type, default_currency, supplier_status,
-            on_hold, warn_rfqs, warn_purchase_orders, prevent_rfqs, prevent_purchase_orders, updated_at
-        FROM project_company_buying_supplier
-        WHERE company_key_hash = ? AND supplier_status <> 'DELETED'
-        ORDER BY supplier_name, supplier_code
-        LIMIT 200",
-        [$companyKeyHash]
-    );
-    $settings = $db->GetRow(
-        "SELECT buying_setting_key, supplier_naming_mode, purchase_order_required, purchase_receipt_required,
-            maintain_same_rate, maintain_same_rate_action, setting_status, updated_at
-        FROM project_company_buying_setting
-        WHERE company_key_hash = ?
-        LIMIT 1",
-        [$companyKeyHash]
-    );
+    $suppliers = yovel_admin_buying_suppliers($company);
+    $settings = yovel_admin_buying_settings($company);
     $adapter = yovel_admin_buying_procurement_form_adapter();
     $schemas = yovel_admin_buying_procurement_default_form_schemas();
     $selectedTarget = trim((string) ($_GET['form_target'] ?? 'supplier'));
@@ -134,8 +121,8 @@ function yovel_admin_buying_procurement_data(array $company, ?array $admin = nul
         'state' => 'ready',
         'company_key_hash' => $companyKeyHash,
         'counts' => $counts,
-        'suppliers' => is_array($suppliers) ? $suppliers : [],
-        'settings' => is_array($settings) && $settings !== [] ? $settings : null,
+        'suppliers' => $suppliers,
+        'settings' => $settings,
         'dependencies' => yovel_admin_buying_procurement_dependency_state(),
         'formAdapter' => $adapter,
         'formSchemas' => $schemas,
@@ -156,6 +143,45 @@ function yovel_admin_buying_procurement_handle_post(
     }
 
     $action = trim($action);
+    if ($action === 'save_buying_settings') {
+        yovel_admin_buying_save_settings(bx_db(), $company, $admin, $input);
+        return [
+            'message' => 'Buying Settings saved.',
+            'section' => 'buying-settings',
+            'query' => [],
+        ];
+    }
+    if ($action === 'save_buying_supplier') {
+        $saved = yovel_admin_buying_save_supplier(bx_db(), $company, $admin, $input);
+        return [
+            'message' => 'Supplier saved.',
+            'section' => 'suppliers',
+            'query' => ['supplier' => (string) $saved['supplier_key']],
+        ];
+    }
+    $supplierLifecycleActions = [
+        'hold_buying_supplier' => 'HOLD',
+        'release_buying_supplier' => 'RELEASE',
+        'disable_buying_supplier' => 'DISABLE',
+        'activate_buying_supplier' => 'ACTIVATE',
+        'archive_buying_supplier' => 'ARCHIVE',
+    ];
+    if (isset($supplierLifecycleActions[$action])) {
+        $supplierKey = trim((string) ($input['supplier_key'] ?? ''));
+        $lifecycle = $supplierLifecycleActions[$action];
+        yovel_admin_buying_set_supplier_status(bx_db(), $company, $admin, $supplierKey, $lifecycle, $input);
+        return [
+            'message' => match ($lifecycle) {
+                'HOLD' => 'Supplier placed on hold.',
+                'RELEASE' => 'Supplier released.',
+                'DISABLE' => 'Supplier disabled.',
+                'ACTIVATE' => 'Supplier activated.',
+                'ARCHIVE' => 'Supplier archived.',
+            },
+            'section' => 'suppliers',
+            'query' => ['supplier' => $supplierKey],
+        ];
+    }
     if ($action === 'review_buying_form_target') {
         $target = trim((string) ($input['form_target'] ?? ''));
         $adapter = yovel_admin_buying_procurement_form_adapter();
@@ -182,5 +208,5 @@ function yovel_admin_buying_procurement_handle_post(
         ];
     }
 
-    throw new InvalidArgumentException('This Buying / Procurement action is not available in the current foundation slice.');
+    throw new InvalidArgumentException('This Buying / Procurement action is not available in the current implementation slice.');
 }

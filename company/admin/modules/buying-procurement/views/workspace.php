@@ -11,8 +11,19 @@ $buyingDependencies = is_array($buyingData['dependencies'] ?? null) ? $buyingDat
 $buyingFormState = is_array($activeModuleFormState ?? null) ? $activeModuleFormState : [];
 $buyingFormInput = is_array($buyingFormState['input'] ?? null) ? $buyingFormState['input'] : [];
 $buyingFormError = trim((string) ($buyingFormState['error'] ?? ''));
+$buyingFormAction = trim((string) ($buyingFormState['action'] ?? ''));
 $buyingReopenTargetModal = $buyingFormError !== ''
-    && (string) ($buyingFormState['action'] ?? '') === 'review_buying_form_target';
+    && $buyingFormAction === 'review_buying_form_target';
+$buyingReopenSettingsModal = $buyingFormError !== '' && $buyingFormAction === 'save_buying_settings';
+$buyingReopenSupplierModal = $buyingFormError !== '' && $buyingFormAction === 'save_buying_supplier';
+$buyingLifecycleActions = [
+    'hold_buying_supplier',
+    'release_buying_supplier',
+    'disable_buying_supplier',
+    'activate_buying_supplier',
+    'archive_buying_supplier',
+];
+$buyingReopenLifecycleModal = $buyingFormError !== '' && in_array($buyingFormAction, $buyingLifecycleActions, true);
 $buyingAdapter = is_array($buyingData['formAdapter'] ?? null)
     ? $buyingData['formAdapter']
     : yovel_admin_buying_procurement_form_adapter();
@@ -56,27 +67,9 @@ $buyingCountKey = match ($buyingSection) {
                 <?php elseif ($buyingSection === 'form-builder'): ?>
                     <?php require __DIR__ . '/form-builder.php'; ?>
                 <?php elseif ($buyingSection === 'suppliers'): ?>
-                    <?php $buyingSuppliers = is_array($buyingData['suppliers'] ?? null) ? $buyingData['suppliers'] : []; ?>
-                    <?php if ($buyingSuppliers === []): ?>
-                        <div class="grid min-h-64 place-items-center text-center">
-                            <div class="max-w-md">
-                                <span class="material-symbols-rounded text-3xl text-muted-foreground" aria-hidden="true">storefront</span>
-                                <h3 class="mt-3 text-sm font-semibold">No supplier records exist for this company.</h3>
-                                <p class="mt-1 text-sm leading-6 text-muted-foreground">The company-scoped supplier foundation is ready. Supplier creation becomes available with the approved supplier workflow slice.</p>
-                            </div>
-                        </div>
-                    <?php else: ?>
-                        <div class="overflow-x-auto">
-                            <table class="w-full min-w-[44rem] text-sm">
-                                <thead class="border-b text-left text-xs text-muted-foreground"><tr><th class="px-3 py-3">Supplier</th><th class="px-3 py-3">Type</th><th class="px-3 py-3">Currency</th><th class="px-3 py-3">Status</th></tr></thead>
-                                <tbody class="divide-y">
-                                    <?php foreach ($buyingSuppliers as $supplier): ?>
-                                        <tr><td class="px-3 py-3"><span class="font-medium"><?= bx_h((string) $supplier['supplier_name']) ?></span><span class="block text-xs text-muted-foreground"><?= bx_h((string) $supplier['supplier_code']) ?></span></td><td class="px-3 py-3"><?= bx_h((string) $supplier['supplier_type']) ?></td><td class="px-3 py-3"><?= bx_h((string) ($supplier['default_currency'] ?: 'Not set')) ?></td><td class="px-3 py-3"><?= bx_h((string) $supplier['supplier_status']) ?></td></tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    <?php endif; ?>
+                    <?php require __DIR__ . '/suppliers.php'; ?>
+                <?php elseif ($buyingSection === 'buying-settings'): ?>
+                    <?php require __DIR__ . '/settings.php'; ?>
                 <?php elseif (in_array($buyingSection, ['material-requests', 'purchase-receipts', 'purchase-analytics', 'reports'], true)): ?>
                     <?php $ownerDependency = $buyingSection === 'material-requests' || $buyingSection === 'purchase-receipts' ? 'Inventory' : 'Inventory and Finance'; ?>
                     <div class="grid min-h-64 place-items-center text-center">
@@ -158,7 +151,7 @@ $buyingCountKey = match ($buyingSection) {
             <input type="hidden" name="action" value="review_buying_form_target">
             <input type="hidden" name="section" value="<?= bx_h($buyingSection) ?>">
             <div class="min-h-0 flex-1 overflow-y-auto p-6">
-                <?php if ($buyingFormError !== ''): ?><div class="mb-4 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert"><?= bx_h($buyingFormError) ?></div><?php endif; ?>
+                <?php if ($buyingReopenTargetModal): ?><div class="mb-4 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert"><?= bx_h($buyingFormError) ?></div><?php endif; ?>
                 <label class="grid gap-1.5 text-sm"><span class="font-medium">Record target</span><select name="form_target" class="h-10 rounded-md border bg-background px-3" required><?php foreach ($buyingAdapter['target_record_types'] as $sectionKey => $recordType): ?><option value="<?= bx_h((string) $recordType) ?>" <?= $buyingSelectedTarget === $recordType ? 'selected' : '' ?>><?= bx_h((string) ($buyingSections[$sectionKey]['label'] ?? $recordType)) ?></option><?php endforeach; ?></select></label>
             </div>
             <footer class="m-0 flex w-full shrink-0 items-center justify-between gap-3 rounded-none border-t bg-card px-6 py-4"><span class="text-xs text-muted-foreground">Protected keys remain immutable.</span><div class="flex gap-2"><button type="button" data-record-modal-close class="h-9 rounded-md border bg-background px-3 text-sm">Cancel</button><button type="submit" class="h-9 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground">Review target</button></div></footer>

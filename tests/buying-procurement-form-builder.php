@@ -42,6 +42,12 @@ foreach ($defaultSchemas as $recordType => $schema) {
     buying_test_assert(($schema['requiredSystemFields'] ?? []) !== [], 'Buying schema has no required protected fields: ' . $recordType);
     buying_test_assert(($schema['fields'] ?? []) !== [], 'Buying schema has no fields: ' . $recordType);
     $fieldKeys = array_column($schema['fields'], 'key');
+    foreach ($schema['fields'] as $field) {
+        buying_test_assert(
+            in_array((string) ($field['type'] ?? ''), $adapter['field_types'] ?? [], true),
+            'Buying schema uses an unregistered shared field type: ' . (string) ($field['type'] ?? '')
+        );
+    }
     foreach ($schema['requiredSystemFields'] as $protectedKey) {
         buying_test_assert(in_array($protectedKey, $fieldKeys, true), 'Protected Buying field is absent from its schema: ' . $protectedKey);
         buying_test_assert(in_array($protectedKey, $adapter['protected_fields'][$recordType] ?? [], true), 'Adapter lost protected Buying field: ' . $protectedKey);

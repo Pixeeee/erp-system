@@ -48,9 +48,14 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (project_company_buying_setting).",
+                "Implementation: company/admin/modules/buying-procurement/settings.php (yovel_admin_buying_settings and yovel_admin_buying_save_settings).",
+                "UI: company/admin/modules/buying-procurement/views/settings.php (rehydrated record modal and shared confirmation boundary).",
+                "PASS: php tests/buying-procurement-settings-suppliers.php - Buying / Procurement settings and supplier checks passed."
+            ],
+            "reason": "Company-scoped Buying Settings now cover supplier naming, defaults, document requirements, rate controls, allowances, zero-quantity switches, authorization, locked transactional upsert, audit, exact read-back, rollback, and modal rehydration."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/customer_number_at_supplier/customer_number_at_supplier.json:doctype:Customer Number At Supplier",
@@ -63,9 +68,14 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (project_company_buying_supplier_customer_number).",
+                "Implementation: company/admin/modules/buying-procurement/suppliers.php (yovel_admin_buying_customer_numbers and transactional child replacement in yovel_admin_buying_save_supplier).",
+                "UI: company/admin/modules/buying-procurement/views/suppliers.php (customer-number editor with server rehydration).",
+                "PASS: php tests/buying-procurement-settings-suppliers.php - duplicate rejection, exact child read-back, company isolation, and injected child-write rollback passed."
+            ],
+            "reason": "Supplier customer numbers are validated against active companies, reject duplicate company/number rows, replace only inside the owning supplier transaction, and are verified after write."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/purchase_order/purchase_order.json:doctype:Purchase Order",
@@ -183,9 +193,16 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (supplier, customer-number, and allowed-company tables).",
+                "Implementation: company/admin/modules/buying-procurement/suppliers.php (supplier reads, create/update, internal-company rules, restrictions, and locked lifecycle transitions).",
+                "Dispatch: company/admin/modules/buying-procurement/functions.php (exact shared POST handler signature and supplier actions).",
+                "UI: company/admin/modules/buying-procurement/views/suppliers.php (Add/Edit/Hold/Release/Disable/Activate/Archive record modals with shared confirmation).",
+                "PASS: php tests/buying-procurement-settings-suppliers.php - create/update, authorization, company isolation, holds/releases, disable/archive immutability, audit, exact read-back, and rollback passed.",
+                "PASS: authenticated desktop/mobile browser gate - 12/8 and main-first layouts, no overflow, modal focus, Submit-to-Confirm, Cancel retention, and zero pre-confirm mutations verified."
+            ],
+            "reason": "Supplier governance now implements company-scoped identity and terms, internal-supplier permissions, RFQ/PO warning and prevention flags, invoice/payment/all holds, release, disable, activate, archive immutability, and accessible confirmed workflows."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/supplier_quotation/supplier_quotation.json:doctype:Supplier Quotation",
