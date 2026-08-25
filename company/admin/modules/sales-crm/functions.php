@@ -1,6 +1,11 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/schema.php';
+require_once __DIR__ . '/form-builder.php';
+require_once __DIR__ . '/crm-settings.php';
+require_once __DIR__ . '/campaigns.php';
+
 function yovel_admin_sales_crm_sections(): array
 {
     return [
@@ -25,131 +30,7 @@ function yovel_admin_sales_crm_section(): string
 
 function yovel_admin_sales_crm_schema(): void
 {
-    $db = bx_db();
-    $statements = [
-        "CREATE TABLE IF NOT EXISTS project_company_form_schema (
-            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            form_schema_key CHAR(36) NOT NULL UNIQUE,
-            company_key CHAR(36) NOT NULL,
-            company_key_hash CHAR(64) NOT NULL,
-            module_code VARCHAR(80) NOT NULL,
-            record_type VARCHAR(80) NOT NULL,
-            schema_status ENUM('ACTIVE','INACTIVE','DELETED') NOT NULL DEFAULT 'ACTIVE',
-            schema_version INT UNSIGNED NOT NULL DEFAULT 1,
-            schema_json LONGTEXT NOT NULL,
-            created_by_admin_key CHAR(36) NULL,
-            updated_by_admin_key CHAR(36) NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            UNIQUE KEY uq_project_company_form_schema_version (company_key_hash, module_code, record_type, schema_version),
-            INDEX idx_project_company_form_schema_active (company_key_hash, module_code, record_type, schema_status, schema_version)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-        "CREATE TABLE IF NOT EXISTS project_company_form_schema_audit (
-            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            form_schema_audit_key CHAR(36) NOT NULL UNIQUE,
-            company_key CHAR(36) NOT NULL,
-            company_key_hash CHAR(64) NOT NULL,
-            form_schema_key CHAR(36) NOT NULL,
-            module_code VARCHAR(80) NOT NULL,
-            record_type VARCHAR(80) NOT NULL,
-            audit_action VARCHAR(40) NOT NULL,
-            previous_schema_json LONGTEXT NULL,
-            next_schema_json LONGTEXT NOT NULL,
-            created_by_admin_key CHAR(36) NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            INDEX idx_project_company_form_schema_audit_form (company_key_hash, form_schema_key),
-            INDEX idx_project_company_form_schema_audit_record (company_key_hash, module_code, record_type)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-        "CREATE TABLE IF NOT EXISTS project_company_sales_campaign (
-            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            campaign_key CHAR(36) NOT NULL UNIQUE,
-            company_key CHAR(36) NOT NULL,
-            company_key_hash CHAR(64) NOT NULL,
-            campaign_code VARCHAR(80) NOT NULL,
-            campaign_name VARCHAR(180) NOT NULL,
-            campaign_status ENUM('DRAFT','ACTIVE','INACTIVE','COMPLETED','DELETED') NOT NULL DEFAULT 'ACTIVE',
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            UNIQUE KEY uq_project_company_sales_campaign_code (company_key_hash, campaign_code),
-            INDEX idx_project_company_sales_campaign_status (company_key_hash, campaign_status)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-        "CREATE TABLE IF NOT EXISTS project_company_sales_customer (
-            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            customer_key CHAR(36) NOT NULL UNIQUE,
-            company_key CHAR(36) NOT NULL,
-            company_key_hash CHAR(64) NOT NULL,
-            customer_code VARCHAR(80) NOT NULL,
-            customer_name VARCHAR(200) NOT NULL,
-            customer_status ENUM('DRAFT','ACTIVE','INACTIVE','DELETED') NOT NULL DEFAULT 'ACTIVE',
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            UNIQUE KEY uq_project_company_sales_customer_code (company_key_hash, customer_code),
-            INDEX idx_project_company_sales_customer_status (company_key_hash, customer_status)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-        "CREATE TABLE IF NOT EXISTS project_company_sales_territory (
-            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            territory_key CHAR(36) NOT NULL UNIQUE,
-            company_key CHAR(36) NOT NULL,
-            company_key_hash CHAR(64) NOT NULL,
-            territory_code VARCHAR(80) NOT NULL,
-            territory_name VARCHAR(180) NOT NULL,
-            territory_status ENUM('DRAFT','ACTIVE','INACTIVE','DELETED') NOT NULL DEFAULT 'ACTIVE',
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            UNIQUE KEY uq_project_company_sales_territory_code (company_key_hash, territory_code),
-            INDEX idx_project_company_sales_territory_status (company_key_hash, territory_status)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-        "CREATE TABLE IF NOT EXISTS project_company_salesperson (
-            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            salesperson_key CHAR(36) NOT NULL UNIQUE,
-            company_key CHAR(36) NOT NULL,
-            company_key_hash CHAR(64) NOT NULL,
-            salesperson_code VARCHAR(80) NOT NULL,
-            salesperson_name VARCHAR(180) NOT NULL,
-            salesperson_status ENUM('DRAFT','ACTIVE','INACTIVE','DELETED') NOT NULL DEFAULT 'ACTIVE',
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            UNIQUE KEY uq_project_company_salesperson_code (company_key_hash, salesperson_code),
-            INDEX idx_project_company_salesperson_status (company_key_hash, salesperson_status)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-        "CREATE TABLE IF NOT EXISTS project_company_sales_lead (
-            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            lead_key CHAR(36) NOT NULL UNIQUE,
-            company_key CHAR(36) NOT NULL,
-            company_key_hash CHAR(64) NOT NULL,
-            lead_code VARCHAR(80) NOT NULL,
-            lead_name VARCHAR(200) NOT NULL,
-            organization_name VARCHAR(200) NULL,
-            lead_status ENUM('DRAFT','OPEN','QUALIFIED','CONVERTED','LOST','INACTIVE','DELETED') NOT NULL DEFAULT 'OPEN',
-            lead_source VARCHAR(120) NULL,
-            campaign_key CHAR(36) NULL,
-            territory_key CHAR(36) NULL,
-            salesperson_key CHAR(36) NULL,
-            email VARCHAR(180) NULL,
-            phone VARCHAR(80) NULL,
-            mobile VARCHAR(80) NULL,
-            website VARCHAR(220) NULL,
-            industry VARCHAR(120) NULL,
-            estimated_value DECIMAL(15,2) NULL,
-            next_contact_date DATE NULL,
-            notes TEXT NULL,
-            created_by_admin_key CHAR(36) NULL,
-            updated_by_admin_key CHAR(36) NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            UNIQUE KEY uq_project_company_sales_lead_code (company_key_hash, lead_code),
-            INDEX idx_project_company_sales_lead_status (company_key_hash, lead_status),
-            INDEX idx_project_company_sales_lead_source (company_key_hash, lead_source),
-            INDEX idx_project_company_sales_lead_campaign (company_key_hash, campaign_key),
-            INDEX idx_project_company_sales_lead_territory (company_key_hash, territory_key),
-            INDEX idx_project_company_sales_lead_salesperson (company_key_hash, salesperson_key),
-            INDEX idx_project_company_sales_lead_updated (company_key_hash, updated_at)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-    ];
-
-    foreach ($statements as $statement) {
-        yovel_admin_db_execute($db, $statement, [], 'Sales/CRM schema update');
-    }
+    yovel_admin_sales_crm_ensure_schema();
 }
 
 function yovel_admin_sales_crm_default_form_schemas(): array
@@ -220,8 +101,14 @@ function yovel_admin_sales_crm_default_form_schemas(): array
         'campaign' => [
             'recordType' => 'campaign',
             'version' => 1,
-            'sections' => [['key' => 'overview', 'label' => 'Overview', 'sortOrder' => 10]],
-            'requiredSystemFields' => ['campaign_code', 'campaign_name', 'campaign_status'],
+            'sections' => [
+                ['key' => 'overview', 'label' => 'Overview', 'sortOrder' => 10],
+                ['key' => 'email-schedule', 'label' => 'Email schedule', 'sortOrder' => 20],
+            ],
+            'requiredSystemFields' => [
+                'campaign_code', 'campaign_name', 'campaign_status',
+                'campaign_email_schedule_code', 'campaign_email_subject', 'campaign_email_scheduled_at',
+            ],
             'readonlySystemFields' => [],
             'fields' => [
                 $field('campaign_code', 'Campaign code', 'text', 'overview', true, 10, 'third', [], true),
@@ -233,6 +120,11 @@ function yovel_admin_sales_crm_default_form_schemas(): array
                 $field('budget', 'Budget', 'number', 'overview', false, 70),
                 $field('expected_revenue', 'Expected revenue', 'number', 'overview', false, 80),
                 $field('notes', 'Notes', 'textarea', 'overview', false, 90, 'full'),
+                $field('campaign_email_schedule_code', 'Schedule code', 'text', 'email-schedule', true, 100, 'third', [], true),
+                $field('campaign_email_subject', 'Email subject', 'text', 'email-schedule', true, 110, 'half', [], true),
+                $field('campaign_email_recipient_segment', 'Recipient segment', 'text', 'email-schedule', false, 120, 'half'),
+                $field('campaign_email_scheduled_at', 'Scheduled at', 'datetime-local', 'email-schedule', true, 130, 'half', [], true),
+                $field('campaign_email_send_status', 'Send status', 'select', 'email-schedule', false, 140, 'third', ['DRAFT', 'SCHEDULED', 'CANCELLED']),
             ],
         ],
         'customer' => [
@@ -477,6 +369,7 @@ function yovel_admin_write_sales_form_schema(array $company, ?array $admin, stri
 function yovel_admin_save_form_schema(array $company, array $admin): string
 {
     $recordType = yovel_admin_sales_crm_record_type((string) ($_POST['record_type'] ?? 'lead'));
+    yovel_admin_sales_crm_require_scope($company, $admin, in_array($recordType, ['lead', 'opportunity', 'campaign'], true) ? 'crm' : 'selling');
     $schemaJson = (string) ($_POST['schema_json'] ?? '');
     $decoded = json_decode($schemaJson, true);
     if (!is_array($decoded)) {
@@ -489,6 +382,7 @@ function yovel_admin_save_form_schema(array $company, array $admin): string
 function yovel_admin_reset_form_schema(array $company, array $admin): string
 {
     $recordType = yovel_admin_sales_crm_record_type((string) ($_POST['record_type'] ?? 'lead'));
+    yovel_admin_sales_crm_require_scope($company, $admin, in_array($recordType, ['lead', 'opportunity', 'campaign'], true) ? 'crm' : 'selling');
     yovel_admin_write_sales_form_schema($company, $admin, $recordType, yovel_admin_sales_crm_default_form_schemas()[$recordType], 'RESET');
     return 'Sales/CRM form layout restored to default.';
 }
@@ -496,14 +390,30 @@ function yovel_admin_reset_form_schema(array $company, array $admin): string
 function yovel_admin_sales_crm_data(array $company, ?array $admin = null): array
 {
     yovel_admin_sales_crm_schema();
+    $leadRehydration = yovel_admin_sales_crm_pull_rehydration($company, 'lead');
 
     $db = bx_db();
     $companyKeyHash = (string) $company['company_key_hash'];
-    $campaigns = $db->GetAll("SELECT campaign_key, campaign_code, campaign_name, campaign_status FROM project_company_sales_campaign WHERE company_key_hash = ? AND campaign_status <> 'DELETED' ORDER BY campaign_name ASC", [$companyKeyHash]);
-    $territories = $db->GetAll("SELECT territory_key, territory_code, territory_name, territory_status FROM project_company_sales_territory WHERE company_key_hash = ? AND territory_status <> 'DELETED' ORDER BY territory_name ASC", [$companyKeyHash]);
-    $salespersons = $db->GetAll("SELECT salesperson_key, salesperson_code, salesperson_name, salesperson_status FROM project_company_salesperson WHERE company_key_hash = ? AND salesperson_status <> 'DELETED' ORDER BY salesperson_name ASC", [$companyKeyHash]);
-    $customers = $db->GetAll("SELECT customer_key, customer_code, customer_name, customer_status FROM project_company_sales_customer WHERE company_key_hash = ? AND customer_status <> 'DELETED' ORDER BY customer_name ASC", [$companyKeyHash]);
-    $leads = $db->GetAll("
+    $workspace = $admin !== null ? yovel_admin_sales_crm_workspace($company, $admin) : [];
+    $access = $workspace['access'] ?? ['crm' => true, 'selling' => true, 'manage_settings' => true];
+    $canCrm = !empty($access['crm']);
+    $canSelling = !empty($access['selling']);
+    $campaigns = $canCrm ? $db->GetAll("SELECT * FROM project_company_sales_campaign WHERE company_key_hash = ? AND campaign_status <> 'DELETED' ORDER BY updated_at DESC, campaign_name ASC", [$companyKeyHash]) : [];
+    $campaignEfficiencies = [];
+    if ($canCrm && $admin !== null) {
+        foreach (is_array($campaigns) ? $campaigns : [] as &$campaign) {
+            $campaign['email_schedules'] = yovel_admin_sales_campaign_schedules($company, (string) $campaign['campaign_key']);
+            $campaign['campaign_version'] = (int) $campaign['campaign_version'];
+            $campaign['budget'] = yovel_admin_sales_campaign_decimal_readback($campaign['budget']);
+            $campaign['expected_revenue'] = yovel_admin_sales_campaign_decimal_readback($campaign['expected_revenue']);
+            $campaignEfficiencies[(string) $campaign['campaign_key']] = yovel_admin_sales_campaign_efficiency($company, $admin, (string) $campaign['campaign_key']);
+        }
+        unset($campaign);
+    }
+    $territories = ($canCrm || $canSelling) ? $db->GetAll("SELECT territory_key, territory_code, territory_name, territory_status FROM project_company_sales_territory WHERE company_key_hash = ? AND territory_status <> 'DELETED' ORDER BY territory_name ASC", [$companyKeyHash]) : [];
+    $salespersons = ($canCrm || $canSelling) ? $db->GetAll("SELECT salesperson_key, salesperson_code, salesperson_name, salesperson_status FROM project_company_salesperson WHERE company_key_hash = ? AND salesperson_status <> 'DELETED' ORDER BY salesperson_name ASC", [$companyKeyHash]) : [];
+    $customers = $canSelling ? $db->GetAll("SELECT customer_key, customer_code, customer_name, customer_status FROM project_company_sales_customer WHERE company_key_hash = ? AND customer_status <> 'DELETED' ORDER BY customer_name ASC", [$companyKeyHash]) : [];
+    $leads = $canCrm ? $db->GetAll("
         SELECT
             l.*,
             COALESCE(c.campaign_name, '') AS campaign_name,
@@ -515,26 +425,42 @@ function yovel_admin_sales_crm_data(array $company, ?array $admin = null): array
         LEFT JOIN project_company_salesperson s ON s.salesperson_key = l.salesperson_key AND s.company_key_hash = l.company_key_hash
         WHERE l.company_key_hash = ? AND l.lead_status <> 'DELETED'
         ORDER BY l.updated_at DESC, l.lead_name ASC
-    ", [$companyKeyHash]);
+    ", [$companyKeyHash]) : [];
 
     $schemas = [];
     foreach (yovel_admin_sales_crm_default_form_schemas() as $recordType => $_schema) {
-        $schemas[$recordType] = yovel_admin_sales_crm_active_schema($company, $recordType, $admin);
+        $scope = in_array($recordType, ['lead', 'opportunity', 'campaign'], true) ? 'crm' : 'selling';
+        if (!empty($access[$scope])) {
+            $schemas[$recordType] = yovel_admin_sales_crm_active_schema($company, $recordType, $admin);
+        }
+    }
+    if ($workspace !== []) {
+        foreach ($workspace['setup_steps'] as &$setupStep) {
+            if ((string) ($setupStep['key'] ?? '') === 'lead') {
+                $setupStep['complete'] = count(is_array($leads) ? $leads : []) > 0;
+            }
+        }
+        unset($setupStep);
     }
 
     return [
         'campaigns' => is_array($campaigns) ? $campaigns : [],
+        'campaign_efficiencies' => $campaignEfficiencies,
         'territories' => is_array($territories) ? $territories : [],
         'salespersons' => is_array($salespersons) ? $salespersons : [],
         'customers' => is_array($customers) ? $customers : [],
         'leads' => is_array($leads) ? $leads : [],
         'schemas' => $schemas,
+        'rehydration' => ['lead' => $leadRehydration],
+        'workspace' => $workspace,
     ];
 }
 
 function yovel_admin_save_sales_lead(array $company, array $admin): string
 {
     yovel_admin_sales_crm_schema();
+    yovel_admin_sales_crm_require_scope($company, $admin, 'crm');
+    yovel_admin_sales_crm_store_rehydration($company, 'lead', $_POST);
 
     $db = bx_db();
     $companyKey = (string) $company['company_key'];
@@ -693,6 +619,7 @@ function yovel_admin_save_sales_lead(array $company, array $admin): string
         ], $existing ? 'Company admin updated Sales/CRM lead.' : 'Company admin created Sales/CRM lead.');
 
         $db->CommitTrans();
+        yovel_admin_sales_crm_clear_rehydration('lead');
     } catch (Throwable $error) {
         $db->RollbackTrans();
         throw $error;
@@ -704,6 +631,7 @@ function yovel_admin_save_sales_lead(array $company, array $admin): string
 function yovel_admin_set_sales_lead_status(array $company, array $admin): string
 {
     yovel_admin_sales_crm_schema();
+    yovel_admin_sales_crm_require_scope($company, $admin, 'crm');
 
     $db = bx_db();
     $companyKeyHash = (string) $company['company_key_hash'];

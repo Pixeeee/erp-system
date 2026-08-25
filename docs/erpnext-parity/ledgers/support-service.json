@@ -178,12 +178,15 @@
             "dependencies": [
                 "operations:portal-search-contract"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
-                "Audit 2026-08-25: no tests/support-service-* files exist."
+                "company/admin/modules/support-service/schema.php: project_company_support_search_source provides the company-scoped stable-key/versioned source model and company-first indexes.",
+                "company/admin/modules/support-service/settings.php: yovel_admin_save_support_search_source validates allowlisted API/LINK fields and safe public HTTPS routes before one locked, parameterized, audited transaction with rollback injection and exact read-back.",
+                "company/admin/modules/support-service/functions.php: yovel_admin_support_service_handle_post exposes the registry-compatible action and committed server-rehydration metadata; yovel_admin_support_service_dependencies exposes operations.support-search.v1 without querying Operations tables.",
+                "tests/support-service-foundation.php: 2026-08-25 fresh API/LINK create, deterministic normalization, unsafe URL/route and secret rejection, cross-company rejection, rollback, exact read-back, audit, handler, and dependency assertions passed in two consecutive php tests/support-service-foundation.php runs.",
+                "2026-08-25 shared regressions passed: php tests/company-admin-erp-contract.php; php tests/company-admin-shared-form-builder.php; php tests/company-admin-modal-confirmation.php."
             ],
-            "reason": "WP-WORKSPACE: no allowlisted support search-source configuration, safe execution boundary, or focused verification exists."
+            "reason": "WP-WORKSPACE Task 1 complete: Support-owned search-source configuration is company isolated, allowlisted, URL/route hardened, transaction owned, audited, exactly read back, and registry/Form Builder compatible; Operations execution remains an explicit owner-service dependency."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/support_settings/support_settings.json:doctype:Support Settings",
@@ -198,12 +201,16 @@
             "dependencies": [
                 "operations:portal-and-background-job-contracts"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
-                "Audit 2026-08-25: no tests/support-service-* files exist."
+                "company/admin/modules/support-service/schema.php: project_company_support_setting provides the one-per-company stable-key/versioned settings model with bounded opaque company_key VARCHAR(1500).",
+                "company/admin/modules/support-service/settings.php: yovel_admin_save_support_settings performs validated optimistic locking, parameterized upsert, rollback injection, in-transaction audit, exact scoped read-back, and returns committed values.",
+                "company/admin/modules/support-service/functions.php: yovel_admin_support_service_scope verifies the opaque company key, exact 64-hex hash, active company, and active administrator membership; the exact four-argument handler returns server rehydration metadata.",
+                "company/admin/modules/support-service/forms.php: module-local adapter declares eight stable targets, protected system fields, canonical version identity, persistence mappings, and immutable published custom field keys/types while consuming the shared adapter contract.",
+                "tests/support-service-foundation.php: 2026-08-25 fresh schema-twice, opaque scope, create/update/stale-version, rollback, audit, exact read-back, rehydration, Form Builder protection/immutability, and shared-registry assertions passed in two consecutive php tests/support-service-foundation.php runs.",
+                "2026-08-25 shared regressions passed: php tests/company-admin-erp-contract.php; php tests/company-admin-shared-form-builder.php; php tests/company-admin-modal-confirmation.php."
             ],
-            "reason": "WP-WORKSPACE: no company-scoped support settings, auto-close policy, portal configuration, or focused verification exists."
+            "reason": "WP-WORKSPACE Task 1 complete: Support settings and portal policy are company scoped, versioned, transaction owned, audited, exactly read back, rehydrated from committed state, and integrated with the module-local universal Form Builder adapter."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/warranty_claim/warranty_claim.json:doctype:Warranty Claim",

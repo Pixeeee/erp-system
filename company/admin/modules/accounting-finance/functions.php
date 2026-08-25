@@ -30,6 +30,114 @@ function yovel_admin_accounting_finance_section(): string
     return array_key_exists($section, yovel_admin_accounting_finance_sections()) ? $section : 'dashboard';
 }
 
+function yovel_admin_finance_form_modal_id(string $action, array $input = []): string
+{
+    return match ($action) {
+        'save_accounting_account' => 'yovel-account-modal',
+        'save_accounting_form_schema', 'reset_accounting_form_schema' => 'yovel-account-builder-modal',
+        'save_finance_builder_form' => 'yovel-finance-builder-modal',
+        'save_finance_grid_view' => 'yovel-finance-grid-view-modal',
+        'save_finance_grid_formula' => 'yovel-finance-grid-formula-modal',
+        'import_finance_accounts' => 'yovel-finance-import-modal',
+        'save_finance_settings' => 'finance-settings-modal',
+        'save_finance_master' => match ((string) ($input['master_type'] ?? '')) {
+            'tax-code' => 'finance-tax-code-modal',
+            'chart-template-install' => 'finance-chart-template-modal',
+            'account-category', 'account-closing-balance', 'dimension-filter', 'accounting-period', 'fiscal-year', 'finance-book', 'monthly-distribution', 'cost-center-allocation', 'currency-exchange-setting' => 'finance-foundation-modal',
+            default => 'finance-master-modal',
+        },
+        'save_finance_journal' => match ((string)($input['journal_operation'] ?? 'journal')) {
+            'template' => 'finance-journal-template-modal',
+            'amend' => 'finance-journal-repair-modal',
+            'ledger_health', 'ledger_health_monitor' => 'finance-ledger-health-modal',
+            'ledger_merge' => 'finance-ledger-merge-modal',
+            'ledger_repost' => 'finance-ledger-repost-modal',
+            default => 'finance-journal-modal',
+        },
+        'save_finance_invoice' => 'finance-invoice-modal',
+        'save_finance_supplier' => 'finance-supplier-modal',
+        'save_finance_payment' => 'finance-payment-modal',
+        'import_finance_bank_statement' => 'finance-bank-import-modal',
+        'reconcile_finance_bank' => 'finance-bank-match-modal',
+        'unreconcile_finance_bank' => 'finance-unreconcile-modal',
+        'save_finance_budget' => 'finance-budget-modal',
+        'close_finance_period' => 'finance-close-modal',
+        'reopen_finance_period' => 'finance-close-modal',
+        'submit_finance_journal', 'cancel_finance_journal' => 'finance-journal-lifecycle',
+        'submit_finance_invoice', 'cancel_finance_invoice' => 'finance-invoice-lifecycle',
+        'submit_finance_payment', 'cancel_finance_payment' => 'finance-payment-lifecycle',
+        default => '',
+    };
+}
+
+function yovel_admin_finance_form_state_values(array $input): array
+{
+    $sanitize = static function (mixed $value, int $depth = 0) use (&$sanitize): mixed {
+        if ($depth > 4) {
+            return null;
+        }
+        if (is_array($value)) {
+            $result = [];
+            foreach (array_slice($value, 0, 200, true) as $key => $item) {
+                $result[(string) $key] = $sanitize($item, $depth + 1);
+            }
+            return $result;
+        }
+        if (is_bool($value) || is_int($value) || is_float($value)) {
+            return $value;
+        }
+        if (is_string($value)) {
+            return substr($value, 0, 20000);
+        }
+        return '';
+    };
+
+    unset($input['csrf'], $input['password'], $input['password_confirmation']);
+    return $sanitize($input);
+}
+
+function yovel_admin_finance_capture_form_state(array $company, string $action, string $modalId = '', ?array $input = null): void
+{
+    $companyKeyHash = (string) ($company['company_key_hash'] ?? '');
+    if ($companyKeyHash === '' || strlen($companyKeyHash) > 64) {
+        return;
+    }
+    $values = yovel_admin_finance_form_state_values($input ?? $_POST);
+    $modalId = $modalId !== '' ? $modalId : yovel_admin_finance_form_modal_id($action, $values);
+    if ($modalId === '') {
+        return;
+    }
+    $_SESSION['builderx_finance_form_state'][$companyKeyHash] = [
+        'action' => $action,
+        'modal_id' => $modalId,
+        'values' => $values,
+    ];
+}
+
+function yovel_admin_finance_clear_form_state(array $company): void
+{
+    $companyKeyHash = (string) ($company['company_key_hash'] ?? '');
+    unset($_SESSION['builderx_finance_form_state'][$companyKeyHash]);
+}
+
+function yovel_admin_finance_take_form_state(array $company): array
+{
+    $companyKeyHash = (string) ($company['company_key_hash'] ?? '');
+    $state = $_SESSION['builderx_finance_form_state'][$companyKeyHash] ?? [];
+    unset($_SESSION['builderx_finance_form_state'][$companyKeyHash]);
+
+    return is_array($state) ? $state : [];
+}
+
+function yovel_admin_finance_run_form_action(array $company, string $action, callable $operation): mixed
+{
+    yovel_admin_finance_capture_form_state($company, $action);
+    $result = $operation();
+    yovel_admin_finance_clear_form_state($company);
+
+    return $result;
+}
+
 function yovel_admin_accounting_finance_schema(): void
 {
     $db = bx_db();
@@ -163,6 +271,7 @@ function yovel_admin_accounting_finance_default_form_schemas(): array
                 $field('root_type', 'Root type', 'select', 'classification', true, 60, 'third', ['ASSET', 'LIABILITY', 'INCOME', 'EXPENSE', 'EQUITY'], true),
                 $field('report_type', 'Report type', 'select', 'classification', true, 70, 'third', ['BALANCE_SHEET', 'PROFIT_LOSS'], true),
                 $field('account_type', 'Account type', 'select', 'classification', false, 80, 'third', ['Receivable', 'Payable', 'Bank', 'Cash', 'Tax', 'Stock', 'Expense Account', 'Income Account', 'Fixed Asset', 'Equity']),
+                $field('account_category_key', 'Account Category', 'select', 'classification', false, 85, 'third'),
                 $field('account_currency', 'Currency', 'text', 'classification', false, 90, 'third'),
                 $field('tax_rate', 'Tax rate', 'number', 'controls', false, 100, 'third'),
                 $field('balance_must_be', 'Balance must be', 'select', 'controls', false, 110, 'third', ['DEBIT', 'CREDIT', 'EITHER']),
@@ -624,22 +733,26 @@ function yovel_admin_accounting_finance_schema_from_post(string $recordType): ar
 
 function yovel_admin_save_accounting_finance_form_schema(array $company, array $admin): string
 {
-    $recordType = yovel_admin_accounting_finance_record_type((string) ($_POST['record_type'] ?? 'account'));
-    $schema = yovel_admin_accounting_finance_schema_from_post($recordType);
-    yovel_admin_write_accounting_finance_form_schema($company, $admin, $recordType, $schema, 'UPDATE');
-    return 'Accounting/Finance form layout saved.';
+    return yovel_admin_finance_run_form_action($company, 'save_accounting_form_schema', static function () use ($company, $admin): string {
+        $recordType = yovel_admin_accounting_finance_record_type((string) ($_POST['record_type'] ?? 'account'));
+        $schema = yovel_admin_accounting_finance_schema_from_post($recordType);
+        yovel_admin_write_accounting_finance_form_schema($company, $admin, $recordType, $schema, 'UPDATE');
+        return 'Accounting/Finance form layout saved.';
+    });
 }
 
 function yovel_admin_reset_accounting_finance_form_schema(array $company, array $admin): string
 {
-    $recordType = yovel_admin_accounting_finance_record_type((string) ($_POST['record_type'] ?? 'account'));
-    yovel_admin_write_accounting_finance_form_schema($company, $admin, $recordType, yovel_admin_accounting_finance_default_form_schemas()[$recordType], 'RESET');
-    return 'Accounting/Finance form layout restored to default.';
+    return yovel_admin_finance_run_form_action($company, 'reset_accounting_form_schema', static function () use ($company, $admin): string {
+        $recordType = yovel_admin_accounting_finance_record_type((string) ($_POST['record_type'] ?? 'account'));
+        yovel_admin_write_accounting_finance_form_schema($company, $admin, $recordType, yovel_admin_accounting_finance_default_form_schemas()[$recordType], 'RESET');
+        return 'Accounting/Finance form layout restored to default.';
+    });
 }
 
 function yovel_admin_accounting_finance_data(array $company, ?array $admin = null): array
 {
-    yovel_admin_accounting_finance_schema();
+    yovel_admin_finance_foundation_schema();
     yovel_admin_finance_core_schema();
 
     $db = bx_db();
@@ -678,6 +791,24 @@ function yovel_admin_accounting_finance_data(array $company, ?array $admin = nul
         'SELECT COUNT(*) FROM project_company_general_ledger_entry WHERE company_key_hash = ?',
         [$companyKeyHash]
     );
+    $reportDateTo = yovel_admin_optional_date((string) ($_GET['date_to'] ?? date('Y-m-d')), 'Report end date');
+    $reportDateFrom = yovel_admin_optional_date((string) ($_GET['date_from'] ?? date('Y-01-01')), 'Report start date');
+    $activeReport = match ($activeSection) {
+        'profit-loss' => yovel_admin_profit_loss_report($company, $reportDateFrom, $reportDateTo),
+        'balance-sheet' => yovel_admin_balance_sheet_report($company, $reportDateTo),
+        'cash-flow' => yovel_admin_cash_flow_report($company, $reportDateFrom, $reportDateTo),
+        'tax-reports' => yovel_admin_bir_2550q_report($company, (int) ($_GET['year'] ?? date('Y')), max(1, min(4, (int) ($_GET['quarter'] ?? ceil((int) date('n') / 3))))),
+        default => [],
+    };
+    $bankStatementRows = yovel_admin_bank_statement_rows($company, (string) ($_GET['bank_account_key'] ?? ''), $activeSection === 'bank-reconciliation' ? $_GET : []);
+    $bankMatchCandidates = [];
+    if ($activeSection === 'bank-reconciliation') {
+        foreach ($bankStatementRows as $bankRow) {
+            if ((string) $bankRow['reconciliation_status'] === 'UNRECONCILED') {
+                $bankMatchCandidates[(string) $bankRow['bank_statement_row_key']] = yovel_admin_bank_match_candidates($company, (string) $bankRow['bank_statement_row_key']);
+            }
+        }
+    }
     return [
         'accounts' => is_array($accounts) ? $accounts : [],
         'schemas' => $schemas,
@@ -687,17 +818,32 @@ function yovel_admin_accounting_finance_data(array $company, ?array $admin = nul
         'ledgerFilters' => $ledgerFilters,
         'ledgerEntries' => $ledgerEntries,
         'ledgerSummary' => $ledgerSummary,
+        'ledgerTransactions' => yovel_admin_general_ledger_transactions($company),
         'ledgerEntryCount' => $ledgerEntryCount,
         'financeSettings' => yovel_admin_finance_settings($company, $admin),
+        'foundation' => yovel_admin_finance_foundation_records($company),
+        'chartTemplates' => yovel_admin_finance_chart_templates(),
         'costCenters' => yovel_admin_finance_masters($company, 'cost-center'),
         'accountingDimensions' => yovel_admin_finance_masters($company, 'accounting-dimension'),
         'bankAccounts' => yovel_admin_finance_masters($company, 'bank-account'),
         'taxCodes' => yovel_admin_finance_masters($company, 'tax-code'),
         'journalEntries' => yovel_admin_journal_entries($company, $activeSection === 'journal-entries' ? $_GET : []),
+        'journalTemplates' => yovel_admin_journal_templates($company),
+        'ledgerHealthMonitors' => yovel_admin_ledger_health_monitors($company),
+        'ledgerRepairs' => yovel_admin_ledger_repair_history($company),
         'salesInvoices' => yovel_admin_finance_invoices($company, 'SALES', $activeSection === 'sales-invoices' ? $_GET : []),
         'purchaseInvoices' => yovel_admin_finance_invoices($company, 'PURCHASE', $activeSection === 'purchase-invoices' ? $_GET : []),
         'suppliers' => bx_db()->GetAll("SELECT * FROM project_company_finance_supplier WHERE company_key_hash = ? AND supplier_status <> 'DELETED' ORDER BY supplier_name", [$companyKeyHash]) ?: [],
+        'customers' => bx_db()->GetAll("SELECT * FROM project_company_sales_customer WHERE company_key_hash = ? AND customer_status <> 'DELETED' ORDER BY customer_name", [$companyKeyHash]) ?: [],
         'paymentEntries' => yovel_admin_payment_entries($company, $activeSection === 'payment-entries' ? $_GET : []),
+        'openInvoices' => $db->GetAll("SELECT invoice_key,invoice_no,document_type,party_key,party_name,due_date,outstanding_amount FROM project_company_finance_invoice WHERE company_key_hash=? AND document_status='SUBMITTED' AND is_return=0 AND outstanding_amount>0 ORDER BY due_date,invoice_no", [$companyKeyHash]) ?: [],
+        'bankStatementRows' => $bankStatementRows,
+        'bankMatchCandidates' => $bankMatchCandidates,
+        'bankReconciliations' => $db->GetAll('SELECT * FROM project_company_finance_bank_reconciliation WHERE company_key_hash=? ORDER BY reconciliation_date DESC,x_id DESC LIMIT 200', [$companyKeyHash]) ?: [],
+        'budgets' => yovel_admin_finance_budgets($company),
+        'periodClosings' => yovel_admin_period_closings($company),
+        'activeReport' => $activeReport,
+        'formState' => yovel_admin_finance_take_form_state($company),
     ];
 }
 
@@ -809,7 +955,8 @@ function yovel_admin_accounting_report_type_for_root(string $rootType): string
 
 function yovel_admin_save_accounting_account(array $company, array $admin): string
 {
-    yovel_admin_accounting_finance_schema();
+    yovel_admin_finance_capture_form_state($company, 'save_accounting_account');
+    yovel_admin_finance_foundation_schema();
 
     $db = bx_db();
     $companyKey = (string) $company['company_key'];
@@ -825,6 +972,7 @@ function yovel_admin_save_accounting_account(array $company, array $admin): stri
     $reportType = yovel_admin_status((string) ($_POST['report_type'] ?? yovel_admin_accounting_report_type_for_root($rootType)), ['BALANCE_SHEET', 'PROFIT_LOSS'], yovel_admin_accounting_report_type_for_root($rootType));
     $expectedReportType = yovel_admin_accounting_report_type_for_root($rootType);
     $accountType = trim((string) ($_POST['account_type'] ?? ''));
+    $accountCategoryKey = trim((string) ($_POST['account_category_key'] ?? ''));
     $accountCurrency = strtoupper(trim((string) ($_POST['account_currency'] ?? '')));
     $isGroup = isset($_POST['is_group']) ? 1 : 0;
     $taxRate = yovel_admin_optional_decimal((string) ($_POST['tax_rate'] ?? ''), 'Tax rate');
@@ -855,6 +1003,15 @@ function yovel_admin_save_accounting_account(array $company, array $admin): stri
     }
     if (strlen($accountType) > 80) {
         throw new InvalidArgumentException('Account type must be 80 characters or fewer.');
+    }
+    if ($accountCategoryKey !== '') {
+        if (!yovel_admin_is_uuid($accountCategoryKey)) {
+            throw new InvalidArgumentException('Account Category selection is invalid.');
+        }
+        $category = $db->GetRow("SELECT root_type FROM project_company_finance_account_category WHERE company_key_hash = ? AND account_category_key = ? AND status = 'ACTIVE' LIMIT 1", [$companyKeyHash, $accountCategoryKey]);
+        if (!is_array($category) || $category === [] || ((string) ($category['root_type'] ?? '') !== '' && (string) $category['root_type'] !== $rootType)) {
+            throw new InvalidArgumentException('Account Category must be active, company-owned, and compatible with the account root type.');
+        }
     }
     if (strlen($accountNotes) > 5000) {
         throw new InvalidArgumentException('Notes exceed the allowed length.');
@@ -912,15 +1069,24 @@ function yovel_admin_save_accounting_account(array $company, array $admin): stri
         if ($accountKey === '') {
             $accountKey = bx_uuid();
         }
+        yovel_admin_finance_assert_account_parent_chain($db, $companyKeyHash, $accountKey, $parentAccountKey);
+        $nextAccount = [
+            'account_code'=>$accountCode,'account_number'=>$accountNumberForDb,'parent_account_key'=>$parentForDb,
+            'root_type'=>$rootType,'report_type'=>$reportType,'account_type'=>$accountTypeForDb,
+            'account_currency'=>$accountCurrencyForDb,'is_group'=>$isGroup,'account_status'=>$accountStatus,
+        ];
+        if (is_array($existing) && $existing !== []) {
+            yovel_admin_finance_assert_account_update_allowed($db, $companyKeyHash, $existing, $nextAccount);
+        }
 
         yovel_admin_db_execute(
             $db,
             "INSERT INTO project_company_accounting_account (
                 account_key, company_key, company_key_hash, account_code, account_number, account_name,
-                parent_account_key, root_type, report_type, account_type, account_currency, is_group,
+                parent_account_key, root_type, report_type, account_type, account_category_key, account_currency, is_group,
                 tax_rate, balance_must_be, freeze_account, include_in_gross, account_status,
                 sort_order, account_notes, created_by_admin_key, updated_by_admin_key
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
                 account_number = VALUES(account_number),
                 account_name = VALUES(account_name),
@@ -928,6 +1094,7 @@ function yovel_admin_save_accounting_account(array $company, array $admin): stri
                 root_type = VALUES(root_type),
                 report_type = VALUES(report_type),
                 account_type = VALUES(account_type),
+                account_category_key = VALUES(account_category_key),
                 account_currency = VALUES(account_currency),
                 is_group = VALUES(is_group),
                 tax_rate = VALUES(tax_rate),
@@ -940,7 +1107,7 @@ function yovel_admin_save_accounting_account(array $company, array $admin): stri
                 updated_by_admin_key = VALUES(updated_by_admin_key)",
             [
                 $accountKey, $companyKey, $companyKeyHash, $accountCode, $accountNumberForDb, $accountName,
-                $parentForDb, $rootType, $reportType, $accountTypeForDb, $accountCurrencyForDb, $isGroup,
+                $parentForDb, $rootType, $reportType, $accountTypeForDb, $accountCategoryKey !== '' ? $accountCategoryKey : null, $accountCurrencyForDb, $isGroup,
                 $taxRateForDb, $balanceMustBe, $freezeAccount, $includeInGross, $accountStatus,
                 $sortOrder, $accountNotes, $adminKey, $adminKey,
             ],
@@ -949,7 +1116,7 @@ function yovel_admin_save_accounting_account(array $company, array $admin): stri
         yovel_admin_save_accounting_custom_values($db, $company, $admin, 'account', $accountKey, $schema);
 
         $readBack = $db->GetRow(
-            'SELECT account_key, account_code, account_number, account_name, parent_account_key, root_type, report_type, account_status FROM project_company_accounting_account WHERE company_key_hash = ? AND account_key = ? LIMIT 1',
+            'SELECT account_key, account_code, account_number, account_name, parent_account_key, root_type, report_type, account_category_key, account_status FROM project_company_accounting_account WHERE company_key_hash = ? AND account_key = ? LIMIT 1',
             [$companyKeyHash, $accountKey]
         );
         if (
@@ -960,6 +1127,7 @@ function yovel_admin_save_accounting_account(array $company, array $admin): stri
             || (string) ($readBack['parent_account_key'] ?? '') !== (string) ($parentForDb ?? '')
             || (string) $readBack['root_type'] !== $rootType
             || (string) $readBack['report_type'] !== $reportType
+            || (string) ($readBack['account_category_key'] ?? '') !== $accountCategoryKey
             || (string) $readBack['account_status'] !== $accountStatus
         ) {
             throw new RuntimeException('Account read-back verification failed.');
@@ -976,6 +1144,7 @@ function yovel_admin_save_accounting_account(array $company, array $admin): stri
         throw $error;
     }
 
+    yovel_admin_finance_clear_form_state($company);
     return 'Account saved.';
 }
 
@@ -1006,6 +1175,9 @@ function yovel_admin_set_accounting_account_status(array $company, array $admin)
             if ($childCount > 0) {
                 throw new InvalidArgumentException('Accounts with child accounts cannot be deleted.');
             }
+            $next = $existing;
+            $next['account_status'] = 'DELETED';
+            yovel_admin_finance_assert_account_update_allowed($db, $companyKeyHash, $existing, $next);
         }
         yovel_admin_db_execute(
             $db,

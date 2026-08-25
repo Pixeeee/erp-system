@@ -473,6 +473,119 @@ try {
     $db->RollbackTrans();
 }
 
+hr_database_assert(
+    function_exists('yovel_admin_persist_hr_builder_form'),
+    'Transactional HR builder form persistence is not implemented.'
+);
+$projectionFixtureKey = '';
+$projectionFixtureInput = [
+    'builder_form_key' => '',
+    'target_section' => 'employee-profiles',
+    'form_title' => 'Immediate HR Projection Fixture',
+    'form_description' => 'Transactional project module registry test.',
+    'form_status' => 'ACTIVE',
+    'schema_json' => json_encode($stableSchema, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
+];
+$projectionRegistryKeys = [];
+try {
+    $createdProjectionFixture = yovel_admin_persist_hr_builder_form(
+        $db,
+        $fixtureCompany,
+        $fixtureAdmin,
+        $projectionFixtureInput
+    );
+    $projectionFixtureKey = (string) ($createdProjectionFixture['builder_form_key'] ?? '');
+    hr_database_assert(
+        yovel_admin_is_uuid($projectionFixtureKey),
+        'Transactional HR builder form persistence did not generate a stable form key.'
+    );
+    $projectionFixtureInput['builder_form_key'] = $projectionFixtureKey;
+    $projectionRegistryKeys = $db->GetCol(
+        "SELECT form_key FROM project_module_form
+        WHERE company_key_hash = ? AND source_builder_form_key = ? AND form_status <> 'DELETED'
+        ORDER BY form_key",
+        [(string) $fixtureScope['company_key_hash'], $projectionFixtureKey]
+    );
+    hr_database_assert(
+        is_array($projectionRegistryKeys) && $projectionRegistryKeys !== [],
+        'Saving an HR builder form did not immediately create project module registry rows.'
+    );
+
+    $projectionFixtureInput['form_title'] = 'Immediate HR Projection Fixture Updated';
+    $updatedProjectionFixture = yovel_admin_persist_hr_builder_form(
+        $db,
+        $fixtureCompany,
+        $fixtureAdmin,
+        $projectionFixtureInput
+    );
+    $updatedRegistryKeys = $db->GetCol(
+        "SELECT form_key FROM project_module_form
+        WHERE company_key_hash = ? AND source_builder_form_key = ? AND form_status <> 'DELETED'
+        ORDER BY form_key",
+        [(string) $fixtureScope['company_key_hash'], $projectionFixtureKey]
+    );
+    hr_database_assert(
+        $projectionRegistryKeys === $updatedRegistryKeys,
+        'Updating an HR builder form replaced stable project module registry keys.'
+    );
+    hr_database_assert(
+        (string) ($updatedProjectionFixture['projection']['projected'][0]['form_name'] ?? '') === 'Immediate HR Projection Fixture Updated',
+        'The returned projection did not contain the updated form title.'
+    );
+
+    $rollbackInput = $projectionFixtureInput;
+    $rollbackInput['builder_form_key'] = '';
+    $rollbackInput['form_title'] = 'Forced Projection Rollback Fixture';
+    $rollbackRejected = false;
+    try {
+        yovel_admin_persist_hr_builder_form(
+            $db,
+            $fixtureCompany,
+            $fixtureAdmin,
+            $rollbackInput,
+            static function (): array {
+                throw new RuntimeException('Forced projection failure.');
+            }
+        );
+    } catch (RuntimeException $error) {
+        $rollbackRejected = $error->getMessage() === 'Forced projection failure.';
+    }
+    hr_database_assert($rollbackRejected, 'A forced registry projection failure was not returned to the caller.');
+    hr_database_assert(
+        (int) $db->GetOne(
+            'SELECT COUNT(*) FROM project_company_hr_builder_form WHERE company_key_hash = ? AND form_title = ?',
+            [(string) $fixtureScope['company_key_hash'], 'Forced Projection Rollback Fixture']
+        ) === 0,
+        'A failed registry projection committed the HR builder form master row.'
+    );
+    hr_database_assert(
+        (int) $db->GetOne(
+            'SELECT COUNT(*) FROM project_company_hr_builder_form_version WHERE company_key_hash = ? AND form_title = ?',
+            [(string) $fixtureScope['company_key_hash'], 'Forced Projection Rollback Fixture']
+        ) === 0,
+        'A failed registry projection committed an immutable HR builder form version.'
+    );
+} finally {
+    $projectionAuditKeys = $db->GetCol(
+        'SELECT form_key FROM project_module_form WHERE company_key_hash = ? AND source_builder_form_key = ?',
+        [(string) $fixtureScope['company_key_hash'], $projectionFixtureKey]
+    );
+    foreach (is_array($projectionAuditKeys) ? $projectionAuditKeys : [] as $projectionAuditKey) {
+        $db->Execute("DELETE FROM builder_audit_log WHERE module = 'project_module_form' AND record_key = ?", [(string) $projectionAuditKey]);
+    }
+    $versionAuditKeys = $db->GetCol(
+        'SELECT form_version_key FROM project_company_hr_builder_form_version WHERE builder_form_key = ?',
+        [$projectionFixtureKey]
+    );
+    foreach (is_array($versionAuditKeys) ? $versionAuditKeys : [] as $versionAuditKey) {
+        $db->Execute("DELETE FROM builder_audit_log WHERE module = 'project_company_hr_builder_form_version' AND record_key = ?", [(string) $versionAuditKey]);
+    }
+    $db->Execute('DELETE FROM project_module_form WHERE company_key_hash = ? AND source_builder_form_key = ?', [(string) $fixtureScope['company_key_hash'], $projectionFixtureKey]);
+    $db->Execute('DELETE FROM project_company_hr_builder_form_version WHERE builder_form_key = ?', [$projectionFixtureKey]);
+    $db->Execute('DELETE FROM project_company_hr_builder_form WHERE builder_form_key = ? AND company_key_hash = ?', [$projectionFixtureKey, (string) $fixtureScope['company_key_hash']]);
+    $db->Execute("DELETE FROM builder_audit_log WHERE module = 'project_company_hr_builder_form' AND record_key = ?", [$projectionFixtureKey]);
+}
+
 hr_database_assert(function_exists('yovel_admin_persist_hr_form_submission'), 'Generic HR form submission persistence is not implemented.');
 hr_database_assert($db->BeginTrans() !== false, 'Form submission fixture transaction could not start.');
 try {
@@ -640,6 +753,7 @@ echo json_encode([
     'typed_custom_values_verified' => true,
     'stable_question_keys_verified' => true,
     'immutable_form_versions_verified' => true,
+    'immediate_form_projection_verified' => true,
     'form_submissions_verified' => true,
     'employee_count' => count(is_array($employeeKeysAfter) ? $employeeKeysAfter : []),
     'assignment_count' => $assignmentCountAfterSecondRun,

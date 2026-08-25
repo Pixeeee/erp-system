@@ -43,6 +43,26 @@ function yovel_admin_finance_builder_schema(): void
             UNIQUE KEY uq_project_company_finance_builder_version_checksum (builder_form_key, schema_checksum),
             INDEX idx_project_company_finance_builder_version_company (company_key_hash, builder_form_key, version_number)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "CREATE TABLE IF NOT EXISTS project_company_finance_builder_submission (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            submission_key CHAR(36) NOT NULL UNIQUE,
+            builder_form_key CHAR(36) NOT NULL,
+            form_version_key CHAR(36) NOT NULL,
+            company_key CHAR(36) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            target_section VARCHAR(80) NOT NULL,
+            subject_record_key CHAR(36) NULL,
+            submission_status ENUM('DRAFT','SUBMITTED','ARCHIVED') NOT NULL DEFAULT 'DRAFT',
+            values_json LONGTEXT NOT NULL,
+            created_by_admin_key CHAR(36) NULL,
+            updated_by_admin_key CHAR(36) NULL,
+            submitted_at TIMESTAMP NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_project_company_finance_submission_form (company_key_hash, builder_form_key, form_version_key),
+            INDEX idx_project_company_finance_submission_subject (company_key_hash, target_section, subject_record_key),
+            INDEX idx_project_company_finance_submission_status (company_key_hash, submission_status, updated_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
     ];
 
     foreach ($statements as $statement) {
@@ -62,6 +82,36 @@ function yovel_admin_finance_builder_target_section(string $section): string
 {
     $section = yovel_admin_slug($section);
     return array_key_exists($section, yovel_admin_finance_builder_target_sections()) ? $section : 'chart-of-accounts';
+}
+
+function yovel_admin_finance_builder_adapter(): array
+{
+    $targets = [];
+    foreach (yovel_admin_finance_builder_target_sections() as $section => $metadata) {
+        $targets[$section] = (string) ($metadata['record_type'] ?? $section);
+    }
+    $protected = [];
+    foreach (yovel_admin_accounting_finance_default_form_schemas() as $recordType => $schema) {
+        $keys = array_map('strval', $schema['requiredSystemFields'] ?? []);
+        foreach ($schema['fields'] ?? [] as $field) {
+            if (!empty($field['system'])) {
+                $keys[] = (string) ($field['key'] ?? '');
+            }
+        }
+        $protected[$recordType] = array_values(array_unique(array_filter($keys)));
+    }
+
+    return [
+        'module' => 'accounting-finance',
+        'target_record_types' => $targets,
+        'protected_fields' => $protected,
+        'field_types' => ['SHORT_TEXT', 'PARAGRAPH', 'NUMBER', 'CURRENCY', 'DATE', 'DROPDOWN', 'CHECKBOXES', 'ACCOUNT', 'PARTY', 'SECTION'],
+        'row_column_layout' => ['version' => 2, 'max_columns' => 3, 'stable_keys' => true],
+        'linked_record_types' => ['journal-entry-template' => 'journal-entry'],
+        'normalize' => 'yovel_admin_normalize_finance_builder_schema',
+        'version_identity' => 'yovel_admin_finance_builder_checksum',
+        'renderer' => 'company/admin/modules/accounting-finance/views/form-builder.php',
+    ];
 }
 
 function yovel_admin_finance_builder_question_key(string $value): string
@@ -93,18 +143,56 @@ function yovel_admin_normalize_finance_builder_schema(string $schemaJson): array
         throw new InvalidArgumentException('A Finance form can contain up to 80 fields.');
     }
 
-    $allowedTypes = [
-        'SHORT_TEXT',
-        'PARAGRAPH',
-        'NUMBER',
-        'CURRENCY',
-        'DATE',
-        'DROPDOWN',
-        'CHECKBOXES',
-        'ACCOUNT',
-        'PARTY',
-        'SECTION',
-    ];
+    $allowedTypes = yovel_admin_finance_builder_adapter()['field_types'];
+    $sourceRows = $decoded['rows'] ?? [];
+    if (!is_array($sourceRows)) {
+        throw new InvalidArgumentException('Finance form rows must be a list.');
+    }
+    if (count($sourceRows) > 30) {
+        throw new InvalidArgumentException('A Finance form can contain up to 30 rows.');
+    }
+
+    $rows = [];
+    $columnKeys = [];
+    foreach (array_values($sourceRows) as $rowIndex => $sourceRow) {
+        if (!is_array($sourceRow)) {
+            continue;
+        }
+        $rowKey = yovel_admin_finance_builder_question_key((string) ($sourceRow['key'] ?? ''));
+        $sourceColumns = $sourceRow['columns'] ?? [];
+        if (!is_array($sourceColumns) || $sourceColumns === []) {
+            $sourceColumns = [['key' => $rowKey . '-column', 'width' => 12]];
+        }
+        if (count($sourceColumns) > 3) {
+            throw new InvalidArgumentException('A Finance form row can contain up to three columns.');
+        }
+        $columns = [];
+        foreach (array_values($sourceColumns) as $columnIndex => $sourceColumn) {
+            if (!is_array($sourceColumn)) {
+                continue;
+            }
+            $columnKey = yovel_admin_finance_builder_question_key((string) ($sourceColumn['key'] ?? ''));
+            if (isset($columnKeys[$columnKey])) {
+                throw new InvalidArgumentException('Finance form columns require unique stable keys.');
+            }
+            $columnKeys[$columnKey] = $rowKey;
+            $columns[] = [
+                'key' => $columnKey,
+                'width' => max(1, min(12, (int) ($sourceColumn['width'] ?? 12))),
+                'order' => ($columnIndex + 1) * 10,
+            ];
+        }
+        if ($columns === []) {
+            $columnKey = $rowKey . '-column';
+            $columnKeys[$columnKey] = $rowKey;
+            $columns[] = ['key' => $columnKey, 'width' => 12, 'order' => 10];
+        }
+        $rows[] = ['key' => $rowKey, 'order' => ($rowIndex + 1) * 10, 'columns' => $columns];
+    }
+    if ($rows === []) {
+        $rows = [['key' => 'default-row', 'order' => 10, 'columns' => [['key' => 'default-column', 'width' => 12, 'order' => 10]]]];
+        $columnKeys = ['default-column' => 'default-row'];
+    }
     $normalized = [];
     $usedKeys = [];
     foreach (array_values($questions) as $index => $question) {
@@ -129,8 +217,8 @@ function yovel_admin_normalize_finance_builder_schema(string $schemaJson): array
         }
 
         $key = yovel_admin_finance_builder_question_key((string) ($question['key'] ?? ''));
-        while (isset($usedKeys[$key])) {
-            $key = bx_uuid();
+        if (isset($usedKeys[$key])) {
+            throw new InvalidArgumentException('Finance form fields require unique stable keys.');
         }
         $usedKeys[$key] = true;
 
@@ -157,20 +245,45 @@ function yovel_admin_normalize_finance_builder_schema(string $schemaJson): array
             $precision = 0;
         }
 
+        $columnKey = trim((string) ($question['column_key'] ?? ''));
+        if (!isset($columnKeys[$columnKey])) {
+            $columnKey = (string) $rows[0]['columns'][0]['key'];
+        }
+        $rowKey = $columnKeys[$columnKey];
+        $default = $question['default'] ?? '';
+        if (is_array($default)) {
+            $default = array_values(array_map('strval', array_slice($default, 0, 30)));
+        } else {
+            $default = substr((string) $default, 0, 2000);
+        }
+        $sourceValidation = is_array($question['validation'] ?? null) ? $question['validation'] : [];
+        $validation = [];
+        foreach (['min', 'max', 'min_length', 'max_length', 'pattern'] as $validationKey) {
+            if (array_key_exists($validationKey, $sourceValidation) && is_scalar($sourceValidation[$validationKey])) {
+                $validation[$validationKey] = substr(trim((string) $sourceValidation[$validationKey]), 0, 240);
+            }
+        }
+
         $normalized[] = [
             'key' => $key,
             'label' => $label,
             'help' => $help,
             'type' => $type,
             'required' => !empty($question['required']) && $type !== 'SECTION',
+            'visible' => !array_key_exists('visible', $question) || filter_var($question['visible'], FILTER_VALIDATE_BOOLEAN),
             'options' => $options,
             'precision' => $precision,
+            'default' => $default,
+            'validation' => $validation,
+            'row_key' => $rowKey,
+            'column_key' => $columnKey,
             'order' => ($index + 1) * 10,
         ];
     }
 
     return [
-        'version' => 1,
+        'version' => 2,
+        'rows' => $rows,
         'questions' => $normalized,
     ];
 }
@@ -232,6 +345,19 @@ function yovel_admin_finance_builder_form_version(array $company, string $builde
     }
 
     return is_array($row) && $row !== [] ? $row : null;
+}
+
+function yovel_admin_finance_builder_form_versions(array $company, string $builderFormKey): array
+{
+    if (!yovel_admin_is_uuid($builderFormKey)) {
+        return [];
+    }
+    $rows = bx_db()->GetAll(
+        'SELECT * FROM project_company_finance_builder_form_version WHERE company_key_hash = ? AND builder_form_key = ? ORDER BY version_number DESC',
+        [(string) ($company['company_key_hash'] ?? ''), $builderFormKey]
+    );
+
+    return is_array($rows) ? $rows : [];
 }
 
 function yovel_admin_finance_builtin_sections(array $schema): array
@@ -489,17 +615,177 @@ function yovel_admin_persist_finance_builder_form(ADOConnection $db, array $comp
     }
 }
 
+function yovel_admin_persist_finance_builder_submission(ADOConnection $db, array $company, array $admin, array $input): array
+{
+    yovel_admin_finance_builder_schema();
+
+    $companyKey = (string) ($company['company_key'] ?? '');
+    $companyKeyHash = (string) ($company['company_key_hash'] ?? '');
+    $adminKey = (string) ($admin['admin_key'] ?? '');
+    if ($companyKey === '' || $companyKeyHash === '' || $adminKey === '') {
+        throw new InvalidArgumentException('Finance form submission administrator scope is invalid.');
+    }
+
+    $submissionKey = trim((string) ($input['submission_key'] ?? ''));
+    if ($submissionKey !== '' && !yovel_admin_is_uuid($submissionKey)) {
+        throw new InvalidArgumentException('Finance form submission key is invalid.');
+    }
+    if ($submissionKey === '') {
+        $submissionKey = bx_uuid();
+    }
+    $builderFormKey = trim((string) ($input['builder_form_key'] ?? ''));
+    $versionKey = trim((string) ($input['form_version_key'] ?? ''));
+    if (!yovel_admin_is_uuid($builderFormKey) || !yovel_admin_is_uuid($versionKey)) {
+        throw new InvalidArgumentException('Finance form and version are required.');
+    }
+    $status = strtoupper(trim((string) ($input['submission_status'] ?? 'DRAFT')));
+    if (!in_array($status, ['DRAFT', 'SUBMITTED', 'ARCHIVED'], true)) {
+        throw new InvalidArgumentException('Finance form submission status is invalid.');
+    }
+    $subjectKey = trim((string) ($input['subject_record_key'] ?? ''));
+    if ($subjectKey !== '' && !yovel_admin_is_uuid($subjectKey)) {
+        throw new InvalidArgumentException('Finance form submission subject is invalid.');
+    }
+    $values = $input['values'] ?? [];
+    if (!is_array($values)) {
+        throw new InvalidArgumentException('Finance form submission values must be an object.');
+    }
+
+    if ($db->BeginTrans() === false) {
+        throw new RuntimeException('Finance form submission transaction could not start.');
+    }
+    try {
+        $form = $db->GetRow(
+            'SELECT * FROM project_company_finance_builder_form WHERE company_key_hash = ? AND builder_form_key = ? FOR UPDATE',
+            [$companyKeyHash, $builderFormKey]
+        );
+        $version = $db->GetRow(
+            'SELECT * FROM project_company_finance_builder_form_version WHERE company_key_hash = ? AND builder_form_key = ? AND form_version_key = ? LIMIT 1',
+            [$companyKeyHash, $builderFormKey, $versionKey]
+        );
+        if (!is_array($form) || $form === [] || !is_array($version) || $version === []) {
+            throw new InvalidArgumentException('Finance form version was not found for this company.');
+        }
+        if ($status === 'SUBMITTED' && (string) ($version['form_status'] ?? '') !== 'ACTIVE') {
+            throw new InvalidArgumentException('Only a published Finance form version can accept submissions.');
+        }
+
+        $schema = yovel_admin_normalize_finance_builder_schema((string) $version['schema_json']);
+        $questions = [];
+        foreach ($schema['questions'] as $question) {
+            if (($question['type'] ?? '') !== 'SECTION') {
+                $questions[(string) $question['key']] = $question;
+            }
+        }
+        foreach (array_keys($values) as $fieldKey) {
+            if (!isset($questions[(string) $fieldKey])) {
+                throw new InvalidArgumentException('Finance form submission contains an unknown field.');
+            }
+        }
+        $normalizedValues = [];
+        foreach ($questions as $fieldKey => $question) {
+            $value = $values[$fieldKey] ?? ($question['default'] ?? '');
+            if (is_array($value)) {
+                $value = array_values(array_map(static fn (mixed $item): string => substr(trim((string) $item), 0, 2000), array_slice($value, 0, 30)));
+                $isEmpty = $value === [];
+            } else {
+                $value = substr(trim((string) $value), 0, 20000);
+                $isEmpty = $value === '';
+            }
+            if ($status === 'SUBMITTED' && !empty($question['required']) && $isEmpty) {
+                throw new InvalidArgumentException((string) $question['label'] . ' is required.');
+            }
+            $normalizedValues[$fieldKey] = $value;
+        }
+        $valuesJson = json_encode($normalizedValues, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+
+        $existing = $db->GetRow(
+            'SELECT * FROM project_company_finance_builder_submission WHERE company_key_hash = ? AND submission_key = ? FOR UPDATE',
+            [$companyKeyHash, $submissionKey]
+        );
+        if (is_array($existing) && $existing !== [] && in_array((string) $existing['submission_status'], ['SUBMITTED', 'ARCHIVED'], true)) {
+            throw new InvalidArgumentException('Submitted Finance form records are immutable.');
+        }
+
+        yovel_admin_db_execute(
+            $db,
+            "INSERT INTO project_company_finance_builder_submission (
+                submission_key, builder_form_key, form_version_key, company_key, company_key_hash,
+                target_section, subject_record_key, submission_status, values_json,
+                created_by_admin_key, updated_by_admin_key, submitted_at
+             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             ON DUPLICATE KEY UPDATE
+                subject_record_key = VALUES(subject_record_key),
+                submission_status = VALUES(submission_status),
+                values_json = VALUES(values_json),
+                updated_by_admin_key = VALUES(updated_by_admin_key),
+                submitted_at = VALUES(submitted_at)",
+            [
+                $submissionKey,
+                $builderFormKey,
+                $versionKey,
+                $companyKey,
+                $companyKeyHash,
+                (string) $version['target_section'],
+                $subjectKey !== '' ? $subjectKey : null,
+                $status,
+                $valuesJson,
+                $adminKey,
+                $adminKey,
+                $status === 'SUBMITTED' ? date('Y-m-d H:i:s') : null,
+            ],
+            'Finance builder submission save'
+        );
+        $saved = $db->GetRow(
+            'SELECT * FROM project_company_finance_builder_submission WHERE company_key_hash = ? AND submission_key = ? LIMIT 1',
+            [$companyKeyHash, $submissionKey]
+        );
+        foreach ([
+            'submission_key' => $submissionKey,
+            'builder_form_key' => $builderFormKey,
+            'form_version_key' => $versionKey,
+            'company_key' => $companyKey,
+            'company_key_hash' => $companyKeyHash,
+            'target_section' => (string) $version['target_section'],
+            'submission_status' => $status,
+            'values_json' => $valuesJson,
+        ] as $column => $expected) {
+            if (!is_array($saved) || (string) ($saved[$column] ?? '') !== $expected) {
+                throw new RuntimeException('Finance form submission read-back verification failed for ' . $column . '.');
+            }
+        }
+
+        bx_audit($existing ? 'UPDATE' : $status, 'project_company_finance_builder_submission', $submissionKey, [
+            'company_key' => $companyKey,
+            'builder_form_key' => $builderFormKey,
+            'form_version_key' => $versionKey,
+            'target_section' => (string) $version['target_section'],
+            'submission_status' => $status,
+            'admin_key' => $adminKey,
+        ], 'Saved a version-bound Finance form submission.');
+
+        if ($db->CommitTrans() === false) {
+            throw new RuntimeException('Finance form submission transaction could not commit.');
+        }
+        return $saved;
+    } catch (Throwable $error) {
+        $db->RollbackTrans();
+        throw $error;
+    }
+}
+
 function yovel_admin_save_finance_builder_form(array $company, array $admin): string
 {
-    $saved = yovel_admin_persist_finance_builder_form(bx_db(), $company, $admin, [
-        'builder_form_key' => (string) ($_POST['builder_form_key'] ?? ''),
-        'target_section' => (string) ($_POST['target_section'] ?? ''),
-        'form_title' => (string) ($_POST['form_title'] ?? ''),
-        'form_description' => (string) ($_POST['form_description'] ?? ''),
-        'form_status' => (string) ($_POST['form_status'] ?? 'DRAFT'),
-        'schema_json' => (string) ($_POST['schema_json'] ?? '{}'),
-    ]);
-    $GLOBALS['yovel_admin_saved_finance_builder_form_key'] = (string) $saved['builder_form_key'];
-
-    return 'Finance form saved.';
+    return yovel_admin_finance_run_form_action($company, 'save_finance_builder_form', static function () use ($company, $admin): string {
+        $saved = yovel_admin_persist_finance_builder_form(bx_db(), $company, $admin, [
+            'builder_form_key' => (string) ($_POST['builder_form_key'] ?? ''),
+            'target_section' => (string) ($_POST['target_section'] ?? ''),
+            'form_title' => (string) ($_POST['form_title'] ?? ''),
+            'form_description' => (string) ($_POST['form_description'] ?? ''),
+            'form_status' => (string) ($_POST['form_status'] ?? 'DRAFT'),
+            'schema_json' => (string) ($_POST['schema_json'] ?? '{}'),
+        ]);
+        $GLOBALS['yovel_admin_saved_finance_builder_form_key'] = (string) $saved['builder_form_key'];
+        return 'Finance form saved.';
+    });
 }

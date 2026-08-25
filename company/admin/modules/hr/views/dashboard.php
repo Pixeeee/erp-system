@@ -88,6 +88,7 @@
                                             <section class="grid gap-4 border-t pt-4 md:grid-cols-3">
                                                 <div class="grid content-start gap-2">
                                                     <h3 class="text-sm font-semibold">Setup</h3>
+                                                    <a class="text-sm text-muted-foreground hover:text-foreground" href="./?view=hr&amp;section=dashboard&amp;workspace=setup">HR Setup ↗</a>
                                                     <a class="text-sm text-muted-foreground hover:text-foreground" href="./?view=hr&amp;section=departments">Departments ↗</a>
                                                     <a class="text-sm text-muted-foreground hover:text-foreground" href="./?view=hr&amp;section=job-positions">Job Positions ↗</a>
                                                     <a class="text-sm text-muted-foreground hover:text-foreground" href="./?view=hr&amp;section=teams">Teams ↗</a>

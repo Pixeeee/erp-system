@@ -9,7 +9,7 @@ function yovel_admin_hr_sections(): array
         'departments' => ['label' => 'Departments', 'icon' => '▧', 'description' => 'Use company branch departments as HR assignment units.'],
         'job-positions' => ['label' => 'Job positions', 'icon' => '◇', 'description' => 'Define employee designations and position records.'],
         'teams' => ['label' => 'Teams', 'icon' => '☷', 'description' => 'Group employees into operational HR teams.'],
-        'attendance' => ['label' => 'Attendance', 'icon' => '◷', 'description' => 'Track daily employee attendance records.'],
+        'attendance' => ['label' => 'Shift & Attendance', 'icon' => '◷', 'description' => 'Govern check-ins, daily attendance, shifts, schedules, requests, and overtime handoffs.'],
         'leave-requests' => ['label' => 'Leave requests', 'icon' => '◴', 'description' => 'Capture employee leave applications.'],
         'leave-approvals' => ['label' => 'Leave approvals', 'icon' => '✓', 'description' => 'Review and approve leave requests.'],
         'payroll-access' => ['label' => 'Payroll access', 'icon' => '◈', 'description' => 'Control who can view payroll-adjacent HR data.'],

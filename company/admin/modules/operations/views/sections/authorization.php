@@ -1,0 +1,39 @@
+<?php
+declare(strict_types=1);
+
+$authorization = is_array($activeModuleData['authorization_projection'] ?? null) ? $activeModuleData['authorization_projection'] : ['contracts' => [], 'owner_actions' => []];
+$policies = is_array($activeModuleData['authorization_policies'] ?? null) ? $activeModuleData['authorization_policies'] : [];
+$failedAuthorization = (string) ($operationsFormState['action'] ?? '') === 'save_operations_authorization_policy';
+$authorizationPrior = $failedAuthorization ? $operationsPrior : [];
+ob_start();
+$recordModal = [
+    'id' => 'operations-authorization-policy-modal',
+    'title' => 'Create Authorization Policy',
+    'description' => 'Store a company-scoped Operations policy overlay using stable owner references.',
+    'open_label' => 'Create Policy',
+    'submit_label' => 'Submit',
+    'confirm_message' => 'Confirm this authorization policy. Persistence begins only after confirmation.',
+    'open_on_load' => $failedAuthorization,
+    'hidden_html' => '<input type="hidden" name="csrf" value="' . bx_h(bx_csrf_token()) . '"><input type="hidden" name="module_view" value="operations"><input type="hidden" name="action" value="save_operations_authorization_policy"><input type="hidden" name="section" value="authorization-setup"><input type="hidden" name="policy_key" value="' . bx_h((string) ($authorizationPrior['policy_key'] ?? '')) . '">',
+    'body_html' => ($failedAuthorization && ($operationsFormState['error'] ?? '') !== '' ? '<div role="alert" class="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">' . bx_h((string) $operationsFormState['error']) . '</div>' : '') .
+        '<div class="grid gap-1.5"><label for="operations-policy-name" class="text-sm font-medium">Policy name</label><input id="operations-policy-name" name="policy_name" required maxlength="180" value="' . bx_h((string) ($authorizationPrior['policy_name'] ?? '')) . '" class="h-9 rounded-md border bg-background px-3 text-sm"></div>' .
+        '<div class="grid gap-1.5"><label for="operations-lifecycle-key" class="text-sm font-medium">Lifecycle key</label><input id="operations-lifecycle-key" name="lifecycle_key" required maxlength="160" value="' . bx_h((string) ($authorizationPrior['lifecycle_key'] ?? '')) . '" class="h-9 rounded-md border bg-background px-3 text-sm"></div>' .
+        '<div class="grid gap-1.5"><label for="operations-document-type" class="text-sm font-medium">Document type</label><input id="operations-document-type" name="document_type" required maxlength="160" value="' . bx_h((string) ($authorizationPrior['document_type'] ?? '')) . '" class="h-9 rounded-md border bg-background px-3 text-sm"></div>' .
+        '<div class="grid gap-1.5"><label for="operations-action-code" class="text-sm font-medium">Lifecycle action</label><input id="operations-action-code" name="action_code" required maxlength="80" value="' . bx_h((string) ($authorizationPrior['action_code'] ?? 'SUBMIT')) . '" class="h-9 rounded-md border bg-background px-3 text-sm"></div>' .
+        '<div class="grid grid-cols-2 gap-3"><div class="grid gap-1.5"><label for="operations-threshold" class="text-sm font-medium">Threshold</label><input id="operations-threshold" name="threshold_amount" required inputmode="decimal" value="' . bx_h((string) ($authorizationPrior['threshold_amount'] ?? '0')) . '" class="h-9 rounded-md border bg-background px-3 text-sm"></div><div class="grid gap-1.5"><label for="operations-currency-key" class="text-sm font-medium">Currency key</label><input id="operations-currency-key" name="currency_key" maxlength="160" value="' . bx_h((string) ($authorizationPrior['currency_key'] ?? '')) . '" class="h-9 rounded-md border bg-background px-3 text-sm"></div></div>' .
+        '<div class="grid gap-1.5"><label for="operations-approver-user" class="text-sm font-medium">Approver user key</label><input id="operations-approver-user" name="approver_user_key" required maxlength="160" value="' . bx_h((string) ($authorizationPrior['approver_user_key'] ?? '')) . '" class="h-9 rounded-md border bg-background px-3 text-sm"></div>' .
+        '<div class="grid gap-1.5"><label for="operations-approver-role" class="text-sm font-medium">Approver role key</label><input id="operations-approver-role" name="approver_role_key" maxlength="160" value="' . bx_h((string) ($authorizationPrior['approver_role_key'] ?? '')) . '" class="h-9 rounded-md border bg-background px-3 text-sm"></div>' .
+        '<div class="grid gap-1.5"><label for="operations-approver-employee" class="text-sm font-medium">Approver employee key</label><input id="operations-approver-employee" name="approver_employee_key" maxlength="160" value="' . bx_h((string) ($authorizationPrior['approver_employee_key'] ?? '')) . '" class="h-9 rounded-md border bg-background px-3 text-sm"></div>' .
+        '<div class="grid gap-1.5"><label for="operations-policy-status" class="text-sm font-medium">Status</label><select id="operations-policy-status" name="policy_status" class="h-9 rounded-md border bg-background px-3 text-sm">' . implode('', array_map(static fn (string $value): string => '<option value="' . $value . '"' . ((string) ($authorizationPrior['policy_status'] ?? 'ACTIVE') === $value ? ' selected' : '') . '>' . ucfirst(strtolower($value)) . '</option>', ['ACTIVE', 'INACTIVE', 'ARCHIVED'])) . '</select></div>',
+];
+require dirname(__DIR__) . '/record-modal.php';
+?>
+<div class="grid gap-2"><h3 class="text-sm font-semibold">Owner records</h3><?php foreach (($authorization['owner_actions'] ?? []) as $action): ?><a class="inline-flex h-9 items-center gap-2 rounded-md border px-3 text-sm font-medium hover:bg-muted" href="<?= bx_h((string) $action['href']) ?>"><span class="material-symbols-rounded text-base" aria-hidden="true">open_in_new</span><?= bx_h((string) $action['label']) ?></a><?php endforeach; ?></div>
+<?php
+$operationsSectionTools = (string) ob_get_clean();
+?>
+<div class="grid gap-5">
+    <div><h2 class="text-base font-semibold">Authorization setup</h2><p class="mt-1 text-sm text-muted-foreground">Read-only owner directories support local thresholds and approver references.</p></div>
+    <div class="overflow-x-auto rounded-md border"><table class="w-full min-w-[48rem] text-left text-sm"><thead class="bg-muted/50 text-xs text-muted-foreground"><tr><th class="px-3 py-2.5">Policy</th><th class="px-3 py-2.5">Document</th><th class="px-3 py-2.5">Threshold</th><th class="px-3 py-2.5">Approver</th><th class="px-3 py-2.5">Status</th></tr></thead><tbody class="divide-y"><?php if ($policies === []): ?><tr><td colspan="5" class="px-3 py-10 text-center text-muted-foreground">No local authorization policies recorded.</td></tr><?php else: foreach ($policies as $policy): ?><tr><td class="px-3 py-2.5"><?= bx_h((string) $policy['policy_name']) ?></td><td class="px-3 py-2.5"><?= bx_h((string) $policy['document_type']) ?></td><td class="px-3 py-2.5"><?= bx_h((string) $policy['threshold_amount']) ?></td><td class="px-3 py-2.5 font-mono text-xs"><?= bx_h((string) $policy['approver_user_key']) ?></td><td class="px-3 py-2.5"><?= bx_h((string) $policy['policy_status']) ?></td></tr><?php endforeach; endif; ?></tbody></table></div>
+    <div class="grid gap-2 sm:grid-cols-2"><?php foreach (($authorization['contracts'] ?? []) as $state): ?><section class="rounded-md border p-3"><div class="flex items-start justify-between gap-3"><div><h3 class="text-sm font-semibold"><?= bx_h((string) $state['contract_id']) ?></h3><p class="mt-1 text-xs text-muted-foreground"><?= count($state['records'] ?? []) ?> stable references</p></div><span class="text-xs font-medium"><?= bx_h((string) $state['status']) ?></span></div><?php if (($state['status'] ?? '') === 'UNAVAILABLE'): ?><p role="status" class="mt-2 text-sm text-muted-foreground"><?= bx_h((string) $state['message']) ?> This does not block other Operations work.</p><?php endif; ?></section><?php endforeach; ?></div>
+</div>

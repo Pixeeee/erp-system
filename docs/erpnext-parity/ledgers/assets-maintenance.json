@@ -550,9 +550,15 @@
                 "orchestration:shared-module-route-modal-and-form-builder-contracts",
                 "manufacturing:quality-inspection-read-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/assets-maintenance/functions.php and schema.php (exact registry contract, eight-section workspace data, opaque company-key authorization, idempotent company-scoped schema)",
+                "company/admin/modules/assets-maintenance/forms.php and core.php (versioned module-local Form Builder, parameterized transaction-owned writes, audit, exact read-back, rollback, and server rehydration)",
+                "company/admin/modules/assets-maintenance/views/workspace.php, dashboard.php, form-builder.php, and record-modal.php (12/8 main-first workspace, body-sibling modal, separate confirmation hooks, responsive accessible controls)",
+                "tests/assets-maintenance-contract.php and tests/assets-maintenance-form-builder.php (PASS twice 2026-08-25; shared registry/modal/Form Builder regressions PASS)",
+                "Authenticated browser checks at 1440x900 and 390x844 (PASS 2026-08-25: eight sections, 12/8 desktop split, main-first mobile stack, no page overflow, modal/confirmation layering, Cancel rehydration, zero console warnings/errors)"
+            ],
+            "reason": "[AM-01] COMPLETE: the company-scoped Assets workspace, universal immutable Form Builder, body-sibling record modal, separate confirmation boundary, authorized transaction-owned persistence, audit, exact read-back, rollback, server rehydration, responsive 12/8 shell, and explicit later-package dependency states are implemented and tested."
         },
         {
             "source_id": "erpnext:erpnext/maintenance/doctype/maintenance_schedule/maintenance_schedule.json:doctype:Maintenance Schedule",

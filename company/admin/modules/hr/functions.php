@@ -5,6 +5,8 @@ require_once __DIR__ . '/navigation.php';
 require_once __DIR__ . '/schema.php';
 require_once __DIR__ . '/forms.php';
 require_once __DIR__ . '/submissions.php';
+require_once __DIR__ . '/setup.php';
+require_once __DIR__ . '/attendance.php';
 require_once __DIR__ . '/data.php';
 require_once __DIR__ . '/employees.php';
 require_once __DIR__ . '/departments.php';

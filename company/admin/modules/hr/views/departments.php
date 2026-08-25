@@ -15,8 +15,8 @@
                                                 'branches' => count($hrDepartmentBranches),
                                             ];
                                         ?>
-                                        <div class="yovel-hr-two-panel yovel-department-layout grid min-h-0 gap-3 xl:grid-cols-[minmax(0,8fr)_minmax(18rem,4fr)]">
-                                            <section class="yovel-hr-panel yovel-hr-surface flex flex-col rounded-lg border bg-card">
+                                        <div class="yovel-hr-two-panel yovel-hr-approved-layout yovel-department-layout grid min-h-0 gap-3 xl:grid-cols-[minmax(0,12fr)_minmax(16rem,8fr)]">
+                                            <section class="yovel-hr-panel yovel-hr-surface min-w-0 overflow-hidden flex flex-col rounded-lg border bg-card">
                                                 <div class="yovel-hr-surface-header border-b px-5 py-4">
                                                     <div class="flex flex-wrap items-start justify-between gap-3">
                                                         <div class="min-w-0">
@@ -28,7 +28,7 @@
                                                                 <span class="yovel-hr-metric rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= $hrDepartmentSummary['branches'] ?> branches</span>
                                                             </div>
                                                         </div>
-                                                        <button type="button" id="yovel-department-modal-open" class="inline-flex h-9 shrink-0 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><span class="material-symbols-rounded text-base" aria-hidden="true">add</span>Add Department</button>
+                                                        <button type="button" id="yovel-department-modal-open" data-record-modal-open="yovel-department-modal" class="inline-flex h-9 shrink-0 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><span class="material-symbols-rounded text-base" aria-hidden="true">add</span>Add Department</button>
                                                     </div>
                                                 </div>
                                                 <div class="grid gap-3 border-b p-4 lg:grid-cols-[minmax(0,1fr)_auto]">
@@ -50,7 +50,7 @@
                                                         </div>
                                                     </div>
                                                 <?php else: ?>
-                                                    <div class="yovel-hr-panel-body overflow-auto">
+                                                    <div class="yovel-hr-panel-body yovel-hr-mobile-table-scroll overflow-auto">
                                                         <table class="yovel-department-table w-full text-left text-sm">
                                                             <thead class="sticky top-0 z-10 border-b bg-card text-xs text-muted-foreground">
                                                             <tr>
@@ -117,7 +117,7 @@
                                                 <?php endif; ?>
                                             </section>
 
-                                            <aside class="yovel-hr-panel yovel-hr-surface flex flex-col rounded-lg border bg-card">
+                                            <aside class="yovel-hr-panel yovel-hr-surface min-w-0 overflow-hidden flex flex-col rounded-lg border bg-card">
                                                 <div class="yovel-hr-surface-header yovel-hr-feature-header border-b px-5 py-4">
                                                     <h3 class="text-base font-semibold tracking-normal">Department Sections</h3>
                                                     <p class="mt-1 text-sm leading-6 text-muted-foreground">Open or reorder the sections used by the department form.</p>
@@ -182,7 +182,7 @@
                                             </section>
                                         </div>
 
-                                        <div id="yovel-department-modal" class="yovel-employee-modal fixed inset-0 z-40 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-department-modal-title" aria-describedby="yovel-department-modal-description" <?= $editHrDepartment ? '' : 'hidden' ?>>
+                                        <div id="yovel-department-modal" data-record-modal <?= $editHrDepartment ? 'data-record-modal-open-on-load' : '' ?> class="yovel-employee-modal fixed inset-0 z-40 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-department-modal-title" aria-describedby="yovel-department-modal-description" <?= $editHrDepartment ? '' : 'hidden' ?>>
                                             <section class="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-5xl flex-col overflow-hidden rounded-lg border bg-card shadow-lg">
                                                 <div class="flex shrink-0 items-start justify-between gap-4 border-b px-5 py-4">
                                                     <div>
@@ -192,7 +192,7 @@
                                                         </h3>
                                                         <p id="yovel-department-modal-description" class="mt-1 text-sm leading-6 text-muted-foreground">Department master data follows the HR Department scope.</p>
                                                     </div>
-                                                    <button type="button" id="yovel-department-modal-close" class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-sm hover:bg-muted" aria-label="Close department form">×</button>
+                                                    <button type="button" id="yovel-department-modal-close" data-record-modal-close class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-sm hover:bg-muted" aria-label="Close department form">×</button>
                                                 </div>
                                                 <form id="yovel-department-form" method="post" data-confirm-submit class="yovel-hr-panel-body yovel-modal-scroll p-0">
                                                     <input type="hidden" name="csrf" value="<?= bx_h(bx_csrf_token()) ?>">
@@ -280,7 +280,7 @@
                                                     <div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t px-5 py-4">
                                                         <p class="text-xs leading-5 text-muted-foreground">Department changes require confirmation before saving.</p>
                                                         <div class="flex gap-2">
-                                                            <button type="button" id="yovel-department-modal-cancel" class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><?= $editHrDepartment ? 'Close' : 'Cancel' ?></button>
+                                                            <button type="button" id="yovel-department-modal-cancel" data-record-modal-close class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><?= $editHrDepartment ? 'Close' : 'Cancel' ?></button>
                                                             <button type="submit" class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90">Save Department</button>
                                                         </div>
                                                     </div>

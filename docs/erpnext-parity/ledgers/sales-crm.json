@@ -471,14 +471,20 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "PARTIAL",
+            "status": "COMPLETE",
             "evidence": [
-                "company/admin/modules/sales-crm/functions.php:63",
-                "company/admin/modules/sales-crm/functions.php:220",
-                "company/admin/modules/sales-crm/views/workspace.php:110",
-                "php -l company/admin/modules/sales-crm/functions.php (PASS 2026-08-25)"
+                "company/admin/modules/sales-crm/schema.php:45",
+                "company/admin/modules/sales-crm/schema.php:207",
+                "company/admin/modules/sales-crm/campaigns.php:275",
+                "company/admin/modules/sales-crm/campaigns.php:484",
+                "company/admin/modules/sales-crm/views/campaigns.php:140",
+                "tests/sales-crm-campaigns.php:48",
+                "tests/sales-crm-campaigns.php:251",
+                "tests/sales-crm-campaigns.php:272",
+                "GET /erpsystem/tests/sales-crm-campaigns.php (PASS 2026-08-25)",
+                "node tests/sales-crm-browser.mjs (PASS 2026-08-25)"
             ],
-            "reason": "[SC-05] PARTIAL: Campaign has a company-scoped table and configurable default form schema, but no module-local create/update/lifecycle service, modal, populated workspace, attribution workflow, or focused Sales/CRM test."
+            "reason": "[SC-05] COMPLETE: Campaign preserves its stable company-scoped keys while adding versioned CRUD, deterministic dates and decimals, idempotency, audited row-locked lifecycle transitions, completed-state immutability, configurable modal rendering, confirmation gating, and server rehydration with focused database and browser evidence."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/campaign_email_schedule/campaign_email_schedule.json:doctype:Campaign Email Schedule",
@@ -491,9 +497,19 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-05] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/schema.php:58",
+                "company/admin/modules/sales-crm/campaigns.php:177",
+                "company/admin/modules/sales-crm/campaigns.php:450",
+                "company/admin/modules/sales-crm/functions.php:123",
+                "company/admin/modules/sales-crm/views/campaigns.php:182",
+                "tests/sales-crm-campaigns.php:191",
+                "tests/sales-crm-campaigns.php:210",
+                "GET /erpsystem/tests/sales-crm-campaigns.php (PASS 2026-08-25)",
+                "node tests/sales-crm-browser.mjs (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-05] COMPLETE: Campaign Email Schedule has company-isolated stable child keys, deterministic schedule validation, idempotent parameterized writes, exact read-back, audit and rollback coverage, and editable Campaign-modal child controls behind the shared confirmation boundary."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/competitor/competitor.json:doctype:Competitor",
@@ -611,9 +627,17 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-02] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/schema.php:130",
+                "company/admin/modules/sales-crm/crm-settings.php:52",
+                "company/admin/modules/sales-crm/crm-settings.php:143",
+                "company/admin/modules/sales-crm/views/settings.php:46",
+                "tests/sales-crm-settings.php:166",
+                "php tests/sales-crm-settings.php (PASS 2026-08-25)",
+                "node tests/sales-crm-workspace-browser.mjs (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-02] COMPLETE: company-scoped CRM defaults and policy toggles have authorized optimistic-version writes, parameterized transactional persistence, audit, exact read-back, rollback injection, modal confirmation, and server rehydration evidence."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/email_campaign/email_campaign.json:doctype:Email Campaign",
@@ -626,9 +650,19 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-05] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/campaigns.php:134",
+                "company/admin/modules/sales-crm/campaigns.php:177",
+                "company/admin/modules/sales-crm/campaigns.php:450",
+                "company/admin/modules/sales-crm/functions.php:123",
+                "company/admin/modules/sales-crm/views/campaigns.php:182",
+                "tests/sales-crm-campaigns.php:210",
+                "tests/sales-crm-campaigns.php:227",
+                "GET /erpsystem/tests/sales-crm-campaigns.php (PASS 2026-08-25)",
+                "node tests/sales-crm-browser.mjs (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-05] COMPLETE: Email Campaign behavior is delivered as Campaign-owned email schedule children with recipient segment, subject, due time, send lifecycle, stable retry identity, Form Builder customization, modal editing, confirmation gating, and transactional test evidence."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/frappe_crm_allowed_user/frappe_crm_allowed_user.json:doctype:Frappe CRM Allowed User",
@@ -641,9 +675,17 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-02] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/schema.php:152",
+                "company/admin/modules/sales-crm/crm-settings.php:82",
+                "company/admin/modules/sales-crm/crm-settings.php:106",
+                "company/admin/modules/sales-crm/views/settings.php:73",
+                "tests/sales-crm-settings.php:104",
+                "tests/sales-crm-settings.php:137",
+                "php tests/sales-crm-settings.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-02] COMPLETE: active company administrators receive explicit CRM, Selling, and settings-management grants with company isolation, direct-route/write enforcement, role-filtered destinations, exact child-row read-back, and focused passing evidence."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/lead/lead.json:doctype:Lead",
@@ -848,9 +890,16 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-05] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/campaigns.php:56",
+                "company/admin/modules/sales-crm/campaigns.php:567",
+                "company/admin/modules/sales-crm/views/campaigns.php:70",
+                "company/admin/modules/sales-crm/views/campaigns.php:96",
+                "tests/sales-crm-campaigns.php:238",
+                "GET /erpsystem/tests/sales-crm-campaigns.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-05] COMPLETE: the Campaign workspace publishes budget, expected value, attributed Lead and downstream-source summaries, explicit unavailable dependency states, revenue, and ROI through a company-scoped Campaign Efficiency projection."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/campaign_efficiency/campaign_efficiency.py:report_code:Campaign Efficiency",
@@ -863,9 +912,17 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-05] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/campaigns.php:56",
+                "company/admin/modules/sales-crm/campaigns.php:567",
+                "company/admin/modules/sales-crm/campaigns.php:597",
+                "company/admin/modules/sales-crm/campaigns.php:624",
+                "tests/sales-crm-campaigns.php:238",
+                "tests/sales-crm-campaigns.php:245",
+                "GET /erpsystem/tests/sales-crm-campaigns.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-05] COMPLETE: Campaign Efficiency calculation uses fixed allow-listed stable-key source descriptors, company and campaign parameters, deterministic decimal aggregation, explicit dependency availability, and no copied Lead, Opportunity, Quotation, or Sales Order records."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/first_response_time_for_opportunity/first_response_time_for_opportunity.json:report:First Response Time for Opportunity",
@@ -1148,15 +1205,17 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "PARTIAL",
+            "status": "COMPLETE",
             "evidence": [
-                "company/admin/modules/sales-crm/functions.php:4",
-                "company/admin/modules/sales-crm/views/workspace.php:1",
-                "company/admin/modules/sales-crm/views/workspace.php:24",
-                "company/admin/modules/sales-crm/views/workspace.php:110",
-                "php tests/company-admin-modular-architecture.php (PASS 2026-08-25)"
+                "company/admin/modules/sales-crm/crm-settings.php:405",
+                "company/admin/modules/sales-crm/views/workspace.php:70",
+                "company/admin/modules/sales-crm/views/workspace.php:107",
+                "company/admin/modules/sales-crm/views/workspace.php:299",
+                "tests/sales-crm-workspaces.php:39",
+                "php tests/sales-crm-workspaces.php (PASS 2026-08-25)",
+                "node tests/sales-crm-workspace-browser.mjs (PASS 2026-08-25)"
             ],
-            "reason": "[SC-02] PARTIAL: the local Sales/CRM workspace routes ten sections and renders a Lead list plus utility panel, but most destinations are placeholders, the desktop ratio is 8fr/4fr rather than 12/20 and 8/20, and no Sales/CRM interaction or route suite exists."
+            "reason": "[SC-02] COMPLETE: the CRM workspace now has a company/admin-aware setup checklist, selected-step detail, keyboard tour, operational shortcuts, grouped masters/reports, explicit unavailable dependency states, and authenticated desktop/mobile evidence while preserving the 12/8 shell."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/customer/customer.json:doctype:Customer",
@@ -1468,9 +1527,17 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-02] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/schema.php:130",
+                "company/admin/modules/sales-crm/crm-settings.php:143",
+                "company/admin/modules/sales-crm/views/settings.php:63",
+                "tests/sales-crm-settings.php:67",
+                "tests/sales-crm-settings.php:117",
+                "php tests/sales-crm-settings.php (PASS 2026-08-25)",
+                "node tests/sales-crm-workspace-browser.mjs (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-02] COMPLETE: Selling enablement, customer group, price-list, and selling-price validation settings use the same authorized optimistic transaction, audit, read-back, rollback, modal confirmation, and rehydration contract."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/sms_center/sms_center.json:doctype:SMS Center",
@@ -2558,15 +2625,17 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "PARTIAL",
+            "status": "COMPLETE",
             "evidence": [
-                "company/admin/modules/sales-crm/functions.php:4",
-                "company/admin/modules/sales-crm/functions.php:155",
-                "company/admin/modules/sales-crm/views/workspace.php:13",
-                "company/admin/modules/sales-crm/views/workspace.php:110",
-                "php tests/company-admin-modular-architecture.php (PASS 2026-08-25)"
+                "company/admin/modules/sales-crm/crm-settings.php:405",
+                "company/admin/modules/sales-crm/views/workspace.php:107",
+                "company/admin/modules/sales-crm/views/workspace.php:299",
+                "tests/sales-crm-workspaces.php:39",
+                "tests/sales-crm-settings.php:137",
+                "php tests/sales-crm-workspaces.php (PASS 2026-08-25)",
+                "node tests/sales-crm-workspace-browser.mjs (PASS 2026-08-25)"
             ],
-            "reason": "[SC-02] PARTIAL: Selling destinations are present in the local section navigation and schema registry, but only Leads has operational behavior; the selling workspace, shortcuts, masters, reports, and guided workspace behavior are incomplete and untested."
+            "reason": "[SC-02] COMPLETE: the Selling workspace exposes real authorized destinations, grouped masters and reports, persisted setup/tour state, and explicit disabled dependency states for later packages with authenticated desktop/mobile browser evidence."
         }
     ]
 }

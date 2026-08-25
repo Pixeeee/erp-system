@@ -1,8 +1,8 @@
 <?php
 /** HR view variables are prepared by bootstrap/controller.php. */
 ?>
-                                        <div class="yovel-hr-two-panel yovel-employee-workspace grid min-h-0 gap-4 xl:grid-cols-[minmax(0,8fr)_minmax(18rem,4fr)]">
-                                            <section class="yovel-hr-panel yovel-hr-surface flex flex-col rounded-lg border bg-card">
+                                        <div class="yovel-hr-two-panel yovel-hr-approved-layout yovel-employee-workspace grid min-h-0 gap-4 xl:grid-cols-[minmax(0,12fr)_minmax(16rem,8fr)]">
+                                            <section class="yovel-hr-panel yovel-hr-surface min-w-0 overflow-hidden flex flex-col rounded-lg border bg-card">
                                                 <div class="yovel-hr-surface-header border-b px-5 py-4">
                                                     <div class="flex flex-wrap items-start justify-between gap-3">
                                                         <div>
@@ -13,7 +13,7 @@
 	                                                            <span class="yovel-hr-metric rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= count($hrEmployees) ?> <?= count($hrEmployees) === 1 ? 'employee' : 'employees' ?></span>
 	                                                            <span class="yovel-hr-metric rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= count($activeHrEmployees) ?> active</span>
 	                                                            <span class="yovel-hr-metric rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= count($incompleteHrEmployees) ?> incomplete</span>
-	                                                            <button type="button" id="yovel-employee-modal-open" class="inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><span class="material-symbols-rounded text-base" aria-hidden="true">person_add</span>Add Employee</button>
+	                                                            <button type="button" id="yovel-employee-modal-open" data-record-modal-open="yovel-employee-modal" class="inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><span class="material-symbols-rounded text-base" aria-hidden="true">person_add</span>Add Employee</button>
 	                                                        </div>
                                                     </div>
                                                 </div>
@@ -74,7 +74,7 @@
                                                         </div>
                                                     </div>
                                                 <?php else: ?>
-                                                    <div class="yovel-hr-panel-body overflow-auto">
+                                                    <div class="yovel-hr-panel-body yovel-hr-mobile-table-scroll overflow-auto">
                                                         <table class="w-full min-w-[920px] text-left text-sm">
                                                             <thead class="sticky top-0 z-10 border-b bg-card text-xs text-muted-foreground">
                                                                 <tr>
@@ -178,7 +178,7 @@
                                             </section>
 
                                             <?php $employeeContext = $hrEmployees[0] ?? null; ?>
-                                            <aside class="yovel-hr-panel yovel-hr-surface flex flex-col rounded-lg border bg-card" aria-label="Employee workspace context">
+                                            <aside class="yovel-hr-panel yovel-hr-surface min-w-0 overflow-hidden flex flex-col rounded-lg border bg-card" aria-label="Employee workspace context">
                                                 <div class="yovel-hr-surface-header border-b px-5 py-4">
                                                     <div class="flex min-w-0 items-start justify-between gap-3">
                                                         <div class="min-w-0">
@@ -285,7 +285,7 @@
 	                                                    ['key' => 'connections', 'label' => 'Connections', 'icon' => 'hub'],
 	                                                ];
 	                                            ?>
-		                                            <div id="yovel-employee-modal" class="yovel-employee-modal fixed inset-0 z-40 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-employee-modal-title" aria-describedby="yovel-employee-modal-description" <?= $editHrEmployee ? '' : 'hidden' ?>>
+	                                            <div id="yovel-employee-modal" data-record-modal <?= $editHrEmployee ? 'data-record-modal-open-on-load' : '' ?> class="yovel-employee-modal fixed inset-0 z-40 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-employee-modal-title" aria-describedby="yovel-employee-modal-description" <?= $editHrEmployee ? '' : 'hidden' ?>>
 	                                                <section class="yovel-employee-modal-surface flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] <?= $editHrEmployee ? 'max-w-6xl' : 'max-w-5xl' ?> flex-col overflow-hidden rounded-lg border shadow-lg">
 	                                                    <div class="yovel-employee-modal-header flex shrink-0 items-start justify-between gap-4 border-b px-5 py-4">
 	                                                        <div class="flex min-w-0 items-start gap-3">
@@ -307,7 +307,7 @@
 	                                                            <?php if ($editHrEmployee): ?>
 	                                                                <button type="submit" form="yovel-employee-form" class="inline-flex h-8 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90">Save</button>
 	                                                            <?php endif; ?>
-	                                                            <button type="button" id="yovel-employee-modal-close" class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-sm hover:bg-muted" aria-label="Close employee form">×</button>
+	                                                            <button type="button" id="yovel-employee-modal-close" data-record-modal-close class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-sm hover:bg-muted" aria-label="Close employee form">×</button>
 	                                                        </div>
 	                                                    </div>
 	                                                    <form id="yovel-employee-form" method="post" data-confirm-submit class="yovel-hr-panel-body <?= $editHrEmployee ? 'p-0' : 'p-5' ?>">
@@ -585,7 +585,7 @@
 	                                                </form>
 	                                                <div class="yovel-employee-modal-footer flex shrink-0 items-center justify-between gap-3 border-t px-5 py-4">
 	                                                    <p class="text-xs leading-5 text-muted-foreground">Employee changes still require confirmation before saving.</p>
-	                                                    <button type="button" id="yovel-employee-modal-cancel" class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><?= $editHrEmployee ? 'Close' : 'Cancel' ?></button>
+	                                                    <button type="button" id="yovel-employee-modal-cancel" data-record-modal-close class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><?= $editHrEmployee ? 'Close' : 'Cancel' ?></button>
 	                                                </div>
                                             </section>
                                         </div>

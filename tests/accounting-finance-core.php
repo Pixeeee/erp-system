@@ -6,6 +6,7 @@ require_once $root . '/app/foundation.php';
 require_once $root . '/company/admin/core/functions.php';
 require_once $root . '/company/admin/modules/accounting-finance/functions.php';
 require_once $root . '/company/admin/modules/accounting-finance/core.php';
+require_once __DIR__ . '/accounting-finance-test-helper.php';
 
 function finance_core_assert(bool $condition, string $message): void
 {
@@ -56,9 +57,12 @@ $dimensionValueKey = bx_uuid();
 $bankAccountKey = bx_uuid();
 $taxCodeKey = bx_uuid();
 $periodLockKey = bx_uuid();
+$originalSettings = finance_test_snapshot_rows($db, 'project_company_finance_setting', 'company_key_hash=?', [$company['company_key_hash']]);
+$originalSeries = finance_test_snapshot_rows($db, 'project_company_finance_number_series', 'company_key_hash=? AND series_code=?', [$company['company_key_hash'], 'SALES_INVOICE']);
 
 finance_core_assert(yovel_admin_finance_money('1234.5') === '1234.500000', 'Money normalization failed.');
 finance_core_assert(yovel_admin_finance_money('-0.0000004') === '0.000000', 'Negative zero normalization failed.');
+finance_core_assert(yovel_admin_finance_abs('-12345678901234.123456') === '12345678901234.123456', 'Exact absolute money normalization failed.');
 finance_core_expect_error(static fn () => yovel_admin_finance_money('12.34x'), 'number');
 
 $insertAccountSql = "INSERT INTO project_company_accounting_account (
@@ -196,13 +200,13 @@ try {
 } finally {
     $hash = $company['company_key_hash'];
     $db->Execute('DELETE FROM project_company_finance_period_lock WHERE company_key_hash = ? AND period_lock_key = ?', [$hash, $periodLockKey]);
-    $db->Execute('DELETE FROM project_company_finance_number_series WHERE company_key_hash = ? AND series_code = ?', [$hash, 'SALES_INVOICE']);
+    finance_test_restore_rows($db, 'project_company_finance_number_series', 'company_key_hash=? AND series_code=?', [$hash, 'SALES_INVOICE'], $originalSeries);
     $db->Execute('DELETE FROM project_company_finance_tax_code WHERE company_key_hash = ? AND tax_code_key = ?', [$hash, $taxCodeKey]);
     $db->Execute('DELETE FROM project_company_finance_bank_account WHERE company_key_hash = ? AND bank_account_key = ?', [$hash, $bankAccountKey]);
     $db->Execute('DELETE FROM project_company_finance_dimension_value WHERE company_key_hash = ? AND dimension_key = ?', [$hash, $dimensionKey]);
     $db->Execute('DELETE FROM project_company_finance_dimension WHERE company_key_hash = ? AND dimension_key = ?', [$hash, $dimensionKey]);
     $db->Execute('DELETE FROM project_company_finance_cost_center WHERE company_key_hash = ? AND cost_center_key IN (?, ?)', [$hash, $childCostCenterKey, $parentCostCenterKey]);
-    $db->Execute('DELETE FROM project_company_finance_setting WHERE company_key_hash = ?', [$hash]);
+    finance_test_restore_rows($db, 'project_company_finance_setting', 'company_key_hash=?', [$hash], $originalSettings);
     $db->Execute('DELETE FROM project_company_accounting_account WHERE company_key_hash = ? AND account_key IN (?, ?)', [$hash, $bankLedgerKey, $expenseLedgerKey]);
 }
 

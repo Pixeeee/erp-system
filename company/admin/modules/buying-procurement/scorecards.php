@@ -798,6 +798,7 @@ function yovel_admin_buying_scorecard_notification(array $company, array $period
             'source_module' => 'buying-procurement',
             'source_record_type' => 'supplier-scorecard-period',
             'source_record_key' => (string) $period['scorecard_period_key'],
+            'actor_admin_key' => (string) $period['updated_by_admin_key'],
             'supplier_key' => (string) $period['supplier_key'],
             'scorecard_key' => (string) $period['scorecard_key'],
             'period_start' => (string) $period['period_start'],
@@ -951,6 +952,9 @@ function yovel_admin_buying_calculate_scorecard_period(
             || (string) $saved['standing_key'] !== (string) $standing['scorecard_standing_key']
             || (string) $saved['metric_snapshot_json'] !== $metricJson
             || (string) $saved['period_status'] !== 'CALCULATED'
+            || (string) $saved['created_by_admin_key'] !== $adminKey
+            || (string) $saved['updated_by_admin_key'] !== $adminKey
+            || (string) $saved['created_by_admin_key'] !== (string) $saved['updated_by_admin_key']
             || count($saved['scores']) !== count($scores)) {
             throw new RuntimeException('Scorecard period read-back verification failed.');
         }

@@ -29,10 +29,10 @@ $financeNumericFields = yovel_admin_finance_grid_numeric_fields($activeAccountin
         </select>
     <?php endif; ?>
     <div class="grid grid-cols-2 gap-2">
-        <button type="button" class="inline-flex h-9 items-center justify-center gap-2 rounded-md border bg-background px-2 text-xs font-medium hover:bg-muted" data-finance-grid-view-open><span class="material-symbols-rounded text-base" aria-hidden="true">view_column</span>View</button>
-        <button type="button" class="inline-flex h-9 items-center justify-center gap-2 rounded-md border bg-background px-2 text-xs font-medium hover:bg-muted" data-finance-grid-formula-open><span class="material-symbols-rounded text-base" aria-hidden="true">function</span>Formula</button>
+        <button type="button" class="inline-flex h-9 items-center justify-center gap-2 rounded-md border bg-background px-2 text-xs font-medium hover:bg-muted" data-record-modal-open="yovel-finance-grid-view-modal" data-finance-grid-view-open><span class="material-symbols-rounded text-base" aria-hidden="true">view_column</span>View</button>
+        <button type="button" class="inline-flex h-9 items-center justify-center gap-2 rounded-md border bg-background px-2 text-xs font-medium hover:bg-muted" data-record-modal-open="yovel-finance-grid-formula-modal" data-finance-grid-formula-open><span class="material-symbols-rounded text-base" aria-hidden="true">function</span>Formula</button>
         <button type="button" class="inline-flex h-9 items-center justify-center gap-2 rounded-md border bg-background px-2 text-xs font-medium hover:bg-muted" data-finance-grid-export><span class="material-symbols-rounded text-base" aria-hidden="true">download</span>Export</button>
-        <button type="button" class="inline-flex h-9 items-center justify-center gap-2 rounded-md border bg-background px-2 text-xs font-medium hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50" data-finance-grid-import-open <?= $activeAccountingFinanceSection === 'chart-of-accounts' ? '' : 'disabled' ?>><span class="material-symbols-rounded text-base" aria-hidden="true">upload</span>Import</button>
+        <button type="button" class="inline-flex h-9 items-center justify-center gap-2 rounded-md border bg-background px-2 text-xs font-medium hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50" data-record-modal-open="yovel-finance-import-modal" data-finance-grid-import-open <?= $activeAccountingFinanceSection === 'chart-of-accounts' ? '' : 'disabled' ?>><span class="material-symbols-rounded text-base" aria-hidden="true">upload</span>Import</button>
     </div>
     <?php if ($financeGridFormulas): ?>
         <div class="grid gap-1 pt-1">
@@ -43,9 +43,9 @@ $financeNumericFields = yovel_admin_finance_grid_numeric_fields($activeAccountin
     <?php endif; ?>
 </section>
 
-<div class="yovel-finance-operation-modal fixed inset-0 z-[90] grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-finance-grid-view-title" hidden data-finance-grid-view-modal>
+<div id="yovel-finance-grid-view-modal" data-record-modal<?= $financeModalStateAttributes('yovel-finance-grid-view-modal') ?> class="yovel-finance-operation-modal fixed inset-0 z-[90] grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-finance-grid-view-title" hidden data-finance-grid-view-modal>
     <section class="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-4xl flex-col overflow-hidden rounded-lg border bg-popover shadow-lg">
-        <header class="flex items-start justify-between gap-4 border-b px-5 py-4"><div><h3 id="yovel-finance-grid-view-title" class="text-base font-semibold">Customize Spreadsheet View</h3><p class="mt-1 text-sm text-muted-foreground">Save columns, widths, sorting, filters, and grouping for this Finance section.</p></div><button type="button" class="inline-flex size-8 items-center justify-center rounded-md border hover:bg-muted" aria-label="Close spreadsheet view" data-finance-operation-close><span class="material-symbols-rounded text-base" aria-hidden="true">close</span></button></header>
+        <header class="flex items-start justify-between gap-4 border-b px-5 py-4"><div><h3 id="yovel-finance-grid-view-title" class="text-base font-semibold">Customize Spreadsheet View</h3><p class="mt-1 text-sm text-muted-foreground">Save columns, widths, sorting, filters, and grouping for this Finance section.</p></div><button type="button" class="inline-flex size-8 items-center justify-center rounded-md border hover:bg-muted" aria-label="Close spreadsheet view" data-record-modal-close data-finance-operation-close><span class="material-symbols-rounded text-base" aria-hidden="true">close</span></button></header>
         <div class="yovel-modal-scroll min-h-0 flex-1 overflow-auto p-6">
             <form method="post" data-confirm-submit class="grid gap-5" data-finance-grid-view-form>
                 <input type="hidden" name="csrf" value="<?= bx_h(bx_csrf_token()) ?>">
@@ -65,13 +65,13 @@ $financeNumericFields = yovel_admin_finance_grid_numeric_fields($activeAccountin
                 <div class="flex justify-end border-t pt-4"><button type="submit" class="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90"><span class="material-symbols-rounded text-base" aria-hidden="true">save</span>Save View</button></div>
             </form>
         </div>
-        <footer class="flex items-center justify-between gap-3 border-t px-5 py-4"><span class="text-xs text-muted-foreground">View settings are company- and section-scoped.</span><button type="button" class="inline-flex h-9 items-center rounded-md border px-3 text-sm font-medium hover:bg-muted" data-finance-operation-close>Cancel</button></footer>
+        <footer class="flex items-center justify-between gap-3 border-t px-5 py-4"><span class="text-xs text-muted-foreground">View settings are company- and section-scoped.</span><button type="button" class="inline-flex h-9 items-center rounded-md border px-3 text-sm font-medium hover:bg-muted" data-record-modal-close data-finance-operation-close>Cancel</button></footer>
     </section>
 </div>
 
-<div class="yovel-finance-operation-modal fixed inset-0 z-[90] grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-finance-formula-title" hidden data-finance-grid-formula-modal>
+<div id="yovel-finance-grid-formula-modal" data-record-modal<?= $financeModalStateAttributes('yovel-finance-grid-formula-modal') ?> class="yovel-finance-operation-modal fixed inset-0 z-[90] grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-finance-formula-title" hidden data-finance-grid-formula-modal>
     <section class="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-2xl flex-col overflow-hidden rounded-lg border bg-popover shadow-lg">
-        <header class="flex items-start justify-between gap-4 border-b px-5 py-4"><div><h3 id="yovel-finance-formula-title" class="text-base font-semibold">Calculated Column</h3><p class="mt-1 text-sm text-muted-foreground">Build a controlled display formula without changing accounting records.</p></div><button type="button" class="inline-flex size-8 items-center justify-center rounded-md border hover:bg-muted" aria-label="Close calculated column" data-finance-operation-close><span class="material-symbols-rounded text-base" aria-hidden="true">close</span></button></header>
+        <header class="flex items-start justify-between gap-4 border-b px-5 py-4"><div><h3 id="yovel-finance-formula-title" class="text-base font-semibold">Calculated Column</h3><p class="mt-1 text-sm text-muted-foreground">Build a controlled display formula without changing accounting records.</p></div><button type="button" class="inline-flex size-8 items-center justify-center rounded-md border hover:bg-muted" aria-label="Close calculated column" data-record-modal-close data-finance-operation-close><span class="material-symbols-rounded text-base" aria-hidden="true">close</span></button></header>
         <div class="yovel-modal-scroll min-h-0 flex-1 overflow-auto p-6">
             <form method="post" data-confirm-submit class="grid gap-4">
                 <input type="hidden" name="csrf" value="<?= bx_h(bx_csrf_token()) ?>"><input type="hidden" name="action" value="save_finance_grid_formula"><input type="hidden" name="section" value="<?= bx_h($activeAccountingFinanceSection) ?>"><input type="hidden" name="grid_view_key" value="<?= bx_h((string) ($activeFinanceGridView['grid_view_key'] ?? '')) ?>">
@@ -81,13 +81,13 @@ $financeNumericFields = yovel_admin_finance_grid_numeric_fields($activeAccountin
                 <div class="flex justify-end border-t pt-4"><button type="submit" class="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90"><span class="material-symbols-rounded text-base" aria-hidden="true">save</span>Save Column</button></div>
             </form>
         </div>
-        <footer class="flex items-center justify-between gap-3 border-t px-5 py-4"><span class="text-xs text-muted-foreground">Formulas affect display only.</span><button type="button" class="inline-flex h-9 items-center rounded-md border px-3 text-sm font-medium hover:bg-muted" data-finance-operation-close>Cancel</button></footer>
+        <footer class="flex items-center justify-between gap-3 border-t px-5 py-4"><span class="text-xs text-muted-foreground">Formulas affect display only.</span><button type="button" class="inline-flex h-9 items-center rounded-md border px-3 text-sm font-medium hover:bg-muted" data-record-modal-close data-finance-operation-close>Cancel</button></footer>
     </section>
 </div>
 
-<div class="yovel-finance-operation-modal fixed inset-0 z-[90] grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-finance-import-title" hidden data-finance-grid-import-modal>
+<div id="yovel-finance-import-modal" data-record-modal<?= $financeModalStateAttributes('yovel-finance-import-modal') ?> class="yovel-finance-operation-modal fixed inset-0 z-[90] grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-finance-import-title" hidden data-finance-grid-import-modal>
     <section class="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-3xl flex-col overflow-hidden rounded-lg border bg-popover shadow-lg">
-        <header class="flex items-start justify-between gap-4 border-b px-5 py-4"><div><h3 id="yovel-finance-import-title" class="text-base font-semibold">Import Chart of Accounts</h3><p class="mt-1 text-sm text-muted-foreground">Select a CSV, inspect its headers and rows, then map it before a confirmed import.</p></div><button type="button" class="inline-flex size-8 items-center justify-center rounded-md border hover:bg-muted" aria-label="Close CSV import" data-finance-operation-close><span class="material-symbols-rounded text-base" aria-hidden="true">close</span></button></header>
+        <header class="flex items-start justify-between gap-4 border-b px-5 py-4"><div><h3 id="yovel-finance-import-title" class="text-base font-semibold">Import Chart of Accounts</h3><p class="mt-1 text-sm text-muted-foreground">Select a CSV, inspect its headers and rows, then map it before a confirmed import.</p></div><button type="button" class="inline-flex size-8 items-center justify-center rounded-md border hover:bg-muted" aria-label="Close CSV import" data-record-modal-close data-finance-operation-close><span class="material-symbols-rounded text-base" aria-hidden="true">close</span></button></header>
         <div class="yovel-modal-scroll min-h-0 flex-1 overflow-auto p-6">
             <form method="post" class="grid gap-4" data-confirm-submit data-finance-grid-import-form>
                 <input type="hidden" name="csrf" value="<?= bx_h(bx_csrf_token()) ?>">
@@ -99,6 +99,6 @@ $financeNumericFields = yovel_admin_finance_grid_numeric_fields($activeAccountin
                 <button type="submit" class="inline-flex h-9 w-fit items-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground disabled:opacity-50" disabled data-finance-grid-import-confirm>Import Valid Rows</button>
             </form>
         </div>
-        <footer class="flex items-center justify-between gap-3 border-t px-5 py-4"><span class="text-xs text-muted-foreground">Imports are all-or-nothing.</span><button type="button" class="inline-flex h-9 items-center rounded-md border px-3 text-sm font-medium hover:bg-muted" data-finance-operation-close>Cancel</button></footer>
+        <footer class="flex items-center justify-between gap-3 border-t px-5 py-4"><span class="text-xs text-muted-foreground">Imports are all-or-nothing.</span><button type="button" class="inline-flex h-9 items-center rounded-md border px-3 text-sm font-medium hover:bg-muted" data-record-modal-close data-finance-operation-close>Cancel</button></footer>
     </section>
 </div>

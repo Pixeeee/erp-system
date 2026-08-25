@@ -1,0 +1,15 @@
+<?php
+declare(strict_types=1);
+
+$operationsChecks = is_array($activeModuleData['release_checks'] ?? null) ? $activeModuleData['release_checks'] : [];
+ob_start();
+$recordModal = [
+    'id' => 'operations-release-check-modal', 'title' => 'Create Release Check', 'description' => 'Record a timestamped result with actor and evidence.', 'open_label' => 'Create Check', 'submit_label' => 'Submit',
+    'confirm_message' => 'Confirm this release result. Evidence is not persisted before confirmation.',
+    'hidden_html' => '<input type="hidden" name="csrf" value="' . bx_h(bx_csrf_token()) . '"><input type="hidden" name="module_view" value="operations"><input type="hidden" name="action" value="save_operations_release_check"><input type="hidden" name="section" value="release-checklist">',
+    'body_html' => '<div class="grid gap-1.5"><label class="text-sm font-medium">Check code</label><input name="check_code" required maxlength="120" class="h-9 rounded-md border bg-background px-3 text-sm"></div><div class="grid gap-1.5"><label class="text-sm font-medium">Check label</label><input name="check_label" required maxlength="180" class="h-9 rounded-md border bg-background px-3 text-sm"></div><div class="grid gap-1.5"><label class="text-sm font-medium">Status</label><select name="status" class="h-9 rounded-md border bg-background px-3 text-sm"><option value="PASS">Pass</option><option value="WARN">Warning</option><option value="FAIL">Fail</option></select></div><div class="grid gap-1.5"><label class="text-sm font-medium">Evidence summary</label><textarea name="evidence_summary" required maxlength="2000" rows="5" class="rounded-md border bg-background px-3 py-2 text-sm"></textarea></div>',
+];
+require dirname(__DIR__) . '/record-modal.php';
+$operationsSectionTools = (string) ob_get_clean();
+?>
+<div class="grid gap-3"><div><h2 class="text-base font-semibold">Release checklist</h2><p class="mt-1 text-sm text-muted-foreground">Readiness is derived from persisted checks, not decorative checklist state.</p></div><div class="overflow-x-auto rounded-md border"><table class="w-full min-w-[44rem] text-left text-sm"><thead class="bg-muted/50 text-xs text-muted-foreground"><tr><th class="px-3 py-2.5">Check</th><th class="px-3 py-2.5">Status</th><th class="px-3 py-2.5">Evidence</th><th class="px-3 py-2.5">Checked</th></tr></thead><tbody class="divide-y"><?php if ($operationsChecks === []): ?><tr><td colspan="4" class="px-3 py-10 text-center text-muted-foreground">No release evidence recorded.</td></tr><?php else: foreach ($operationsChecks as $check): ?><tr><td class="px-3 py-2.5"><div class="font-medium"><?= bx_h((string) $check['check_label']) ?></div><div class="font-mono text-xs text-muted-foreground"><?= bx_h((string) $check['check_code']) ?></div></td><td class="px-3 py-2.5"><?= bx_h((string) $check['status']) ?></td><td class="px-3 py-2.5"><?= bx_h((string) $check['evidence_summary']) ?></td><td class="px-3 py-2.5 text-muted-foreground"><?= bx_h((string) $check['checked_at']) ?></td></tr><?php endforeach; endif; ?></tbody></table></div></div>

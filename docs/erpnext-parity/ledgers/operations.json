@@ -20,12 +20,13 @@
                 "operations.job-runner.v1",
                 "shared.audit-log.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/schema.php defines the company-scoped project_company_operations_bulk_log table and joined Operations job identity; company/admin/modules/operations/bulk.php implements idempotent submit/read/cancel workflows with caller-owned transactions, owner-contract dispatch, audit, and exact read-back; company/admin/modules/operations/views/sections/bulk.php renders the server-backed 12/8 bulk surface through the shared modal contract.",
+                "2026-08-25 passing evidence: php tests/operations-bulk.php passed, covering one-job confirmation, stable retry identity, authorization/company isolation, explicit cancellation, owner-joined commit, and complete rollback of the bulk log/job and owner stub writes on owner failure.",
+                "2026-08-25 browser evidence: authenticated bulk-processing route rendered at an exact 1.50 desktop panel ratio; Submit opened the separate Confirm Submission dialog naming Yovel East, and direct database checks remained bulk=0 and jobs=0 before Confirm."
             ],
-            "reason": "OP-08: Job control, bulk processing, and governed deletion workflows are absent."
+            "reason": "OP-08 complete: Operations owns idempotent bulk orchestration logs and jobs while every authoritative record mutation remains behind owners.bulk-command.v1."
         },
         {
             "source_id": "erpnext:erpnext/bulk_transaction/doctype/bulk_transaction_log_detail/bulk_transaction_log_detail.json:doctype:Bulk Transaction Log Detail",
@@ -43,12 +44,13 @@
                 "operations.job-runner.v1",
                 "shared.audit-log.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/schema.php defines project_company_operations_bulk_log_detail with stable detail and target idempotency keys, sequence uniqueness, owner contract/status, sanitized read-back, audit reference, and lifecycle status; company/admin/modules/operations/bulk.php persists and exactly verifies one detail per owner result.",
+                "2026-08-25 passing evidence: php tests/operations-bulk.php passed, asserting two rehydrated per-record details, one owner call per target, stable target idempotency, COMPLETED read-back, and omission of provider api_token evidence.",
+                "2026-08-25 static evidence: the foreign-owner-table scan over company/admin/modules/operations returned clean; Operations SQL references only project_company_operations_* ownership tables."
             ],
-            "reason": "OP-08: Job control, bulk processing, and governed deletion workflows are absent."
+            "reason": "OP-08 complete: every bulk target has a company-scoped Operations detail with stable identity, owner result, sanitized evidence, and exact persisted status."
         },
         {
             "source_id": "erpnext:erpnext/communication/doctype/communication_medium/communication_medium.json:doctype:Communication Medium",
@@ -209,12 +211,13 @@
             "dependencies": [
                 "shared.identity-permission-directory.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/setup.php validates the allow-listed shared.identity-permission-directory.v1 envelope, stable reference keys, company scope, and secret-redacted read-only records; company/admin/modules/operations/views/sections/authorization.php exposes the resulting authorization-control projection and owner-action links in the 12/8 workspace.",
+                "2026-08-25 passing evidence: php tests/operations-authorization-setup.php passed, covering available and missing identity providers, stable user/role/permission references, secret redaction, non-blocking unavailable state, company-envelope rejection, inactive-admin denial, and shared modal/confirmation dispatch.",
+                "2026-08-25 browser evidence: authenticated authorization-setup rendered at an exact 1.50 desktop panel ratio without horizontal overflow; Create Policy opened an accessible populated record dialog and Submit opened a separate Confirm Submission dialog while direct read-back remained policy_rows=0 before Confirm."
             ],
-            "reason": "OP-02: Authorization, company, and global-default setup integration is absent."
+            "reason": "OP-02 complete: Authorization Control is represented by a company-scoped, read-only identity/permission projection with local policy actions separated from authoritative owner records."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/authorization_rule/authorization_rule.json:doctype:Authorization Rule",
@@ -232,12 +235,13 @@
                 "owners.document-lifecycle-catalog.v1",
                 "hr.workforce-directory.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/schema.php defines only the company-owned project_company_operations_authorization_policy overlay; company/admin/modules/operations/setup.php composes identity, company-scope, document-lifecycle, and workforce projections and persists threshold/approver references in an authorized parameterized transaction with audit and exact read-back; company/admin/modules/operations/functions.php exposes save_operations_authorization_policy through the exact four-argument handler.",
+                "2026-08-25 passing evidence: php tests/operations-authorization-setup.php passed, verifying stable lifecycle/user/role/employee references, exact 5000.000000 threshold read-back, company isolation, inactive-admin rejection, unknown-approver rejection, sanitized evidence, provider mismatch rejection, and the shared POST response envelope.",
+                "2026-08-25 regression evidence: all nine Operations suites passed; Operations job lifecycle passed twice; shared ERP contract, modular architecture, modal confirmation, Form Builder, ledger baseline, PHP lint, diff-check, and the foreign-owner-table scan passed."
             ],
-            "reason": "OP-02: Authorization, company, and global-default setup integration is absent."
+            "reason": "OP-02 complete: Authorization Rules are Operations-owned policy overlays referencing authoritative owner keys; owner identity, lifecycle, company, and workforce rows remain read-only and unmodified."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/branch/branch.json:doctype:Branch",
@@ -252,12 +256,13 @@
             "dependencies": [
                 "platform.company-branch-directory.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/setup.php consumes only the allow-listed platform.company-branch-directory.v1 read contract, requires a stable branch key, rejects mismatched company envelopes, sanitizes records, and returns an explicit non-blocking unavailable state; company/admin/modules/operations/views/sections/company-defaults.php renders the branch projection without any mutation form.",
+                "2026-08-25 passing evidence: php tests/operations-company-defaults.php passed, asserting stable branch_key preservation, missing-provider tolerance, malformed-envelope rejection, rejection of a branch record without a stable key, secret redaction, and owner-action-only UI.",
+                "2026-08-25 static evidence: the foreign-owner-table scan over company/admin/modules/operations returned no query or write against project_company_* owner tables; the only new persistence table is project_company_operations_authorization_policy."
             ],
-            "reason": "OP-02: Authorization, company, and global-default setup integration is absent."
+            "reason": "OP-02 complete: Branches are company-isolated, stable-key read projections from the Platform owner with an owner-route action and no Operations mutation of authoritative branch data."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/brand/brand.json:doctype:Brand",
@@ -296,12 +301,13 @@
                 "inventory-warehouse.company-defaults.v1",
                 "assets-maintenance.company-defaults.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/setup.php composes platform.company-directory.v1 plus Finance, Inventory, and Assets company-default contracts into sanitized stable-key projection states; company/admin/modules/operations/views/sections/company-defaults.php presents those records read-only and links only to platform, accounting-finance, inventory-warehouse, and assets-maintenance owner routes.",
+                "2026-08-25 passing evidence: php tests/operations-company-defaults.php passed, covering company/default stable references, provider absence, malformed envelope rejection, secret removal from Finance defaults, company-scoped shared data hydration, and absence of foreign-owner mutation forms or SQL.",
+                "2026-08-25 browser evidence: authenticated company-defaults at 390x844 rendered main then tools as a single 325px column with no body overflow, all seven absent contracts as explicit non-blocking UNAVAILABLE states, and six real owner-action links."
             ],
-            "reason": "OP-02: Authorization, company, and global-default setup integration is absent."
+            "reason": "OP-02 complete: Company and owner-specific defaults are read-only projections through injected allow-listed contracts; Operations neither stores nor mutates authoritative company, Finance, Inventory, or Assets rows."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/company/test_records.json:doctype:Test Records",
@@ -654,12 +660,13 @@
                 "accounting-finance.currency-directory.v1",
                 "inventory-warehouse.unit-directory.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/setup.php projects platform.company-directory.v1, accounting-finance.currency-directory.v1, and inventory-warehouse.unit-directory.v1 through the strict read client with exact company-hash validation, stable-key enforcement, and recursive secret redaction; company/admin/modules/operations/views/sections/company-defaults.php renders the resulting defaults sources without a POST form.",
+                "2026-08-25 passing evidence: php tests/operations-company-defaults.php passed, asserting company_key, currency_key, and unit_key preservation, non-blocking missing providers, malformed response rejection, secret redaction, and owner-action-only presentation.",
+                "2026-08-25 validation evidence: php tools/erpnext-parity.php validate-ledger and php tests/erpnext-parity-ledger.php passed after this row-specific update; git diff --check and PHP lint were clean."
             ],
-            "reason": "OP-02: Authorization, company, and global-default setup integration is absent."
+            "reason": "OP-02 complete: Global Defaults are represented by company, currency, and unit directory projections owned by their source modules, with no authoritative default persistence in Operations."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/holiday/holiday.json:doctype:Holiday",
@@ -983,12 +990,13 @@
                 "operations.job-runner.v1",
                 "shared.audit-log.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/schema.php defines project_company_operations_deletion_request with QUEUED/RUNNING/FAILED/COMPLETED/CANCELLED lifecycle, plan hash, joined job, consequence, counts, actors, and company ownership; company/admin/modules/operations/deletion.php implements write-free planning plus transaction-owned submit/read/cancel; company/admin/modules/operations/views/sections/deletion.php renders dry-run, destructive confirmation, history, cancellation, and rehydration.",
+                "2026-08-25 passing evidence: php tests/operations-governed-deletion.php passed, covering zero-write dry-run, idempotent one-job confirmation, authorization/company isolation, explicit cancellation, provider failure rollback, audit, exact request read-back, and exact four-argument shared POST actions.",
+                "2026-08-25 browser evidence: authenticated governed-deletion route stacked main-first at 390 px with body width equal to viewport; unavailable shared.record-type-directory.v1 failed closed after Confirm and reopened the populated modal with idempotency, record type, target JSON, and consequence intact; deletion/job row counts remained zero."
             ],
-            "reason": "OP-08: Job control, bulk processing, and governed deletion workflows are absent."
+            "reason": "OP-08 complete: governed deletion requests are planned without writes and execute only through an injected owner provider inside the Operations-owned outer transaction."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/transaction_deletion_record_item/transaction_deletion_record_item.json:doctype:Transaction Deletion Record Item",
@@ -1006,12 +1014,13 @@
                 "operations.job-runner.v1",
                 "shared.audit-log.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/schema.php defines project_company_operations_deletion_item with stable item key, request/company ownership, owner contract, record type, target count, and PENDING/COMPLETED/FAILED/CANCELLED status; company/admin/modules/operations/deletion.php creates, completes, cancels, and rehydrates the item inside request transactions.",
+                "2026-08-25 passing evidence: php tests/operations-governed-deletion.php passed, asserting one rehydrated owner-contract item for the planned record type and target count, with transaction rollback on owner failure and explicit queued cancellation.",
+                "2026-08-25 validation evidence: php tools/erpnext-parity.php validate-ledger passed against the pinned 2026-08-25 baseline after this row-specific update."
             ],
-            "reason": "OP-08: Job control, bulk processing, and governed deletion workflows are absent."
+            "reason": "OP-08 complete: deletion requests retain a company-scoped owner-contract item that summarizes the governed target set and lifecycle."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/transaction_deletion_record_to_delete/transaction_deletion_record_to_delete.json:doctype:Transaction Deletion Record To Delete",
@@ -1029,12 +1038,13 @@
                 "operations.job-runner.v1",
                 "shared.audit-log.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/schema.php defines project_company_operations_deletion_target with stable target/owner keys, per-target idempotency, sequence uniqueness, owner status, sanitized read-back, audit reference, and lifecycle; company/admin/modules/operations/deletion.php verifies each joined owners.governed-delete.v1 response before commit and never queries or writes an owner table.",
+                "2026-08-25 passing evidence: php tests/operations-governed-deletion.php passed, asserting two rehydrated targets, exactly one owner call per target, sanitized removal of raw SQL evidence, stable idempotent retry, and rollback of every target/request/job and joined owner stub write when a later owner command fails.",
+                "2026-08-25 regression evidence: Operations jobs passed twice; company-admin ERP, modular architecture, modal confirmation, shared Form Builder, PHP lint, ledger validation, diff-check, and foreign-owner-table scan all passed."
             ],
-            "reason": "OP-08: Job control, bulk processing, and governed deletion workflows are absent."
+            "reason": "OP-08 complete: each governed deletion target records only Operations-owned orchestration identity and sanitized owner evidence from the injected authoritative command."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/uom/uom.json:doctype:UOM",

@@ -30,9 +30,12 @@ $financeQuestionTools = [
     ['type' => 'SECTION', 'label' => 'Section', 'icon' => 'view_agenda'],
 ];
 $financeQuestions = $activeFinanceBuilderSchema['questions'] ?? [];
+$financeVersionHistory = $activeFinanceBuilderForm
+    ? yovel_admin_finance_builder_form_versions($company, (string) $activeFinanceBuilderForm['builder_form_key'])
+    : [];
 $financeCloseHref = './?view=accounting-finance&section=dashboard';
 ?>
-<div id="yovel-finance-builder-modal" class="yovel-finance-builder-modal yovel-form-builder-modal" role="dialog" aria-modal="true" aria-labelledby="yovel-finance-builder-title" aria-describedby="yovel-finance-builder-description" data-close-href="<?= bx_h($financeCloseHref) ?>" <?= $activeFinanceBuilderOpen ? '' : 'hidden' ?>>
+<div id="yovel-finance-builder-modal" data-record-modal<?= $financeModalStateAttributes('yovel-finance-builder-modal') ?> <?= $activeFinanceBuilderOpen ? 'data-record-modal-open-on-load' : '' ?> class="yovel-finance-builder-modal yovel-form-builder-modal" role="dialog" aria-modal="true" aria-labelledby="yovel-finance-builder-title" aria-describedby="yovel-finance-builder-description" data-close-href="<?= bx_h($financeCloseHref) ?>" <?= ($activeFinanceBuilderOpen || $financeFailedModalId === 'yovel-finance-builder-modal') ? '' : 'hidden' ?>>
     <section class="yovel-finance-builder-dialog" tabindex="-1">
         <header class="yovel-finance-sticky-modal-header flex items-start justify-between gap-4 border-b bg-popover px-5 py-4">
             <div>
@@ -133,7 +136,7 @@ $financeCloseHref = './?view=accounting-finance&section=dashboard';
                     </div>
                 </section>
             <?php else: ?>
-                <form method="post" data-confirm-submit data-finance-builder-add-form data-finance-google-builder class="grid gap-4">
+                <form method="post" data-confirm-submit data-finance-builder-add-form data-finance-layout-builder class="grid gap-4">
                     <input type="hidden" name="csrf" value="<?= bx_h(bx_csrf_token()) ?>">
                     <input type="hidden" name="action" value="save_finance_builder_form">
                     <input type="hidden" name="section" value="dashboard">
@@ -159,6 +162,15 @@ $financeCloseHref = './?view=accounting-finance&section=dashboard';
                         </div>
                     </div>
 
+                    <?php if ($financeVersionHistory): ?>
+                        <div class="flex flex-wrap items-center gap-2 border-b pb-4" aria-label="Finance form version history">
+                            <span class="text-xs font-semibold uppercase text-muted-foreground">Version History</span>
+                            <?php foreach ($financeVersionHistory as $version): ?>
+                                <span class="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-xs"><strong>v<?= (int) $version['version_number'] ?></strong><span><?= bx_h(ucfirst(strtolower((string) $version['form_status']))) ?></span><time datetime="<?= bx_h((string) $version['created_at']) ?>"><?= bx_h(date('M j, Y', strtotime((string) $version['created_at']))) ?></time></span>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+
                     <div class="yovel-finance-builder-workbench">
                         <aside class="yovel-finance-builder-pane grid content-start gap-3" aria-label="Field Toolbox">
                             <div><h5 class="text-xs font-semibold uppercase">Field Toolbox</h5><p class="mt-1 text-xs leading-5 text-muted-foreground">Choose a field type to add it to the form.</p></div>
@@ -170,7 +182,7 @@ $financeCloseHref = './?view=accounting-finance&section=dashboard';
                         </aside>
 
                         <section class="yovel-finance-builder-pane grid content-start gap-3" aria-label="Form Layout">
-                            <div class="flex items-center justify-between gap-3"><div><h5 class="text-xs font-semibold uppercase">Form Layout</h5><p class="mt-1 text-xs text-muted-foreground"><span data-finance-builder-count><?= count($financeQuestions) ?></span> fields</p></div><button type="button" class="inline-flex h-8 items-center gap-1 rounded-md border px-2 text-xs font-medium hover:bg-muted" data-finance-builder-preview><span class="material-symbols-rounded text-base" aria-hidden="true">visibility</span>Preview</button></div>
+                            <div class="flex items-center justify-between gap-3"><div><h5 class="text-xs font-semibold uppercase">Form Layout</h5><p class="mt-1 text-xs text-muted-foreground"><span data-finance-builder-count><?= count($financeQuestions) ?></span> fields</p></div><div class="flex gap-1"><button type="button" class="inline-flex h-8 items-center gap-1 rounded-md border px-2 text-xs font-medium hover:bg-muted" data-finance-builder-add-row><span class="material-symbols-rounded text-base" aria-hidden="true">view_week</span>Add Row</button><button type="button" class="inline-flex h-8 items-center gap-1 rounded-md border px-2 text-xs font-medium hover:bg-muted" data-finance-builder-preview><span class="material-symbols-rounded text-base" aria-hidden="true">visibility</span>Preview</button></div></div>
                             <div class="grid gap-2" data-finance-builder-canvas>
                                 <?php foreach ($financeQuestions as $questionIndex => $question): ?>
                                     <article class="yovel-finance-builder-question rounded-md border bg-background p-3" draggable="true" tabindex="0" aria-selected="<?= $questionIndex === 0 ? 'true' : 'false' ?>" data-finance-builder-question data-question-key="<?= bx_h((string) $question['key']) ?>">
@@ -220,3 +232,4 @@ $financeCloseHref = './?view=accounting-finance&section=dashboard';
         </footer>
     </section>
 </div>
+<?php require __DIR__ . '/form-builder-script.php'; ?>

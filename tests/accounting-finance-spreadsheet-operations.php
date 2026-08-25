@@ -7,6 +7,8 @@ require_once $root . '/company/admin/core/functions.php';
 require_once $root . '/company/admin/modules/accounting-finance/functions.php';
 require_once $root . '/company/admin/modules/accounting-finance/forms.php';
 require_once $root . '/company/admin/modules/accounting-finance/grid.php';
+require_once $root . '/company/admin/modules/accounting-finance/core.php';
+require_once $root . '/company/admin/modules/accounting-finance/ledger.php';
 
 function finance_grid_assert(bool $condition, string $message): void
 {
@@ -80,7 +82,9 @@ $formulaKey = bx_uuid();
 $importSuffix = strtoupper(substr(str_replace('-', '', bx_uuid()), 0, 10));
 $importParentCode = 'TST_PARENT_' . $importSuffix;
 $importChildCode = 'TST_CHILD_' . $importSuffix;
+$importCounterCode = 'TST_COUNTER_' . $importSuffix;
 $invalidCode = 'TST_INVALID_' . $importSuffix;
+$postedTransactionKey = '';
 
 try {
     $createdView = yovel_admin_persist_finance_grid_view($db, $fixtureCompany, $fixtureAdmin, [
@@ -135,9 +139,10 @@ try {
     $_POST['rows_json'] = json_encode([
         ['account_code' => $importParentCode, 'account_name' => 'Import parent', 'root_type' => 'ASSET', 'is_group' => 'yes', 'account_currency' => 'PHP'],
         ['account_code' => $importChildCode, 'account_name' => 'Import child', 'root_type' => 'ASSET', 'parent_account_code' => $importParentCode, 'tax_rate' => '12'],
+        ['account_code' => $importCounterCode, 'account_name' => 'Import counter', 'root_type' => 'EQUITY', 'account_currency' => 'PHP'],
     ], JSON_THROW_ON_ERROR);
     $importMessage = yovel_admin_import_finance_accounts($fixtureCompany, $fixtureAdmin);
-    finance_grid_assert($importMessage === '2 Finance accounts imported.', 'Finance import returned the wrong result message.');
+    finance_grid_assert($importMessage === '3 Finance accounts imported.', 'Finance import returned the wrong result message.');
     $imported = $db->GetAll(
         'SELECT account_code, parent_account_key, is_group FROM project_company_accounting_account WHERE company_key_hash = ? AND account_code IN (?, ?) ORDER BY account_code',
         [$fixtureCompany['company_key_hash'], $importParentCode, $importChildCode]
@@ -152,6 +157,21 @@ try {
         [$fixtureCompany['company_key_hash'], $importChildCode]
     );
     finance_grid_assert($parentKey !== '' && $childParentKey === $parentKey, 'Finance import did not preserve the parent relationship.');
+
+    $childKey = (string) $db->GetOne('SELECT account_key FROM project_company_accounting_account WHERE company_key_hash=? AND account_code=?',[$fixtureCompany['company_key_hash'],$importChildCode]);
+    $counterKey = (string) $db->GetOne('SELECT account_key FROM project_company_accounting_account WHERE company_key_hash=? AND account_code=?',[$fixtureCompany['company_key_hash'],$importCounterCode]);
+    $posted = yovel_admin_post_general_ledger_transaction($db,$fixtureCompany,$fixtureAdmin,[
+        'posting_date'=>'2026-08-25','voucher_type'=>'JOURNAL_ENTRY','voucher_no'=>'GRID-'.$importSuffix,'source_module'=>'FINANCE_IMPORT_TEST','source_record_key'=>bx_uuid(),
+        'entries'=>[['account_key'=>$childKey,'debit'=>'1','credit'=>'0'],['account_key'=>$counterKey,'debit'=>'0','credit'=>'1']],
+    ]);
+    $postedTransactionKey = (string) $posted['transaction_key'];
+    $_POST['rows_json'] = json_encode([
+        ['account_code'=>$importChildCode,'account_number'=>'CHANGED-'.$importSuffix,'account_name'=>'Import child','root_type'=>'ASSET','parent_account_code'=>$importParentCode],
+    ], JSON_THROW_ON_ERROR);
+    $postedMutationRejected = false;
+    try { yovel_admin_import_finance_accounts($fixtureCompany,$fixtureAdmin); } catch (InvalidArgumentException $error) { $postedMutationRejected = str_contains(strtolower($error->getMessage()),'posted'); }
+    finance_grid_assert($postedMutationRejected, 'Finance import changed a protected field on a posted account.');
+    finance_grid_assert((string)$db->GetOne('SELECT COALESCE(account_number,\'\') FROM project_company_accounting_account WHERE company_key_hash=? AND account_key=?',[$fixtureCompany['company_key_hash'],$childKey])==='', 'Rejected posted-account import changed persisted data.');
 
     $_POST['rows_json'] = json_encode([
         ['account_code' => $invalidCode, 'account_name' => 'Invalid import', 'root_type' => 'ASSET', 'parent_account_code' => 'MISSING_PARENT'],
@@ -170,9 +190,13 @@ try {
     finance_grid_assert($invalidCount === 0, 'Rejected Finance import wrote a partial account row.');
 } finally {
     unset($_POST['rows_json']);
+    if ($postedTransactionKey !== '') {
+        $db->Execute('DELETE FROM project_company_general_ledger_entry WHERE company_key_hash=? AND transaction_key=?',[$fixtureCompany['company_key_hash'],$postedTransactionKey]);
+        $db->Execute('DELETE FROM project_company_general_ledger_transaction WHERE company_key_hash=? AND transaction_key=?',[$fixtureCompany['company_key_hash'],$postedTransactionKey]);
+    }
     $db->Execute(
-        'DELETE FROM project_company_accounting_account WHERE company_key_hash = ? AND account_code IN (?, ?, ?)',
-        [$fixtureCompany['company_key_hash'], $importParentCode, $importChildCode, $invalidCode]
+        'DELETE FROM project_company_accounting_account WHERE company_key_hash = ? AND account_code IN (?, ?, ?, ?)',
+        [$fixtureCompany['company_key_hash'], $importParentCode, $importChildCode, $importCounterCode, $invalidCode]
     );
     $db->Execute('DELETE FROM project_company_finance_grid_formula WHERE grid_formula_key = ?', [$formulaKey]);
     $db->Execute('DELETE FROM project_company_finance_grid_column WHERE grid_view_key = ?', [$viewKey]);

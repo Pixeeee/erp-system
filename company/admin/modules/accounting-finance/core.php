@@ -1,6 +1,100 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/foundation.php';
+
+function yovel_admin_finance_big_strip(string $value): string
+{
+    $value = ltrim($value, '0');
+    return $value === '' ? '0' : $value;
+}
+
+function yovel_admin_finance_big_compare(string $left, string $right): int
+{
+    $left = yovel_admin_finance_big_strip($left);
+    $right = yovel_admin_finance_big_strip($right);
+    return strlen($left) === strlen($right) ? ($left <=> $right) : (strlen($left) <=> strlen($right));
+}
+
+function yovel_admin_finance_big_add(string $left, string $right): string
+{
+    $left = strrev($left); $right = strrev($right); $carry = 0; $result = '';
+    for ($index = 0, $length = max(strlen($left), strlen($right)); $index < $length; $index++) {
+        $sum = (int) ($left[$index] ?? '0') + (int) ($right[$index] ?? '0') + $carry;
+        $result .= (string) ($sum % 10); $carry = intdiv($sum, 10);
+    }
+    if ($carry > 0) $result .= (string) $carry;
+    return yovel_admin_finance_big_strip(strrev($result));
+}
+
+function yovel_admin_finance_big_subtract(string $left, string $right): string
+{
+    $left = strrev($left); $right = strrev($right); $borrow = 0; $result = '';
+    for ($index = 0, $length = strlen($left); $index < $length; $index++) {
+        $digit = (int) $left[$index] - (int) ($right[$index] ?? '0') - $borrow;
+        if ($digit < 0) { $digit += 10; $borrow = 1; } else { $borrow = 0; }
+        $result .= (string) $digit;
+    }
+    return yovel_admin_finance_big_strip(strrev($result));
+}
+
+function yovel_admin_finance_big_multiply(string $left, string $right): string
+{
+    $left = yovel_admin_finance_big_strip($left); $right = yovel_admin_finance_big_strip($right);
+    if ($left === '0' || $right === '0') return '0';
+    $digits = array_fill(0, strlen($left) + strlen($right), 0);
+    for ($i = strlen($left) - 1; $i >= 0; $i--) for ($j = strlen($right) - 1; $j >= 0; $j--) {
+        $position = $i + $j + 1; $sum = $digits[$position] + ((int) $left[$i] * (int) $right[$j]);
+        $digits[$position] = $sum % 10; $digits[$position - 1] += intdiv($sum, 10);
+    }
+    return yovel_admin_finance_big_strip(implode('', $digits));
+}
+
+function yovel_admin_finance_big_divide(string $numerator, string $denominator): string
+{
+    $numerator = yovel_admin_finance_big_strip($numerator); $denominator = yovel_admin_finance_big_strip($denominator);
+    if ($denominator === '0') throw new DivisionByZeroError('Division by zero.');
+    $result = ''; $remainder = '0';
+    for ($index = 0, $length = strlen($numerator); $index < $length; $index++) {
+        $remainder = yovel_admin_finance_big_strip($remainder . $numerator[$index]); $digit = 0;
+        while (yovel_admin_finance_big_compare($remainder, $denominator) >= 0) { $remainder = yovel_admin_finance_big_subtract($remainder, $denominator); $digit++; }
+        $result .= (string) $digit;
+    }
+    return yovel_admin_finance_big_strip($result);
+}
+
+function yovel_admin_finance_decimal_parts(string $value): array
+{
+    $value = trim($value); $negative = str_starts_with($value, '-'); $value = ltrim($value, '+-');
+    [$whole, $fraction] = array_pad(explode('.', $value, 2), 2, '');
+    $whole = preg_replace('/\D/', '', $whole) ?: '0'; $fraction = preg_replace('/\D/', '', $fraction) ?: '';
+    return [$negative, yovel_admin_finance_big_strip($whole . $fraction), strlen($fraction)];
+}
+
+function yovel_admin_finance_decimal_integer(string $value, int $scale): array
+{
+    [$negative, $digits, $sourceScale] = yovel_admin_finance_decimal_parts($value);
+    if ($sourceScale < $scale) $digits .= str_repeat('0', $scale - $sourceScale);
+    elseif ($sourceScale > $scale) { $cut = $sourceScale - $scale; $digits = strlen($digits) <= $cut ? '0' : substr($digits, 0, strlen($digits) - $cut); }
+    $digits = yovel_admin_finance_big_strip($digits);
+    return [$negative && $digits !== '0', $digits];
+}
+
+function yovel_admin_finance_decimal_format(bool $negative, string $digits, int $scale): string
+{
+    $digits = yovel_admin_finance_big_strip($digits);
+    if ($scale > 0) { $digits = str_pad($digits, $scale + 1, '0', STR_PAD_LEFT); $digits = substr($digits, 0, -$scale) . '.' . substr($digits, -$scale); }
+    return ($negative && yovel_admin_finance_big_strip(str_replace('.', '', $digits)) !== '0' ? '-' : '') . $digits;
+}
+
+if (!function_exists('bccomp')) {
+    function bccomp(string $left, string $right, int $scale = 0): int { [$ln,$li]=yovel_admin_finance_decimal_integer($left,$scale);[$rn,$ri]=yovel_admin_finance_decimal_integer($right,$scale);if($ln!==$rn)return $ln?-1:1;$cmp=yovel_admin_finance_big_compare($li,$ri);return $ln?-$cmp:$cmp; }
+    function bcadd(string $left, string $right, int $scale = 0): string { [$ln,$li]=yovel_admin_finance_decimal_integer($left,$scale);[$rn,$ri]=yovel_admin_finance_decimal_integer($right,$scale);if($ln===$rn)return yovel_admin_finance_decimal_format($ln,yovel_admin_finance_big_add($li,$ri),$scale);$cmp=yovel_admin_finance_big_compare($li,$ri);return $cmp>=0?yovel_admin_finance_decimal_format($ln,yovel_admin_finance_big_subtract($li,$ri),$scale):yovel_admin_finance_decimal_format($rn,yovel_admin_finance_big_subtract($ri,$li),$scale); }
+    function bcsub(string $left, string $right, int $scale = 0): string { return bcadd($left, str_starts_with($right,'-')?substr($right,1):'-'.$right, $scale); }
+    function bcmul(string $left, string $right, int $scale = 0): string { [$ln,$li,$ls]=yovel_admin_finance_decimal_parts($left);[$rn,$ri,$rs]=yovel_admin_finance_decimal_parts($right);$digits=yovel_admin_finance_big_multiply($li,$ri);$source=$ls+$rs;if($source<$scale)$digits.=str_repeat('0',$scale-$source);elseif($source>$scale){$cut=$source-$scale;$digits=strlen($digits)<=$cut?'0':substr($digits,0,strlen($digits)-$cut);}return yovel_admin_finance_decimal_format($ln!==$rn,$digits,$scale); }
+    function bcdiv(string $left, string $right, int $scale = 0): string { [$ln,$li,$ls]=yovel_admin_finance_decimal_parts($left);[$rn,$ri,$rs]=yovel_admin_finance_decimal_parts($right);$numerator=$li.str_repeat('0',$rs+$scale);$denominator=$ri.str_repeat('0',$ls);return yovel_admin_finance_decimal_format($ln!==$rn,yovel_admin_finance_big_divide($numerator,$denominator),$scale); }
+}
+
 function yovel_admin_finance_core_schema(): void
 {
     $db = bx_db();
@@ -182,6 +276,12 @@ function yovel_admin_finance_money(mixed $value, int $scale = 6): string
     return bccomp($rounded, '0', $scale) === 0 ? bcadd('0', '0', $scale) : $rounded;
 }
 
+function yovel_admin_finance_abs(mixed $value, int $scale = 6): string
+{
+    $amount = yovel_admin_finance_money($value, $scale);
+    return bccomp($amount, '0', $scale) === -1 ? bcmul($amount, '-1', $scale) : $amount;
+}
+
 function yovel_admin_finance_decimal_round(string $value, int $scale = 6): string
 {
     $scale = max(0, min(8, $scale));
@@ -197,6 +297,17 @@ function yovel_admin_finance_scope(array $company, array $admin): array
     $adminKey = trim((string) ($admin['admin_key'] ?? ''));
     if ($companyKey === '' || strlen($companyKey) > 64 || $companyKeyHash === '' || !yovel_admin_is_uuid($adminKey)) {
         throw new InvalidArgumentException('Finance administrator scope is invalid.');
+    }
+    $authorized = (int) bx_db()->GetOne(
+        "SELECT COUNT(*)
+           FROM project_company c
+           JOIN project_company_admin a ON a.company_key_hash=c.company_key_hash
+          WHERE c.company_key=? AND c.company_key_hash=? AND c.company_status<>'DELETED'
+            AND a.admin_key=? AND a.company_key_hash=? AND a.admin_status='ACTIVE'",
+        [$companyKey, $companyKeyHash, $adminKey, $companyKeyHash]
+    );
+    if ($authorized !== 1) {
+        throw new InvalidArgumentException('Finance administrator is not authorized for this company.');
     }
     return [$companyKey, $companyKeyHash, $adminKey];
 }
@@ -328,7 +439,7 @@ function yovel_admin_persist_finance_settings(ADOConnection $db, array $company,
 function yovel_admin_finance_master_type(string $type): string
 {
     $type = yovel_admin_slug($type);
-    if (!in_array($type, ['cost-center', 'accounting-dimension', 'bank-account', 'tax-code'], true)) {
+    if (!in_array($type, array_merge(['cost-center', 'accounting-dimension', 'bank-account', 'tax-code'], yovel_admin_finance_foundation_master_types()), true)) {
         throw new InvalidArgumentException('Finance master type is invalid.');
     }
     return $type;
@@ -343,6 +454,7 @@ function yovel_admin_persist_finance_master(ADOConnection $db, array $company, a
         'accounting-dimension' => yovel_admin_persist_finance_dimension($db, $company, $admin, $input),
         'bank-account' => yovel_admin_persist_finance_bank_account($db, $company, $admin, $input),
         'tax-code' => yovel_admin_persist_finance_tax_code($db, $company, $admin, $input),
+        default => yovel_admin_persist_finance_foundation_master($db, $company, $admin, $type, $input),
     };
 }
 
@@ -618,14 +730,18 @@ function yovel_admin_finance_assert_open_period(array $company, string $postingD
 
 function yovel_admin_save_finance_settings(array $company, array $admin): string
 {
-    yovel_admin_persist_finance_settings(bx_db(), $company, $admin, $_POST);
-    return 'Finance settings saved.';
+    return yovel_admin_finance_run_form_action($company, 'save_finance_settings', static function () use ($company, $admin): string {
+        yovel_admin_persist_finance_settings(bx_db(), $company, $admin, $_POST);
+        return 'Finance settings saved.';
+    });
 }
 
 function yovel_admin_save_finance_master(array $company, array $admin): string
 {
-    yovel_admin_persist_finance_master(bx_db(), $company, $admin, (string) ($_POST['master_type'] ?? ''), $_POST);
-    return 'Finance master saved.';
+    return yovel_admin_finance_run_form_action($company, 'save_finance_master', static function () use ($company, $admin): string {
+        yovel_admin_persist_finance_master(bx_db(), $company, $admin, (string) ($_POST['master_type'] ?? ''), $_POST);
+        return 'Finance master saved.';
+    });
 }
 
 function yovel_admin_set_finance_master_status(array $company, array $admin): string

@@ -155,6 +155,8 @@ function yovel_admin_hr_data(array $company): array
         ORDER BY form_record.target_section ASC, form_record.updated_at DESC, form_record.form_title ASC
     ", [$companyKeyHash]);
     $formSubmissions = yovel_admin_hr_form_submissions($company);
+    $setupData = yovel_admin_hr_setup_data($company);
+    $attendanceData = yovel_admin_hr_attendance_data($company);
 
     return [
         'branches' => is_array($branches) ? $branches : [],
@@ -165,6 +167,8 @@ function yovel_admin_hr_data(array $company): array
         'employees' => is_array($employees) ? $employees : [],
         'builderForms' => is_array($builderForms) ? $builderForms : [],
         'formSubmissions' => $formSubmissions,
+        'setup' => $setupData,
+        'attendance' => $attendanceData,
         'formFields' => [
             'employee-profiles' => yovel_admin_hr_form_fields($company, 'employee-profiles'),
             'departments' => yovel_admin_hr_form_fields($company, 'departments'),

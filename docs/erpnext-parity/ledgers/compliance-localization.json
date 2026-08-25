@@ -59,9 +59,13 @@
             "dependencies": [
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "MISSING: no module-local VAT settings aggregate or focused passing test exists. Build a company-scoped Philippine VAT configuration version that owns effective dates, legal-source metadata, approval state, and account-map membership while Finance remains authoritative for tax calculation and posting.",
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/compliance-localization/rules.php (company-scoped effective dates, Philippine legal-source policy, approval state, immutable canonical snapshot, audit, and exact read-back)",
+                "company/admin/modules/compliance-localization/views/rules.php (12/8 workspace with body-owned rule, approval, supersede, and archive modals plus sibling confirmations and rehydration)",
+                "tests/compliance-localization-rules.php (PASS 2026-08-25: authorization, stable updates, separation of duties, overlap prevention, immutable snapshot, historical resolution, rollback, modal contracts, and four-argument handler)"
+            ],
+            "reason": "[CL-WP02] COMPLETE: the module-local Philippine VAT settings aggregate owns company scope, effective dates, authority metadata, draft/approved state, account-map membership, deterministic immutable snapshots, transaction-owned writes, audit, exact read-back, and server rehydration while Finance remains authoritative for account references and tax posting.",
             "audit_id": "CL-003",
             "work_package": "WP-02"
         },
@@ -78,9 +82,13 @@
             "dependencies": [
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "MISSING: no module-local VAT account mapping or focused passing test exists. Build allow-listed Philippine input, output, withholding, adjustment, and settlement account mappings that reference stable Finance account keys and are version-bound to approved settings.",
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/compliance-localization/rules.php (allow-listed VAT/withholding roles, injected accounting-finance.account-reference.v1 validation, immutable approved mapping snapshots, company isolation, audit, and exact read-back)",
+                "company/admin/modules/compliance-localization/views/rules.php (body-owned Add Mapping modal, action-specific sibling confirmation, cancellation retention, focus return, and failed-submit rehydration)",
+                "tests/compliance-localization-rules.php (PASS 2026-08-25: active posting-account envelope, wrong-company and malformed-provider rejection before persistence, stable mapping keys, approved immutability, and rollback)"
+            ],
+            "reason": "[CL-WP02] COMPLETE: Philippine output VAT, input VAT, withholding, adjustment, and settlement mappings reference stable Finance account keys only through the injected allow-listed provider; wrong-company, inactive, group, malformed, and duplicate mappings are rejected and approved versions freeze the validated Finance reference snapshot without querying or writing Finance tables.",
             "audit_id": "CL-004",
             "work_package": "WP-02"
         },
@@ -97,9 +105,13 @@
             "dependencies": [
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "MISSING: no module-local effective-dated VAT settings workflow or focused passing test exists. Build draft, approve, supersede, and archive lifecycle controls with overlap prevention, immutable approved versions, direct read-back, and historical invoice non-mutation.",
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/compliance-localization/rules.php (DRAFT/APPROVED/SUPERSEDED/ARCHIVED lifecycle, maker-checker approval, effective-date overlap guard, canonical checksum, immutable approved snapshot, and historical resolver)",
+                "company/admin/modules/compliance-localization/evidence.php (checksum-verified evidence, generated allow-listed storage, duplicate detection, approved retention calculation, holds/releases, archive controls, rollback cleanup, and company isolation)",
+                "tests/compliance-localization-rules.php and tests/compliance-localization-evidence.php (PASS 2026-08-25: lifecycle, historical non-mutation, SHA-256 verification, retention, holds, duplicate and MIME rejection, cross-company denial, and rollback cleanup)"
+            ],
+            "reason": "[CL-WP02] COMPLETE: company-scoped Philippine rule versions support effective-dated draft, maker-checker approval, supersede, and archive transitions with overlap prevention, immutable canonical approved snapshots, direct read-back, historical resolution, checksum-verified evidence retention, legal holds, audit logging, and rollback-safe generated storage.",
             "audit_id": "CL-005",
             "work_package": "WP-02"
         },

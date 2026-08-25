@@ -9,8 +9,8 @@
                                                 'assigned' => array_sum(array_map(static fn (array $row): int => (int) ($row['assigned_employee_count'] ?? 0), $hrJobPositions)),
                                             ];
                                         ?>
-                                        <div class="yovel-hr-two-panel yovel-job-position-layout grid min-h-0 gap-3 xl:grid-cols-12">
-                                            <section class="yovel-hr-panel yovel-hr-surface flex flex-col rounded-lg border bg-card" data-job-position-tour-target="position-list">
+                                        <div class="yovel-hr-two-panel yovel-hr-approved-layout yovel-job-position-layout grid min-h-0 gap-3 xl:grid-cols-[minmax(0,12fr)_minmax(16rem,8fr)]">
+                                            <section class="yovel-hr-panel yovel-hr-surface min-w-0 overflow-hidden flex flex-col rounded-lg border bg-card" data-job-position-tour-target="position-list">
                                                 <div class="yovel-hr-surface-header border-b px-4 py-3">
                                                     <div class="flex flex-wrap items-start justify-between gap-3">
                                                         <div>
@@ -21,7 +21,7 @@
                                                             <span class="yovel-hr-metric rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= $hrJobPositionSummary['total'] ?> positions</span>
                                                             <span class="yovel-hr-metric rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= $hrJobPositionSummary['active'] ?> active</span>
                                                             <span class="yovel-hr-metric rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= $hrJobPositionSummary['assigned'] ?> assignments</span>
-                                                            <button type="button" id="yovel-job-position-modal-open" class="inline-flex h-9 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted" data-job-position-tour-target="add-position">Add Position</button>
+                                                            <button type="button" id="yovel-job-position-modal-open" data-record-modal-open="yovel-job-position-modal" class="inline-flex h-9 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted" data-job-position-tour-target="add-position">Add Position</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -57,7 +57,7 @@
                                                                 <p class="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">Create designation records that can be assigned to employee profiles. Job positions keep role titles, status, responsibility notes, and custom position fields in one HR scope.</p>
                                                                 <div class="mt-4 flex flex-wrap gap-2">
                                                                     <button type="button" id="yovel-job-position-tour-start" class="yovel-erpnext-soft-button inline-flex h-9 items-center rounded-md px-3 text-sm font-medium" data-job-position-tour-start>Show Tour</button>
-                                                                    <button type="button" class="yovel-erpnext-soft-button inline-flex h-9 items-center rounded-md border px-3 text-sm font-medium" data-job-position-open-from-setup>Add Position</button>
+                                                                    <button type="button" class="yovel-erpnext-soft-button inline-flex h-9 items-center rounded-md border px-3 text-sm font-medium" data-record-modal-open="yovel-job-position-modal" data-job-position-open-from-setup>Add Position</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -146,7 +146,7 @@
                                                 </div>
                                             </section>
 
-                                            <aside class="yovel-hr-panel yovel-hr-surface flex flex-col rounded-lg border bg-card">
+                                            <aside class="yovel-hr-panel yovel-hr-surface min-w-0 overflow-hidden flex flex-col rounded-lg border bg-card">
                                                 <div class="yovel-hr-surface-header yovel-hr-feature-header border-b px-4 py-3">
                                                     <h3 class="text-base font-semibold tracking-normal">Job Position Tools</h3>
                                                     <p class="mt-1 text-sm leading-6 text-muted-foreground">Quick actions and the sections used by the position form.</p>
@@ -161,7 +161,7 @@
                                                             <span class="material-symbols-rounded yovel-job-position-control-chevron text-base text-muted-foreground" aria-hidden="true">expand_more</span>
                                                         </summary>
                                                         <div class="yovel-job-position-shortcuts border-t p-3">
-                                                            <button type="button" data-job-position-open-shortcut>Add Position ↗</button>
+                                                            <button type="button" data-record-modal-open="yovel-job-position-modal" data-job-position-open-shortcut>Add Position ↗</button>
                                                             <a href="./?view=hr&amp;section=dashboard&amp;builder=1&amp;builder_target=job-positions&amp;builder_mode=existing" data-job-position-tour-target="forms-dashboard">Manage Forms ↗</a>
                                                             <a href="./?view=hr&amp;section=employee-profiles">Employee Profiles ↗</a>
                                                         </div>
@@ -257,7 +257,7 @@
                                             </section>
                                         </div>
 
-                                        <div id="yovel-job-position-modal" class="yovel-employee-modal fixed inset-0 z-40 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-job-position-modal-title" aria-describedby="yovel-job-position-modal-description" <?= $editHrJobPosition ? '' : 'hidden' ?>>
+                                        <div id="yovel-job-position-modal" data-record-modal <?= $editHrJobPosition ? 'data-record-modal-open-on-load' : '' ?> class="yovel-employee-modal fixed inset-0 z-40 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-job-position-modal-title" aria-describedby="yovel-job-position-modal-description" <?= $editHrJobPosition ? '' : 'hidden' ?>>
                                             <section class="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-5xl flex-col overflow-hidden rounded-lg border bg-card shadow-lg">
                                                 <div class="flex shrink-0 items-start justify-between gap-4 border-b px-5 py-4">
                                                     <div>
@@ -267,7 +267,7 @@
                                                         </h3>
                                                         <p id="yovel-job-position-modal-description" class="mt-1 text-sm leading-6 text-muted-foreground">Job position master data follows the HR Department scope.</p>
                                                     </div>
-                                                    <button type="button" id="yovel-job-position-modal-close" class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-sm hover:bg-muted" aria-label="Close job position form">×</button>
+                                                    <button type="button" id="yovel-job-position-modal-close" data-record-modal-close class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-sm hover:bg-muted" aria-label="Close job position form">×</button>
                                                 </div>
                                                 <form id="yovel-job-position-form" method="post" data-confirm-submit class="yovel-hr-panel-body yovel-modal-scroll p-0">
                                                     <input type="hidden" name="csrf" value="<?= bx_h(bx_csrf_token()) ?>">
@@ -326,7 +326,7 @@
                                                     <div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t px-5 py-4">
                                                         <p class="text-xs leading-5 text-muted-foreground">Job position changes require confirmation before saving.</p>
                                                         <div class="flex gap-2">
-                                                            <button type="button" id="yovel-job-position-modal-cancel" class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><?= $editHrJobPosition ? 'Close' : 'Cancel' ?></button>
+                                                            <button type="button" id="yovel-job-position-modal-cancel" data-record-modal-close class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><?= $editHrJobPosition ? 'Close' : 'Cancel' ?></button>
                                                             <button type="submit" class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90">Save Job Position</button>
                                                         </div>
                                                     </div>

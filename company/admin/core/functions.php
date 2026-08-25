@@ -158,7 +158,11 @@ function yovel_admin_asset_entry(): array
 function yovel_admin_view(): string
 {
     $view = strtolower(trim((string) ($_GET['view'] ?? 'dashboard')));
-    return in_array($view, ['dashboard', 'platform', 'hr', 'sales-crm', 'accounting-finance'], true) ? $view : 'dashboard';
+    if (in_array($view, ['dashboard', 'platform'], true) || yovel_admin_module_route($view) !== null) {
+        return $view;
+    }
+
+    return 'dashboard';
 }
 
 function yovel_admin_slug(string $value): string
@@ -174,18 +178,10 @@ function yovel_admin_feature_anchor(array $group, string $feature): string
 
 function yovel_admin_erp_feature_href(array $group, string $feature): string
 {
-    $featureSlug = yovel_admin_slug($feature);
-    if ((string) ($group['label'] ?? '') === 'HR Department' && array_key_exists($featureSlug, yovel_admin_hr_sections())) {
-        return './?view=hr&section=' . rawurlencode($featureSlug);
-    }
-    if ((string) ($group['label'] ?? '') === 'Sales / CRM' && array_key_exists($featureSlug, yovel_admin_sales_crm_sections())) {
-        return './?view=sales-crm&section=' . rawurlencode($featureSlug);
-    }
-    if ((string) ($group['label'] ?? '') === 'Accounting / Finance' && array_key_exists($featureSlug, yovel_admin_accounting_finance_sections())) {
-        return './?view=accounting-finance&section=' . rawurlencode($featureSlug);
-    }
-    if ((string) ($group['label'] ?? '') === 'Accounting / Finance' && $featureSlug === 'finance-dashboard') {
-        return './?view=accounting-finance&section=dashboard';
+    $route = yovel_admin_module_route_by_label((string) ($group['label'] ?? ''));
+    if ($route) {
+        $featureSlug = yovel_admin_module_feature_section($route, $feature);
+        return './?view=' . rawurlencode((string) $route['view']) . '&section=' . rawurlencode($featureSlug);
     }
 
     return './?view=dashboard#' . yovel_admin_feature_anchor($group, $feature);

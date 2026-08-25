@@ -11,8 +11,8 @@ $editTeamMembers = $editHrTeam ? array_values(array_filter(
     static fn (array $employee): bool => (string) ($employee['team_key'] ?? '') === (string) $editHrTeam['team_key']
 )) : [];
 ?>
-                                        <div class="yovel-hr-two-panel yovel-job-position-layout yovel-team-layout grid min-h-0 gap-3 xl:grid-cols-12" data-team-widget-storage-key="<?= bx_h($companySidebarKey . ':team-widgets') ?>">
-                                            <section class="yovel-hr-panel yovel-hr-surface flex flex-col rounded-lg border bg-card xl:col-span-8">
+                                        <div class="yovel-hr-two-panel yovel-hr-approved-layout yovel-job-position-layout yovel-team-layout grid min-h-0 gap-3 xl:grid-cols-[minmax(0,12fr)_minmax(16rem,8fr)]" data-team-widget-storage-key="<?= bx_h($companySidebarKey . ':team-widgets') ?>">
+                                            <section class="yovel-hr-panel yovel-hr-surface min-w-0 overflow-hidden flex flex-col rounded-lg border bg-card">
                                                 <div class="yovel-hr-surface-header border-b px-4 py-3">
                                                     <div class="flex flex-wrap items-start justify-between gap-3">
                                                         <div>
@@ -23,7 +23,7 @@ $editTeamMembers = $editHrTeam ? array_values(array_filter(
                                                             <span class="yovel-hr-metric rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= $hrTeamSummary['total'] ?> teams</span>
                                                             <span class="yovel-hr-metric rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= $hrTeamSummary['active'] ?> active</span>
                                                             <span class="yovel-hr-metric rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= $hrTeamSummary['assigned'] ?> members</span>
-                                                            <button type="button" id="yovel-team-modal-open" class="inline-flex h-9 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Add Team</button>
+                                                            <button type="button" id="yovel-team-modal-open" data-record-modal-open="yovel-team-modal" class="inline-flex h-9 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Add Team</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -49,7 +49,7 @@ $editTeamMembers = $editHrTeam ? array_values(array_filter(
                                                         <div class="rounded-md bg-muted/40 p-4">
                                                             <p class="text-sm font-semibold">No teams yet</p>
                                                             <p class="mt-1 text-xs leading-5 text-muted-foreground">Create the first operational team before assigning employees from Employee Profiles.</p>
-                                                            <button type="button" class="mt-3 inline-flex h-9 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted" data-team-open-shortcut>Add Team</button>
+                                                            <button type="button" class="mt-3 inline-flex h-9 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted" data-record-modal-open="yovel-team-modal" data-team-open-shortcut>Add Team</button>
                                                         </div>
                                                     <?php else: ?>
                                                         <div class="min-h-0 overflow-auto overscroll-contain">
@@ -112,7 +112,7 @@ $editTeamMembers = $editHrTeam ? array_values(array_filter(
                                                 </div>
                                             </section>
 
-                                            <aside class="yovel-hr-panel yovel-hr-surface flex flex-col rounded-lg border bg-card xl:col-span-4">
+                                            <aside class="yovel-hr-panel yovel-hr-surface min-w-0 overflow-hidden flex flex-col rounded-lg border bg-card">
                                                 <div class="yovel-hr-surface-header yovel-hr-feature-header border-b px-4 py-3">
                                                     <h3 class="text-base font-semibold tracking-normal">Team Tools</h3>
                                                     <p class="mt-1 text-sm leading-6 text-muted-foreground">Quick actions and the sections used by the Team form.</p>
@@ -124,7 +124,7 @@ $editTeamMembers = $editHrTeam ? array_values(array_filter(
                                                             <span class="material-symbols-rounded yovel-job-position-control-chevron text-base text-muted-foreground" aria-hidden="true">expand_more</span>
                                                         </summary>
                                                         <div class="yovel-job-position-shortcuts border-t p-3">
-                                                            <button type="button" data-team-open-shortcut>Add Team ↗</button>
+                                                            <button type="button" data-record-modal-open="yovel-team-modal" data-team-open-shortcut>Add Team ↗</button>
                                                             <a href="./?view=hr&amp;section=dashboard&amp;builder=1&amp;builder_target=teams&amp;builder_mode=existing">Manage Forms ↗</a>
                                                             <a href="./?view=hr&amp;section=employee-profiles">Employee Profiles ↗</a>
                                                         </div>
@@ -159,7 +159,7 @@ $editTeamMembers = $editHrTeam ? array_values(array_filter(
                                             </aside>
                                         </div>
 
-                                        <div id="yovel-team-modal" class="yovel-employee-modal fixed inset-0 z-40 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-team-modal-title" aria-describedby="yovel-team-modal-description" data-team-edit-mode="<?= $editHrTeam ? 'true' : 'false' ?>" data-team-initial-section="<?= bx_h($activeTeamModalSection) ?>" <?= $editHrTeam ? '' : 'hidden' ?>>
+                                        <div id="yovel-team-modal" data-record-modal <?= $editHrTeam ? 'data-record-modal-open-on-load' : '' ?> class="yovel-employee-modal fixed inset-0 z-40 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-team-modal-title" aria-describedby="yovel-team-modal-description" data-team-edit-mode="<?= $editHrTeam ? 'true' : 'false' ?>" data-team-initial-section="<?= bx_h($activeTeamModalSection) ?>" <?= $editHrTeam ? '' : 'hidden' ?>>
                                             <section class="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-5xl flex-col overflow-hidden rounded-lg border bg-card shadow-lg">
                                                 <div class="flex shrink-0 items-start justify-between gap-4 border-b bg-card px-5 py-4">
                                                     <div>
@@ -169,7 +169,7 @@ $editTeamMembers = $editHrTeam ? array_values(array_filter(
                                                         </h3>
                                                         <p id="yovel-team-modal-description" class="mt-1 text-sm leading-6 text-muted-foreground">Team master data follows the HR Department scope.</p>
                                                     </div>
-                                                    <button type="button" id="yovel-team-modal-close" class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-sm hover:bg-muted" aria-label="Close Team form">×</button>
+                                                    <button type="button" id="yovel-team-modal-close" data-record-modal-close class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-sm hover:bg-muted" aria-label="Close Team form">×</button>
                                                 </div>
                                                 <form id="yovel-team-form" method="post" data-confirm-submit class="yovel-hr-panel-body yovel-modal-scroll p-0">
                                                     <input type="hidden" name="csrf" value="<?= bx_h(bx_csrf_token()) ?>">
@@ -236,7 +236,7 @@ $editTeamMembers = $editHrTeam ? array_values(array_filter(
                                                     <div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t bg-card px-5 py-4">
                                                         <p class="text-xs leading-5 text-muted-foreground">Team changes require confirmation before saving.</p>
                                                         <div class="flex gap-2">
-                                                            <button type="button" id="yovel-team-modal-cancel" class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><?= $editHrTeam ? 'Close' : 'Cancel' ?></button>
+                                                            <button type="button" id="yovel-team-modal-cancel" data-record-modal-close class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><?= $editHrTeam ? 'Close' : 'Cancel' ?></button>
                                                             <button type="submit" class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90">Save Team</button>
                                                         </div>
                                                     </div>

@@ -1178,20 +1178,25 @@ function yovel_admin_upsert_hr_builder_form_version(ADOConnection $db, array $fo
     return $readBack;
 }
 
-function yovel_admin_save_hr_builder_form(array $company, array $admin): string
+function yovel_admin_persist_hr_builder_form(
+    ADOConnection $db,
+    array $company,
+    array $admin,
+    array $input,
+    ?callable $projector = null
+): array
 {
     yovel_admin_hr_schema();
 
-    $db = bx_db();
     $companyKey = (string) $company['company_key'];
     $companyKeyHash = (string) $company['company_key_hash'];
     $adminKey = (string) $admin['admin_key'];
-    $builderFormKey = trim((string) ($_POST['builder_form_key'] ?? ''));
-    $targetSection = yovel_admin_hr_builder_target_section((string) ($_POST['target_section'] ?? 'employee-profiles'));
-    $formTitle = trim((string) ($_POST['form_title'] ?? ''));
-    $formDescription = trim((string) ($_POST['form_description'] ?? ''));
-    $formStatus = yovel_admin_status((string) ($_POST['form_status'] ?? 'DRAFT'), ['DRAFT', 'ACTIVE', 'ARCHIVED', 'DELETED'], 'DRAFT');
-    $schema = yovel_admin_normalize_hr_builder_schema((string) ($_POST['schema_json'] ?? '{}'));
+    $builderFormKey = trim((string) ($input['builder_form_key'] ?? ''));
+    $targetSection = yovel_admin_hr_builder_target_section((string) ($input['target_section'] ?? 'employee-profiles'));
+    $formTitle = trim((string) ($input['form_title'] ?? ''));
+    $formDescription = trim((string) ($input['form_description'] ?? ''));
+    $formStatus = yovel_admin_status((string) ($input['form_status'] ?? 'DRAFT'), ['DRAFT', 'ACTIVE', 'ARCHIVED', 'DELETED'], 'DRAFT');
+    $schema = yovel_admin_normalize_hr_builder_schema((string) ($input['schema_json'] ?? '{}'));
     $schemaJson = json_encode($schema, JSON_UNESCAPED_SLASHES);
     if ($schemaJson === false) {
         throw new RuntimeException('Unable to encode HR builder form layout.');
@@ -1211,7 +1216,9 @@ function yovel_admin_save_hr_builder_form(array $company, array $admin): string
         throw new InvalidArgumentException('Form description must be 2000 characters or fewer.');
     }
 
-    $db->BeginTrans();
+    if ($db->BeginTrans() === false) {
+        throw new RuntimeException('HR builder form transaction could not start.');
+    }
     try {
         $existing = null;
         if ($builderFormKey !== '') {
@@ -1265,7 +1272,7 @@ function yovel_admin_save_hr_builder_form(array $company, array $admin): string
         }
 
         $saved = $db->GetRow(
-            'SELECT builder_form_key, target_section, form_title, form_description, form_status, schema_json, question_count FROM project_company_hr_builder_form WHERE company_key_hash = ? AND builder_form_key = ? LIMIT 1',
+            'SELECT * FROM project_company_hr_builder_form WHERE company_key_hash = ? AND builder_form_key = ? LIMIT 1',
             [$companyKeyHash, $builderFormKey]
         );
         foreach ([
@@ -1282,6 +1289,15 @@ function yovel_admin_save_hr_builder_form(array $company, array $admin): string
             }
         }
 
+        $projector ??= 'bx_project_module_sync_hr_builder_form';
+        $projection = $projector($db, $company, $saved);
+        if (!is_array($projection)
+            || !isset($projection['projected'], $projection['retired'])
+            || !is_array($projection['projected'])
+            || !is_array($projection['retired'])) {
+            throw new RuntimeException('HR builder form projection returned an invalid result.');
+        }
+
         bx_audit($existing ? 'UPDATE' : 'CREATE', 'project_company_hr_builder_form', $builderFormKey, [
             'company_key' => $companyKey,
             'company_name' => (string) $company['company_name'],
@@ -1291,14 +1307,36 @@ function yovel_admin_save_hr_builder_form(array $company, array $admin): string
             'question_count' => $questionCount,
             'form_version_key' => (string) ($version['form_version_key'] ?? ''),
             'version_number' => (int) ($version['version_number'] ?? 0),
+            'projected_form_count' => count($projection['projected']),
+            'retired_form_count' => count($projection['retired']),
             'admin_key' => $adminKey,
         ], $existing ? 'Company admin updated an HR builder form.' : 'Company admin created an HR builder form.');
 
-        $db->CommitTrans();
+        if ($db->CommitTrans() === false) {
+            throw new RuntimeException('HR builder form transaction could not commit.');
+        }
     } catch (Throwable $error) {
         $db->RollbackTrans();
         throw $error;
     }
+
+    $saved['version'] = $version;
+    $saved['projection'] = $projection;
+
+    return $saved;
+}
+
+function yovel_admin_save_hr_builder_form(array $company, array $admin): string
+{
+    $saved = yovel_admin_persist_hr_builder_form(bx_db(), $company, $admin, [
+        'builder_form_key' => (string) ($_POST['builder_form_key'] ?? ''),
+        'target_section' => (string) ($_POST['target_section'] ?? 'employee-profiles'),
+        'form_title' => (string) ($_POST['form_title'] ?? ''),
+        'form_description' => (string) ($_POST['form_description'] ?? ''),
+        'form_status' => (string) ($_POST['form_status'] ?? 'DRAFT'),
+        'schema_json' => (string) ($_POST['schema_json'] ?? '{}'),
+    ]);
+    $GLOBALS['yovel_admin_saved_hr_builder_form_key'] = (string) ($saved['builder_form_key'] ?? '');
 
     return 'HR builder form saved.';
 }

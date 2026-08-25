@@ -61,6 +61,9 @@ function yovel_admin_upsert_hr_employee_primary_assignment(
     if ($normalized['reports_to_employee_key'] === $employeeKey) {
         throw new InvalidArgumentException('An employee cannot report to themselves.');
     }
+    if (function_exists('yovel_admin_hr_assert_reporting_hierarchy')) {
+        yovel_admin_hr_assert_reporting_hierarchy($db, $companyKeyHash, $employeeKey, $normalized['reports_to_employee_key']);
+    }
 
     $references = [
         'branch_key' => ['project_company_branch', 'branch_key', 'branch'],
@@ -122,12 +125,16 @@ function yovel_admin_upsert_hr_employee_primary_assignment(
         $assignmentKey = (string) $current['assignment_key'];
     } else {
         if (is_array($activeAssignments) && $activeAssignments !== []) {
+            $effectiveUntil = date('Y-m-d');
+            if ($normalized['effective_from'] !== '') {
+                $effectiveUntil = (new DateTimeImmutable($normalized['effective_from']))->modify('-1 day')->format('Y-m-d');
+            }
             yovel_admin_db_execute(
                 $db,
                 "UPDATE project_company_hr_employee_assignment
                  SET assignment_status = 'ENDED', is_primary = 0, effective_until = ?, updated_by_admin_key = ?
                  WHERE company_key_hash = ? AND employee_key = ? AND assignment_status = 'ACTIVE' AND is_primary = 1",
-                [date('Y-m-d'), $adminKey, $companyKeyHash, $employeeKey],
+                [$effectiveUntil, $adminKey, $companyKeyHash, $employeeKey],
                 'HR employee assignment history update'
             );
         }

@@ -56,9 +56,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_bin and project_company_inventory_bin_source company/item/warehouse/dimension tuple and source-key constraints).",
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php (yovel_admin_inventory_bin, yovel_admin_inventory_lock_bin, and yovel_admin_inventory_save_bin_source with exact source-backed projections, row locks, capacity checks, audit, and read-back).",
+                "PASS: php tests/inventory-warehouse-warehouses.php - exact decimal bin fields, company isolation, group/disabled rejection, rollback injection, source-key idempotency, and real competing-process row-lock serialization passed."
+            ],
+            "reason": "[IW-03] Company-scoped bins are keyed by the exact item, active leaf warehouse, and canonical dimension tuple; authoritative source rows and lock-safe transaction services provide verified stock quantities.",
             "gap_package": "IW-03"
         },
         {
@@ -72,9 +76,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_customs_tariff).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (tariff master upsert and exact read-back).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: tariff master upsert and exact read-back.",
             "gap_package": "IW-02"
         },
         {
@@ -168,9 +178,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_dimension and project_company_inventory_dimension_value with company-scoped uniqueness).",
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php and views/record-modal.php (dimension/value transactional upsert, canonical tuple validation, required values, duplicate rejection, modal confirmation, and rehydration).",
+                "PASS: php tests/inventory-warehouse-warehouses.php and frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - dimension uniqueness/required tuple and modal/mobile checks passed."
+            ],
+            "reason": "[IW-03] Inventory Dimensions and allowed values are company-owned masters enforced as canonical, unique bin tuples.",
             "gap_package": "IW-03"
         },
         {
@@ -184,9 +198,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item and normalized child tables).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (authorized locked create/update, stock rules, company isolation, audit, exact read-back, rollback, and disabled state).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: authorized locked create/update, stock rules, company isolation, audit, exact read-back, rollback, and disabled state.",
             "gap_package": "IW-02"
         },
         {
@@ -200,9 +220,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_alternative).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (company-owned alternative validation and exact child replacement/read-back).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: company-owned alternative validation and exact child replacement/read-back.",
             "gap_package": "IW-02"
         },
         {
@@ -216,9 +242,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_attribute).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (reusable company attribute masters synchronized from template and variant records).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: reusable company attribute masters synchronized from template and variant records.",
             "gap_package": "IW-02"
         },
         {
@@ -232,9 +264,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_attribute_value).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (stable attribute values and abbreviations with database uniqueness and exact read-back).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: stable attribute values and abbreviations with database uniqueness and exact read-back.",
             "gap_package": "IW-02"
         },
         {
@@ -248,9 +286,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_barcode).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (company uniqueness, active-item resolution, and EAN/UPC/ISBN checksum validation).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: company uniqueness, active-item resolution, and EAN/UPC/ISBN checksum validation.",
             "gap_package": "IW-02"
         },
         {
@@ -264,9 +308,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_party_detail).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (company-scoped CUSTOMER references and item codes in transactional child replacement).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: company-scoped CUSTOMER references and item codes in transactional child replacement.",
             "gap_package": "IW-02"
         },
         {
@@ -280,9 +330,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_default).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (scope-specific warehouse and price-list references with exact child read-back).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: scope-specific warehouse and price-list references with exact child read-back.",
             "gap_package": "IW-02"
         },
         {
@@ -296,9 +352,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_lead_time).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (validated context/day rows with exact child read-back).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: validated context/day rows with exact child read-back.",
             "gap_package": "IW-02"
         },
         {
@@ -312,9 +374,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_manufacturer).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (item-to-manufacturer assignment and part-number persistence).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: item-to-manufacturer assignment and part-number persistence.",
             "gap_package": "IW-02"
         },
         {
@@ -328,9 +396,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_price).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (dated currency/UOM rates, natural-key locking, audit, exact read-back, and rollback).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: dated currency/UOM rates, natural-key locking, audit, exact read-back, and rollback.",
             "gap_package": "IW-02"
         },
         {
@@ -344,9 +418,12 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "NOT_APPLICABLE",
+            "evidence": [
+                "Upstream-only fixture: erpnext/stock/doctype/item_price/test_records.json.",
+                "PASS: php tests/inventory-warehouse-catalogue.php - local transaction fixtures cover create/update, isolation, read-back, uniqueness, validation, and rollback without shipping seed test records."
+            ],
+            "reason": "[IW-02] This pinned artifact is an upstream test fixture, not runtime functionality; equivalent local focused fixtures execute without adding production test records.",
             "gap_package": "IW-02"
         },
         {
@@ -376,9 +453,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_reorder_rule with company/item/warehouse uniqueness).",
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php, functions.php, views/workspace.php, and views/record-modal.php (transactional rule upsert, projection-backed recommendations, shared POST/modal/confirmation/rehydration).",
+                "PASS: php tests/inventory-warehouse-warehouses.php and frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - exact reorder level/quantity, recommendation, handler, and modal checks passed."
+            ],
+            "reason": "[IW-03] Item Reorder rules are unique per company/item/active leaf warehouse and drive exact source-backed replenishment recommendations.",
             "gap_package": "IW-03"
         },
         {
@@ -392,9 +473,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_party_detail).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (company-scoped SUPPLIER references and supplier item codes in transactional child replacement).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: company-scoped SUPPLIER references and supplier item codes in transactional child replacement.",
             "gap_package": "IW-02"
         },
         {
@@ -408,9 +495,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_tax).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (decimal tax rows with exact transactional child read-back).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: decimal tax rows with exact transactional child read-back.",
             "gap_package": "IW-02"
         },
         {
@@ -424,9 +517,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (company-owned template linkage and exact template-attribute matching).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: company-owned template linkage and exact template-attribute matching.",
             "gap_package": "IW-02"
         },
         {
@@ -440,9 +539,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_variant_attribute).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (stable per-item attribute names and values with uniqueness and exact read-back).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: stable per-item attribute names and values with uniqueness and exact read-back.",
             "gap_package": "IW-02"
         },
         {
@@ -456,9 +561,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_variant_setting).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (company-scoped active naming settings initialized and read back with template use).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: company-scoped active naming settings initialized and read back with template use.",
             "gap_package": "IW-02"
         },
         {
@@ -472,9 +583,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_website_spec).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (validated label/value specifications with exact child read-back).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: validated label/value specifications with exact child read-back.",
             "gap_package": "IW-02"
         },
         {
@@ -568,9 +685,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_manufacturer).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (company manufacturer master upsert, website validation, uniqueness, and exact read-back).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: company manufacturer master upsert, website validation, uniqueness, and exact read-back.",
             "gap_package": "IW-02"
         },
         {
@@ -712,9 +835,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_price_list).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (buying/selling currency configuration with locked upsert and exact read-back).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: buying/selling currency configuration with locked upsert and exact read-back.",
             "gap_package": "IW-02"
         },
         {
@@ -728,9 +857,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_price_list_country).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (normalized ISO country rows replaced and verified in the price mutation).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: normalized ISO country rows replaced and verified in the price mutation.",
             "gap_package": "IW-02"
         },
         {
@@ -792,9 +927,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_putaway_rule company/item/warehouse/dimension rule storage).",
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php, functions.php, views/workspace.php, and views/record-modal.php (validated rule upsert and exact priority/capacity allocation plan through the shared interaction contract).",
+                "PASS: php tests/inventory-warehouse-warehouses.php and frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - putaway priority, split capacity, stable handler, modal, and rehydration checks passed."
+            ],
+            "reason": "[IW-03] Putaway Rules select active leaf warehouses by company, item, dimension tuple, priority, and remaining authoritative capacity.",
             "gap_package": "IW-03"
         },
         {
@@ -1208,9 +1347,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (one project_company_inventory_stock_setting row per company).",
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php, functions.php, and views/record-modal.php (authorized transactional settings upsert, audit, read-back, capacity/negative-stock enforcement, shared confirmation and rehydration).",
+                "PASS: php tests/inventory-warehouse-warehouses.php and frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - settings persistence and modal contract checks passed."
+            ],
+            "reason": "[IW-03] Stock Settings persist and enforce company-specific negative-stock, capacity, and putaway policy.",
             "gap_package": "IW-03"
         },
         {
@@ -1224,9 +1367,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_uom).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (company UOM masters with normalized category and active-state read-back).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: company UOM masters with normalized category and active-state read-back.",
             "gap_package": "IW-02"
         },
         {
@@ -1240,9 +1389,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_uom).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (positive BCMath conversion factors and deterministic stock-quantity resolution).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: positive BCMath conversion factors and deterministic stock-quantity resolution.",
             "gap_package": "IW-02"
         },
         {
@@ -1256,9 +1411,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_variant_field).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (ordered template fields synchronized to reusable attribute masters).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: ordered template fields synchronized to reusable attribute masters.",
             "gap_package": "IW-02"
         },
         {
@@ -1272,9 +1433,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_warehouse hierarchy, type, status, capacity, priority, and company-scoped code uniqueness).",
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php, functions.php, views/workspace.php, and views/record-modal.php (cycle-safe hierarchy upsert, company/leaf/status/capacity guards, audit/read-back, 12/8 workspace and shared modal flow).",
+                "PASS: php tests/inventory-warehouse-warehouses.php and frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - hierarchy, company ownership, group/disabled/capacity, rollback, POST, desktop/mobile, confirmation, focus, and rehydration checks passed."
+            ],
+            "reason": "[IW-03] Warehouses are company-scoped hierarchical masters with cycle rejection and explicit group-versus-stock-location integrity.",
             "gap_package": "IW-03"
         },
         {
@@ -1288,9 +1453,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_warehouse_type with company-scoped code uniqueness and status).",
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php and views/record-modal.php (authorized locked upsert, ownership checks, audit/read-back, create/edit modal confirmation and rehydration).",
+                "PASS: php tests/inventory-warehouse-warehouses.php and frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - Warehouse Type persistence and modal action checks passed."
+            ],
+            "reason": "[IW-03] Warehouse Types are company-owned, uniquely coded masters validated by Warehouse writes.",
             "gap_package": "IW-03"
         },
         {
@@ -1320,9 +1489,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php (yovel_admin_inventory_warehouse_capacity_summary computes exact used/available capacity from authoritative bin actuals without persisting derived totals).",
+                "Implementation: company/admin/modules/inventory-warehouse/views/workspace.php (warehouse capacity usage surface in the 12/8 workspace).",
+                "PASS: php tests/inventory-warehouse-warehouses.php - capacity limit, lowering-capacity rejection, rollback preservation, and priority allocation checks passed."
+            ],
+            "reason": "[IW-03] Warehouse capacity is an exact live projection over company-owned bins and is enforced during stock-source and warehouse mutations.",
             "gap_package": "IW-03"
         },
         {
@@ -1880,9 +2053,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_price and price-list tables).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (yovel_admin_inventory_item_prices).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - company-scoped price create/update, UOM/currency/validity, exact read-back, report query, and rollback passed.",
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php (yovel_admin_inventory_item_price_stock joins catalogue price rows to authoritative bin-source totals and derives exact projection fields).",
+                "PASS: php tests/inventory-warehouse-warehouses.php - integrated Item Price Stock rate, actual, and projected quantity evidence passed."
+            ],
+            "reason": "[IW-02/IW-03] Item Price Stock combines the completed company catalogue price projection with authoritative source-backed bin quantities.",
             "gap_package": "IW-02"
         },
         {
@@ -1896,9 +2075,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_item_price and price-list tables).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (yovel_admin_inventory_item_prices).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - company-scoped price create/update, UOM/currency/validity, exact read-back, report query, and rollback passed.",
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php (yovel_admin_inventory_item_price_stock source-backed report logic and exact decimal derivation).",
+                "PASS: php tests/inventory-warehouse-warehouses.php - integrated Item Price Stock report logic over authoritative source keys passed."
+            ],
+            "reason": "[IW-02/IW-03] Item Price Stock report code is implemented by the integrated company price and authoritative stock projection service.",
             "gap_package": "IW-02"
         },
         {
@@ -1912,9 +2097,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (yovel_admin_inventory_item_prices).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (company-scoped item-price report rows across item, price-list, UOM, currency, and validity).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: company-scoped item-price report rows across item, price-list, UOM, currency, and validity.",
             "gap_package": "IW-02"
         },
         {
@@ -1928,9 +2119,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (yovel_admin_inventory_item_prices).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (company-scoped item-price report rows across item, price-list, UOM, currency, and validity).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: company-scoped item-price report rows across item, price-list, UOM, currency, and validity.",
             "gap_package": "IW-02"
         },
         {
@@ -1992,9 +2189,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (yovel_admin_inventory_item_variant_details).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (company-scoped variants with ordered attribute details).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: company-scoped variants with ordered attribute details.",
             "gap_package": "IW-02"
         },
         {
@@ -2008,9 +2211,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (yovel_admin_inventory_item_variant_details).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (company-scoped variants with ordered attribute details).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: company-scoped variants with ordered attribute details.",
             "gap_package": "IW-02"
         },
         {
@@ -2088,9 +2297,15 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (yovel_admin_inventory_item_prices).",
+                "Implementation: company/admin/modules/inventory-warehouse/catalogue.php (item-wise price-list rate projection with status and validity fields).",
+                "Dispatch/UI: company/admin/modules/inventory-warehouse/functions.php and views/record-modal.php (shared four-argument POST, record modal, confirmation, and server rehydration).",
+                "PASS: php tests/inventory-warehouse-catalogue.php - row-specific schema, validation, company scope, transactional persistence, exact read-back, and rollback assertions passed.",
+                "PASS: frontend/node_modules/.bin/playwright test tests/inventory-warehouse-ui.spec.js - authenticated-equivalent modal/confirmation and desktop/mobile catalogue behavior passed; authenticated browser gate also passed on 2026-08-25."
+            ],
+            "reason": "[IW-02] Functional parity is implemented without upstream source copying: item-wise price-list rate projection with status and validity fields.",
             "gap_package": "IW-02"
         },
         {
@@ -2104,9 +2319,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php (yovel_admin_reorder_recommendations filters active company item/leaf-warehouse rules against exact projected quantity).",
+                "Implementation: company/admin/modules/inventory-warehouse/views/workspace.php (Items to be requested result surface).",
+                "PASS: php tests/inventory-warehouse-warehouses.php - below-level inclusion, exact recommended quantity, disabled/group guards, and company isolation passed."
+            ],
+            "reason": "[IW-03] Items To Be Requested is a company-scoped live recommendation over active reorder rules and authoritative stock-source projections.",
             "gap_package": "IW-03"
         },
         {
@@ -2120,9 +2339,12 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php and warehouses.php (unique reorder rules plus yovel_admin_inventory_projection_for_warehouse_item and yovel_admin_reorder_recommendations).",
+                "PASS: php tests/inventory-warehouse-warehouses.php - exact level, quantity, projected comparison, and recommendation output passed."
+            ],
+            "reason": "[IW-03] The reorder report definition is backed by company/item/warehouse rules and exact source-keyed projections.",
             "gap_package": "IW-03"
         },
         {
@@ -2136,9 +2358,12 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php (yovel_admin_reorder_recommendations executable report logic with BCMath comparisons).",
+                "PASS: php tests/inventory-warehouse-warehouses.php - report logic returns only below-level active tuples with exact recommended quantity."
+            ],
+            "reason": "[IW-03] Itemwise Recommended Reorder Level logic is implemented as the tested module-owned replenishment projection.",
             "gap_package": "IW-03"
         },
         {
@@ -2824,9 +3049,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (authoritative typed bin-source rows; no persisted reserved/ordered/requested/planned/projected/available derived columns).",
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php (yovel_admin_inventory_bin and yovel_admin_inventory_projection_from_totals return exact actual/reserved/ordered/requested/planned/projected/available-to-reserve strings).",
+                "PASS: php tests/inventory-warehouse-warehouses.php - all projection fields, no-derived-column schema assertion, source-key idempotency, and exact read-back passed."
+            ],
+            "reason": "[IW-03] Stock Projected Qty is an explicit non-persisted projection over authoritative company/item/warehouse/dimension source keys.",
             "gap_package": "IW-03"
         },
         {
@@ -2840,9 +3069,12 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/warehouses.php (BCMath projection logic, tuple read service, warehouse/item aggregate service, and read-back integrity assertion).",
+                "PASS: php tests/inventory-warehouse-warehouses.php - exact decimal projection formula and authoritative source-row integration passed."
+            ],
+            "reason": "[IW-03] Stock Projected Qty executable logic derives exact quantities without storing unowned totals.",
             "gap_package": "IW-03"
         },
         {

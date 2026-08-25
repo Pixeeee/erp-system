@@ -1,3 +1,9 @@
+<?php
+$activeModuleRoute = yovel_admin_module_route($activeView);
+$activeModuleWorkspace = $activeModuleRoute
+    ? dirname(__DIR__) . '/' . (string) $activeModuleRoute['workspace_file']
+    : '';
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -99,10 +105,9 @@
                                 <p class="yovel-sidebar-section px-2 pb-2 text-xs font-medium text-sidebar-foreground/60">ERP System</p>
                                 <div class="grid gap-1">
                                     <?php foreach ($erpGroups as $group): ?>
+                                        <?php $groupRoute = yovel_admin_module_route_by_label((string) $group['label']); ?>
                                         <?php $isHrGroup = (string) $group['label'] === 'HR Department'; ?>
-                                        <?php $isSalesCrmGroup = (string) $group['label'] === 'Sales / CRM'; ?>
-                                        <?php $isAccountingFinanceGroup = (string) $group['label'] === 'Accounting / Finance'; ?>
-                                        <?php $isActiveErpGroup = ($activeView === 'hr' && $isHrGroup) || ($activeView === 'sales-crm' && $isSalesCrmGroup) || ($activeView === 'accounting-finance' && $isAccountingFinanceGroup); ?>
+                                        <?php $isActiveErpGroup = $groupRoute && (string) $groupRoute['view'] === $activeView; ?>
                                         <details class="group rounded-md" <?= $isActiveErpGroup ? 'open' : '' ?>>
                                             <summary class="yovel-erp-summary yovel-sidebar-summary flex min-h-8 cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium <?= $isActiveErpGroup ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'hover:bg-sidebar-accent/70' ?>" title="<?= bx_h((string) $group['label']) ?>">
                                                 <span class="yovel-erp-icon-badge <?= $isHrGroup ? 'yovel-erp-icon-badge--hr' : '' ?> <?= $isActiveErpGroup ? 'yovel-erp-icon-badge--active' : '' ?> inline-flex size-5 shrink-0 items-center justify-center text-xs" aria-hidden="true"><?= bx_h((string) $group['icon']) ?></span>
@@ -112,9 +117,8 @@
                                             </summary>
                                             <div class="yovel-sidebar-submenu ml-6 mt-1 grid gap-1 border-l pl-2">
                                                 <?php foreach ($group['features'] as $feature): ?>
-                                                    <?php $featureSlug = yovel_admin_slug((string) $feature); ?>
-                                                    <?php if ($isAccountingFinanceGroup && $featureSlug === 'finance-dashboard') { $featureSlug = 'dashboard'; } ?>
-                                                    <?php $isActiveFeature = ($activeView === 'hr' && $isHrGroup && $activeHrSection === $featureSlug) || ($activeView === 'sales-crm' && $isSalesCrmGroup && $activeSalesCrmSection === $featureSlug) || ($activeView === 'accounting-finance' && $isAccountingFinanceGroup && $activeAccountingFinanceSection === $featureSlug); ?>
+                                                    <?php $featureSlug = $groupRoute ? yovel_admin_module_feature_section($groupRoute, (string) $feature) : yovel_admin_slug((string) $feature); ?>
+                                                    <?php $isActiveFeature = $isActiveErpGroup && $activeModuleSection === $featureSlug; ?>
                                                     <a class="block rounded-md px-2 py-1.5 text-xs leading-4 <?= $isActiveFeature ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-sidebar-foreground/75 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground' ?>" href="<?= bx_h(yovel_admin_erp_feature_href($group, (string) $feature)) ?>">
                                                         <?= bx_h((string) $feature) ?>
                                                     </a>
@@ -207,12 +211,8 @@
                             </div>
                             <?php if ($activeView === 'platform'): ?>
                                 <?php require dirname(__DIR__) . '/modules/platform/views/workspace.php'; ?>
-                            <?php elseif ($activeView === 'accounting-finance'): ?>
-                                <?php require dirname(__DIR__) . '/modules/accounting-finance/views/workspace.php'; ?>
-                            <?php elseif ($activeView === 'sales-crm'): ?>
-                                <?php require dirname(__DIR__) . '/modules/sales-crm/views/workspace.php'; ?>
-                            <?php elseif ($activeView === 'hr'): ?>
-                                <?php require dirname(__DIR__) . '/modules/hr/views/workspace.php'; ?>
+                            <?php elseif ($activeModuleRoute && is_file($activeModuleWorkspace)): ?>
+                                <?php require $activeModuleWorkspace; ?>
                             <?php else: ?>
                                 <?php require __DIR__ . '/dashboard.php'; ?>
                             <?php endif; ?>
@@ -282,19 +282,9 @@
             <?php endif; ?>
         </div>
     </main>
-    <div id="yovel-confirm-dialog" class="yovel-confirm-dialog fixed inset-0 z-50 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-confirm-title" aria-describedby="yovel-confirm-description" hidden>
-        <div class="w-full max-w-md rounded-lg border bg-card shadow-lg">
-            <div class="border-b px-5 py-4">
-                <h2 id="yovel-confirm-title" class="text-base font-semibold tracking-normal">Confirm Platform Change</h2>
-                <p id="yovel-confirm-description" class="mt-1 text-sm leading-6 text-muted-foreground">This will save company-scoped access settings for <?= bx_h($companyName) ?> and write an audit record.</p>
-            </div>
-            <div class="flex justify-end gap-2 p-4">
-                <button type="button" id="yovel-confirm-cancel" class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Cancel</button>
-                <button type="button" id="yovel-confirm-action" class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90">Confirm Save</button>
-            </div>
-        </div>
-    </div>
+    <?php require __DIR__ . '/partials/confirm-dialog.php'; ?>
     <?php require __DIR__ . '/partials/scripts.php'; ?>
+    <script src="<?= bx_h(bx_project_base_path() . 'company/admin/assets/js/admin-modal.js?v=' . (string) filemtime(dirname(__DIR__) . '/assets/js/admin-modal.js')) ?>"></script>
     <script src="<?= bx_h(bx_project_base_path() . 'company/admin/assets/js/hr-teams.js?v=' . (string) filemtime(dirname(__DIR__) . '/assets/js/hr-teams.js')) ?>"></script>
 </body>
 </html>

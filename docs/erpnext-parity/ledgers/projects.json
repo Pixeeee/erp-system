@@ -15,9 +15,9 @@
             "commit": "11e0ba0a1c45f217e2e73e885f699102d06da325"
         },
         "status_counts": {
-            "COMPLETE": 0,
+            "COMPLETE": 2,
             "PARTIAL": 0,
-            "MISSING": 27,
+            "MISSING": 25,
             "NOT_APPLICABLE": 0,
             "DEFERRED": 0
         },
@@ -25,8 +25,8 @@
             "PASS: php tests/erpnext-parity-ledger.php - ERPNext parity baseline tests passed.",
             "PASS: php tools/erpnext-parity.php validate-baseline - baseline valid for 11 owners.",
             "PASS: php tools/erpnext-parity.php validate-ledger - ledgers valid against 2026-08-25.",
-            "ABSENT: company/admin/modules/projects/ does not exist.",
-            "ABSENT: no tests/projects-* files exist; there is no scoped Projects implementation test evidence."
+            "PASS: php tests/projects-schema.php (twice) - 13-table Projects schema, opaque company scope, exact registry signatures, rollback, and ownership boundary verified.",
+            "PASS: php tests/projects-form-builder.php (twice) and php tests/projects-workspace.php (twice) - Projects Settings and Projects workspace behavior verified."
         ]
     },
     "rows": [
@@ -219,12 +219,14 @@
                 "hr",
                 "accounting-finance"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
-                "Audit 2026-08-25: no tests/projects-* files exist."
+                "Implementation: company/admin/modules/projects/settings.php provides authorized company-scoped defaults and a transaction-owned complete upsert with row locks, parameterized SQL, audit, exact read-back, and stable-key preservation.",
+                "Interaction: company/admin/modules/projects/views/workspace.php and company/admin/modules/projects/views/record-modal.php provide the 12/8 settings surface, shared record-modal and sibling confirmation hooks, CSRF fields, and failed-input rehydration.",
+                "PASS 2026-08-25: php tests/projects-workspace.php (two consecutive runs) verifies defaults, invalid-CSRF no-write behavior, create/update read-back, stable keys, two audit events, modal confirmation hooks, and server rehydration.",
+                "PASS 2026-08-25: php tests/projects-schema.php (two consecutive runs) verifies active company/admin scope and Projects-owned schema isolation."
             ],
-            "reason": "No company-scoped Projects Settings, timesheet-overlap policy adapter, Finance billing policy handoff, persisted confirmation workflow, or focused test exists."
+            "reason": "Projects Settings now persists both Projects-side HR overlap and Finance timesheet-fetch policy flags; authoritative HR and Finance behavior remains behind explicit unavailable owner contracts."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/task/task.json:doctype:Task",
@@ -558,12 +560,16 @@
                 "accounting-finance",
                 "operations"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
-                "Audit 2026-08-25: no tests/projects-* files exist."
+                "Implementation: company/admin/modules/projects/views/workspace.php renders the main-first 12/20 and tools 8/20 workspace, section navigation, server metrics, empty/dependency states, and the module-local Form Builder surface.",
+                "Implementation: company/admin/modules/projects/forms.php provides six Projects targets, protected stable fields, row/column metadata, normalized draft/publish/archive lifecycle, immutable published versions, monotonic history, audit, exact read-back, and server rehydration.",
+                "Interaction: company/admin/modules/projects/views/record-modal.php consumes the shared record-modal contract with accessible description association, auto-reopen state, and sibling confirmation hooks.",
+                "PASS 2026-08-25: php tests/projects-form-builder.php and php tests/projects-workspace.php (two consecutive runs each) verify versioning, idempotency, immutable publication, responsive 12/8 source order, modal-only creation, confirmation hooks, owner states, and rehydration.",
+                "PASS 2026-08-25: php tests/company-admin-erp-contract.php, php tests/company-admin-modal-confirmation.php, php tests/company-admin-shared-form-builder.php, and php tests/project-module-hierarchy.php verify shared registration and interaction regressions.",
+                "PASS 2026-08-25 authenticated browser: Yovel East desktop computed a 12:8 grid; 390x844 mobile stacked main before tools without overflow; the accessible record modal opened; Submit showed the sibling confirmation dialog; Cancel restored the populated modal; browser console reported no warnings or errors."
             ],
-            "reason": "No real Projects workspace, shortcuts, number cards, chart, 12/8 shell, modal create flows, module-local Form Builder, reports navigation, portal tools, or responsive interaction test exists. Shared route/modal/Form Builder registration requires orchestration ownership."
+            "reason": "The registered Projects workspace and versioned module-local Form Builder are operational; later work packages add project, task, report, collaboration, billing, and portal records without changing this completed shell."
         }
     ]
 }

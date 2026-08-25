@@ -146,6 +146,38 @@ function yovel_admin_finance_invoice_type(string $type): string
     return $type;
 }
 
+function yovel_admin_persist_finance_supplier(ADOConnection $db, array $company, array $admin, array $input): array
+{
+    yovel_admin_finance_invoice_schema();
+    [$companyKey, $hash, $adminKey] = yovel_admin_finance_scope($company, $admin);
+    $key = trim((string) ($input['supplier_key'] ?? ''));
+    $code = yovel_admin_code((string) ($input['supplier_code'] ?? ''));
+    $name = trim((string) ($input['supplier_name'] ?? ''));
+    $tin = trim((string) ($input['supplier_tin'] ?? ''));
+    $address = trim((string) ($input['supplier_address'] ?? ''));
+    if (($key !== '' && !yovel_admin_is_uuid($key)) || $code === '' || $name === '' || strlen($name) > 200 || strlen($address) > 500) {
+        throw new InvalidArgumentException('Supplier code, name, and record identity must be valid.');
+    }
+    if ($tin !== '' && preg_match('/^\d{3}-\d{3}-\d{3}(?:-\d{3,5})?$/', $tin) !== 1) {
+        throw new InvalidArgumentException('Supplier TIN must use the registered numeric format.');
+    }
+    if ($db->BeginTrans() === false) throw new RuntimeException('Supplier transaction could not start.');
+    try {
+        $existing = $key !== '' ? $db->GetRow('SELECT * FROM project_company_finance_supplier WHERE company_key_hash=? AND supplier_key=? FOR UPDATE', [$hash, $key]) : $db->GetRow('SELECT * FROM project_company_finance_supplier WHERE company_key_hash=? AND supplier_code=? FOR UPDATE', [$hash, $code]);
+        if ($key !== '' && !$existing && (int) $db->GetOne('SELECT COUNT(*) FROM project_company_finance_supplier WHERE supplier_key=?', [$key]) > 0) throw new InvalidArgumentException('Supplier does not belong to this company.');
+        $key = $existing ? (string) $existing['supplier_key'] : ($key !== '' ? $key : bx_uuid());
+        yovel_admin_db_execute($db, "INSERT INTO project_company_finance_supplier (supplier_key,company_key,company_key_hash,supplier_code,supplier_name,supplier_tin,supplier_address,supplier_status,created_by_admin_key,updated_by_admin_key) VALUES (?,?,?,?,?,?,?,'ACTIVE',?,?) ON DUPLICATE KEY UPDATE supplier_name=VALUES(supplier_name),supplier_tin=VALUES(supplier_tin),supplier_address=VALUES(supplier_address),supplier_status='ACTIVE',updated_by_admin_key=VALUES(updated_by_admin_key)", [$key, $companyKey, $hash, $code, $name, $tin !== '' ? $tin : null, $address !== '' ? $address : null, $adminKey, $adminKey], 'Finance Supplier save');
+        $saved = $db->GetRow('SELECT * FROM project_company_finance_supplier WHERE company_key_hash=? AND supplier_key=?', [$hash, $key]);
+        if (!$saved || (string) $saved['supplier_code'] !== $code) throw new RuntimeException('Supplier read-back verification failed.');
+        bx_audit($existing ? 'UPDATE' : 'CREATE', 'project_company_finance_supplier', $key, ['company_key' => $companyKey, 'supplier_code' => $code, 'admin_key' => $adminKey], 'Company administrator saved a Finance Supplier.');
+        if ($db->CommitTrans() === false) throw new RuntimeException('Supplier transaction could not commit.');
+        return $saved;
+    } catch (Throwable $error) {
+        $db->RollbackTrans();
+        throw $error;
+    }
+}
+
 function yovel_admin_finance_invoice_party(ADOConnection $db, array $company, string $type, array $input): array
 {
     $hash = (string) $company['company_key_hash'];
@@ -290,11 +322,11 @@ function yovel_admin_persist_finance_invoice(ADOConnection $db, array $company, 
 
 function yovel_admin_finance_invoice_gl_entries(array $header,array $lines,array $settings): array
 {
-    $type=(string)$header['document_type'];$return=(int)$header['is_return']===1;$entries=[];$partyAmount=yovel_admin_finance_money(abs((float)$header['grand_total']));
+    $type=(string)$header['document_type'];$return=(int)$header['is_return']===1;$entries=[];$partyAmount=yovel_admin_finance_abs($header['grand_total']);
     $party=['account_key'=>(string)$header['party_account_key'],'party_type'=>$type==='SALES'?'CUSTOMER':'SUPPLIER','party'=>(string)$header['party_name']];
     if(($type==='SALES'&&!$return)||($type==='PURCHASE'&&$return)){$entries[]=array_merge($party,['debit'=>$partyAmount,'credit'=>'0']);}else{$entries[]=array_merge($party,['debit'=>'0','credit'=>$partyAmount]);}
-    foreach($lines as $line){$net=yovel_admin_finance_money(abs((float)$line['line_total'])-abs((float)$line['vat_amount']));$base=['account_key'=>(string)$line['account_key'],'cost_center'=>(string)($line['cost_center']??''),'project'=>(string)($line['project']??''),'remarks'=>(string)$line['description']];if(($type==='SALES'&&!$return)||($type==='PURCHASE'&&$return))$entries[]=array_merge($base,['debit'=>'0','credit'=>$net]);else $entries[]=array_merge($base,['debit'=>$net,'credit'=>'0']);}
-    $vat=yovel_admin_finance_money(abs((float)$header['vat_amount']));
+    foreach($lines as $line){$net=yovel_admin_finance_money(bcsub(yovel_admin_finance_abs($line['line_total']),yovel_admin_finance_abs($line['vat_amount']),6));$base=['account_key'=>(string)$line['account_key'],'cost_center'=>(string)($line['cost_center']??''),'project'=>(string)($line['project']??''),'remarks'=>(string)$line['description']];if(($type==='SALES'&&!$return)||($type==='PURCHASE'&&$return))$entries[]=array_merge($base,['debit'=>'0','credit'=>$net]);else $entries[]=array_merge($base,['debit'=>$net,'credit'=>'0']);}
+    $vat=yovel_admin_finance_abs($header['vat_amount']);
     if(bccomp($vat,'0',6)===1){$vatKey=(string)($settings[$type==='SALES'?'default_output_vat_account_key':'default_input_vat_account_key']??'');if(!yovel_admin_is_uuid($vatKey))throw new InvalidArgumentException('Default VAT account is required before invoice submission.');if(($type==='SALES'&&!$return)||($type==='PURCHASE'&&$return))$entries[]=['account_key'=>$vatKey,'debit'=>'0','credit'=>$vat];else $entries[]=['account_key'=>$vatKey,'debit'=>$vat,'credit'=>'0'];}
     return $entries;
 }
@@ -302,6 +334,7 @@ function yovel_admin_finance_invoice_gl_entries(array $header,array $lines,array
 function yovel_admin_submit_finance_invoice(ADOConnection $db,array $company,array $admin,string $type,string $key):array
 {
     yovel_admin_finance_core_schema();yovel_admin_general_ledger_schema();yovel_admin_finance_invoice_schema();[$companyKey,$hash,$adminKey]=yovel_admin_finance_scope($company,$admin);$type=yovel_admin_finance_invoice_type($type);if(!yovel_admin_is_uuid($key))throw new InvalidArgumentException('Finance Invoice key is invalid.');$preview=yovel_admin_finance_invoice($company,$key);if(!$preview||(string)$preview['document_type']!==$type)throw new InvalidArgumentException('Finance Invoice was not found for this company.');yovel_admin_finance_assert_open_period($company,(string)$preview['posting_date'],false);
+    if($type==='PURCHASE'&&(int)$preview['is_return']===0&&function_exists('yovel_admin_assert_budget_available')){foreach($preview['lines'] as $line){$budgetAmount=yovel_admin_finance_money(bcsub((string)$line['line_total'],(string)$line['vat_amount'],6));yovel_admin_assert_budget_available($company,(string)$preview['posting_date'],(string)$line['account_key'],$budgetAmount);}}
     if($db->BeginTrans()===false)throw new RuntimeException('Invoice submission transaction could not start.');try{$header=$db->GetRow('SELECT * FROM project_company_finance_invoice WHERE company_key_hash=? AND invoice_key=? FOR UPDATE',[$hash,$key]);if(!$header||(string)$header['document_status']!=='DRAFT')throw new InvalidArgumentException('Only a Draft Finance Invoice can be submitted.');$lines=$db->GetAll('SELECT * FROM project_company_finance_invoice_line WHERE company_key_hash=? AND invoice_key=? ORDER BY line_no',[$hash,$key]);$posted=yovel_admin_post_general_ledger_transaction($db,$company,$admin,['posting_date'=>$header['posting_date'],'voucher_type'=>$type.'_INVOICE','voucher_no'=>$header['invoice_no'],'source_module'=>$type.'_INVOICE','source_record_key'=>$key,'remarks'=>$header['remarks']??'','entries'=>yovel_admin_finance_invoice_gl_entries($header,$lines,yovel_admin_finance_settings($company,$admin))],false,false);yovel_admin_db_execute($db,"UPDATE project_company_finance_invoice SET document_status='SUBMITTED',outstanding_amount=grand_total,gl_transaction_key=?,submitted_by_admin_key=?,submitted_at=CURRENT_TIMESTAMP,updated_by_admin_key=? WHERE company_key_hash=? AND invoice_key=? AND document_status='DRAFT'",[$posted['transaction_key'],$adminKey,$adminKey,$hash,$key],'Finance Invoice submission');$saved=yovel_admin_finance_invoice($company,$key,false);if(!$saved||(string)$saved['document_status']!=='SUBMITTED'||(string)$saved['gl_transaction_key']!==(string)$posted['transaction_key'])throw new RuntimeException('Finance Invoice submission read-back verification failed.');bx_audit('SUBMIT','project_company_finance_invoice',$key,['company_key'=>$companyKey,'invoice_no'=>$header['invoice_no'],'gl_transaction_key'=>$posted['transaction_key'],'admin_key'=>$adminKey],'Company administrator submitted a Finance Invoice.');if($db->CommitTrans()===false)throw new RuntimeException('Invoice submission transaction could not commit.');return $saved;}catch(Throwable $error){$db->RollbackTrans();throw $error;}
 }
 
@@ -338,6 +371,7 @@ function yovel_admin_receivable_aging(array $company,string $asOf):array{return 
 function yovel_admin_payable_aging(array $company,string $asOf):array{return yovel_admin_finance_aging($company,'PURCHASE',$asOf);}
 
 function yovel_admin_finance_invoice_lines_from_post():array{$json=trim((string)($_POST['lines_json']??''));if($json==='')return []; $lines=json_decode($json,true,512,JSON_THROW_ON_ERROR);if(!is_array($lines))throw new InvalidArgumentException('Invoice lines JSON is invalid.');return $lines;}
-function yovel_admin_save_finance_invoice(array $company,array $admin):string{$input=$_POST;$input['lines']=yovel_admin_finance_invoice_lines_from_post();$type=(string)($_POST['document_type']??'SALES');$saved=yovel_admin_persist_finance_invoice(bx_db(),$company,$admin,$type,$input);$GLOBALS['yovel_admin_saved_finance_document_key']=$saved['invoice_key'];return ucfirst(strtolower($type)).' Invoice Draft saved.';}
-function yovel_admin_submit_invoice_action(array $company,array $admin):string{$type=(string)($_POST['document_type']??'SALES');$saved=yovel_admin_submit_finance_invoice(bx_db(),$company,$admin,$type,(string)($_POST['invoice_key']??''));$GLOBALS['yovel_admin_saved_finance_document_key']=$saved['invoice_key'];return ucfirst(strtolower($type)).' Invoice submitted and posted.';}
-function yovel_admin_cancel_invoice_action(array $company,array $admin):string{$type=(string)($_POST['document_type']??'SALES');$saved=yovel_admin_cancel_finance_invoice(bx_db(),$company,$admin,$type,(string)($_POST['invoice_key']??''),(string)($_POST['cancellation_posting_date']??date('Y-m-d')),(string)($_POST['cancellation_reason']??''));$GLOBALS['yovel_admin_saved_finance_document_key']=$saved['invoice_key'];return ucfirst(strtolower($type)).' Invoice cancelled with a reversal.';}
+function yovel_admin_save_finance_invoice(array $company,array $admin):string{return yovel_admin_finance_run_form_action($company,'save_finance_invoice',static function()use($company,$admin):string{$input=$_POST;$input['lines']=yovel_admin_finance_invoice_lines_from_post();$type=(string)($_POST['document_type']??'SALES');$saved=yovel_admin_persist_finance_invoice(bx_db(),$company,$admin,$type,$input);$GLOBALS['yovel_admin_saved_finance_document_key']=$saved['invoice_key'];return ucfirst(strtolower($type)).' Invoice Draft saved.';});}
+function yovel_admin_save_finance_supplier(array $company,array $admin):string{return yovel_admin_finance_run_form_action($company,'save_finance_supplier',static function()use($company,$admin):string{$saved=yovel_admin_persist_finance_supplier(bx_db(),$company,$admin,$_POST);$GLOBALS['yovel_admin_saved_finance_document_key']=$saved['supplier_key'];return 'Supplier saved.';});}
+function yovel_admin_submit_invoice_action(array $company,array $admin):string{return yovel_admin_finance_run_form_action($company,'submit_finance_invoice',static function()use($company,$admin):string{$type=(string)($_POST['document_type']??'SALES');$saved=yovel_admin_submit_finance_invoice(bx_db(),$company,$admin,$type,(string)($_POST['invoice_key']??''));$GLOBALS['yovel_admin_saved_finance_document_key']=$saved['invoice_key'];return ucfirst(strtolower($type)).' Invoice submitted and posted.';});}
+function yovel_admin_cancel_invoice_action(array $company,array $admin):string{return yovel_admin_finance_run_form_action($company,'cancel_finance_invoice',static function()use($company,$admin):string{$type=(string)($_POST['document_type']??'SALES');$saved=yovel_admin_cancel_finance_invoice(bx_db(),$company,$admin,$type,(string)($_POST['invoice_key']??''),(string)($_POST['cancellation_posting_date']??date('Y-m-d')),(string)($_POST['cancellation_reason']??''));$GLOBALS['yovel_admin_saved_finance_document_key']=$saved['invoice_key'];return ucfirst(strtolower($type)).' Invoice cancelled with a reversal.';});}

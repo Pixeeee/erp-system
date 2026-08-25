@@ -180,6 +180,8 @@ try {
     buying_test_assert((string) $period['total_score'] === '84.0000', 'Deterministic scorecard total is incorrect.');
     buying_test_assert((string) $period['standing']['standing_code'] === 'GOOD', 'Scorecard total mapped to the wrong standing.');
     buying_test_assert(count($period['scores']) === 2, 'Scorecard period did not persist every criteria score.');
+    buying_test_assert((string) $period['created_by_admin_key'] === (string) $ownerAdmin['admin_key'], 'Scorecard period read-back lost its creating administrator.');
+    buying_test_assert((string) $period['updated_by_admin_key'] === (string) $ownerAdmin['admin_key'], 'Scorecard period read-back lost its updating administrator.');
     buying_test_assert(($period['notification']['available'] ?? true) === false && ($period['notification']['blocking'] ?? true) === false, 'Unavailable Operations handoff did not expose a non-blocking dependency state.');
     buying_test_expect_error(
         static fn () => yovel_admin_buying_calculate_scorecard_period($db, $owner, $ownerAdmin, $scorecardKey, '2026-06-01', '2026-06-30'),
@@ -214,10 +216,32 @@ try {
     unset($GLOBALS['yovel_admin_buying_scorecard_child_write_hook']);
     buying_test_assert((int) $db->GetOne('SELECT COUNT(*) FROM project_company_buying_scorecard_period WHERE company_key_hash = ? AND period_start = ?', [$owner['company_key_hash'], '2026-08-01']) === 0, 'Injected period failure committed its parent.');
 
+    $tamperedActorKey = bx_uuid();
+    $GLOBALS['yovel_admin_buying_scorecard_child_write_hook'] = static function (string $childType, int $index) use ($db, $owner, $tamperedActorKey): void {
+        if ($childType === 'period_score' && $index === 0) {
+            buying_test_execute(
+                $db,
+                'UPDATE project_company_buying_scorecard_period SET updated_by_admin_key = ? WHERE company_key_hash = ? AND period_start = ?',
+                [$tamperedActorKey, $owner['company_key_hash'], '2026-08-15'],
+                'Injected scorecard actor tamper'
+            );
+        }
+    };
+    buying_test_expect_error(
+        static fn () => yovel_admin_buying_calculate_scorecard_period($db, $owner, $ownerAdmin, $scorecardKey, '2026-08-15', '2026-08-31'),
+        'read-back'
+    );
+    unset($GLOBALS['yovel_admin_buying_scorecard_child_write_hook']);
+    buying_test_assert((int) $db->GetOne('SELECT COUNT(*) FROM project_company_buying_scorecard_period WHERE company_key_hash = ? AND period_start = ?', [$owner['company_key_hash'], '2026-08-15']) === 0, 'Actor read-back mismatch did not roll back the scorecard period.');
+
     if (!function_exists('yovel_admin_operations_create_notification_handoff')) {
         function yovel_admin_operations_create_notification_handoff(array $company, array $payload): array
         {
-            $GLOBALS['buying_scorecard_notification_payload'] = $payload;
+            $GLOBALS['buying_scorecard_notification_calls'] = (int) ($GLOBALS['buying_scorecard_notification_calls'] ?? 0) + 1;
+            $GLOBALS['buying_scorecard_notification_payloads'][] = $payload;
+            if (($GLOBALS['buying_scorecard_notification_mode'] ?? 'success') === 'failure') {
+                throw new RuntimeException('Injected Operations notification failure.');
+            }
             return ['notification_key' => bx_uuid(), 'status' => 'ACCEPTED'];
         }
     }
@@ -226,10 +250,29 @@ try {
         'ordered_delivery_count' => 10,
         'quality_score' => 50,
     ];
-    $blockedPeriod = yovel_admin_buying_calculate_scorecard_period($db, $owner, $ownerAdmin, $scorecardKey, '2026-09-01', '2026-09-30');
-    buying_test_assert((string) $blockedPeriod['total_score'] === '32.0000' && (string) $blockedPeriod['standing']['standing_code'] === 'BLOCKED', 'Low score did not map to the blocking standing.');
-    buying_test_assert(($blockedPeriod['notification']['delivered'] ?? false) === true, 'Allow-listed Operations notification was not delivered after local persistence.');
-    buying_test_assert((string) ($GLOBALS['buying_scorecard_notification_payload']['source_record_key'] ?? '') === (string) $blockedPeriod['scorecard_period_key'], 'Operations notification received the wrong period key.');
+    $GLOBALS['buying_scorecard_notification_mode'] = 'failure';
+    $periodCountBeforeFailure = (int) $db->GetOne('SELECT COUNT(*) FROM project_company_buying_scorecard_period WHERE company_key_hash = ?', [$owner['company_key_hash']]);
+    $failedNotificationPeriod = yovel_admin_buying_calculate_scorecard_period($db, $owner, $ownerAdmin, $scorecardKey, '2026-09-01', '2026-09-30');
+    $failurePayload = $GLOBALS['buying_scorecard_notification_payloads'][0] ?? [];
+    buying_test_assert((string) $failedNotificationPeriod['total_score'] === '32.0000' && (string) $failedNotificationPeriod['standing']['standing_code'] === 'BLOCKED', 'Low score did not map to the blocking standing.');
+    buying_test_assert(($failedNotificationPeriod['notification']['delivered'] ?? true) === false && ($failedNotificationPeriod['notification']['blocking'] ?? true) === false, 'Operations failure did not remain non-blocking.');
+    buying_test_assert(str_contains((string) ($failedNotificationPeriod['notification']['message'] ?? ''), 'without rolling back'), 'Operations failure state does not explain local persistence.');
+    buying_test_assert((string) ($failurePayload['actor_admin_key'] ?? '') === (string) $ownerAdmin['admin_key'], 'Operations failure payload omitted the authorized scorecard actor.');
+    buying_test_assert((string) ($failurePayload['source_record_key'] ?? '') === (string) $failedNotificationPeriod['scorecard_period_key'], 'Operations failure payload received the wrong period key.');
+    buying_test_assert((int) $db->GetOne('SELECT COUNT(*) FROM project_company_buying_scorecard_period WHERE company_key_hash = ?', [$owner['company_key_hash']]) === $periodCountBeforeFailure + 1, 'Operations failure rolled back or duplicated the local scorecard period.');
+
+    $GLOBALS['buying_scorecard_notification_mode'] = 'success';
+    $periodCountBeforeSuccess = (int) $db->GetOne('SELECT COUNT(*) FROM project_company_buying_scorecard_period WHERE company_key_hash = ?', [$owner['company_key_hash']]);
+    $scoreCountBeforeSuccess = (int) $db->GetOne('SELECT COUNT(*) FROM project_company_buying_scorecard_period_score WHERE company_key_hash = ?', [$owner['company_key_hash']]);
+    $blockedPeriod = yovel_admin_buying_calculate_scorecard_period($db, $owner, $ownerAdmin, $scorecardKey, '2026-10-01', '2026-10-31');
+    $successPayload = $GLOBALS['buying_scorecard_notification_payloads'][1] ?? [];
+    buying_test_assert(($blockedPeriod['notification']['delivered'] ?? false) === true, 'Valid Operations response was not accepted after local persistence.');
+    buying_test_assert((string) ($blockedPeriod['notification']['response']['status'] ?? '') === 'ACCEPTED', 'Valid Operations response was not exposed to the caller.');
+    buying_test_assert((string) ($successPayload['actor_admin_key'] ?? '') === (string) $ownerAdmin['admin_key'], 'Successful Operations payload omitted the authorized scorecard actor.');
+    buying_test_assert((string) ($successPayload['source_record_key'] ?? '') === (string) $blockedPeriod['scorecard_period_key'], 'Operations notification received the wrong period key.');
+    buying_test_assert((int) ($GLOBALS['buying_scorecard_notification_calls'] ?? 0) === 2, 'Operations notification was not called exactly once per requested period.');
+    buying_test_assert((int) $db->GetOne('SELECT COUNT(*) FROM project_company_buying_scorecard_period WHERE company_key_hash = ?', [$owner['company_key_hash']]) === $periodCountBeforeSuccess + 1, 'Valid Operations response created duplicate local period rows.');
+    buying_test_assert((int) $db->GetOne('SELECT COUNT(*) FROM project_company_buying_scorecard_period_score WHERE company_key_hash = ?', [$owner['company_key_hash']]) === $scoreCountBeforeSuccess + 2, 'Valid Operations response created duplicate local criteria-score rows.');
 
     $restrictions = yovel_admin_buying_supplier_restrictions($owner, $supplierKey);
     buying_test_assert($restrictions['prevent_rfqs'] === true && $restrictions['prevent_purchase_orders'] === true, 'Latest scorecard restrictions do not prevent RFQs and purchase orders.');
@@ -239,15 +282,15 @@ try {
         'prevented'
     );
     buying_test_expect_error(
-        static fn () => yovel_admin_buying_calculate_scorecard_period($db, $related, $relatedAdmin, $scorecardKey, '2026-10-01', '2026-10-31'),
+        static fn () => yovel_admin_buying_calculate_scorecard_period($db, $related, $relatedAdmin, $scorecardKey, '2026-11-01', '2026-11-30'),
         'not found'
     );
 
     $handler = yovel_admin_buying_procurement_handle_post($owner, $ownerAdmin, 'calculate_buying_scorecard_period', [
         'module_view' => 'buying-procurement',
         'scorecard_key' => $scorecardKey,
-        'period_start' => '2026-10-01',
-        'period_end' => '2026-10-31',
+        'period_start' => '2026-11-01',
+        'period_end' => '2026-11-30',
     ]);
     buying_test_assert($handler['section'] === 'supplier-scorecards' && isset($handler['query']['scorecard']), 'Scorecard POST handler broke the shared result contract.');
 
@@ -298,7 +341,9 @@ try {
     unset(
         $GLOBALS['yovel_admin_buying_scorecard_child_write_hook'],
         $GLOBALS['yovel_admin_buying_scorecard_metric_provider'],
-        $GLOBALS['buying_scorecard_notification_payload']
+        $GLOBALS['buying_scorecard_notification_calls'],
+        $GLOBALS['buying_scorecard_notification_payloads'],
+        $GLOBALS['buying_scorecard_notification_mode']
     );
     buying_test_cleanup_temporary_company($db, $ownerFixture);
     buying_test_cleanup_temporary_company($db, $relatedFixture);

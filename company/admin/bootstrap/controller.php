@@ -109,7 +109,7 @@ if ($requestMethod === 'POST') {
         if ($action === 'save_hr_builder_form' && (string) ($_POST['return_to'] ?? '') === 'hr-dashboard-builder') {
             $returnTarget = yovel_admin_hr_builder_target_section((string) ($_POST['target_section'] ?? 'employee-profiles'));
             $redirectQuery = 'view=hr&section=dashboard&builder=1&builder_mode=existing&builder_target=' . rawurlencode($returnTarget);
-            $returnBuilderFormKey = trim((string) ($_POST['builder_form_key'] ?? ''));
+            $returnBuilderFormKey = trim((string) ($GLOBALS['yovel_admin_saved_hr_builder_form_key'] ?? ($_POST['builder_form_key'] ?? '')));
             if (yovel_admin_is_uuid($returnBuilderFormKey)) {
                 $redirectQuery .= '&form=' . rawurlencode($returnBuilderFormKey);
             }
@@ -163,7 +163,7 @@ if ($requestMethod === 'POST') {
         yovel_admin_redirect_to('view=sales-crm&section=' . rawurlencode($section));
     }
 
-    if ($company && $postAdmin && (str_starts_with($action, 'save_accounting_') || str_starts_with($action, 'set_accounting_') || str_starts_with($action, 'save_finance_') || str_starts_with($action, 'set_finance_') || str_starts_with($action, 'submit_finance_') || str_starts_with($action, 'cancel_finance_') || $action === 'import_finance_accounts' || $action === 'reset_accounting_form_schema')) {
+    if ($company && $postAdmin && (str_starts_with($action, 'save_accounting_') || str_starts_with($action, 'set_accounting_') || str_starts_with($action, 'save_finance_') || str_starts_with($action, 'set_finance_') || str_starts_with($action, 'submit_finance_') || str_starts_with($action, 'cancel_finance_') || str_starts_with($action, 'import_finance_') || str_starts_with($action, 'reconcile_finance_') || str_starts_with($action, 'unreconcile_finance_') || str_starts_with($action, 'close_finance_') || str_starts_with($action, 'reopen_finance_') || $action === 'reset_accounting_form_schema')) {
         yovel_admin_accounting_finance_schema();
         yovel_admin_finance_core_schema();
         $section = 'chart-of-accounts';
@@ -184,11 +184,18 @@ if ($requestMethod === 'POST') {
                 'submit_finance_journal' => yovel_admin_submit_finance_journal($company, $postAdmin),
                 'cancel_finance_journal' => yovel_admin_cancel_finance_journal($company, $postAdmin),
                 'save_finance_invoice' => yovel_admin_save_finance_invoice($company, $postAdmin),
+                'save_finance_supplier' => yovel_admin_save_finance_supplier($company, $postAdmin),
                 'submit_finance_invoice' => yovel_admin_submit_invoice_action($company, $postAdmin),
                 'cancel_finance_invoice' => yovel_admin_cancel_invoice_action($company, $postAdmin),
                 'save_finance_payment' => yovel_admin_save_payment_action($company, $postAdmin),
                 'submit_finance_payment' => yovel_admin_submit_payment_action($company, $postAdmin),
                 'cancel_finance_payment' => yovel_admin_cancel_payment_action($company, $postAdmin),
+                'import_finance_bank_statement' => yovel_admin_import_bank_statement_action($company, $postAdmin),
+                'reconcile_finance_bank' => yovel_admin_reconcile_bank_action($company, $postAdmin),
+                'unreconcile_finance_bank' => yovel_admin_unreconcile_bank_action($company, $postAdmin),
+                'save_finance_budget' => yovel_admin_save_budget_action($company, $postAdmin),
+                'close_finance_period' => yovel_admin_close_period_action($company, $postAdmin),
+                'reopen_finance_period' => yovel_admin_reopen_period_action($company, $postAdmin),
                 'import_finance_accounts' => yovel_admin_import_finance_accounts($company, $postAdmin),
                 default => throw new InvalidArgumentException('Unknown Accounting/Finance action.'),
             };
@@ -197,7 +204,11 @@ if ($requestMethod === 'POST') {
                 'save_finance_settings' => 'dashboard',
                 'save_finance_journal', 'submit_finance_journal', 'cancel_finance_journal' => 'journal-entries',
                 'save_finance_invoice', 'submit_finance_invoice', 'cancel_finance_invoice' => strtoupper((string) ($_POST['document_type'] ?? 'SALES')) === 'PURCHASE' ? 'purchase-invoices' : 'sales-invoices',
+                'save_finance_supplier' => 'purchase-invoices',
                 'save_finance_payment', 'submit_finance_payment', 'cancel_finance_payment' => 'payment-entries',
+                'import_finance_bank_statement', 'reconcile_finance_bank', 'unreconcile_finance_bank' => 'bank-reconciliation',
+                'save_finance_budget' => 'budgets',
+                'close_finance_period', 'reopen_finance_period' => 'period-closing',
                 default => (string) ($_POST['section'] ?? 'chart-of-accounts'),
             };
             if (!array_key_exists($section, yovel_admin_accounting_finance_sections())) {
@@ -227,12 +238,52 @@ if ($requestMethod === 'POST') {
         }
         yovel_admin_redirect_to($redirectQuery);
     }
+
+    $postView = strtolower(trim((string) ($_POST['module_view'] ?? $_GET['view'] ?? '')));
+    $postRoute = yovel_admin_module_route($postView);
+    $postProvider = (string) ($postRoute['action_provider'] ?? '');
+    if ($company && $postAdmin && $postRoute && $postProvider !== '' && function_exists($postProvider)) {
+        $postResult = null;
+        try {
+            $postResult = yovel_admin_module_post_result($postRoute, $company, $postAdmin, $action, $_POST);
+            unset($_SESSION['builderx_module_form_state'][$postView]);
+            bx_flash($postResult['message'], 'success');
+        } catch (Throwable $error) {
+            $section = yovel_admin_module_section(
+                $postRoute,
+                (string) ($_POST['section'] ?? $postRoute['default_section'])
+            );
+            $_SESSION['builderx_module_form_state'][$postView] = [
+                'section' => $section,
+                'action' => $action,
+                'input' => yovel_admin_module_rehydration_input($_POST),
+                'error' => $error->getMessage(),
+            ];
+            $postResult = ['message' => $error->getMessage(), 'section' => $section, 'query' => ['modal' => '1']];
+            bx_flash($error->getMessage(), 'error');
+        }
+        $redirect = ['view' => $postView, 'section' => (string) $postResult['section']];
+        foreach ($postResult['query'] as $key => $value) {
+            $redirect[$key] = $value;
+        }
+        yovel_admin_redirect_to(http_build_query($redirect, '', '&', PHP_QUERY_RFC3986));
+    }
 }
 
 $flash = bx_take_flash();
 $admin = yovel_admin_current($company);
 $assets = yovel_admin_asset_entry();
 $activeView = $admin ? yovel_admin_view() : 'dashboard';
+$activeModuleRoute = $admin ? yovel_admin_module_route($activeView) : null;
+$activeModuleFormState = $activeModuleRoute ? yovel_admin_take_module_form_state($activeView) : [];
+$activeModuleSections = $activeModuleRoute ? yovel_admin_module_sections($activeModuleRoute) : [];
+$activeModuleSection = $activeModuleRoute
+    ? yovel_admin_module_section($activeModuleRoute, (string) ($_GET['section'] ?? $activeModuleRoute['default_section']))
+    : '';
+$activeModuleMeta = $activeModuleSections[$activeModuleSection] ?? [];
+$activeModuleData = ($company && $admin && $activeModuleRoute && !in_array($activeView, ['hr', 'sales-crm', 'accounting-finance'], true))
+    ? yovel_admin_module_data($activeModuleRoute, $company, $admin)
+    : [];
 $platformNav = $admin ? yovel_admin_platform_nav() : [];
 $activePlatformSection = $activeView === 'platform' ? yovel_admin_platform_section() : 'modules';
 $hrSections = $admin ? yovel_admin_hr_sections() : [];
@@ -439,6 +490,14 @@ $viewDescription = $isModulesView
         : ($activeView === 'platform'
         ? 'Create and assign company users, roles, access rules, and audited authority boundaries.'
         : 'Review ' . $companyName . ' company scope, platform readiness, and the ERP system workspaces.'))));
+if ($activeModuleRoute && !in_array($activeView, ['hr', 'sales-crm', 'accounting-finance'], true)) {
+    $moduleLabel = (string) $activeModuleRoute['label'];
+    $viewTitle = $moduleLabel;
+    $viewCrumb = $moduleLabel;
+    $viewEyebrow = $moduleLabel;
+    $viewHeading = (string) ($activeModuleMeta['label'] ?? ucwords(str_replace('-', ' ', $activeModuleSection)));
+    $viewDescription = (string) ($activeModuleMeta['description'] ?? 'Manage ' . $moduleLabel . ' records and workflows.');
+}
 $nextThemeLabel = 'Toggle theme';
 $pageTitle = $companyName . ' Company Admin';
 

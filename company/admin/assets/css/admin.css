@@ -37,6 +37,12 @@
         .yovel-confirm-dialog[hidden] {
             display: none;
         }
+        .yovel-record-modal[hidden] {
+            display: none;
+        }
+        [data-record-modal][inert] {
+            pointer-events: none;
+        }
         .yovel-hr-two-panel {
             min-height: 0;
         }
@@ -1434,6 +1440,13 @@
         }
         .yovel-finance-builder-modal[hidden] {
             display: none;
+        }
+        .yovel-finance-operation-modal[hidden] {
+            display: none;
+        }
+        .yovel-finance-operation-modal > section,
+        .yovel-finance-operation-modal footer {
+            background: var(--card);
         }
         .yovel-finance-grid-column > input[type="checkbox"] {
             height: 1rem;

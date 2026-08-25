@@ -158,6 +158,95 @@ if ($beforeGroups !== $afterGroups || $beforeModules !== $afterModules || $befor
     throw new RuntimeException('Project module seed is not idempotent.');
 }
 
+if (!function_exists('bx_project_module_sync_hr_builder_form')) {
+    throw new RuntimeException('Immediate HR builder form projection is not implemented.');
+}
+
+$projectionFixture = $db->GetRow("
+    SELECT company_record.company_key, company_record.company_key_hash
+    FROM project_company company_record
+    INNER JOIN project_company_project project_record
+        ON project_record.company_key_hash = company_record.company_key_hash
+       AND project_record.project_status <> 'DELETED'
+    INNER JOIN project_module_group module_group
+        ON module_group.project_key = project_record.project_key
+       AND module_group.module_group_code = 'HR_DEPARTMENT'
+       AND module_group.module_group_status <> 'DELETED'
+    INNER JOIN project_module module_record
+        ON module_record.module_group_key = module_group.module_group_key
+       AND module_record.module_code = 'EMPLOYEE_PROFILES'
+       AND module_record.module_status <> 'DELETED'
+    WHERE company_record.company_status <> 'DELETED'
+    ORDER BY company_record.x_id
+    LIMIT 1
+");
+if (!is_array($projectionFixture) || $projectionFixture === []) {
+    throw new RuntimeException('An HR project module projection fixture is required.');
+}
+
+$projectionFormKey = bx_uuid();
+$projectionForm = [
+    'builder_form_key' => $projectionFormKey,
+    'company_key' => (string) $projectionFixture['company_key'],
+    'company_key_hash' => (string) $projectionFixture['company_key_hash'],
+    'target_section' => 'employee-profiles',
+    'form_title' => 'Immediate Projection Fixture',
+    'form_description' => 'Project module synchronization fixture.',
+    'form_status' => 'ACTIVE',
+    'schema_json' => '{"version":2,"questions":[],"rows":[]}',
+];
+
+if ($db->BeginTrans() === false) {
+    throw new RuntimeException('Projection fixture transaction could not start.');
+}
+try {
+    $firstProjection = bx_project_module_sync_hr_builder_form($db, [
+        'company_key' => (string) $projectionFixture['company_key'],
+        'company_key_hash' => (string) $projectionFixture['company_key_hash'],
+    ], $projectionForm);
+    $firstKeys = array_column($firstProjection['projected'], 'form_key');
+    if ($firstKeys === []) {
+        throw new RuntimeException('Immediate HR form projection created no registry rows.');
+    }
+
+    $sameProjection = bx_project_module_sync_hr_builder_form($db, [
+        'company_key' => (string) $projectionFixture['company_key'],
+        'company_key_hash' => (string) $projectionFixture['company_key_hash'],
+    ], $projectionForm);
+    if ($firstKeys !== array_column($sameProjection['projected'], 'form_key')) {
+        throw new RuntimeException('Unchanged projection replaced stable registry keys.');
+    }
+
+    $projectionForm['target_section'] = 'departments';
+    $retargeted = bx_project_module_sync_hr_builder_form($db, $projectionFixture, $projectionForm);
+    if ($retargeted['retired'] === []) {
+        throw new RuntimeException('Retargeting did not retire old registry mappings.');
+    }
+
+    $projectionForm['form_status'] = 'ARCHIVED';
+    $archived = bx_project_module_sync_hr_builder_form($db, $projectionFixture, $projectionForm);
+    foreach ($archived['projected'] as $row) {
+        if ((string) $row['form_status'] !== 'ARCHIVED') {
+            throw new RuntimeException('Archived source status was not projected.');
+        }
+    }
+
+    $projectionForm['form_status'] = 'DELETED';
+    $deleted = bx_project_module_sync_hr_builder_form($db, $projectionFixture, $projectionForm);
+    if ($deleted['projected'] !== []) {
+        throw new RuntimeException('Deleted source retained active projections.');
+    }
+    $remaining = (int) $db->GetOne(
+        "SELECT COUNT(*) FROM project_module_form WHERE source_builder_form_key = ? AND form_status <> 'DELETED'",
+        [$projectionFormKey]
+    );
+    if ($remaining !== 0) {
+        throw new RuntimeException('Deleted source left a live registry mapping.');
+    }
+} finally {
+    $db->RollbackTrans();
+}
+
 $hrFormFieldTableExists = (int) $db->GetOne(
     'SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?',
     [BUILDERX_DB_NAME, 'project_company_hr_form_field']
@@ -232,6 +321,7 @@ echo json_encode([
     'ownership_verified' => true,
     'direct_read_back_verified' => true,
     'idempotency_verified' => true,
+    'immediate_hr_form_projection_verified' => true,
     'built_in_form_projection_verified' => true,
     'custom_form_projection_verified' => true,
     'payload_contract_verified' => true,

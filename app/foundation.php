@@ -2318,7 +2318,7 @@ function bx_project_module_find_feature(ADOConnection $db, string $projectKey, s
 {
     foreach (bx_project_module_feature_candidates($recordType) as $candidate) {
         $module = $db->GetRow(
-            "SELECT module_key, module_group_key, module_code, module_name
+            "SELECT module_key, module_group_key, module_code, module_name, module_status
             FROM project_module
             WHERE project_key = ? AND module_group_key = ? AND module_code = ? AND module_status <> 'DELETED'
             LIMIT 1",
@@ -2345,7 +2345,7 @@ function bx_project_module_upsert_form(
     ?string $sourceBuilderFormKey,
     string $formStatus,
     int $formSortOrder
-): void {
+): array {
     $projectKey = (string) $project['project_key'];
     $moduleKey = (string) $module['module_key'];
     $moduleGroupKey = (string) $moduleGroup['module_group_key'];
@@ -2432,6 +2432,167 @@ function bx_project_module_upsert_form(
             throw new RuntimeException('Project module form direct read-back mismatch for ' . $field . '.');
         }
     }
+
+    return $readBack;
+}
+
+/**
+ * Project one authoritative HR builder form into every matching project module.
+ *
+ * The caller owns the surrounding transaction so the HR form and its registry
+ * projections commit or roll back together.
+ *
+ * @return array{projected: list<array<string, mixed>>, retired: list<array<string, mixed>>}
+ */
+function bx_project_module_sync_hr_builder_form(ADOConnection $db, array $company, array $builderForm): array
+{
+    $companyKey = trim((string) ($company['company_key'] ?? ''));
+    $companyKeyHash = trim((string) ($company['company_key_hash'] ?? ''));
+    $builderFormKey = trim((string) ($builderForm['builder_form_key'] ?? ''));
+    $sourceCompanyKey = trim((string) ($builderForm['company_key'] ?? ''));
+    $sourceCompanyKeyHash = trim((string) ($builderForm['company_key_hash'] ?? ''));
+    $targetSection = trim((string) ($builderForm['target_section'] ?? ''));
+    $formTitle = trim((string) ($builderForm['form_title'] ?? ''));
+    $formDescription = trim((string) ($builderForm['form_description'] ?? ''));
+    $formStatus = strtoupper(trim((string) ($builderForm['form_status'] ?? '')));
+    $formSchemaJson = trim((string) ($builderForm['schema_json'] ?? ''));
+
+    if ($companyKey === '' || strlen($companyKey) > 1500 || !preg_match('/^[a-f0-9]{64}$/i', $companyKeyHash)) {
+        throw new RuntimeException('HR builder form projection requires a valid company scope.');
+    }
+    if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $builderFormKey)) {
+        throw new RuntimeException('HR builder form projection requires a valid builder form key.');
+    }
+    if ($sourceCompanyKey !== $companyKey || $sourceCompanyKeyHash !== $companyKeyHash) {
+        throw new RuntimeException('HR builder form projection rejected a mismatched company scope.');
+    }
+    if ($targetSection === '' || $formTitle === '' || strlen($formTitle) > 180) {
+        throw new RuntimeException('HR builder form projection requires a target and title.');
+    }
+    if (!in_array($formStatus, ['DRAFT', 'ACTIVE', 'ARCHIVED', 'DELETED'], true)) {
+        throw new RuntimeException('HR builder form projection status is invalid.');
+    }
+    try {
+        $decodedSchema = json_decode($formSchemaJson, true, 512, JSON_THROW_ON_ERROR);
+    } catch (JsonException $error) {
+        throw new RuntimeException('HR builder form projection schema is invalid.', 0, $error);
+    }
+    if (!is_array($decodedSchema)) {
+        throw new RuntimeException('HR builder form projection schema must be a JSON object.');
+    }
+
+    $existingRows = $db->GetAll(
+        'SELECT * FROM project_module_form WHERE company_key_hash = ? AND source_builder_form_key = ? ORDER BY x_id FOR UPDATE',
+        [$companyKeyHash, $builderFormKey]
+    );
+    $existingRows = is_array($existingRows) ? $existingRows : [];
+    $existingByModule = [];
+    foreach ($existingRows as $existingRow) {
+        $existingByModule[(string) ($existingRow['module_key'] ?? '')] = $existingRow;
+    }
+
+    $projected = [];
+    $expectedFormKeys = [];
+    $formCode = 'HR_BUILDER_' . bx_project_module_code($builderFormKey);
+    if ($formStatus !== 'DELETED') {
+        $projects = $db->GetAll(
+            "SELECT
+                project_record.project_key,
+                project_record.company_key,
+                project_record.company_key_hash,
+                project_record.branch_key,
+                project_record.project_name
+            FROM project_company_project project_record
+            INNER JOIN project_company_branch branch_record
+                ON branch_record.branch_key = project_record.branch_key
+               AND branch_record.company_key_hash = project_record.company_key_hash
+               AND branch_record.branch_status = 'ACTIVE'
+            INNER JOIN project_company company_record
+                ON company_record.company_key_hash = project_record.company_key_hash
+               AND company_record.company_key = project_record.company_key
+               AND company_record.company_status = 'ACTIVE'
+            WHERE project_record.company_key_hash = ?
+              AND project_record.company_key = ?
+              AND project_record.project_status = 'ACTIVE'
+            ORDER BY project_record.x_id",
+            [$companyKeyHash, $companyKey]
+        );
+        foreach (is_array($projects) ? $projects : [] as $project) {
+            $moduleGroup = $db->GetRow(
+                "SELECT * FROM project_module_group
+                WHERE project_key = ? AND company_key_hash = ? AND branch_key = ?
+                  AND module_group_code = 'HR_DEPARTMENT' AND module_group_status = 'ACTIVE'
+                LIMIT 1",
+                [(string) $project['project_key'], $companyKeyHash, (string) $project['branch_key']]
+            );
+            if (!is_array($moduleGroup) || $moduleGroup === []) {
+                continue;
+            }
+            $module = bx_project_module_find_feature(
+                $db,
+                (string) $project['project_key'],
+                (string) $moduleGroup['module_group_key'],
+                $targetSection
+            );
+            if (!is_array($module) || $module === [] || (string) ($module['module_status'] ?? '') !== 'ACTIVE') {
+                continue;
+            }
+
+            $existing = $existingByModule[(string) $module['module_key']] ?? null;
+            $formSortOrder = is_array($existing)
+                ? max(0, (int) ($existing['form_sort_order'] ?? 0))
+                : ((int) $db->GetOne(
+                    'SELECT COALESCE(MAX(form_sort_order), 0) FROM project_module_form WHERE module_key = ?',
+                    [(string) $module['module_key']]
+                ) + 10);
+            $projection = bx_project_module_upsert_form(
+                $db,
+                $project,
+                $moduleGroup,
+                $module,
+                $formCode,
+                $formTitle,
+                $formDescription,
+                $formSchemaJson,
+                null,
+                $builderFormKey,
+                $formStatus,
+                $formSortOrder
+            );
+            $projected[] = $projection;
+            $expectedFormKeys[(string) $projection['form_key']] = true;
+        }
+    }
+
+    $retired = [];
+    $userKey = isset($_SESSION['builderx_user_key']) ? (string) $_SESSION['builderx_user_key'] : null;
+    foreach ($existingRows as $existingRow) {
+        $existingFormKey = (string) ($existingRow['form_key'] ?? '');
+        if (isset($expectedFormKeys[$existingFormKey]) || (string) ($existingRow['form_status'] ?? '') === 'DELETED') {
+            continue;
+        }
+        bx_project_module_write($db, $db->Execute(
+            "UPDATE project_module_form
+            SET form_status = 'DELETED', updated_by_user_key = ?
+            WHERE form_key = ? AND company_key_hash = ? AND source_builder_form_key = ?",
+            [$userKey, $existingFormKey, $companyKeyHash, $builderFormKey]
+        ), 'Project module form retirement');
+        bx_audit('DELETE', 'project_module_form', $existingFormKey, [
+            'project_key' => (string) ($existingRow['project_key'] ?? ''),
+            'module_key' => (string) ($existingRow['module_key'] ?? ''),
+            'source_builder_form_key' => $builderFormKey,
+        ], 'Stale HR builder form projection retired.');
+        $readBack = $db->GetRow(
+            'SELECT * FROM project_module_form WHERE form_key = ? AND company_key_hash = ? LIMIT 1',
+            [$existingFormKey, $companyKeyHash]
+        );
+        if (!is_array($readBack) || (string) ($readBack['form_status'] ?? '') !== 'DELETED') {
+            throw new RuntimeException('Project module form retirement direct read-back failed.');
+        }
+        $retired[] = $readBack;
+    }
+
+    return ['projected' => $projected, 'retired' => $retired];
 }
 
 function bx_seed_project_module_hierarchy(): void

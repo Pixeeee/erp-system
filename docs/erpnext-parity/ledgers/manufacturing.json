@@ -436,9 +436,14 @@
                 "buying-procurement",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/manufacturing/schema.php and repository.php (idempotent company-scoped Manufacturing settings schema; yovel_admin_save_manufacturing_settings authorization, active owner-service warehouse validation, parameterized upsert, transaction-owned audit, exact read-back, rollback, and stable-key preservation).",
+                "Dispatch/UI: company/admin/modules/manufacturing/submissions.php and views/workspace.php (exact shared four-argument POST handler, CSRF/module/company isolation, shared accessible record modal, separate sibling confirmation, and server rehydration).",
+                "PASS twice: php tests/manufacturing-schema.php, php tests/manufacturing-persistence-contract.php, and php tests/manufacturing-modal-confirmation.php - opaque 1500-character company-key contract, key/hash/active-admin scope, create/update, company isolation, failed-write/read-back rollback, audit, modal confirmation, and rehydration assertions passed on 2026-08-25.",
+                "PASS authenticated browser 2026-08-25: desktop/mobile Manufacturing Settings modal fit without horizontal overflow; Submit left the URL unchanged and opened the sibling confirmation; Cancel and Escape retained values and restored focus without persistence."
+            ],
+            "reason": "BuilderX now provides a company-scoped Manufacturing Settings record with verified persistence, isolation, audit, exact read-back, rehydration, and shared modal-confirmation behavior.",
             "work_package": "WP-01"
         },
         {
@@ -1806,9 +1811,14 @@
                 "buying-procurement",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/manufacturing/navigation.php, functions.php, dependencies.php, and views/dashboard.php (stable 14-section registry, scoped workspace payload, setup checklist, shortcuts, reports/masters directory, and explicit owner-service availability).",
+                "Layout/Form Builder: company/admin/modules/manufacturing/views/workspace.php, views/form-builder.php, and forms.php (responsive main-first 12/20 plus 8/20 workspace, shared modal/confirmation adoption, twelve configurable targets, protected stable fields, structured rows/columns, preview, draft/publish/archive history, immutable versions, and submitted-record version binding).",
+                "PASS twice: php tests/manufacturing-workspace.php, php tests/manufacturing-modal-confirmation.php, php tests/manufacturing-form-builder.php, and php tests/manufacturing-dependency-contracts.php - exact section order, responsive shell hooks, setup hub, shared interaction contract, universal adapter, immutable form versions, exact selected-version loading, owner-callable allow-listing, foreign-table rejection, and server rehydration assertions passed on 2026-08-25.",
+                "PASS authenticated browser 2026-08-25: at 1440x1000 the panels measured 661.19px and 440.80px (12:8), at 390x844 they resolved to one 325px column with main before tools, no horizontal overflow or clipped text was detected, and the Form Builder modal fit and exposed the shared confirmation hook."
+            ],
+            "reason": "BuilderX now provides the verified 14-section Manufacturing foundation, responsive 12/8 workspace, setup hub, owner-service state, and universal module-local Form Builder.",
             "work_package": "WP-01"
         },
         {

@@ -10,6 +10,7 @@ require_once $root . '/company/admin/modules/accounting-finance/core.php';
 require_once $root . '/company/admin/modules/accounting-finance/tax.php';
 require_once $root . '/company/admin/modules/accounting-finance/ledger.php';
 require_once $root . '/company/admin/modules/accounting-finance/invoices.php';
+require_once __DIR__ . '/accounting-finance-test-helper.php';
 
 function invoice_assert(bool $condition, string $message): void
 {
@@ -47,6 +48,7 @@ $purchaseKey = bx_uuid();
 $duplicateKey = bx_uuid();
 $returnKey = '';
 $accountKeys = ['ar' => bx_uuid(), 'ap' => bx_uuid(), 'income' => bx_uuid(), 'expense' => bx_uuid(), 'output' => bx_uuid(), 'input' => bx_uuid()];
+$originalSettings = finance_test_snapshot_rows($db, 'project_company_finance_setting', 'company_key_hash=?', [$company['company_key_hash']]);
 $accountSql = "INSERT INTO project_company_accounting_account (account_key, company_key, company_key_hash, account_code, account_name, root_type, report_type, account_type, account_currency, is_group, balance_must_be, account_status, created_by_admin_key, updated_by_admin_key) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PHP', 0, 'EITHER', 'ACTIVE', ?, ?)";
 $accountFixtures = [
     ['ar', 'AR_', 'Receivable', 'ASSET', 'BALANCE_SHEET'],
@@ -60,7 +62,8 @@ foreach ($accountFixtures as [$name, $prefix, $type, $rootType, $reportType]) {
     $db->Execute($accountSql, [$accountKeys[$name], $company['company_key'], $company['company_key_hash'], $prefix . $suffix, ucfirst($name) . ' ' . $suffix, $rootType, $reportType, $type, $admin['admin_key'], $admin['admin_key']]);
 }
 $db->Execute("INSERT INTO project_company_sales_customer (customer_key, company_key, company_key_hash, customer_code, customer_name, customer_status) VALUES (?, ?, ?, ?, ?, 'ACTIVE')", [$customerKey, $company['company_key'], $company['company_key_hash'], 'CUS_' . $suffix, 'Customer ' . $suffix]);
-$db->Execute("INSERT INTO project_company_finance_supplier (supplier_key, company_key, company_key_hash, supplier_code, supplier_name, supplier_tin, supplier_status, created_by_admin_key, updated_by_admin_key) VALUES (?, ?, ?, ?, ?, ?, 'ACTIVE', ?, ?)", [$supplierKey, $company['company_key'], $company['company_key_hash'], 'SUP_' . $suffix, 'Supplier ' . $suffix, '123-456-789-00000', $admin['admin_key'], $admin['admin_key']]);
+$savedSupplier = yovel_admin_persist_finance_supplier($db, $company, $admin, ['supplier_key' => $supplierKey, 'supplier_code' => 'SUP_' . $suffix, 'supplier_name' => 'Supplier ' . $suffix, 'supplier_tin' => '123-456-789-00000']);
+invoice_assert((string) $savedSupplier['supplier_key'] === $supplierKey, 'Supplier modal persistence failed.');
 
 try {
     yovel_admin_persist_finance_settings($db, $company, $admin, [
@@ -125,7 +128,7 @@ try {
     }
     $db->Execute('DELETE FROM project_company_finance_supplier WHERE company_key_hash=? AND supplier_key=?', [$hash, $supplierKey]);
     $db->Execute('DELETE FROM project_company_sales_customer WHERE company_key_hash=? AND customer_key=?', [$hash, $customerKey]);
-    $db->Execute('DELETE FROM project_company_finance_setting WHERE company_key_hash=?', [$hash]);
+    finance_test_restore_rows($db, 'project_company_finance_setting', 'company_key_hash=?', [$hash], $originalSettings);
     $db->Execute('DELETE FROM project_company_accounting_account WHERE company_key_hash=? AND account_key IN (?,?,?,?,?,?)', array_merge([$hash], array_values($accountKeys)));
 }
 

@@ -1,8 +1,19 @@
 <?php
 /** Workspace variables are prepared by bootstrap/controller.php. */
+require __DIR__ . '/workspace-styles.php';
 ?>
                                 <?php
                                     $accountSchemaFields = is_array($activeAccountingFinanceSchema['fields'] ?? null) ? $activeAccountingFinanceSchema['fields'] : [];
+                                    $financeFormState = is_array($accountingFinanceData['formState'] ?? null) ? $accountingFinanceData['formState'] : [];
+                                    $financeFailedModalId = (string) ($financeFormState['modal_id'] ?? '');
+                                    $financeFailedValues = is_array($financeFormState['values'] ?? null) ? $financeFormState['values'] : [];
+                                    $financeModalStateAttributes = static function (string $modalId) use ($financeFailedModalId, $financeFailedValues): string {
+                                        if ($modalId !== $financeFailedModalId) {
+                                            return '';
+                                        }
+                                        $values = json_encode($financeFailedValues, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES);
+                                        return ' data-record-modal-open-on-load data-finance-rehydrate="' . bx_h($values !== false ? $values : '{}') . '"';
+                                    };
                                     $accountFieldMap = [];
                                     foreach ($accountSchemaFields as $field) {
                                         $accountFieldMap[(string) ($field['key'] ?? '')] = $field;
@@ -77,7 +88,7 @@
                                     <?php elseif ($activeAccountingFinanceSection === 'general-ledger'): ?>
                                         <?php require __DIR__ . '/general-ledger.php'; ?>
                                     <?php elseif ($activeAccountingFinanceSection === 'chart-of-accounts'): ?>
-                                        <div class="yovel-hr-two-panel grid min-h-0 gap-4 xl:grid-cols-[minmax(0,12fr)_minmax(16rem,4fr)]">
+                                        <div class="yovel-hr-two-panel grid min-h-0 gap-4 xl:grid-cols-[minmax(0,12fr)_minmax(16rem,8fr)]">
                                             <section class="yovel-hr-panel flex flex-col rounded-lg border bg-card">
                                                 <div class="yovel-finance-sticky-panel-header border-b bg-card px-5 py-4">
                                                     <div class="flex flex-wrap items-start justify-between gap-3">
@@ -85,7 +96,7 @@
                                                             <h3 class="text-base font-semibold tracking-normal">Chart of accounts</h3>
                                                             <p class="mt-1 text-sm leading-6 text-muted-foreground">Account tree setup for <?= bx_h($companyName) ?>. Balances are setup placeholders until posting workflows are built.</p>
                                                         </div>
-                                                        <button type="button" id="yovel-account-modal-open" class="inline-flex h-9 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">New Account</button>
+                                                        <button type="button" id="yovel-account-modal-open" data-record-modal-open="yovel-account-modal" class="inline-flex h-9 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">New Account</button>
                                                     </div>
                                                 </div>
                                                 <div class="grid gap-3 border-b p-4">
@@ -174,7 +185,7 @@
                                                     <p class="mt-1 text-sm leading-6 text-muted-foreground">Create, customize, organize, and prepare account setup.</p>
                                                 </div>
                                                 <div id="yovel-account-widget-board" class="yovel-hr-panel-body grid content-start gap-3 p-5" aria-label="Accounting widgets">
-                                                    <button type="button" id="yovel-account-modal-open-secondary" class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90">Add Account</button>
+                                                    <button type="button" id="yovel-account-modal-open-secondary" data-record-modal-open="yovel-account-modal" class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90">Add Account</button>
                                                     <button type="button" id="yovel-account-builder-modal-open" class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Customize Form</button>
                                                     <?php require __DIR__ . '/grid-operations.php'; ?>
                                                     <?php foreach ([
@@ -202,14 +213,14 @@
                                             </aside>
                                         </div>
 
-                                        <div id="yovel-account-modal" class="yovel-account-modal fixed inset-0 z-40 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-account-modal-title" aria-describedby="yovel-account-modal-description" <?= $editAccountingAccount ? '' : 'hidden' ?>>
+                                        <div id="yovel-account-modal" data-record-modal<?= $financeModalStateAttributes('yovel-account-modal') ?> class="yovel-account-modal fixed inset-0 z-40 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-account-modal-title" aria-describedby="yovel-account-modal-description" <?= ($editAccountingAccount || $financeFailedModalId === 'yovel-account-modal') ? '' : 'hidden' ?>>
                                             <section class="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-6xl flex-col overflow-hidden rounded-lg border bg-card shadow-lg">
                                                 <div class="yovel-finance-sticky-modal-header flex shrink-0 items-start justify-between gap-4 border-b bg-card px-5 py-4">
                                                     <div>
                                                         <h3 id="yovel-account-modal-title" class="text-base font-semibold tracking-normal"><?= $editAccountingAccount ? 'Edit Account' : 'Add Account' ?></h3>
                                                         <p id="yovel-account-modal-description" class="mt-1 text-sm leading-6 text-muted-foreground">Account setup follows the active customizable Accounting/Finance form.</p>
                                                     </div>
-                                                    <button type="button" id="yovel-account-modal-close" class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-sm hover:bg-muted" aria-label="Close account form">×</button>
+                                                    <button type="button" id="yovel-account-modal-close" data-record-modal-close class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-sm hover:bg-muted" aria-label="Close account form">×</button>
                                                 </div>
                                                 <div class="yovel-hr-panel-body grid gap-4 p-5">
                                                     <form id="yovel-account-form" method="post" data-confirm-submit class="grid gap-4">
@@ -229,6 +240,7 @@
                                                         </div>
                                                         <div class="grid gap-3 sm:grid-cols-3">
                                                             <?php if ($accountVisible('account_type')): ?><div class="grid gap-1.5"><label class="text-xs font-medium" for="account_type"><?= bx_h($accountLabel('account_type', 'Account type')) ?></label><input class="h-9 rounded-md border bg-background px-3 text-sm" id="account_type" name="account_type" value="<?= bx_h((string) ($editAccountingAccount['account_type'] ?? '')) ?>" maxlength="80" list="account_type_options" <?= $accountRequired('account_type') ?>><datalist id="account_type_options"><?php foreach (['Receivable','Payable','Bank','Cash','Tax','Stock','Expense Account','Income Account','Fixed Asset','Equity'] as $type): ?><option value="<?= bx_h($type) ?>"></option><?php endforeach; ?></datalist></div><?php endif; ?>
+                                                            <?php if ($accountVisible('account_category_key')): ?><div class="grid gap-1.5"><label class="text-xs font-medium" for="account_category_key"><?= bx_h($accountLabel('account_category_key', 'Account Category')) ?></label><select class="h-9 rounded-md border bg-background px-3 text-sm" id="account_category_key" name="account_category_key"><option value="">Not set</option><?php foreach ($accountingFinanceData['foundation']['accountCategories'] ?? [] as $category): ?><option value="<?= bx_h($category['account_category_key']) ?>" <?= (string)($editAccountingAccount['account_category_key'] ?? '')===(string)$category['account_category_key']?'selected':'' ?>><?= bx_h($category['account_category_name']) ?><?= !empty($category['root_type'])?' / '.bx_h($category['root_type']):'' ?></option><?php endforeach; ?></select></div><?php endif; ?>
                                                             <?php if ($accountVisible('account_currency')): ?><div class="grid gap-1.5"><label class="text-xs font-medium" for="account_currency"><?= bx_h($accountLabel('account_currency', 'Currency')) ?></label><input class="h-9 rounded-md border bg-background px-3 text-sm" id="account_currency" name="account_currency" value="<?= bx_h((string) ($editAccountingAccount['account_currency'] ?? 'PHP')) ?>" maxlength="20" <?= $accountRequired('account_currency') ?>></div><?php endif; ?>
                                                             <?php if ($accountVisible('tax_rate')): ?><div class="grid gap-1.5"><label class="text-xs font-medium" for="tax_rate"><?= bx_h($accountLabel('tax_rate', 'Tax rate')) ?></label><input class="h-9 rounded-md border bg-background px-3 text-sm" id="tax_rate" name="tax_rate" type="number" step="0.0001" min="0" value="<?= bx_h((string) ($editAccountingAccount['tax_rate'] ?? '')) ?>" <?= $accountRequired('tax_rate') ?>></div><?php endif; ?>
                                                         </div>
@@ -265,83 +277,50 @@
                                                 </div>
                                                 <div class="flex shrink-0 items-center justify-between gap-3 border-t px-5 py-4">
                                                     <p class="text-xs leading-5 text-muted-foreground">Account and form changes require confirmation before saving.</p>
-                                                    <button type="button" id="yovel-account-modal-cancel" class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Cancel</button>
+                                                    <button type="button" id="yovel-account-modal-cancel" data-record-modal-close class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Cancel</button>
                                                 </div>
                                             </section>
                                         </div>
                                     <?php else: ?>
-                                        <div class="yovel-hr-two-panel grid min-h-0 gap-4 xl:grid-cols-[minmax(0,12fr)_minmax(16rem,4fr)]">
-                                            <section class="yovel-hr-panel flex flex-col rounded-lg border bg-card">
-                                                <div class="yovel-finance-sticky-panel-header border-b bg-card px-5 py-4">
-                                                    <div class="flex flex-wrap items-center justify-between gap-2">
-                                                        <h3 class="text-base font-semibold tracking-normal"><?= bx_h((string) ($activeAccountingFinanceMeta['label'] ?? 'Accounting/Finance Section')) ?></h3>
-                                                        <span class="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">Routed</span>
-                                                    </div>
-                                                    <p class="mt-1 text-sm leading-6 text-muted-foreground"><?= bx_h((string) ($activeAccountingFinanceMeta['description'] ?? 'Accounting/Finance section.')) ?></p>
-                                                </div>
-                                                <div class="yovel-hr-panel-body grid content-start gap-4 p-5">
-                                                    <div class="yovel-finance-section-metrics grid gap-3">
-                                                        <?php foreach ([
-                                                            ['label' => 'Workspace', 'value' => (string) ($activeAccountingFinanceMeta['label'] ?? 'Section')],
-                                                            ['label' => 'Form fields', 'value' => (string) count($accountSchemaFields)],
-                                                            ['label' => 'Status', 'value' => 'Queued'],
-                                                            ['label' => 'Pattern', 'value' => 'Modal input'],
-                                                        ] as $metric): ?>
-                                                            <div class="rounded-md bg-muted/40 p-3">
-                                                                <p class="text-xs font-medium text-muted-foreground"><?= bx_h((string) $metric['label']) ?></p>
-                                                                <p class="mt-1 truncate text-lg font-semibold tracking-normal"><?= bx_h((string) $metric['value']) ?></p>
-                                                            </div>
-                                                        <?php endforeach; ?>
-                                                    </div>
-                                                    <div class="flex flex-wrap items-center justify-between gap-3 border-y py-3" data-finance-grid-controls>
-                                                        <input class="h-9 min-w-0 flex-1 rounded-md border bg-background px-3 text-sm" type="search" placeholder="Search <?= bx_h(strtolower((string) ($activeAccountingFinanceMeta['label'] ?? 'records'))) ?>" aria-label="Search Finance records" value="<?= bx_h((string) ($activeFinanceGridView['search_text'] ?? '')) ?>" data-finance-grid-search>
-                                                        <span class="inline-flex h-9 items-center rounded-md border bg-secondary px-3 text-sm font-medium text-secondary-foreground" data-finance-grid-count>0 rows</span>
-                                                    </div>
-                                                    <div class="overflow-auto" data-finance-grid data-grid-group="<?= bx_h((string) ($activeFinanceGridView['group_field'] ?? '')) ?>" data-grid-sort='<?= bx_h(json_encode($activeFinanceGridView['sort'] ?? [], JSON_UNESCAPED_SLASHES) ?: '[]') ?>'>
-                                                        <table class="w-full table-fixed text-left text-sm" style="min-width: <?= max(480, $financeGridMinWidth) ?>px">
-                                                            <thead class="yovel-finance-sticky-table-header border-b bg-card text-xs text-muted-foreground"><tr><?php foreach ($financeGridDisplayColumns as $column): ?><?php $columnKey = (string) $column['key']; $columnMeta = $financeGridDisplayRegistry[$columnKey]; ?><th scope="col" class="px-4 py-3 font-medium" style="width: <?= max(80, min(640, (int) ($column['width'] ?? 160))) ?>px" data-column-key="<?= bx_h($columnKey) ?>"><button type="button" class="inline-flex items-center gap-1 hover:text-foreground" data-finance-grid-sort="<?= bx_h($columnKey) ?>"><?= bx_h((string) $columnMeta['label']) ?><span class="material-symbols-rounded text-sm" aria-hidden="true">unfold_more</span></button></th><?php endforeach; ?></tr></thead>
-                                                            <tbody><tr data-finance-grid-empty><td class="px-5 py-8 text-center text-sm text-muted-foreground" colspan="<?= max(1, count($financeGridDisplayColumns)) ?>">No <?= bx_h(strtolower((string) ($activeAccountingFinanceMeta['label'] ?? 'Finance'))) ?> records yet. The customizable schema and spreadsheet view are ready for this section.</td></tr><tr hidden data-finance-grid-filtered-empty><td colspan="<?= max(1, count($financeGridDisplayColumns)) ?>"></td></tr></tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </section>
-                                            <aside class="yovel-hr-panel flex flex-col rounded-lg border bg-card">
-                                                <div class="yovel-finance-sticky-panel-header border-b bg-card px-5 py-4">
-                                                    <h3 class="text-base font-semibold tracking-normal">Features / Functions</h3>
-                                                    <p class="mt-1 text-sm leading-6 text-muted-foreground">Customize this section before its transactional form is built.</p>
-                                                </div>
-                                                <div class="yovel-hr-panel-body grid content-start gap-3 p-5">
-                                                    <button type="button" id="yovel-account-builder-modal-open" class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Customize Form</button>
-                                                    <?php require __DIR__ . '/grid-operations.php'; ?>
-                                                    <?php foreach ([
-                                                        ['title' => 'ERPNext group', 'meta' => 'Setup, transaction, closing, tax, budget, or report area'],
-                                                        ['title' => 'Form standard', 'meta' => count($accountSchemaFields) . ' editable fields for this link'],
-                                                        ['title' => 'Input behavior', 'meta' => 'Add and edit flows open as modal popups'],
-                                                        ['title' => 'Build order', 'meta' => 'Ready for the next one-by-one feature slice'],
-                                                    ] as $widget): ?>
-                                                        <section class="rounded-md bg-muted/40 p-3">
-                                                            <p class="text-sm font-semibold"><?= bx_h((string) $widget['title']) ?></p>
-                                                            <p class="mt-1 text-xs leading-5 text-muted-foreground"><?= bx_h((string) $widget['meta']) ?></p>
-                                                        </section>
-                                                    <?php endforeach; ?>
-                                                </div>
-                                            </aside>
-                                        </div>
+                                        <?php
+                                            $financeDedicatedView = match ($activeAccountingFinanceSection) {
+                                                'cost-centers', 'accounting-dimensions', 'bank-accounts' => 'masters.php',
+                                                'sales-invoices', 'purchase-invoices' => 'invoices.php',
+                                                'journal-entries' => 'journal-entries.php',
+                                                'payment-entries' => 'payment-entries.php',
+                                                'bank-reconciliation' => 'bank-reconciliation.php',
+                                                'budgets' => 'budgets.php',
+                                                'period-closing' => 'period-closing.php',
+                                                'profit-loss', 'balance-sheet', 'cash-flow' => 'financial-report.php',
+                                                'tax-reports' => 'tax-reports.php',
+                                                default => '',
+                                            };
+                                            if ($financeDedicatedView === '') {
+                                                throw new RuntimeException('Accounting/Finance workspace view is not mapped.');
+                                            }
+                                            require __DIR__ . '/' . $financeDedicatedView;
+                                            if ($activeAccountingFinanceSection === 'journal-entries') {
+                                                $financeLifecycle = ['modal_id' => 'finance-journal-lifecycle', 'section' => 'journal-entries', 'key_name' => 'journal_entry_key'];
+                                                require __DIR__ . '/lifecycle-modal.php';
+                                            }
+                                        ?>
                                     <?php endif; ?>
 
                                     <?php if ($activeAccountingFinanceSection === 'dashboard'): ?>
+                                        <?php require __DIR__ . '/settings-modal.php'; ?>
+                                        <?php require __DIR__ . '/foundation-modals.php'; ?>
                                         <?php require __DIR__ . '/form-builder.php'; ?>
                                     <?php endif; ?>
 
                                     <?php if ($activeAccountingFinanceRecordType !== ''): ?>
-                                    <div id="yovel-account-builder-modal" class="yovel-account-modal fixed inset-0 z-40 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-account-builder-modal-title" aria-describedby="yovel-account-builder-modal-description" <?= isset($_GET['customize']) ? '' : 'hidden' ?>>
+                                    <div id="yovel-account-builder-modal" data-record-modal<?= $financeModalStateAttributes('yovel-account-builder-modal') ?> class="yovel-account-modal fixed inset-0 z-40 grid place-items-center bg-background/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="yovel-account-builder-modal-title" aria-describedby="yovel-account-builder-modal-description" <?= (isset($_GET['customize']) || $financeFailedModalId === 'yovel-account-builder-modal') ? '' : 'hidden' ?>>
                                         <section class="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-6xl flex-col overflow-hidden rounded-lg border bg-card shadow-lg">
                                             <div class="yovel-finance-sticky-modal-header flex shrink-0 items-start justify-between gap-4 border-b bg-card px-5 py-4">
                                                 <div>
                                                     <h3 id="yovel-account-builder-modal-title" class="text-base font-semibold tracking-normal">Customize <?= bx_h((string) ($activeAccountingFinanceMeta['label'] ?? 'Accounting/Finance')) ?> Form</h3>
                                                     <p id="yovel-account-builder-modal-description" class="mt-1 text-sm leading-6 text-muted-foreground">Adjust labels, sections, required fields, visibility, width, ordering, and custom fields for this Accounting/Finance link.</p>
                                                 </div>
-                                                <button type="button" id="yovel-account-builder-modal-close" class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-sm hover:bg-muted" aria-label="Close form builder">×</button>
+                                                <button type="button" id="yovel-account-builder-modal-close" data-record-modal-close class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-sm hover:bg-muted" aria-label="Close form builder">×</button>
                                             </div>
                                             <div class="yovel-hr-panel-body grid gap-4 p-5">
                                                 <form method="post" data-confirm-submit data-account-schema-form class="grid gap-4">
@@ -408,9 +387,10 @@
                                             </div>
                                             <div class="flex shrink-0 items-center justify-between gap-3 border-t bg-card px-5 py-4">
                                                 <p class="text-xs leading-5 text-muted-foreground">Form changes are company-scoped and require confirmation before saving.</p>
-                                                <button type="button" id="yovel-account-builder-modal-cancel" class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Cancel</button>
+                                                <button type="button" id="yovel-account-builder-modal-cancel" data-record-modal-close class="inline-flex h-9 items-center justify-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Cancel</button>
                                             </div>
                                         </section>
                                     </div>
                                     <?php endif; ?>
+                                    <?php require __DIR__ . '/interaction-script.php'; ?>
                                 </div>

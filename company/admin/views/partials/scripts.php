@@ -3,9 +3,6 @@
 ?>
     <script>
         (() => {
-            const dialog = document.getElementById('yovel-confirm-dialog');
-            const confirmButton = document.getElementById('yovel-confirm-action');
-            const cancelButton = document.getElementById('yovel-confirm-cancel');
             const sidebarToggle = document.getElementById('yovel-sidebar-toggle');
             const sidebarStorageKey = '<?= bx_h($companySidebarKey) ?>';
             const employeeWidgetStorageKey = <?= json_encode($companySidebarKey . ':employee-widgets', JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
@@ -147,17 +144,10 @@
             const departmentName = document.getElementById('department_name');
             const departmentType = document.getElementById('department_type');
             const departmentDescription = document.getElementById('department_description');
-            let pendingForm = null;
-            let allowSubmit = false;
             const syncShellModalState = () => {
                 const hasOpenShellModal = [employeeModal, hrFormBuilderModal, hrFormCreateModal, departmentModal, departmentFormBuilderModal, departmentFormCreateModal, jobPositionModal, jobPositionFormBuilderModal, jobPositionFormCreateModal, salesLeadModal, accountModal, accountBuilderModal, hrDashboardBuilderModal, financeBuilderModal, ...financeOperationModals]
                     .some((modal) => modal && !modal.hidden);
                 document.body.classList.toggle('yovel-shell-modal-active', hasOpenShellModal);
-            };
-
-            const closeDialog = () => {
-                pendingForm = null;
-                dialog.hidden = true;
             };
 
             if (hrDashboardBuilderModal) {
@@ -2536,7 +2526,7 @@
             });
 
             document.querySelectorAll('form[data-confirm-submit]').forEach((form) => {
-                form.addEventListener('submit', (event) => {
+                form.addEventListener('submit', () => {
                     if (form.id === 'yovel-employee-form') {
                         syncEmployeeFullName();
                     }
@@ -2549,41 +2539,16 @@
                     if (form.matches('[data-hr-google-builder]')) {
                         serializeHrGoogleBuilder(form);
                     }
-                    if (allowSubmit) {
-                        allowSubmit = false;
-                        return;
-                    }
-                    if (!form.checkValidity()) {
-                        return;
-                    }
-                    event.preventDefault();
-                    pendingForm = form;
-                    dialog.hidden = false;
-                    confirmButton.focus();
                 });
             });
 
-            confirmButton?.addEventListener('click', () => {
-                if (!pendingForm) {
-                    return;
-                }
-                allowSubmit = true;
-                pendingForm.requestSubmit();
-            });
-            cancelButton?.addEventListener('click', closeDialog);
-            dialog?.addEventListener('click', (event) => {
-                if (event.target === dialog) {
-                    closeDialog();
-                }
-            });
             jobPositionTour?.addEventListener('click', (event) => {
                 if (event.target === jobPositionTour) {
                     closeJobPositionTour(false);
                 }
             });
             document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape' && !dialog.hidden) {
-                    closeDialog();
+                if (event.key === 'Escape' && document.querySelector('[data-confirm-dialog]:not([hidden])')) {
                     return;
                 }
                 if (event.key === 'Escape' && hrDashboardBuilderModal) {
@@ -3592,6 +3557,165 @@
                 if (departmentSource.value === 'ERP_DEFAULT') {
                     applyDepartmentTemplate();
                 }
+            });
+
+            const financeDomainModals = Array.from(document.querySelectorAll('[data-finance-modal]'));
+            const closeFinanceDomainModal = (modal) => {
+                if (!modal) return;
+                modal.hidden = true;
+                document.body.classList.remove('yovel-shell-modal-active');
+            };
+            document.querySelectorAll('[data-finance-modal-open]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const modal = document.getElementById(button.dataset.financeModalOpen || '');
+                    if (!modal) return;
+                    modal.hidden = false;
+                    document.body.classList.add('yovel-shell-modal-active');
+                    window.setTimeout(() => modal.querySelector('input:not([type="hidden"]), select, textarea, button')?.focus(), 0);
+                });
+            });
+            financeDomainModals.forEach((modal) => {
+                modal.querySelectorAll('[data-finance-modal-close]').forEach((button) => button.addEventListener('click', () => closeFinanceDomainModal(modal)));
+                modal.addEventListener('mousedown', (event) => { if (event.target === modal) closeFinanceDomainModal(modal); });
+            });
+
+            document.querySelectorAll('[data-finance-lifecycle-open]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const modal = document.getElementById(button.dataset.financeLifecycleOpen || '');
+                    if (!modal) return;
+                    const isCancel = button.dataset.lifecycleMode === 'cancel';
+                    const form = modal.querySelector('form');
+                    const cancellation = modal.querySelector('[data-finance-cancellation-fields]');
+                    modal.querySelector('[data-finance-lifecycle-action]').value = button.dataset.lifecycleAction || '';
+                    modal.querySelector('[data-finance-lifecycle-key]').value = button.dataset.lifecycleKey || '';
+                    modal.querySelector('[data-finance-lifecycle-number]').textContent = button.dataset.lifecycleNumber || '';
+                    modal.querySelector('[data-finance-lifecycle-title]').textContent = isCancel ? 'Cancel posted document' : 'Submit accounting document';
+                    modal.querySelector('[data-finance-lifecycle-description]').textContent = isCancel ? 'Confirm the reversal date and explain why this document is being cancelled.' : 'Submission posts this draft to the immutable General Ledger.';
+                    modal.querySelector('[data-finance-lifecycle-submit]').textContent = isCancel ? 'Cancel and reverse' : 'Submit and post';
+                    cancellation.hidden = !isCancel;
+                    cancellation.querySelectorAll('input, textarea').forEach((field) => field.required = isCancel);
+                    if (form) form.dataset.confirmMessage = isCancel ? 'Cancel this document and post its reversal?' : 'Submit this document to the General Ledger?';
+                    modal.hidden = false;
+                    document.body.classList.add('yovel-shell-modal-active');
+                    window.setTimeout(() => modal.querySelector('button, input, textarea')?.focus(), 0);
+                });
+            });
+
+            document.querySelectorAll('[data-finance-lines-form]').forEach((form) => {
+                const body = form.querySelector('[data-finance-lines-body]');
+                const template = body?.querySelector('[data-finance-line]');
+                form.querySelector('[data-finance-line-add]')?.addEventListener('click', () => {
+                    if (!body || !template) return;
+                    const row = template.cloneNode(true);
+                    row.querySelectorAll('input, select').forEach((field) => {
+                        if (field.type === 'checkbox') field.checked = false;
+                        else if (field.matches('[data-line-field="quantity"]')) field.value = '1';
+                        else if (field.matches('[data-line-field="debit"], [data-line-field="credit"]')) field.value = '0';
+                        else field.value = '';
+                    });
+                    body.appendChild(row);
+                });
+                body?.addEventListener('click', (event) => {
+                    const remove = event.target.closest('[data-finance-line-remove]');
+                    if (!remove || !body || body.querySelectorAll('[data-finance-line]').length <= 1) return;
+                    remove.closest('[data-finance-line]')?.remove();
+                });
+                form.addEventListener('submit', () => {
+                    const rows = Array.from(body?.querySelectorAll('[data-finance-line]') || []).map((row) => Object.fromEntries(Array.from(row.querySelectorAll('[data-line-field]')).map((field) => [field.dataset.lineField, field.type === 'checkbox' ? field.checked : field.value])));
+                    const target = form.querySelector('[data-finance-lines-json]');
+                    if (target) target.value = JSON.stringify(rows);
+                });
+            });
+
+            document.querySelector('[data-finance-budget-form]')?.addEventListener('submit', (event) => {
+                const form = event.currentTarget;
+                const target = form.querySelector('[data-budget-lines-json]');
+                if (target) target.value = JSON.stringify([{account_key: form.querySelector('[data-budget-account]')?.value || '', budget_amount: form.querySelector('[data-budget-amount]')?.value || '0'}]);
+            });
+
+            document.querySelectorAll('[data-finance-payment-form]').forEach((form) => {
+                const type = form.querySelector('[data-finance-payment-type]');
+                const party = form.querySelector('[data-finance-payment-party]');
+                const rows = Array.from(form.querySelectorAll('[data-finance-allocation-row]'));
+                const refresh = () => {
+                    const expectedType = type?.value === 'RECEIVE' ? 'SALES' : type?.value === 'PAY' ? 'PURCHASE' : '';
+                    let visible = 0;
+                    rows.forEach((row) => {
+                        const show = expectedType !== '' && row.dataset.documentType === expectedType && row.dataset.partyKey === party?.value;
+                        row.hidden = !show;
+                        if (show) visible += 1;
+                        if (!show) {
+                            const checkbox = row.querySelector('[data-allocation-enabled]');
+                            if (checkbox) checkbox.checked = false;
+                            const amount = row.querySelector('[data-allocation-amount]');
+                            if (amount) amount.disabled = true;
+                        }
+                    });
+                    const empty = form.querySelector('[data-finance-allocation-empty]');
+                    if (empty) empty.hidden = visible > 0;
+                };
+                type?.addEventListener('change', refresh);
+                party?.addEventListener('change', refresh);
+                form.addEventListener('change', (event) => {
+                    if (event.target.matches('[data-allocation-enabled]')) event.target.closest('tr')?.querySelector('[data-allocation-amount]')?.toggleAttribute('disabled', !event.target.checked);
+                    const total = rows.reduce((sum, row) => sum + (row.querySelector('[data-allocation-enabled]')?.checked ? Number(row.querySelector('[data-allocation-amount]')?.value || 0) : 0), 0);
+                    const output = form.querySelector('[data-finance-allocation-total]');
+                    if (output) output.textContent = `Allocated PHP ${total.toFixed(2)}`;
+                });
+                form.addEventListener('submit', () => {
+                    const allocations = rows.filter((row) => row.querySelector('[data-allocation-enabled]')?.checked).map((row) => ({invoice_key: row.querySelector('[data-allocation-amount]').dataset.invoiceKey, allocated_amount: row.querySelector('[data-allocation-amount]').value}));
+                    form.querySelector('[data-finance-allocation-json]').value = JSON.stringify(allocations);
+                });
+                refresh();
+            });
+
+            document.querySelectorAll('[data-finance-bank-match-open]').forEach((button) => button.addEventListener('click', () => {
+                const modal = document.getElementById(button.dataset.financeBankMatchOpen || '');
+                if (!modal) return;
+                const candidates = JSON.parse(button.dataset.bankCandidates || '[]');
+                const select = modal.querySelector('[data-bank-match-source]');
+                select.replaceChildren(...candidates.map((candidate) => {
+                    const option = document.createElement('option');
+                    option.value = `${candidate.source_type}|${candidate.source_record_key}`;
+                    option.textContent = `${candidate.source_no} / ${candidate.posting_date} / PHP ${Number(candidate.amount).toFixed(2)}`;
+                    return option;
+                }));
+                modal.querySelector('[data-bank-match-reference]').textContent = `${button.dataset.bankReference || 'Bank row'} / PHP ${Number(button.dataset.bankAmount || 0).toFixed(2)}`;
+                modal.querySelector('[data-bank-match-amount]').value = button.dataset.bankAmount || '';
+                modal.querySelector('[data-bank-row-json]').value = JSON.stringify([button.dataset.bankRowKey]);
+                modal.querySelector('[data-bank-match-empty]').hidden = candidates.length > 0;
+                modal.querySelector('[data-finance-bank-match-form] button[type="submit"]').disabled = candidates.length === 0;
+                modal.hidden = false;
+                document.body.classList.add('yovel-shell-modal-active');
+            }));
+            document.querySelectorAll('[data-finance-bank-match-form]').forEach((form) => form.addEventListener('submit', () => {
+                const [source_type, source_record_key] = (form.querySelector('[data-bank-match-source]').value || '|').split('|');
+                const bank_statement_row_key = JSON.parse(form.querySelector('[data-bank-row-json]').value || '[]')[0] || '';
+                form.querySelector('[data-bank-matches-json]').value = JSON.stringify([{source_type, source_record_key, bank_statement_row_key, matched_amount: form.querySelector('[data-bank-match-amount]').value}]);
+            }));
+            document.querySelectorAll('[data-finance-unreconcile-open]').forEach((button) => button.addEventListener('click', () => {
+                const modal = document.getElementById(button.dataset.financeUnreconcileOpen || '');
+                if (!modal) return;
+                modal.querySelector('[data-unreconciliation-key]').value = button.dataset.reconciliationKey || '';
+                modal.hidden = false;
+                document.body.classList.add('yovel-shell-modal-active');
+            }));
+
+            document.querySelectorAll('[data-finance-table-export]').forEach((button) => button.addEventListener('click', () => {
+                const table = button.closest('.yovel-hr-two-panel')?.querySelector('table');
+                if (!table) return;
+                const csv = Array.from(table.querySelectorAll('tr')).map((row) => Array.from(row.querySelectorAll('th,td')).map((cell) => `"${String(cell.innerText || '').trim().replaceAll('"', '""')}"`).join(',')).join('\n');
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv;charset=utf-8'}));
+                link.download = `finance-${new Date().toISOString().slice(0, 10)}.csv`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            }));
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key !== 'Escape') return;
+                const modal = financeDomainModals.find((item) => !item.hidden);
+                if (modal) closeFinanceDomainModal(modal);
             });
         })();
     </script>

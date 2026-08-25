@@ -9,8 +9,27 @@ $financeSetupSteps = [
     ['label' => 'Review committed postings', 'section' => 'general-ledger', 'complete' => $generalLedgerEntryCount > 0, 'meta' => $generalLedgerEntryCount . ' ledger entries'],
 ];
 $financeSetupComplete = count(array_filter($financeSetupSteps, static fn (array $step): bool => $step['complete']));
+$financeFoundation = is_array($accountingFinanceData['foundation'] ?? null) ? $accountingFinanceData['foundation'] : [];
+$financeFoundationCount = array_sum(array_map(static fn ($rows): int => is_array($rows) ? count($rows) : 0, $financeFoundation));
+$financeFoundationRecordGroups = [
+    'account-category'=>['Account Category','accountCategories','account_category_name'],
+    'fiscal-year'=>['Fiscal Year','fiscalYears','year_name'],
+    'accounting-period'=>['Accounting Period','accountingPeriods','period_name'],
+    'finance-book'=>['Finance Book','financeBooks','finance_book_name'],
+    'monthly-distribution'=>['Monthly Distribution','monthlyDistributions','distribution_name'],
+    'cost-center-allocation'=>['Cost Center Allocation','costCenterAllocations','valid_from'],
+    'dimension-filter'=>['Dimension Filter','dimensionFilters','dimension_filter_key'],
+    'currency-exchange-setting'=>['Currency Exchange','exchangeSettings','service_provider'],
+    'account-closing-balance'=>['Closing Balance','accountClosingBalances','closing_date'],
+];
+$financeFoundationRecords = [];
+foreach ($financeFoundationRecordGroups as $type => [$typeLabel,$groupKey,$labelKey]) {
+    foreach ($financeFoundation[$groupKey] ?? [] as $record) {
+        $financeFoundationRecords[] = ['type'=>$type,'type_label'=>$typeLabel,'label'=>(string)($record[$labelKey] ?? $typeLabel),'record'=>$record];
+    }
+}
 ?>
-<div class="yovel-finance-dashboard yovel-hr-two-panel grid min-h-0 gap-4 xl:grid-cols-[minmax(0,12fr)_minmax(16rem,4fr)]">
+<div class="yovel-finance-dashboard yovel-hr-two-panel grid min-h-0 gap-4 xl:grid-cols-[minmax(0,12fr)_minmax(16rem,8fr)]">
     <section class="yovel-hr-panel flex flex-col rounded-lg border bg-card">
         <header class="yovel-finance-sticky-panel-header border-b bg-card px-5 py-4">
             <div class="flex flex-wrap items-start justify-between gap-3">
@@ -18,7 +37,7 @@ $financeSetupComplete = count(array_filter($financeSetupSteps, static fn (array 
                     <h2 class="text-base font-semibold">Finance Dashboard</h2>
                     <p class="mt-1 text-sm leading-6 text-muted-foreground">Accounting setup, transaction access, and financial reports for <?= bx_h($companyName) ?>.</p>
                 </div>
-                <a class="inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted" href="./?view=accounting-finance&amp;section=general-ledger"><span class="material-symbols-rounded text-base" aria-hidden="true">menu_book</span>General Ledger</a>
+                <div class="flex flex-wrap gap-2"><button type="button" data-record-modal-open="finance-settings-modal" class="inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><span class="material-symbols-rounded text-base" aria-hidden="true">settings</span>Finance Settings</button><a class="inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted" href="./?view=accounting-finance&amp;section=general-ledger"><span class="material-symbols-rounded text-base" aria-hidden="true">menu_book</span>General Ledger</a></div>
             </div>
         </header>
         <div class="yovel-hr-panel-body grid content-start gap-5 p-5">
@@ -60,6 +79,27 @@ $financeSetupComplete = count(array_filter($financeSetupSteps, static fn (array 
                         </a>
                     <?php endforeach; ?>
                 </div>
+            </section>
+
+            <section class="border-t pt-5" aria-labelledby="finance-foundation-title">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div><h3 id="finance-foundation-title" class="text-sm font-semibold">Accounting Foundation</h3><p class="mt-1 text-xs text-muted-foreground"><?= $financeFoundationCount ?> configured records across fiscal, allocation, dimension, and currency controls</p></div>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" data-record-modal-open="finance-foundation-modal" class="inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><span class="material-symbols-rounded text-base" aria-hidden="true">add</span>New Foundation Record</button>
+                        <button type="button" data-record-modal-open="finance-chart-template-modal" class="inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><span class="material-symbols-rounded text-base" aria-hidden="true">account_tree</span>Chart Template</button>
+                    </div>
+                </div>
+                <div class="mt-3 grid gap-2 sm:grid-cols-3">
+                    <?php foreach ([
+                        ['Fiscal years', count($financeFoundation['fiscalYears'] ?? [])],
+                        ['Accounting periods', count($financeFoundation['accountingPeriods'] ?? [])],
+                        ['Finance books', count($financeFoundation['financeBooks'] ?? [])],
+                        ['Account categories', count($financeFoundation['accountCategories'] ?? [])],
+                        ['Dimension filters', count($financeFoundation['dimensionFilters'] ?? [])],
+                        ['Allocations', count($financeFoundation['costCenterAllocations'] ?? [])],
+                    ] as [$label, $count]): ?><div class="flex items-center justify-between rounded-md border bg-background px-3 py-2 text-sm"><span><?= bx_h($label) ?></span><strong><?= (int) $count ?></strong></div><?php endforeach; ?>
+                </div>
+                <?php if ($financeFoundationRecords): ?><div class="mt-3 divide-y rounded-md border bg-background"><?php foreach (array_slice($financeFoundationRecords,0,12) as $entry): ?><div class="flex items-center justify-between gap-3 px-3 py-2"><span class="min-w-0"><span class="block truncate text-sm font-medium"><?= bx_h($entry['label']) ?></span><span class="block text-xs text-muted-foreground"><?= bx_h($entry['type_label']) ?></span></span><button type="button" data-record-modal-open="finance-foundation-modal" data-finance-foundation-edit="<?= bx_h(json_encode(['type'=>$entry['type'],'record'=>$entry['record']], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES) ?: '{}') ?>" class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border" aria-label="Edit <?= bx_h($entry['label']) ?>"><span class="material-symbols-rounded text-base" aria-hidden="true">edit</span></button></div><?php endforeach; ?></div><?php endif; ?>
             </section>
 
             <section aria-labelledby="finance-shortcuts-title">
@@ -106,7 +146,7 @@ $financeSetupComplete = count(array_filter($financeSetupSteps, static fn (array 
         </header>
         <div class="yovel-hr-panel-body grid content-start gap-4 p-5">
             <div class="grid gap-2">
-                <a data-finance-form-builder-open class="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90" href="./?view=accounting-finance&amp;section=dashboard&amp;finance_builder=1&amp;builder_mode=new&amp;builder_target=chart-of-accounts"><span class="material-symbols-rounded text-base" aria-hidden="true">add</span>New Form</a>
+                <a data-finance-form-builder-open data-record-modal-open="yovel-finance-builder-modal" class="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90" href="./?view=accounting-finance&amp;section=dashboard&amp;finance_builder=1&amp;builder_mode=new&amp;builder_target=chart-of-accounts"><span class="material-symbols-rounded text-base" aria-hidden="true">add</span>New Form</a>
                 <a data-finance-form-builder-open class="inline-flex h-9 items-center justify-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted" href="./?view=accounting-finance&amp;section=dashboard&amp;finance_builder=1&amp;builder_mode=existing&amp;builder_target=chart-of-accounts"><span class="material-symbols-rounded text-base" aria-hidden="true">folder_open</span>Existing Forms</a>
             </div>
             <div class="grid gap-2 border-y py-4">

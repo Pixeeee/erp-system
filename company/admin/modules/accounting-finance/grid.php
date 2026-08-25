@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/foundation.php';
+
 function yovel_admin_finance_grid_schema(): void
 {
     $db = bx_db();
@@ -722,7 +724,7 @@ function yovel_admin_finance_grid_post_json(string $name, array $fallback): arra
     return $decoded;
 }
 
-function yovel_admin_save_finance_grid_view(array $company, array $admin): string
+function yovel_admin_save_finance_grid_view_operation(array $company, array $admin): string
 {
     $section = yovel_admin_slug((string) ($_POST['section'] ?? ''));
     $sections = yovel_admin_accounting_finance_sections();
@@ -760,7 +762,12 @@ function yovel_admin_save_finance_grid_view(array $company, array $admin): strin
     return 'Finance grid view saved.';
 }
 
-function yovel_admin_save_finance_grid_formula(array $company, array $admin): string
+function yovel_admin_save_finance_grid_view(array $company, array $admin): string
+{
+    return yovel_admin_finance_run_form_action($company, 'save_finance_grid_view', static fn (): string => yovel_admin_save_finance_grid_view_operation($company, $admin));
+}
+
+function yovel_admin_save_finance_grid_formula_operation(array $company, array $admin): string
 {
     $section = yovel_admin_slug((string) ($_POST['section'] ?? ''));
     $sections = yovel_admin_accounting_finance_sections();
@@ -786,6 +793,11 @@ function yovel_admin_save_finance_grid_formula(array $company, array $admin): st
     return 'Finance calculated column saved.';
 }
 
+function yovel_admin_save_finance_grid_formula(array $company, array $admin): string
+{
+    return yovel_admin_finance_run_form_action($company, 'save_finance_grid_formula', static fn (): string => yovel_admin_save_finance_grid_formula_operation($company, $admin));
+}
+
 function yovel_admin_finance_formula_format(array $formula, array $result): string
 {
     if (!($result['ok'] ?? false)) {
@@ -805,21 +817,26 @@ function yovel_admin_finance_import_boolean(mixed $value): int
     return in_array(strtolower(trim((string) $value)), ['1', 'true', 'yes', 'y', 'on'], true) ? 1 : 0;
 }
 
-function yovel_admin_import_finance_accounts(array $company, array $admin): string
+function yovel_admin_import_finance_accounts_operation(array $company, array $admin): string
 {
-    yovel_admin_accounting_finance_schema();
+    yovel_admin_finance_foundation_schema();
     $decoded = json_decode((string) ($_POST['rows_json'] ?? ''), true);
     if (!is_array($decoded) || $decoded === [] || count($decoded) > 500) {
         throw new InvalidArgumentException('Finance import must contain between 1 and 500 rows.');
     }
 
     $db = bx_db();
-    $companyKey = (string) ($company['company_key'] ?? '');
-    $companyKeyHash = (string) ($company['company_key_hash'] ?? '');
-    $adminKey = (string) ($admin['admin_key'] ?? '');
-    if ($companyKey === '' || $companyKeyHash === '' || $adminKey === '') {
+    $companyKey = trim((string) ($company['company_key'] ?? ''));
+    $companyKeyHash = trim((string) ($company['company_key_hash'] ?? ''));
+    $adminKey = trim((string) ($admin['admin_key'] ?? ''));
+    if ($companyKey === '' || strlen($companyKey) > 64 || !yovel_admin_is_uuid($adminKey) || preg_match('/^[a-f0-9]{64}$/', $companyKeyHash) !== 1) {
         throw new InvalidArgumentException('Finance import administrator scope is invalid.');
     }
+    $authorized = (int) $db->GetOne(
+        "SELECT COUNT(*) FROM project_company c JOIN project_company_admin a ON a.company_key_hash=c.company_key_hash WHERE c.company_key=? AND c.company_key_hash=? AND c.company_status<>'DELETED' AND a.admin_key=? AND a.admin_status='ACTIVE'",
+        [$companyKey,$companyKeyHash,$adminKey]
+    );
+    if ($authorized !== 1) throw new InvalidArgumentException('Finance import administrator is not authorized for this company.');
 
     $existingRows = $db->GetAll(
         "SELECT * FROM project_company_accounting_account WHERE company_key_hash = ? AND account_status <> 'DELETED'",
@@ -927,6 +944,10 @@ function yovel_admin_import_finance_accounts(array $company, array $admin): stri
     try {
         $db->GetAll('SELECT account_key FROM project_company_accounting_account WHERE company_key_hash = ? FOR UPDATE', [$companyKeyHash]);
         foreach ($rows as $row) {
+            $lockedExisting = $db->GetRow('SELECT * FROM project_company_accounting_account WHERE company_key_hash = ? AND account_key = ? LIMIT 1', [$companyKeyHash, $row['account_key']]);
+            if (is_array($lockedExisting) && $lockedExisting !== []) {
+                yovel_admin_finance_assert_account_update_allowed($db, $companyKeyHash, $lockedExisting, $row);
+            }
             yovel_admin_db_execute(
                 $db,
                 "INSERT INTO project_company_accounting_account (
@@ -973,4 +994,9 @@ function yovel_admin_import_finance_accounts(array $company, array $admin): stri
     }
 
     return count($rows) . ' Finance accounts imported.';
+}
+
+function yovel_admin_import_finance_accounts(array $company, array $admin): string
+{
+    return yovel_admin_finance_run_form_action($company, 'import_finance_accounts', static fn (): string => yovel_admin_import_finance_accounts_operation($company, $admin));
 }

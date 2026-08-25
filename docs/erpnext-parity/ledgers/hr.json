@@ -150,9 +150,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/setup.php:689-787",
+                "company/admin/modules/hr/schema.php:764-768",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: appraisee persistence, company placement derivation, and protected Form Builder fields)"
+            ],
+            "reason": "[HR-WP-01] Company-scoped appraisee rows now persist the employee, derived department/branch/designation placement, and appraisal-template reference with modal confirmation and audit; Appraisal Template ownership remains deferred to HR-WP-06, so referential validation cannot yet be complete."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/attendance/attendance.json:doctype:Attendance",
@@ -165,9 +169,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:634-817",
+                "company/admin/modules/hr/schema.php:509-537",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: employee/date uniqueness, manual and auto sources, row locks, deterministic source references, rollback, audit, and exact read-back)"
+            ],
+            "reason": "[HR-WP-02] Attendance is a company-scoped employee/date record separate from raw check-ins, with source-shaped status, hours, shift/request links, late/early flags, deterministic source checksum, idempotent auto processing, authorized modal writes, audit, rollback, and exact read-back."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/attendance_request/attendance_request.json:doctype:Attendance Request",
@@ -180,9 +188,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:819-916",
+                "company/admin/modules/hr/schema.php:486-508",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: request create, approve, reject, dated attendance derivation, final immutability, audit, and read-back)"
+            ],
+            "reason": "[HR-WP-02] Attendance Requests preserve employee, date range, half-day, reason, explanation, holiday flag, shift, and approval state; approved requests create deterministic request-sourced attendance inside the same transaction while rejected requests create none."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/compensatory_leave_request/compensatory_leave_request.json:doctype:Compensatory Leave Request",
@@ -255,9 +267,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/setup.php:689-787",
+                "company/admin/modules/hr/schema.php:757-763",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: company-user approver validation, department scope, audit, and exact read-back)"
+            ],
+            "reason": "[HR-WP-01] Department approver associations are company-scoped, require a valid active company user and department, persist through the audited lifecycle transaction, and expose protected versioned Form Builder fields."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/designation_skill/designation_skill.json:doctype:Designation Skill",
@@ -315,9 +331,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:700-732",
+                "company/admin/modules/hr/views/attendance.php:91-97,160",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: bulk selected-employee marking in one transaction, locks, audit, and exact read-back)"
+            ],
+            "reason": "[HR-WP-02] The Attendance Tool provides modal-only selected-employee marking with date and status controls, one company transaction, per-employee locks, unique employee/date rows, audit, exact read-back, and shared confirmation."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_boarding_activity/employee_boarding_activity.json:doctype:Employee Boarding Activity",
@@ -345,9 +365,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:540-632",
+                "company/admin/modules/hr/schema.php:459-485",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: immutable raw IN/OUT events, time-zone conversion, source idempotency, shift-window linkage, rollback, audit, and attendance references)"
+            ],
+            "reason": "[HR-WP-02] Employee Check-ins are immutable raw time events with local and UTC times, log type, device/geolocation, shift linkage, source identity, checksum, duplicate rejection/idempotency, and retained links to separately derived attendance."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_feedback_criteria/employee_feedback_criteria.json:doctype:Employee Feedback Criteria",
@@ -390,9 +414,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/setup.php:211-320",
+                "company/admin/modules/hr/schema.php:710-719",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: unique grade master and salary metadata read-back)"
+            ],
+            "reason": "[HR-WP-01] Governed Employee Grade masters persist default salary-structure, currency, and base-pay metadata with authorization, audit, and exact read-back; the Salary Structure link owner is deferred to HR-WP-10."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_grievance/employee_grievance.json:doctype:Employee Grievance",
@@ -405,9 +433,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/setup.php:689-787",
+                "company/admin/modules/hr/schema.php:740-751",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: Open/Investigated/Resolved transition, resolution validation, final immutability, and audit)"
+            ],
+            "reason": "[HR-WP-01] Employee grievances now preserve subject, raised-by employee, date, grievance party/type, description, associated-document references, investigation and resolution details, source status progression, final immutability, audit, and exact read-back."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_health_insurance/employee_health_insurance.json:doctype:Employee Health Insurance",
@@ -420,9 +452,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/setup.php:38-46,211-320",
+                "company/admin/modules/hr/schema.php:245-261,752-756",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: unique company-scoped Health Insurance master, audit, and exact read-back)"
+            ],
+            "reason": "[HR-WP-01] Employee Health Insurance is implemented as the pinned source-shaped unique setup master rather than an employee transaction, with governed lifecycle state and protected versioned fields."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_onboarding/employee_onboarding.json:doctype:Employee Onboarding",
@@ -480,9 +516,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/setup.php:592-687",
+                "company/admin/modules/hr/views/setup.php:191-196",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: promotion approval, assignment owner call, CTC/property history, rollback-safe immutability)"
+            ],
+            "reason": "[HR-WP-01] Promotion documents now apply designation and grade through the assignment owner transaction and preserve current/revised CTC property history; authoritative Salary Structure and payroll-field application remain deferred to HR-WP-10."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_property_history/employee_property_history.json:doctype:Employee Property History",
@@ -495,9 +535,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/setup.php:425-459",
+                "company/admin/modules/hr/schema.php:294-310",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: property label/field/current/new rows, checksum, exact read-back, and immutable source uniqueness)"
+            ],
+            "reason": "[HR-WP-01] Effective-dated property-history rows preserve the source property label and field name, previous and new values, immutable checksum, source-document uniqueness, audit ownership, and direct read-back."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_referral/employee_referral.json:doctype:Employee Referral",
@@ -607,10 +651,11 @@
             "dependencies": [],
             "status": "PARTIAL",
             "evidence": [
+                "company/admin/modules/hr/setup.php:496-590",
                 "company/admin/modules/hr/employees.php:37-210",
-                "tests/hr-database-driven-forms.php:126-232 (PASS 2026-08-25: assignment history and validation)"
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: transfer lifecycle, row locks, assignment-owner transaction, hierarchy rejection, rollback, audit, and read-back)"
             ],
-            "reason": "[HR-WP-01] Effective-dated primary assignment history supports tested reassignment, but no Employee Transfer document, approval, or transfer lifecycle exists."
+            "reason": "[HR-WP-01] Employee Transfer now has an effective-dated document lifecycle, property changes, hierarchy validation, assignment-owner transaction, rollback injection, audit, and exact read-back; cross-company transfer, leave reallocation, and new employee-ID creation require later cross-owner orchestration."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employment_type/employment_type.json:doctype:Employment Type",
@@ -623,14 +668,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "PARTIAL",
+            "status": "COMPLETE",
             "evidence": [
-                "company/admin/modules/hr/schema.php:512",
-                "company/admin/modules/hr/employees.php:236-236",
-                "company/admin/modules/hr/employees.php:313-405",
-                "company/admin/modules/hr/views/employee-profiles.php:452-453"
+                "company/admin/modules/hr/setup.php:38-46,211-320",
+                "company/admin/modules/hr/schema.php:245-261",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: governed unique Employment Type master, authorization, audit, and read-back)"
             ],
-            "reason": "[HR-WP-01] Employee profiles persist a free-text employment_type field, but there is no governed Employment Type master, lifecycle, permissions, or focused test."
+            "reason": "[HR-WP-01] Employment Type is now a governed company-scoped setup master with unique active code/name, lifecycle state, modal confirmation, authorization, audit, exact read-back, and protected versioned fields."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employment_type/test_records.json:doctype:Test Records",
@@ -842,9 +886,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/setup.php:38-46,211-320",
+                "company/admin/modules/hr/schema.php:769-773",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: governed Grievance Type master and grievance linkage)"
+            ],
+            "reason": "[HR-WP-01] Grievance Type is a unique governed company master with description, lifecycle state, protected Form Builder fields, and validated linkage from Employee Grievance."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/holiday_list_assignment/holiday_list_assignment.json:doctype:Holiday List Assignment",
@@ -875,9 +923,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/setup.php:81-209",
+                "company/admin/modules/hr/schema.php:228-244,326-361",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: singleton settings, structured policy payload, row lock, audit, rollback-safe read-back)"
+            ],
+            "reason": "[HR-WP-01] Company HR Settings now govern employee naming, retirement, self-service, working-hours, reminder, approver, shift, geolocation, exit, recruitment, and sender policy values; downstream leave, attendance, expense, recruitment, and payroll consumers remain in their owning work packages."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/identification_document_type/identification_document_type.json:doctype:Identification Document Type",
@@ -905,9 +957,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/setup.php:38-46,211-320",
+                "company/admin/modules/hr/schema.php:774-778",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: unique Interest setup master, authorization, audit, and read-back)"
+            ],
+            "reason": "[HR-WP-01] Interest is implemented as a unique company-scoped setup master with governed status, modal confirmation, audit, exact read-back, and protected versioned fields."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/interview/interview.json:doctype:Interview",
@@ -1400,9 +1456,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:944-1008",
+                "company/admin/modules/hr/schema.php:562-584",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: overtime child dates, attendance/type links, hours, maxima, multiplier, amount, checksum, and exact detail count)"
+            ],
+            "reason": "[HR-WP-02] Overtime Details are immutable company-scoped slip children preserving the attendance reference, date, overtime type, duration, maximum, standard hours, applied multiplier, calculated amount, and checksum."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/overtime_salary_component/overtime_salary_component.json:doctype:Overtime Salary Component",
@@ -1415,9 +1475,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:160-220",
+                "company/admin/modules/hr/schema.php:352-363",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: normalized overtime salary-component references, exact read-back, and no Payroll writes)"
+            ],
+            "reason": "[HR-WP-02] Overtime Salary Component child references are normalized, company-scoped, transaction-owned, audited through Overtime Type, and read back exactly; authoritative Salary Component validation remains blocked on the orchestration-owned Payroll read boundary."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/overtime_slip/overtime_slip.json:doctype:Overtime Slip",
@@ -1430,9 +1494,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:918-1012",
+                "company/admin/modules/hr/schema.php:539-584",
+                "company/admin/modules/hr/views/attendance.php:172",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: detail validation, maximum hours, immutable submitted slip, rollback, audit, exact read-back, and PENDING Payroll handoff)"
+            ],
+            "reason": "[HR-WP-02] HR owns validated Overtime Slip periods, employee, immutable detail rows, total duration, status, checksums, modal confirmation, and an explicit PENDING handoff without Payroll writes; Payroll Entry and Salary Slip acceptance/posting await the orchestration-owned Payroll boundary."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/overtime_type/overtime_type.json:doctype:Overtime Type",
@@ -1445,9 +1514,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:160-220",
+                "company/admin/modules/hr/schema.php:329-363",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: fixed-rate and salary-component metadata, multipliers, maximum validation, normalized children, audit, and read-back)"
+            ],
+            "reason": "[HR-WP-02] Overtime Types govern calculation mode, component references, fixed rate, standard/weekend/holiday multipliers, maximum hours, and lifecycle state; salary-component ownership and Payroll calculation acceptance require the shared Payroll read/post boundary."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/purpose_of_travel/purpose_of_travel.json:doctype:Purpose of Travel",
@@ -1490,9 +1563,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:334-398",
+                "company/admin/modules/hr/schema.php:415-437",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: employee/shift/schedule/location/date validation, overlap rejection, source idempotency, locks, audit, and read-back)"
+            ],
+            "reason": "[HR-WP-02] Shift Assignments preserve employee, shift type, optional schedule/location/request, effective dates, status, and source identity with company validation, overlap locking, one transaction, audit, and exact read-back."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_assignment_tool/shift_assignment_tool.json:doctype:Shift Assignment Tool",
@@ -1505,9 +1582,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:400-455",
+                "company/admin/modules/hr/views/attendance.php:125,166",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: selected-employee bulk assignment, one transaction, overlap locks, deterministic source idempotency, audit, and read-back)"
+            ],
+            "reason": "[HR-WP-02] The Shift Assignment Tool exposes modal-only multi-employee assignment of shift type, schedule, location, status, and dates through one locked company transaction with deterministic batch sources and exact read-back."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_location/shift_location.json:doctype:Shift Location",
@@ -1520,9 +1601,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:126-159",
+                "company/admin/modules/hr/schema.php:312-328",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: unique location, check-in radius, coordinate validation, status, audit, and exact read-back)"
+            ],
+            "reason": "[HR-WP-02] Shift Locations are unique company masters with radius, latitude, longitude, lifecycle state, modal confirmation, parameterized transaction, audit, and exact read-back."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_request/shift_request.json:doctype:Shift Request",
@@ -1535,9 +1620,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:457-538",
+                "company/admin/modules/hr/schema.php:438-458",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: employee/shift/approver scope, approve/reject transitions, final immutability, audit, and read-back)"
+            ],
+            "reason": "[HR-WP-02] Shift Requests preserve employee, shift, date range, active company-admin approver, reason, and Draft/Approved/Rejected state with locked final transitions, modal confirmation, audit, and exact read-back."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_schedule/shift_schedule.json:doctype:Shift Schedule",
@@ -1550,9 +1639,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:275-332",
+                "company/admin/modules/hr/schema.php:397-414",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: unique schedule, 1-4 week frequency, repeat-day validation, shift linkage, audit, and exact read-back)"
+            ],
+            "reason": "[HR-WP-02] Shift Schedules are governed company masters preserving shift type, one-to-four-week frequency, canonical repeat days, lifecycle state, modal confirmation, transaction, audit, and exact read-back."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_schedule_assignment/shift_schedule_assignment.json:doctype:Shift Schedule Assignment",
@@ -1565,9 +1658,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:334-455",
+                "company/admin/modules/hr/schema.php:415-437",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: employee schedule assignment, shift/location links, date/status lifecycle, bulk tool, locks, audit, and read-back)"
+            ],
+            "reason": "[HR-WP-02] Shift Schedule Assignment is implemented through the governed assignment owner with explicit schedule, derived shift, employee, location, effective dates, status, deterministic source, single and bulk modal flows, and exact read-back."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_type/shift_type.json:doctype:Shift Type",
@@ -1580,9 +1677,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/attendance.php:221-273,540-817",
+                "company/admin/modules/hr/schema.php:364-396",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: time zone, cross-midnight window, check-in bounds, thresholds, auto attendance, overtime link, audit, and read-back)"
+            ],
+            "reason": "[HR-WP-02] Shift Types preserve time-zone-aware start/end windows, cross-midnight state, pairing/hours modes, check-in bounds, grace periods, attendance thresholds, automation and overtime settings, lifecycle state, and exact transactional read-back."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_type/test_records.json:doctype:Test Records",
@@ -1895,9 +1996,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/setup.php:798-827",
+                "company/admin/modules/hr/views/setup.php:126-137",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: company-scoped chart, manager, designation, department, and hierarchy-cycle rejection)"
+            ],
+            "reason": "[HR-WP-01] The HR Setup workspace exposes an authorized company-scoped organization chart derived from active primary assignments, including managers, designations, departments, and tested cycle rejection."
         },
         {
             "source_id": "hrms:hrms/hr/page/team_updates/team_updates.json:page:team-updates",
@@ -2705,14 +2810,15 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "PARTIAL",
+            "status": "COMPLETE",
             "evidence": [
-                "company/admin/modules/hr/views/dashboard.php:38-108",
-                "company/admin/modules/hr/views/dashboard.php:110-418",
-                "tests/hr-database-driven-forms.php (PASS 2026-08-25: form builder, immutable versions, submissions, rollback)",
-                "tests/project-module-hierarchy.php (PASS 2026-08-25: sidebar contract and immediate HR form projection)"
+                "company/admin/modules/hr/views/setup.php:1-205",
+                "company/admin/modules/hr/views/workspace.php:1-24",
+                "tests/hr-setup-lifecycle.php (PASS 2026-08-25: 12/8 setup workspace, masters/lifecycle/chart/Form Builder tools, modal confirmation)",
+                "tests/hr-modal-confirmation.php (PASS 2026-08-25: sibling confirmation and rehydration contract)",
+                "tests/hr-responsive-layout.php (PASS 2026-08-25: desktop 12/8 and mobile main-first stacking)"
             ],
-            "reason": "[HR-WP-01] BuilderX has an HR workspace and completed Form Builder foundation, but the pinned setup workspace full masters, settings, and actions are not implemented."
+            "reason": "[HR-WP-01] HR Setup is now a responsive company workspace for settings, setup masters, transfers, promotions, support records, property history, organization hierarchy, and protected Form Builder access; linked later-package capabilities remain tracked by their own ledger rows."
         },
         {
             "source_id": "hrms:hrms/hr/workspace/leaves/leaves.json:workspace:Leaves",
@@ -2770,9 +2876,15 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/views/attendance.php:1-178",
+                "company/admin/modules/hr/views/workspace.php:21-24",
+                "tests/hr-attendance-shifts.php (PASS 2026-08-25: list/calendar/tool workspace, source-separated records, masters, requests, assignments, overtime, and Form Builder protections)",
+                "tests/hr-modal-confirmation.php (PASS 2026-08-25: body-owned attendance modals, sibling confirmation, rehydration, and no copied controller)",
+                "tests/hr-responsive-layout.php (PASS 2026-08-25: 12/8 desktop composition, main-first mobile stacking, and contained table overflow)"
+            ],
+            "reason": "[HR-WP-02] Shift & Attendance is a responsive 12/8 company workspace with list, calendar, and employee-tool modes plus modal-only check-in, attendance, request, shift, schedule, location, and overtime workflows; reports remain tracked separately in HR-WP-09."
         },
         {
             "source_id": "hrms:hrms/hr/workspace/tenure/tenure.json:workspace:Tenure",
