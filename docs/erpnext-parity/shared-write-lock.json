@@ -1,0 +1,30 @@
+{
+  "schema_version": "builderx.erp-shared-write-lock.v1",
+  "owner": "orchestration",
+  "effective_on": "2026-08-25",
+  "path_prefixes": [
+    "app/foundation.php",
+    "company/admin/bootstrap/",
+    "company/admin/core/",
+    "company/admin/views/layout.php",
+    "company/admin/views/partials/",
+    "company/admin/assets/css/admin.css",
+    "company/admin/assets/js/admin-modal.js",
+    "company/admin/modules/shared/",
+    "tests/erpnext-"
+  ],
+  "prohibited_thread_ids": [
+    "01a03381-988b-7dd2-8498-043adc037cf5",
+    "01a033ee-1c8b-7da2-98c5-98f65656f588",
+    "01a033f2-d75e-7c13-ac7f-25128b0723fb",
+    "01a037da-71f4-72d2-bce4-6ed2b5480789",
+    "01a037db-349d-7453-994f-583b757e2e1c",
+    "01a037db-aacf-7643-9656-2012cdb0f1a3",
+    "01a037db-cca6-7a03-a82b-31a34e6935f0",
+    "01a037db-fe95-7e80-bca6-55c0f2c30d6b",
+    "01a037dc-3800-7850-918b-615d933611ec",
+    "01a037dc-5cbd-7510-b6fb-1c47fd3ce6ef",
+    "01a037dc-891f-73a1-b881-0ffe921d6401"
+  ],
+  "delegation_rule": "A module task may edit a shared path only after the orchestration task records an explicit path-limited delegation for that task and checkpoint."
+}
