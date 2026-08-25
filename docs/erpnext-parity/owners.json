@@ -1,0 +1,60 @@
+{
+  "schema_version": "builderx.erpnext-parity-owners.v1",
+  "owners": {
+    "hr": {
+      "thread_id": "01a03381-988b-7dd2-8498-043adc037cf5",
+      "source_modules": ["HR", "Payroll"],
+      "write_paths": ["company/admin/modules/hr/", "tests/hr-"]
+    },
+    "accounting-finance": {
+      "thread_id": "01a033ee-1c8b-7da2-98c5-98f65656f588",
+      "source_modules": ["Accounts"],
+      "write_paths": ["company/admin/modules/accounting-finance/", "tests/accounting-finance-"]
+    },
+    "sales-crm": {
+      "thread_id": "01a033f2-d75e-7c13-ac7f-25128b0723fb",
+      "source_modules": ["CRM", "Selling", "Point of Sale"],
+      "write_paths": ["company/admin/modules/sales-crm/", "tests/sales-crm-"]
+    },
+    "buying-procurement": {
+      "thread_id": "01a037da-71f4-72d2-bce4-6ed2b5480789",
+      "source_modules": ["Buying", "Supplier EDI"],
+      "write_paths": ["company/admin/modules/buying-procurement/", "tests/buying-procurement-"]
+    },
+    "inventory-warehouse": {
+      "thread_id": "01a037db-349d-7453-994f-583b757e2e1c",
+      "source_modules": ["Stock", "Inventory Point of Sale"],
+      "write_paths": ["company/admin/modules/inventory-warehouse/", "tests/inventory-warehouse-"]
+    },
+    "manufacturing": {
+      "thread_id": "01a037db-aacf-7643-9656-2012cdb0f1a3",
+      "source_modules": ["Manufacturing", "Quality Management", "Subcontracting"],
+      "write_paths": ["company/admin/modules/manufacturing/", "tests/manufacturing-"]
+    },
+    "projects": {
+      "thread_id": "01a037db-cca6-7a03-a82b-31a34e6935f0",
+      "source_modules": ["Projects", "Project Portal"],
+      "write_paths": ["company/admin/modules/projects/", "tests/projects-"]
+    },
+    "support-service": {
+      "thread_id": "01a037db-fe95-7e80-bca6-55c0f2c30d6b",
+      "source_modules": ["Support", "Customer Support Portal", "Service Telephony"],
+      "write_paths": ["company/admin/modules/support-service/", "tests/support-service-"]
+    },
+    "assets-maintenance": {
+      "thread_id": "01a037dc-3800-7850-918b-615d933611ec",
+      "source_modules": ["Assets", "Maintenance"],
+      "write_paths": ["company/admin/modules/assets-maintenance/", "tests/assets-maintenance-"]
+    },
+    "operations": {
+      "thread_id": "01a037dc-5cbd-7510-b6fb-1c47fd3ce6ef",
+      "source_modules": ["Setup", "Utilities", "ERPNext Integrations", "Bulk Transaction", "EDI", "Communication"],
+      "write_paths": ["company/admin/modules/operations/", "tests/operations-"]
+    },
+    "compliance-localization": {
+      "thread_id": "01a037dc-891f-73a1-b881-0ffe921d6401",
+      "source_modules": ["Regional", "Localization"],
+      "write_paths": ["company/admin/modules/compliance-localization/", "tests/compliance-localization-"]
+    }
+  }
+}

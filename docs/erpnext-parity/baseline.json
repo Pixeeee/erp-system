@@ -1,0 +1,16 @@
+{
+  "schema_version": "builderx.erpnext-parity-baseline.v1",
+  "captured_on": "2026-08-25",
+  "erpnext": {
+    "repository": "https://github.com/frappe/erpnext.git",
+    "branch": "version-16",
+    "commit": "11e0ba0a1c45f217e2e73e885f699102d06da325",
+    "license": "GPL-3.0"
+  },
+  "hrms": {
+    "repository": "https://github.com/frappe/hrms.git",
+    "branch": "version-16",
+    "commit": "f281e8b172ac8836ad89c59df65a922101103097",
+    "license": "GPL-3.0"
+  }
+}
