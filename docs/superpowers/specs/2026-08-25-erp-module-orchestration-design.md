@@ -6,7 +6,7 @@
 
 ## Objective
 
-Complete and connect every web ERP module registered in `bx_project_erp_groups()` while preserving verified work already present in HR Department and Accounting/Finance. The Mobile / Android Stockroom module is explicitly deferred.
+Build traceable functional parity with the complete ERPNext web capability surface, connect it through the existing BuilderX ERP architecture, and preserve verified work already present in HR Department and Accounting/Finance. The current `bx_project_erp_groups()` registry is the initial navigation surface, not the limit of the program. The Mobile / Android Stockroom module is explicitly deferred.
 
 The orchestration task owns cross-module coordination, shared integration, acceptance gates, and task monitoring. Existing module tasks own their module-specific implementation. All dispatched implementation work must use `gpt-5.6-sol` with `high` reasoning.
 
@@ -26,7 +26,26 @@ The program covers these module groups and all registered features:
 10. **Operations:** Scheduled jobs, Notifications, Background workers, Sync conflict dashboard, Import/export jobs, System alerts, Release checklist.
 11. **Compliance / Localization:** Tax templates, VAT settings, E-invoice reports, Regional compliance reports, Audit evidence, Regulatory exports.
 
+The parity program also covers ERPNext capabilities not yet represented by the current sidebar groups. These include Setup, Selling, Stock, Quality Management, Maintenance, Subcontracting, ERPNext Integrations, Portal, EDI, Communication, Telephony, Utilities, Bulk Transactions, point of sale, pricing, delivery notes, returns, workflow and assignment tools, attachments, comments, notifications, printing, importing, exporting, and supporting reports and settings. Frappe HR and Payroll capabilities are mapped into HR Department.
+
 `Mobile / Android Stockroom` and all Android application work are excluded from this program.
+
+## ERPNext Parity Baseline And Ledger
+
+"All ERPNext features and functions" is controlled through a versioned parity ledger rather than an open-ended claim. Before implementation begins, the orchestration task records the exact official ERPNext and Frappe HR source commit hashes used as the 2026-08-25 baseline. The supplied demo is inspected when authenticated access is available; official source and documentation remain authoritative when the demo is inaccessible.
+
+Each module task inventories the baseline's applicable:
+
+- workspaces, shortcuts, dashboards, charts, and number cards;
+- masters, transactions, child records, settings, and naming rules;
+- draft, submit, approve, reject, cancel, amend, close, archive, and return lifecycles;
+- permissions, assignments, comments, attachments, notifications, and audit timelines;
+- list, form, tree, calendar, kanban, report, print, import, export, and portal surfaces;
+- business calculations, validations, reports, background jobs, and cross-module mappings.
+
+Every ledger row records its ERPNext source reference, BuilderX owner, local route or service, dependencies, status, and verification evidence. Allowed statuses are `MISSING`, `PARTIAL`, `COMPLETE`, `NOT_APPLICABLE`, and `DEFERRED`. `NOT_APPLICABLE` requires a written architectural or business reason. `DEFERRED` is reserved for Android work or an exclusion explicitly approved by the user. A module cannot be called complete while any applicable row remains `MISSING` or `PARTIAL`.
+
+Because ERPNext evolves, later upstream releases do not silently expand an active implementation plan. A new baseline and reviewed parity-ledger change are required before new upstream behavior enters scope.
 
 ## Preservation And Gap-Only Rule
 
@@ -106,6 +125,22 @@ Context determines panel content:
 
 Existing HR and Accounting/Finance screens are preserved and aligned only where they do not already satisfy the contract.
 
+## Universal Modal And Confirmation Contract
+
+Every Add, New, Insert, or Create command opens an accessible modal owned by the page body. Inline or separate-page creation is not used when the operation can be completed safely in a modal.
+
+The submission sequence is mandatory:
+
+1. The user enters or edits information in the modal.
+2. The user activates Submit.
+3. A confirmation dialog presents the action and its important consequences with Confirm and Cancel controls.
+4. Cancel returns to the populated form without losing information.
+5. Confirm performs server validation and the authorized database transaction.
+6. Validation or persistence failure leaves the modal available, retains valid values, associates errors with fields or the form, and does not report success.
+7. Success closes the modal, refreshes the affected workspace from server-backed data, restores focus to a sensible trigger or saved record, and displays clear confirmation feedback.
+
+The same confirmation pattern applies to edits and consequential actions including submit, approve, reject, cancel, amend, archive, delete, post, reconcile, close, import, and export. Confirmation dialogs contain the final action controls; modal headers do not duplicate them. Modal layouts are responsive, avoid nested cards, provide readable long content, and keep sticky headers or footers only when content length requires them.
+
 ## Continuous Improvement Authority
 
 Builders may immediately implement a better idea discovered during development when all of these conditions hold:
@@ -140,12 +175,13 @@ Submitted accounting, stock, tax, and other controlled records are not silently 
 
 A registered feature is complete only when:
 
+- every applicable ERPNext parity-ledger row is `COMPLETE` with source and verification evidence;
 - its sidebar link and route resolve to a real workspace;
 - expected empty, loading, populated, validation, success, failure, unauthorized, and archived states work;
 - create, read, update, lifecycle, filtering, and reporting behaviors appropriate to the feature are functional;
 - persisted workflows satisfy the transaction and read-back contract;
 - authorization and company isolation are enforced on reads and writes;
-- confirmation occurs before each form submission or consequential lifecycle action;
+- every add or insert flow uses the universal modal contract and every submission or consequential lifecycle action requires explicit confirmation before mutation;
 - audit history identifies the actor, company, action, and record;
 - the universal Form Builder supports the feature's configurable record types;
 - the 12/8 panel contract works on desktop and stacks correctly on mobile;
@@ -156,6 +192,8 @@ A registered feature is complete only when:
 ## Test Strategy
 
 Each module supplies focused tests for schema idempotency, company isolation, authorization, validation, lifecycle transitions, rollback, audit logging, read-back verification, Form Builder versioning, and its core business calculations.
+
+Interaction tests cover modal opening, focus management, retained values on Cancel and validation failure, the Submit-to-Confirm boundary, absence of writes before Confirm, a single write after Confirm, successful server-backed refresh, and responsive behavior.
 
 Integration tests cover the principal cross-module flows:
 
@@ -173,12 +211,13 @@ The final gate includes relevant existing regression suites, PHP syntax checks, 
 
 Implementation proceeds in dependency-aware waves:
 
-1. Allow the active Accounting/Finance task to complete its current approved plan; audit HR and Finance gaps.
-2. Establish or extract the shared Form Builder contract and shared module integration boundaries without regressing the reference modules.
-3. Build the Sales/CRM, Buying/Procurement, and Inventory/Warehouse foundations.
-4. Connect Manufacturing, Projects, Support/Service, and Assets/Maintenance.
-5. Complete Operations and Compliance/Localization.
-6. Finish HR and Finance gaps, cross-module workflows, responsive interface checks, regression suites, and live verification.
+1. Record the exact ERPNext and Frappe HR baseline commits and generate the module parity ledgers.
+2. Allow the active Accounting/Finance task to complete its current approved plan; audit HR and Finance gaps against the parity baseline.
+3. Establish or extract the shared Form Builder, modal, confirmation, and module integration contracts without regressing the reference modules.
+4. Build the Sales/CRM, Selling, Buying/Procurement, Inventory/Warehouse, Stock, Setup, and shared master-data foundations.
+5. Connect Manufacturing, Quality Management, Subcontracting, Projects, Support/Service, Assets/Maintenance, and point of sale.
+6. Complete Operations, Compliance/Localization, Regional, Integrations, Portal, EDI, Communication, Telephony, Utilities, and Bulk Transactions.
+7. Finish HR and Finance gaps, cross-module workflows, responsive interface checks, parity-ledger closure, regression suites, and live verification.
 
 Module-private work may proceed concurrently when write scopes are disjoint. Shared-file changes are sequenced by the orchestration task. Each module task reports completed features, improvements implemented, files changed, tests run, outstanding risks, and requested shared integration changes.
 
@@ -186,9 +225,11 @@ The orchestration task monitors progress, reviews outcomes, redirects incomplete
 
 ## Reference Policy
 
-ERPNext is a workflow and information-architecture reference, not a source to copy blindly. Builders should adopt relevant workspace organization, lifecycle concepts, and domain expectations while following the existing BuilderX architecture, ADODB persistence conventions, shadcn-style controls, permissions, and visual language.
+ERPNext is the functional workflow and information-architecture baseline. Builders reproduce relevant capability and domain behavior while following the existing BuilderX architecture, ADODB persistence conventions, shadcn-style controls, permissions, and visual language.
 
 The supplied ERPNext demo currently requires authentication. Where the demo cannot be inspected, builders use official ERPNext documentation or source and the existing HR and Accounting/Finance implementations as the enforceable local standard.
+
+ERPNext source is GPLv3. No source code is copied into BuilderX unless the repository's distribution and licensing obligations have been reviewed and accepted. The ERPNext name and logo remain Frappe trademarks and are not used as BuilderX product branding. Functional parity does not imply affiliation or endorsement.
 
 ## Explicit Exclusions
 
@@ -197,3 +238,5 @@ The supplied ERPNext demo currently requires authentication. Where the demo cann
 - unrelated platform refactors
 - decorative placeholders presented as completed features
 - direct cross-module table writes that bypass the owning module's service contract
+- ERPNext names, logos, or visual assets used as BuilderX product branding
+- literal incorporation of ERPNext GPL source without an explicit license-compliance decision
