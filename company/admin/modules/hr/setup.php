@@ -895,6 +895,9 @@ function yovel_admin_hr_handle_post(array $company, array $admin, string $action
     if (str_starts_with($action, 'hr_recruitment_')) {
         return yovel_admin_hr_handle_recruitment_post($company, $admin, $action, $input);
     }
+    if (str_starts_with($action, 'hr_onboarding_')) {
+        return yovel_admin_hr_handle_onboarding_post($company, $admin, $action, $input);
+    }
     $db = bx_db();
     $recordType = strtoupper(trim((string) ($input['record_type'] ?? '')));
     $saved = match ($action) {

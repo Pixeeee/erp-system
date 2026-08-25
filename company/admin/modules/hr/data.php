@@ -159,6 +159,7 @@ function yovel_admin_hr_data(array $company): array
     $attendanceData = yovel_admin_hr_attendance_data($company);
     $leaveData = yovel_admin_hr_leave_data($company);
     $recruitmentData = yovel_admin_hr_recruitment_data($company);
+    $onboardingData = yovel_admin_hr_onboarding_data($company);
 
     return [
         'branches' => is_array($branches) ? $branches : [],
@@ -173,6 +174,7 @@ function yovel_admin_hr_data(array $company): array
         'attendance' => $attendanceData,
         'leave' => $leaveData,
         'recruitment' => $recruitmentData,
+        'onboarding' => $onboardingData,
         'formFields' => [
             'employee-profiles' => yovel_admin_hr_form_fields($company, 'employee-profiles'),
             'departments' => yovel_admin_hr_form_fields($company, 'departments'),

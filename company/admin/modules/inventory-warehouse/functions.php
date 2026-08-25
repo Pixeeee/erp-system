@@ -8,6 +8,7 @@ require_once __DIR__ . '/catalogue.php';
 require_once __DIR__ . '/warehouses.php';
 require_once __DIR__ . '/ledger.php';
 require_once __DIR__ . '/serial-batch.php';
+require_once __DIR__ . '/reconciliation.php';
 require_once __DIR__ . '/dashboard.php';
 
 function yovel_admin_inventory_warehouse_sections(): array
@@ -182,6 +183,23 @@ function yovel_admin_inventory_warehouse_data(array $company, ?array $admin, str
             ? ['kind' => 'empty', 'title' => 'No ' . strtolower((string) $metadata['label']) . ' yet', 'message' => 'Add the first tracked identity for this company.', 'dependencies' => []]
             : ['kind' => 'ready', 'title' => (string) $metadata['label'], 'message' => '', 'dependencies' => []];
     }
+    if ($section === 'stock-reconciliation') {
+        yovel_admin_inventory_catalogue_schema();
+        yovel_admin_inventory_warehouse_control_schema();
+        yovel_admin_inventory_ledger_schema();
+        yovel_admin_inventory_serial_batch_schema();
+        yovel_admin_inventory_reconciliation_schema();
+        $data['items'] = yovel_admin_inventory_items($company, ['status' => 'ACTIVE']);
+        $data['warehouses'] = yovel_admin_inventory_warehouses($company, ['status' => 'ACTIVE', 'leaf_only' => true]);
+        $data['reconciliations'] = yovel_admin_inventory_stock_reconciliations($company);
+        $data['diagnostics'] = yovel_admin_inventory_integrity_diagnostics($company);
+        $data['state'] = [
+            'kind' => 'dependency',
+            'title' => (string) $metadata['label'],
+            'message' => 'IW-08 is available through the guarded stock reconciliation workflow.',
+            'dependencies' => ['IW-08'],
+        ];
+    }
     return $data;
 }
 
@@ -238,6 +256,10 @@ function yovel_admin_inventory_warehouse_handle_post(
     if ($action === 'save_inventory_serial') {
         $saved = yovel_admin_save_inventory_serial($company, $admin, $input);
         return ['message' => 'Inventory Serial saved.', 'section' => 'serial-numbers', 'query' => ['serial' => (string) $saved['serial_key']]];
+    }
+    if ($action === 'save_stock_reconciliation') {
+        $saved = yovel_admin_save_stock_reconciliation($company, $admin, $input);
+        return ['message' => 'Stock reconciliation saved.', 'section' => 'stock-reconciliation', 'query' => ['reconciliation' => (string) $saved['reconciliation_key']]];
     }
     throw new InvalidArgumentException('Unknown Inventory/Warehouse action.');
 }

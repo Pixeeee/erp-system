@@ -568,6 +568,7 @@ function yovel_admin_inventory_reverse_ledger_effects($db, array $company, ?arra
         }
         $qty = yovel_admin_inventory_decimal(bcsub('0', (string) $original['actual_qty'], 9));
         $forcedDifference = yovel_admin_inventory_decimal(bcsub('0', (string) $latestState['stock_value_difference'], 9));
+        $valueAdjustment = bccomp($qty, '0', 9) === 0 ? $forcedDifference : null;
         $incoming = bccomp($qty, '0', 9) === 1
             ? yovel_admin_inventory_ledger_rate($forcedDifference, $qty)
             : null;
@@ -578,7 +579,7 @@ function yovel_admin_inventory_reverse_ledger_effects($db, array $company, ?arra
         yovel_admin_inventory_execute(
             $db,
             'INSERT INTO project_company_inventory_stock_ledger_entry (ledger_entry_key,company_key,company_key_hash,partition_key,bin_key,item_key,warehouse_key,dimensions_json,dimensions_checksum,voucher_type,voucher_key,voucher_line_key,effect_index,posting_datetime,actual_qty,incoming_rate,fallback_valuation_rate,value_adjustment,forced_value_difference,allow_negative_stock,valuation_method,currency_code,finance_dimensions_json,entry_kind,reversal_of_entry_key,reversal_reason,idempotency_key,created_by_admin_key) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-            [$entryKey, $scope[0], $scope[1], $partition['partition_key'], $partition['bin_key'], $original['item_key'], $original['warehouse_key'], $original['dimensions_json'], $original['dimensions_checksum'], $voucherType, $voucherKey, $original['voucher_line_key'], $original['effect_index'], $posting, $qty, $incoming, $original['fallback_valuation_rate'], null, $forcedDifference, 1, $original['valuation_method'], $original['currency_code'], $original['finance_dimensions_json'], 'REVERSAL', $original['ledger_entry_key'], $reason, $idempotency, $scope[2]],
+            [$entryKey, $scope[0], $scope[1], $partition['partition_key'], $partition['bin_key'], $original['item_key'], $original['warehouse_key'], $original['dimensions_json'], $original['dimensions_checksum'], $voucherType, $voucherKey, $original['voucher_line_key'], $original['effect_index'], $posting, $qty, $incoming, $original['fallback_valuation_rate'], $valueAdjustment, $forcedDifference, 1, $original['valuation_method'], $original['currency_code'], $original['finance_dimensions_json'], 'REVERSAL', $original['ledger_entry_key'], $reason, $idempotency, $scope[2]],
             'Inventory stock ledger reversal append'
         );
         yovel_admin_inventory_execute(

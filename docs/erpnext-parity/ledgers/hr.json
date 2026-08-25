@@ -370,9 +370,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/onboarding.php:149-283",
+                "company/admin/modules/hr/views/onboarding.php:91-94",
+                "tests/hr-onboarding-separation.php:124-133 (PASS 2026-08-25: template activity clone and completion)"
+            ],
+            "reason": "[HR-WP-05] Implemented module-local onboarding, separation, employee documents, exit interview, full-and-final, notification intent, Form Builder targets, and passing focused/regression evidence without shared or foreign writes."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_checkin/employee_checkin.json:doctype:Employee Checkin",
@@ -491,9 +495,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/onboarding.php:260-304",
+                "company/admin/modules/hr/views/onboarding.php:89-96",
+                "tests/hr-onboarding-separation.php:112-151 (PASS 2026-08-25: onboarding start, eligibility, completion, status sync)"
+            ],
+            "reason": "[HR-WP-05] Implemented module-local onboarding, separation, employee documents, exit interview, full-and-final, notification intent, Form Builder targets, and passing focused/regression evidence without shared or foreign writes."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_onboarding_template/employee_onboarding_template.json:doctype:Employee Onboarding Template",
@@ -506,9 +514,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/onboarding.php:203-258",
+                "company/admin/modules/hr/views/onboarding.php:87-88",
+                "tests/hr-onboarding-separation.php:94-112 (PASS 2026-08-25: onboarding template activities persisted and cloned)"
+            ],
+            "reason": "[HR-WP-05] Implemented module-local onboarding, separation, employee documents, exit interview, full-and-final, notification intent, Form Builder targets, and passing focused/regression evidence without shared or foreign writes."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_performance_feedback/employee_performance_feedback.json:doctype:Employee Performance Feedback",
@@ -593,14 +605,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "PARTIAL",
+            "status": "COMPLETE",
             "evidence": [
-                "company/admin/modules/hr/schema.php:501-501",
-                "company/admin/modules/hr/schema.php:538-541",
-                "company/admin/modules/hr/employees.php:428-475",
-                "company/admin/modules/hr/views/employee-profiles.php:139-156"
+                "company/admin/modules/hr/onboarding.php:343-391",
+                "company/admin/modules/hr/views/onboarding.php:99-102",
+                "tests/hr-onboarding-separation.php:153-198 (PASS 2026-08-25: separation, full-and-final blocker, approval, employee status sync)"
             ],
-            "reason": "[HR-WP-05] Employee status and exit fields support a basic separated state, but no Employee Separation document, template, approval, or activity workflow exists."
+            "reason": "[HR-WP-05] Implemented module-local onboarding, separation, employee documents, exit interview, full-and-final, notification intent, Form Builder targets, and passing focused/regression evidence without shared or foreign writes."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_separation_template/employee_separation_template.json:doctype:Employee Separation Template",
@@ -613,9 +624,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/onboarding.php:203-258",
+                "company/admin/modules/hr/views/onboarding.php:87-88",
+                "tests/hr-onboarding-separation.php:103-112 (PASS 2026-08-25: separation template persisted and cloned)"
+            ],
+            "reason": "[HR-WP-05] Implemented module-local onboarding, separation, employee documents, exit interview, full-and-final, notification intent, Form Builder targets, and passing focused/regression evidence without shared or foreign writes."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_skill/employee_skill.json:doctype:Employee Skill",
@@ -726,13 +741,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "PARTIAL",
+            "status": "COMPLETE",
             "evidence": [
-                "company/admin/modules/hr/schema.php:540-541",
-                "company/admin/modules/hr/forms.php:880-963",
-                "tests/hr-database-driven-forms.php:234-348 (PASS 2026-08-25: typed custom-value persistence)"
+                "company/admin/modules/hr/onboarding.php:393-441",
+                "company/admin/modules/hr/views/onboarding.php:100-101",
+                "tests/hr-onboarding-separation.php:164-174 (PASS 2026-08-25: exit schedule, completion, notification intent)"
             ],
-            "reason": "[HR-WP-05] Employee profiles can store an exit interview date and leaving reason, but no Exit Interview record, scheduling, questionnaire, notification, or focused workflow test exists."
+            "reason": "[HR-WP-05] Implemented module-local onboarding, separation, employee documents, exit interview, full-and-final, notification intent, Form Builder targets, and passing focused/regression evidence without shared or foreign writes."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/expected_skill_set/expected_skill_set.json:doctype:Expected Skill Set",
@@ -850,9 +865,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/onboarding.php:443-487",
+                "company/admin/modules/hr/views/onboarding.php:102-103",
+                "tests/hr-onboarding-separation.php:176-193 (PASS 2026-08-25: asset clearance rows replaced transactionally)"
+            ],
+            "reason": "[HR-WP-05] Implemented module-local onboarding, separation, employee documents, exit interview, full-and-final, notification intent, Form Builder targets, and passing focused/regression evidence without shared or foreign writes."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/full_and_final_outstanding_statement/full_and_final_outstanding_statement.json:doctype:Full and Final Outstanding Statement",
@@ -865,9 +884,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/onboarding.php:443-487",
+                "company/admin/modules/hr/views/onboarding.php:102-103",
+                "tests/hr-onboarding-separation.php:176-193 (PASS 2026-08-25: outstanding rows replaced transactionally)"
+            ],
+            "reason": "[HR-WP-05] Implemented module-local onboarding, separation, employee documents, exit interview, full-and-final, notification intent, Form Builder targets, and passing focused/regression evidence without shared or foreign writes."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/full_and_final_statement/full_and_final_statement.json:doctype:Full and Final Statement",
@@ -880,9 +903,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/onboarding.php:443-487",
+                "company/admin/modules/hr/views/onboarding.php:102-103",
+                "tests/hr-onboarding-separation.php:176-199 (PASS 2026-08-25: idempotent statement and separation approval blocker)"
+            ],
+            "reason": "[HR-WP-05] Implemented module-local onboarding, separation, employee documents, exit interview, full-and-final, notification intent, Form Builder targets, and passing focused/regression evidence without shared or foreign writes."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/goal/goal.json:doctype:Goal",
@@ -968,9 +995,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/onboarding.php:174-201",
+                "company/admin/modules/hr/views/onboarding.php:85-86",
+                "tests/hr-onboarding-separation.php:86-93 (PASS 2026-08-25: document type persisted and protected by Form Builder)"
+            ],
+            "reason": "[HR-WP-05] Implemented module-local onboarding, separation, employee documents, exit interview, full-and-final, notification intent, Form Builder targets, and passing focused/regression evidence without shared or foreign writes."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/interest/interest.json:doctype:Interest",
@@ -2104,9 +2135,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/onboarding.php:393-420",
+                "company/admin/modules/hr/views/onboarding.php:100-101",
+                "tests/hr-onboarding-separation.php:164-174 and 199-200 (PASS 2026-08-25: EXIT_INTERVIEW_SCHEDULED notification intent persisted)"
+            ],
+            "reason": "[HR-WP-05] Implemented module-local onboarding, separation, employee documents, exit interview, full-and-final, notification intent, Form Builder targets, and passing focused/regression evidence without shared or foreign writes."
         },
         {
             "source_id": "hrms:hrms/hr/notification/training_feedback/training_feedback.json:notification:Training Feedback",

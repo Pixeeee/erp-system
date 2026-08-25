@@ -186,10 +186,10 @@ try {
     hr_recruitment_assert(($appointmentPayload['document']['type'] ?? '') === 'APPOINTMENT_LETTER', 'Appointment Letter print payload is missing.');
     hr_recruitment_assert(str_contains((string) ($appointmentPayload['document']['content'] ?? ''), 'Appointment terms'), 'Appointment Letter template content was not projected to the print contract.');
 
-    $onboardingUnavailable = false;
-    try { yovel_admin_convert_accepted_offer_to_onboarding($db, $company, $admin, $keys['offer']); }
-    catch (RuntimeException) { $onboardingUnavailable = true; }
-    hr_recruitment_assert($onboardingUnavailable, 'Recruitment fabricated onboarding while its owner contract is unavailable.');
+    $onboardingFromOffer = yovel_admin_convert_accepted_offer_to_onboarding($db, $company, $admin, $keys['offer']);
+    $keys['onboarding_from_offer'] = (string) $onboardingFromOffer['employee_onboarding_key'];
+    $keys['onboarding_employee'] = (string) $onboardingFromOffer['employee_key'];
+    hr_recruitment_assert((string) $onboardingFromOffer['job_offer_key'] === $keys['offer'], 'Recruitment did not hand an accepted offer to the HR onboarding owner.');
 
     $offer = yovel_admin_transition_job_offer($db, $company, $admin, $keys['offer'], 'WITHDRAWN');
     hr_recruitment_assert((string) $offer['offer_status'] === 'WITHDRAWN', 'Explicit accepted-offer withdrawal failed.');
@@ -211,6 +211,8 @@ try {
         if ($key !== '') { $db->Execute("DELETE FROM {$table} WHERE company_key_hash = ? AND {$column} = ?", [$hash, $key]); }
     };
     $deleteByKey('project_company_hr_job_offer_term', 'job_offer_key', 'offer');
+    $deleteByKey('project_company_hr_employee_onboarding', 'employee_onboarding_key', 'onboarding_from_offer');
+    $deleteByKey('project_company_hr_employee', 'employee_key', 'onboarding_employee');
     $deleteByKey('project_company_hr_job_offer', 'job_offer_key', 'offer');
     $deleteByKey('project_company_hr_interview_feedback', 'interview_key', 'interview');
     $deleteByKey('project_company_hr_interviewer', 'interview_key', 'interview');

@@ -594,6 +594,9 @@ function yovel_admin_hr_schema(): void
     if (function_exists('yovel_admin_hr_ensure_recruitment_schema')) {
         yovel_admin_hr_ensure_recruitment_schema($db);
     }
+    if (function_exists('yovel_admin_hr_ensure_onboarding_schema')) {
+        yovel_admin_hr_ensure_onboarding_schema($db);
+    }
     yovel_admin_migrate_hr_database_model($db);
 }
 
@@ -1157,6 +1160,9 @@ function yovel_admin_hr_default_form_fields(): array
     }
     if (function_exists('yovel_admin_hr_recruitment_default_form_fields')) {
         $forms = array_merge($forms, yovel_admin_hr_recruitment_default_form_fields());
+    }
+    if (function_exists('yovel_admin_hr_onboarding_default_form_fields')) {
+        $forms = array_merge($forms, yovel_admin_hr_onboarding_default_form_fields());
     }
 
     return $forms;

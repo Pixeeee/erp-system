@@ -48,6 +48,8 @@
                                         <?php require __DIR__ . '/leave.php'; ?>
                                     <?php elseif ($activeHrSection === 'recruitment'): ?>
                                         <?php require __DIR__ . '/recruitment.php'; ?>
+                                    <?php elseif (in_array($activeHrSection, ['onboarding', 'employee-documents'], true)): ?>
+                                        <?php require __DIR__ . '/onboarding.php'; ?>
                                     <?php else: ?>
                                         <?php require __DIR__ . '/queued.php'; ?>
                                     <?php endif; ?>

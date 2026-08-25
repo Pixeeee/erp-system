@@ -123,6 +123,40 @@ $inventoryEscape = static fn (string $value): string => htmlspecialchars($value,
                     <div class="overflow-x-auto"><table class="w-full min-w-[42rem] text-sm"><thead class="border-b text-left text-xs text-muted-foreground"><tr><th class="px-4 py-3">Priority</th><th class="px-4 py-3">Item</th><th class="px-4 py-3">Warehouse</th><th class="px-4 py-3">Dimensions</th><th class="px-4 py-3 text-right">Actions</th></tr></thead><tbody class="divide-y"><?php foreach ($inventoryData['putaway_rules'] as $rule): ?><tr><td class="px-4 py-3 font-mono"><?= (int) $rule['priority'] ?></td><td class="px-4 py-3"><?= $inventoryEscape((string) ($rule['item_code'] ?? 'All stocked items')) ?></td><td class="px-4 py-3"><?= $inventoryEscape((string) $rule['warehouse_code']) ?></td><td class="px-4 py-3 font-mono text-xs"><?= $inventoryEscape((string) $rule['dimensions_json']) ?></td><td class="px-4 py-3 text-right"><button type="button" data-record-modal-open="inventory-putaway-modal-<?= $inventoryEscape((string) $rule['putaway_rule_key']) ?>" class="inline-flex size-8 items-center justify-center rounded-md border" aria-label="Edit putaway <?= $inventoryEscape((string) $rule['warehouse_code']) ?>" title="Edit Putaway Rule"><span class="material-symbols-rounded text-base" aria-hidden="true">edit</span></button></td></tr><?php endforeach; ?></tbody></table></div>
                 <?php elseif ($inventorySection === 'reorder-levels' && ($inventoryData['reorder_rules'] ?? []) !== []): ?>
                     <div class="grid gap-5"><div class="overflow-x-auto"><table class="w-full min-w-[42rem] text-sm"><thead class="border-b text-left text-xs text-muted-foreground"><tr><th class="px-4 py-3">Item</th><th class="px-4 py-3">Warehouse</th><th class="px-4 py-3">Level</th><th class="px-4 py-3">Order qty</th><th class="px-4 py-3 text-right">Actions</th></tr></thead><tbody class="divide-y"><?php foreach ($inventoryData['reorder_rules'] as $rule): ?><tr><td class="px-4 py-3"><?= $inventoryEscape((string) $rule['item_code']) ?></td><td class="px-4 py-3"><?= $inventoryEscape((string) $rule['warehouse_code']) ?></td><td class="px-4 py-3 font-mono text-xs"><?= $inventoryEscape((string) $rule['reorder_level']) ?></td><td class="px-4 py-3 font-mono text-xs"><?= $inventoryEscape((string) $rule['reorder_quantity']) ?></td><td class="px-4 py-3 text-right"><button type="button" data-record-modal-open="inventory-reorder-modal-<?= $inventoryEscape((string) $rule['reorder_rule_key']) ?>" class="inline-flex size-8 items-center justify-center rounded-md border" aria-label="Edit reorder <?= $inventoryEscape((string) $rule['item_code']) ?>" title="Edit reorder rule"><span class="material-symbols-rounded text-base" aria-hidden="true">edit</span></button></td></tr><?php endforeach; ?></tbody></table></div><?php if (($inventoryData['reorder_recommendations'] ?? []) !== []): ?><section class="border-t pt-4" aria-labelledby="inventory-reorder-recommendations"><h3 id="inventory-reorder-recommendations" class="text-sm font-semibold">Items to be requested</h3><div class="mt-3 grid gap-2"><?php foreach ($inventoryData['reorder_recommendations'] as $recommendation): ?><div class="flex items-center justify-between gap-3 bg-muted/30 px-3 py-2 text-sm"><span><?= $inventoryEscape((string) $recommendation['item_code'] . ' / ' . (string) $recommendation['warehouse_code']) ?></span><span class="font-mono text-xs"><?= $inventoryEscape((string) $recommendation['recommended_quantity']) ?></span></div><?php endforeach; ?></div></section><?php endif; ?></div>
+                <?php elseif ($inventorySection === 'stock-reconciliation'): ?>
+                    <div data-inventory-reconciliations class="grid gap-5">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <h3 class="text-sm font-semibold">Stock reconciliation</h3>
+                            <button type="button" data-record-modal-open="inventory-reconciliation-modal-new" class="inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">
+                                <span class="material-symbols-rounded text-base" aria-hidden="true">rule</span>New reconciliation
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-[44rem] text-sm">
+                                <thead class="border-b text-left text-xs text-muted-foreground"><tr><th class="px-4 py-3">Number</th><th class="px-4 py-3">Purpose</th><th class="px-4 py-3">Posting</th><th class="px-4 py-3">Quantity diff</th><th class="px-4 py-3">Value diff</th><th class="px-4 py-3">Status</th></tr></thead>
+                                <tbody class="divide-y">
+                                <?php foreach ($inventoryData['reconciliations'] ?? [] as $reconciliation): ?>
+                                    <tr><td class="px-4 py-3 font-mono text-xs"><?= $inventoryEscape((string) $reconciliation['reconciliation_number']) ?></td><td class="px-4 py-3"><?= $inventoryEscape((string) $reconciliation['purpose']) ?></td><td class="px-4 py-3"><?= $inventoryEscape((string) $reconciliation['posting_datetime']) ?></td><td class="px-4 py-3 font-mono text-xs"><?= $inventoryEscape((string) $reconciliation['total_quantity_difference']) ?></td><td class="px-4 py-3 font-mono text-xs"><?= $inventoryEscape((string) $reconciliation['total_value_difference']) ?></td><td class="px-4 py-3"><?= $inventoryEscape((string) $reconciliation['reconciliation_status']) ?></td></tr>
+                                <?php endforeach; ?>
+                                <?php if (($inventoryData['reconciliations'] ?? []) === []): ?><tr><td class="px-4 py-8 text-center text-muted-foreground" colspan="6">No stock reconciliations yet.</td></tr><?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <section data-inventory-diagnostics aria-labelledby="inventory-diagnostics-title">
+                            <h3 id="inventory-diagnostics-title" class="text-sm font-semibold">Integrity diagnostics</h3>
+                            <div class="mt-2 divide-y border-y">
+                                <?php foreach ($inventoryData['diagnostics'] ?? [] as $diagnostic): ?>
+                                    <div class="flex items-center justify-between gap-3 px-2 py-2 text-sm"><span><?= $inventoryEscape((string) ($diagnostic['type'] ?? 'CHECK')) ?></span><span class="text-xs text-muted-foreground">Needs review</span></div>
+                                <?php endforeach; ?>
+                                <?php if (($inventoryData['diagnostics'] ?? []) === []): ?><div class="px-2 py-2 text-sm text-muted-foreground">No integrity diagnostics.</div><?php endif; ?>
+                            </div>
+                        </section>
+                        <form method="post" class="hidden" data-confirm-submit>
+                            <input type="hidden" name="csrf" value="<?= $inventoryEscape((string) ($_SESSION['csrf_token'] ?? '')) ?>">
+                            <input type="hidden" name="module_view" value="inventory-warehouse">
+                            <input type="hidden" name="module_action" value="save_stock_reconciliation">
+                        </form>
+                    </div>
                 <?php elseif (in_array($inventorySection, ['batch-numbers', 'serial-numbers'], true) && ($inventoryData[$inventorySection === 'batch-numbers' ? 'batches' : 'serials'] ?? []) !== []): ?>
                     <?php $trackingRecords = $inventoryData[$inventorySection === 'batch-numbers' ? 'batches' : 'serials']; $trackingIsBatch = $inventorySection === 'batch-numbers'; ?>
                     <div data-inventory-<?= $trackingIsBatch ? 'batches' : 'serials' ?> class="grid gap-5">
@@ -148,7 +182,7 @@ $inventoryEscape = static fn (string $value): string => htmlspecialchars($value,
                 <p class="mt-1 text-sm text-muted-foreground"><?= $inventoryEscape((string) ($inventoryData['company_name'] ?? $companyName ?? 'Company')) ?></p>
             </header>
             <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain p-5">
-                <?php if (in_array($inventorySection, ['dashboard', 'form-builder', 'items', 'warehouses', 'putaway', 'reorder-levels', 'batch-numbers', 'serial-numbers'], true)): ?>
+                <?php if (in_array($inventorySection, ['dashboard', 'form-builder', 'items', 'warehouses', 'putaway', 'reorder-levels', 'batch-numbers', 'serial-numbers', 'stock-reconciliation'], true)): ?>
                     <?php require __DIR__ . '/record-modal.php'; ?>
                     <?php if ($inventorySection === 'dashboard'): ?>
                         <section aria-labelledby="inventory-dashboard-actions-title">

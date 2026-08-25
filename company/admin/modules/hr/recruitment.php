@@ -579,16 +579,12 @@ function yovel_admin_hr_recruitment_print_payload(array $company, string $record
 
 function yovel_admin_convert_accepted_offer_to_onboarding(ADOConnection $db, array $company, array $admin, string $offerKey): array
 {
-    [$companyKey, $hash] = yovel_admin_hr_scope($company, $admin);
+    yovel_admin_hr_scope($company, $admin);
     if (!yovel_admin_is_uuid($offerKey)) { throw new InvalidArgumentException('Job Offer is invalid.'); }
-    return yovel_admin_hr_in_transaction($db, static function () use ($db, $company, $admin, $companyKey, $hash, $offerKey): array {
-        $offer = $db->GetRow('SELECT * FROM project_company_hr_job_offer WHERE company_key_hash = ? AND job_offer_key = ? FOR UPDATE', [$hash, $offerKey]);
-        if (!is_array($offer) || $offer === [] || (string) $offer['offer_status'] !== 'ACCEPTED') { throw new RuntimeException('Only an accepted Job Offer can enter onboarding.'); }
-        if (!function_exists('yovel_admin_create_employee_onboarding_from_offer')) { throw new RuntimeException('The onboarding owner contract is not available yet.'); }
-        $result = yovel_admin_create_employee_onboarding_from_offer($db, $company, $admin, ['job_offer_key' => $offerKey, 'company_key' => $companyKey]);
-        if (!is_array($result) || empty($result['employee_onboarding_key'])) { throw new RuntimeException('The onboarding owner did not return a verified record.'); }
-        return $result;
-    });
+    if (!function_exists('yovel_admin_create_employee_onboarding_from_offer')) { throw new RuntimeException('The onboarding owner contract is not available yet.'); }
+    $result = yovel_admin_create_employee_onboarding_from_offer($db, $company, $admin, ['job_offer_key' => $offerKey]);
+    if (!is_array($result) || empty($result['employee_onboarding_key'])) { throw new RuntimeException('The onboarding owner did not return a verified record.'); }
+    return $result;
 }
 
 function yovel_admin_hr_recruitment_data(array $company): array
