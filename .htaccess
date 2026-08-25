@@ -8,3 +8,8 @@
 </IfModule>
 
 DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^company/([^/]+)/admin/?$ company/admin/index.php?company_slug=$1 [L,QSA]
+</IfModule>

@@ -34,7 +34,7 @@
 - Produces tables: `project_company_module`, `project_module_group`, `project_module`, `project_module_form`
 - Consumes: `bx_uuid()`, `bx_db()`, `bx_audit()`, `project_company_project`
 
-- [ ] **Step 1: Write a failing schema and idempotency test**
+- [x] **Step 1: Write a failing schema and idempotency test**
 
 Create `tests/project-module-hierarchy.php` to require `app/foundation.php`, assert the exact required columns and named indexes, verify ownership joins, assert every logical name with:
 
@@ -46,13 +46,13 @@ if ((string) $row['module_table_name'] !== 'project_module_' . (int) $row['modul
 
 Capture group/module keys and counts, call `bx_seed_project_module_hierarchy()`, and assert the same keys and counts remain.
 
-- [ ] **Step 2: Run the test and confirm it fails**
+- [x] **Step 2: Run the test and confirm it fails**
 
 Run: `php tests/project-module-hierarchy.php`
 
 Expected: failure because `project_module_group` does not exist or `bx_seed_project_module_hierarchy()` is undefined.
 
-- [ ] **Step 3: Define one canonical ERP catalog**
+- [x] **Step 3: Define one canonical ERP catalog**
 
 Add `bx_project_erp_groups()` to `app/foundation.php` with the current 12 group labels, icons, descriptions, and feature arrays. Replace the body of `yovel_admin_erp_groups()` with:
 
@@ -63,7 +63,7 @@ function yovel_admin_erp_groups(): array
 }
 ```
 
-- [ ] **Step 4: Create idempotent registry schemas**
+- [x] **Step 4: Create idempotent registry schemas**
 
 Inside `bx_schema()`, create the four fixed tables and their approved unique/index contracts. Define `project_module` with:
 
@@ -75,13 +75,13 @@ module_table_name VARCHAR(80) NOT NULL UNIQUE
 
 End its DDL with `AUTO_INCREMENT=100` so the first generated index is at least 100.
 
-- [ ] **Step 5: Implement transactional seed and read-back**
+- [x] **Step 5: Implement transactional seed and read-back**
 
 For each active project, validate its company/branch ownership, upsert groups by `(project_key, module_group_code)`, and modules by `(project_key, module_group_key, module_code)`. Insert a new module with a trusted pending logical name, obtain `Insert_ID()`, update it to `project_module_<index>`, audit it, and compare every saved ownership/name/index field before commit.
 
 Map active `project_company_form_schema` and `project_company_hr_builder_form` records into `project_module_form` only when their normalized feature module exists. Preserve their source keys and schema JSON; do not move or delete source records.
 
-- [ ] **Step 6: Run the focused test**
+- [x] **Step 6: Run the focused test**
 
 Run: `php tests/project-module-hierarchy.php`
 
@@ -99,15 +99,15 @@ Expected: one JSON line with schema, numbering, ownership, forms, direct read-ba
 - Updates: `projectCompanyViewKey(companyKey, branchKey, projectKey): string`
 - Produces: `projectCompanyProjectKeyFromView(view): string`
 
-- [ ] **Step 1: Extend the static test with payload and route markers**
+- [x] **Step 1: Extend the static test with payload and route markers**
 
 Assert `administrator/index.php` selects all three registry tables and `frontend/src/App.tsx` contains `project_key`, `projectCompanyProjectKeyFromView`, and `projectModuleGroups`.
 
-- [ ] **Step 2: Add scoped payload queries**
+- [x] **Step 2: Add scoped payload queries**
 
 Add administrator payload arrays using fixed SQL joins and stable ordering. Include company name, branch name, project name, group name, module name, logical table name, and per-module form counts without exposing schema JSON in list data.
 
-- [ ] **Step 3: Extend TypeScript payload and route helpers**
+- [x] **Step 3: Extend TypeScript payload and route helpers**
 
 Add the three arrays to `AdminPayload`. Extend the view identity to three segments:
 
@@ -118,7 +118,7 @@ projectCompanyViewKey(companyKey, branchKey, projectKey)
 
 Read and write `project_key` in `AdminApp`, browser history, and `popstate`; clear it when a company or branch is selected.
 
-- [ ] **Step 4: Run focused validation**
+- [x] **Step 4: Run focused validation**
 
 Run: `php tests/project-module-hierarchy.php && php -l administrator/index.php`
 
@@ -134,15 +134,15 @@ Expected: test JSON and `No syntax errors detected`.
 - Consumes: extended route helper and company/branch/project parsers
 - Produces: nested accessible company and branch disclosures with selectable project leaves
 
-- [ ] **Step 1: Rename the group label**
+- [x] **Step 1: Rename the group label**
 
 Change `<SidebarGroupLabel>Projects</SidebarGroupLabel>` to `<SidebarGroupLabel>Company</SidebarGroupLabel>`.
 
-- [ ] **Step 2: Group projects by branch**
+- [x] **Step 2: Group projects by branch**
 
 Build `projectsByBranch` from non-deleted company projects and sort company, branch, and project lists by their display names.
 
-- [ ] **Step 3: Render nested branch disclosures**
+- [x] **Step 3: Render nested branch disclosures**
 
 Keep company `Collapsible` rows. Render each branch as its own `Collapsible` with `Frame`, a chevron, and a nested list of project buttons using `FolderKanban`. Selecting a project calls:
 
@@ -152,7 +152,7 @@ onViewChange(projectCompanyViewKey(company.company_key, branch.branch_key, proje
 
 Keep the active company and active branch open and mark the selected project active. Render disabled `No branches` and `No projects` states.
 
-- [ ] **Step 4: Compile the frontend**
+- [x] **Step 4: Compile the frontend**
 
 Run: `npm run build --prefix frontend`
 
@@ -168,19 +168,19 @@ Expected: TypeScript and Vite build exit code 0.
 - Produces: `ProjectModuleWorkspace`
 - Consumes: selected company, branch, project, `projectModuleGroups`, `projectModules`, `projectModuleForms`
 
-- [ ] **Step 1: Add selected-project state to the overview**
+- [x] **Step 1: Add selected-project state to the overview**
 
 Pass `selectedProjectKey` and `onProjectSelect` into `ProjectCompanyOverviewView`. Validate that the selected project belongs to the selected company and branch; otherwise render the existing unavailable state without changing data.
 
-- [ ] **Step 2: Render project identity and module counts**
+- [x] **Step 2: Render project identity and module counts**
 
 When a valid project is selected, show company, branch, project code/name/status, active group count, active module count, and form count in the existing full-width workspace style.
 
-- [ ] **Step 3: Render module groups and modules**
+- [x] **Step 3: Render module groups and modules**
 
 Render each module group as an unframed section with its modules in a compact table containing module name, logical table name, status, and form count. Do not nest cards. Show an empty state for groups or modules with no rows.
 
-- [ ] **Step 4: Verify static UI requirements and build**
+- [x] **Step 4: Verify static UI requirements and build**
 
 Extend the focused test to assert the `Company` label, nested project route call, `ProjectModuleWorkspace`, and logical table column. Run:
 
@@ -203,7 +203,7 @@ Expected: test JSON and build exit code 0.
 **Interfaces:**
 - Consumes the completed schema, payload, route, sidebar, and workspace.
 
-- [ ] **Step 1: Run PHP checks**
+- [x] **Step 1: Run PHP checks**
 
 Run:
 
@@ -214,18 +214,18 @@ php -l company/admin/index.php
 php tests/project-module-hierarchy.php
 ```
 
-- [ ] **Step 2: Run frontend checks**
+- [x] **Step 2: Run frontend checks**
 
 Run: `npm run build --prefix frontend`
 
-- [ ] **Step 3: Inspect committed data directly**
+- [x] **Step 3: Inspect committed data directly**
 
 Use `bx_db()` to print group/module/form counts, the minimum and maximum module index, mismatched logical-name count, broken ownership count, and duplicate business-key count. All mismatch/broken/duplicate counts must be zero.
 
-- [ ] **Step 4: Verify in the browser**
+- [x] **Step 4: Verify in the browser**
 
 Open the signed-in administrator route. Confirm Company -> Yovel East -> Sariaya Branch -> Agri Financing Officer expands, selection adds `project_key`, reload preserves it, and the project module workspace renders non-empty groups/modules at desktop and mobile widths.
 
-- [ ] **Step 5: Review the final diff**
+- [x] **Step 5: Review the final diff**
 
 Run `git diff --check` and inspect only the five planned files plus the plan/test additions. Do not stage or revert unrelated worktree changes.

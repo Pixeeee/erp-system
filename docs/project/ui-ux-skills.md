@@ -13,6 +13,8 @@
 - Use [ui-ux-modal](../../.agents/skills/ui-ux-modal/SKILL.md) for accessible shadcn/ui dialogs and modals, including responsive sizing, scrollable bodies, sticky actions, and validation states.
 - Use [ui-ux-tabs](../../.agents/skills/ui-ux-tabs/SKILL.md) for shadcn/ui tab menus and panels, including fit-content triggers, icons, sticky card headers, and independently scrollable content.
 - Use [ui-ux-form](../../.agents/skills/ui-ux-form/SKILL.md) for all form layout and submission behavior; every valid form submit must open a confirmation modal before continuing, complete both upsert paths, rehydrate from saved server values, show a success toast after a committed result, and show an informational failure modal with optional `View more` technical details when submission fails.
+- Use [ui-ux-erpnext-tour](../../.agents/skills/ui-ux-erpnext-tour/SKILL.md) for ERPNext-inspired module workspaces, setup cards, guided tours, shortcuts, and reports/masters directories.
+- For Accounting/Finance work, follow the ERPNext Accounting, Payables, Receivables, and Financial Reports reference set recorded in [rules.md](rules.md).
 
 ## Main page shell
 

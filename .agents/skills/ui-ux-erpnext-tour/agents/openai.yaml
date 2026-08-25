@@ -1,0 +1,3 @@
+interface:
+  display_name: "ERPNext Tour Workspace"
+  short_description: "Apply ERPNext-style setup cards, tours, shortcuts, and reports grids"
