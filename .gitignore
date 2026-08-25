@@ -2,6 +2,14 @@
 .env.*
 !.env.example
 
+# Firebase/Google service configs contain project keys and must stay local.
+google-services.json
+**/google-services.json
+GoogleService-Info.plist
+**/GoogleService-Info.plist
+!**/google-services.example.json
+!**/GoogleService-Info.example.plist
+
 # Local BuilderX configuration, coordinator state, and AI handoff files.
 phases/config.local.php
 system/config.local.php
