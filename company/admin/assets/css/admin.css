@@ -1,0 +1,2321 @@
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        @media (min-width: 1024px) {
+            .yovel-mobile-nav {
+                display: none !important;
+            }
+            .yovel-desktop-sidebar {
+                display: flex !important;
+            }
+            .yovel-sidebar-toggle {
+                display: inline-flex !important;
+            }
+        }
+        @media (max-width: 1023px) {
+            .yovel-desktop-sidebar {
+                display: none !important;
+            }
+            .yovel-sidebar-toggle {
+                display: none !important;
+            }
+        }
+        .yovel-erp-summary {
+            list-style: none;
+        }
+        .yovel-erp-summary::-webkit-details-marker {
+            display: none;
+        }
+        .yovel-erp-chevron {
+            transition: transform 150ms ease;
+        }
+        details[open] > .yovel-erp-summary .yovel-erp-chevron {
+            transform: rotate(90deg);
+        }
+        .yovel-confirm-dialog[hidden] {
+            display: none;
+        }
+        .yovel-hr-two-panel {
+            min-height: 0;
+        }
+        .yovel-hr-panel {
+            min-height: 0;
+            overflow: hidden;
+        }
+        .yovel-hr-workspace {
+            --yovel-hr-accent: #22d3ee;
+            background: transparent;
+            border-radius: 0;
+            isolation: isolate;
+            padding: 0;
+        }
+        .yovel-hr-workspace .yovel-hr-surface {
+            background: var(--card);
+            border-color: color-mix(in oklch, var(--yovel-hr-accent) 18%, var(--border));
+            box-shadow: none;
+        }
+        .yovel-hr-workspace .yovel-hr-surface-header {
+            background:
+                radial-gradient(circle at 1.75rem 0, rgb(34 211 238 / 0.16), transparent 11rem),
+                linear-gradient(180deg, rgb(15 38 43), rgb(13 26 30)),
+                rgb(11 28 32);
+            color: rgb(248 250 252);
+            box-shadow: inset 0 1px 0 rgb(34 211 238 / 0.16);
+        }
+        .yovel-hr-workspace .yovel-hr-surface-header .text-muted-foreground {
+            color: rgb(186 202 207);
+        }
+        .yovel-hr-feature-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.375rem;
+            justify-content: flex-start;
+        }
+        .yovel-hr-feature-header p {
+            margin-top: 0;
+            max-width: 24rem;
+        }
+        @media (min-width: 1280px) {
+            .yovel-hr-two-panel > .yovel-hr-panel > .yovel-hr-surface-header {
+                min-height: 8.3125rem;
+            }
+        }
+        .yovel-hr-workspace .yovel-hr-metric {
+            background-color: color-mix(in oklch, var(--yovel-hr-accent) 10%, var(--secondary));
+            color: var(--secondary-foreground);
+        }
+        .yovel-hr-workspace .yovel-widget-item {
+            background:
+                linear-gradient(180deg, color-mix(in oklch, var(--yovel-hr-accent) 5%, var(--muted)), var(--muted));
+            border: 1px solid color-mix(in oklch, var(--yovel-hr-accent) 10%, transparent);
+            box-shadow: inset 0 1px 0 color-mix(in oklch, white 5%, transparent);
+            transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+        }
+        .yovel-hr-workspace .yovel-widget-item:hover {
+            border-color: color-mix(in oklch, var(--yovel-hr-accent) 28%, transparent);
+            box-shadow: 0 0 0.85rem color-mix(in oklch, var(--yovel-hr-accent) 12%, transparent), inset 0 1px 0 color-mix(in oklch, white 7%, transparent);
+            transform: translateY(-1px);
+        }
+        .yovel-job-position-layout {
+            gap: 0.75rem;
+        }
+        .yovel-department-layout {
+            gap: 0.75rem;
+        }
+        .yovel-job-position-layout .yovel-hr-surface-header {
+            padding: 0.875rem 1.25rem;
+        }
+        .yovel-job-position-layout .yovel-hr-panel-body {
+            gap: 0.75rem;
+            padding: 0.75rem;
+        }
+        .yovel-job-position-layout #yovel-job-position-setup-card {
+            padding: 0.75rem;
+        }
+        .yovel-job-position-layout #yovel-job-position-setup-card > .mt-5 {
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+        .yovel-job-position-layout #yovel-job-position-setup-card h3,
+        .yovel-job-position-layout #yovel-job-position-setup-card h4,
+        .yovel-job-position-layout .yovel-erpnext-card h3 {
+            font-size: 0.9375rem;
+            line-height: 1.35;
+        }
+        .yovel-job-position-layout #yovel-job-position-setup-card p {
+            font-size: 0.8125rem;
+            line-height: 1.45;
+        }
+        .yovel-job-position-layout .yovel-erpnext-step {
+            padding-bottom: 0.375rem;
+            padding-top: 0.375rem;
+        }
+        .yovel-job-position-layout .yovel-erpnext-card .gap-8 {
+            gap: 1rem;
+        }
+        .yovel-job-position-layout #yovel-job-position-widget-board {
+            gap: 0.625rem;
+            padding: 0.75rem;
+        }
+        .yovel-job-position-layout #yovel-job-position-widget-board .yovel-widget-item {
+            padding: 0.75rem;
+        }
+        .yovel-job-position-layout #yovel-job-position-widget-board p {
+            font-size: 0.75rem;
+            line-height: 1.35;
+            margin-top: 0.25rem;
+        }
+        .yovel-job-position-layout #yovel-job-position-widget-board .size-7 {
+            height: 1.625rem;
+            width: 1.625rem;
+        }
+        .yovel-job-position-side-panel {
+            align-content: start;
+            gap: 0.75rem;
+            grid-auto-rows: max-content;
+        }
+        .yovel-job-position-control-group {
+            background:
+                linear-gradient(180deg, color-mix(in oklch, var(--yovel-hr-accent) 4%, var(--muted)), var(--muted));
+            border: 1px solid color-mix(in oklch, var(--yovel-hr-accent) 12%, transparent);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .yovel-job-position-control-group > summary {
+            cursor: pointer;
+            list-style: none;
+        }
+        .yovel-job-position-control-group > summary::-webkit-details-marker {
+            display: none;
+        }
+        .yovel-job-position-control-chevron {
+            transition: transform 150ms ease;
+        }
+        .yovel-job-position-control-group[open] .yovel-job-position-control-chevron {
+            transform: rotate(180deg);
+        }
+        .yovel-job-position-shortcuts {
+            display: grid;
+            gap: 0.125rem;
+            grid-template-columns: minmax(0, 1fr);
+        }
+        .yovel-job-position-shortcuts a,
+        .yovel-job-position-shortcuts button {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            border-radius: 0.375rem;
+            display: inline-flex;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            min-height: 2rem;
+            padding: 0.4rem 0.5rem;
+            text-align: left;
+            transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+        }
+        .yovel-job-position-shortcuts a:hover,
+        .yovel-job-position-shortcuts button:hover {
+            background: color-mix(in oklch, var(--yovel-hr-accent) 10%, hsl(var(--background)));
+            border-color: color-mix(in oklch, var(--yovel-hr-accent) 32%, hsl(var(--border)));
+            box-shadow: 0 0 0.65rem color-mix(in oklch, var(--yovel-hr-accent) 10%, transparent);
+            color: color-mix(in oklch, var(--yovel-hr-accent) 72%, hsl(var(--foreground)));
+        }
+        .yovel-job-position-report-grid {
+            display: grid;
+            gap: 0.125rem;
+            grid-template-columns: minmax(0, 1fr);
+        }
+        .yovel-job-position-report-grid > div {
+            display: contents;
+        }
+        .yovel-job-position-report-grid h4 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            grid-column: 1 / -1;
+            letter-spacing: 0;
+            line-height: 1.25;
+            margin-top: 0.25rem;
+        }
+        .yovel-job-position-report-grid a,
+        .yovel-job-position-report-grid button,
+        .yovel-job-position-report-grid span {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            border-radius: 0.375rem;
+            display: inline-flex;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            line-height: 1.35;
+            min-height: 2rem;
+            padding: 0.4rem 0.5rem;
+            text-align: left;
+            transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+        }
+        .yovel-job-position-report-grid a,
+        .yovel-job-position-report-grid button {
+            color: hsl(var(--foreground));
+        }
+        .yovel-job-position-report-grid a:hover,
+        .yovel-job-position-report-grid button:hover {
+            background: color-mix(in oklch, var(--yovel-hr-accent) 10%, hsl(var(--background)));
+            border-color: color-mix(in oklch, var(--yovel-hr-accent) 32%, hsl(var(--border)));
+            box-shadow: 0 0 0.65rem color-mix(in oklch, var(--yovel-hr-accent) 10%, transparent);
+            color: color-mix(in oklch, var(--yovel-hr-accent) 72%, hsl(var(--foreground)));
+        }
+        .yovel-job-position-report-grid span {
+            opacity: 0.72;
+        }
+        .yovel-hr-workspace tbody tr {
+            transition: background-color 140ms ease;
+        }
+        .yovel-hr-workspace tbody tr:hover {
+            background-color: color-mix(in oklch, var(--yovel-hr-accent) 5%, transparent);
+        }
+        .yovel-erpnext-hub {
+            --yovel-erpnext-surface: rgb(250 250 249);
+            --yovel-erpnext-surface-soft: rgb(241 245 249);
+            --yovel-erpnext-surface-raised: rgb(255 255 255);
+            --yovel-erpnext-border: rgb(226 232 240);
+            --yovel-erpnext-text: rgb(15 23 42);
+            --yovel-erpnext-muted: rgb(71 85 105);
+            --yovel-erpnext-disabled: rgb(148 163 184);
+            --yovel-erpnext-accent: rgb(8 145 178);
+            color-scheme: light dark;
+        }
+        .dark .yovel-erpnext-hub {
+            --yovel-erpnext-surface: rgb(16 22 28);
+            --yovel-erpnext-surface-soft: rgb(28 36 44);
+            --yovel-erpnext-surface-raised: rgb(10 13 17);
+            --yovel-erpnext-border: rgb(51 65 85);
+            --yovel-erpnext-text: rgb(226 232 240);
+            --yovel-erpnext-muted: rgb(148 163 184);
+            --yovel-erpnext-disabled: rgb(100 116 139);
+            --yovel-erpnext-accent: rgb(34 211 238);
+        }
+        .yovel-erpnext-card {
+            background: var(--yovel-erpnext-surface);
+            border: 1px solid var(--yovel-erpnext-border);
+            box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+            color: var(--yovel-erpnext-text);
+        }
+        .yovel-hr-panel .yovel-erpnext-card {
+            border-color: transparent;
+            box-shadow: none;
+        }
+        .yovel-erpnext-card .text-muted-foreground,
+        .yovel-erpnext-card [class*="text-muted-foreground"] {
+            color: var(--yovel-erpnext-muted);
+        }
+        .yovel-erpnext-soft-button {
+            background: var(--yovel-erpnext-surface-soft);
+            color: var(--yovel-erpnext-text);
+            transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+        }
+        .yovel-erpnext-soft-button:hover {
+            background: color-mix(in oklch, var(--yovel-erpnext-surface-soft) 72%, var(--yovel-erpnext-accent));
+        }
+        .yovel-erpnext-muted-button {
+            color: var(--yovel-erpnext-muted);
+            transition: background-color 140ms ease, color 140ms ease;
+        }
+        .yovel-erpnext-muted-button:hover {
+            background: var(--yovel-erpnext-surface-soft);
+            color: var(--yovel-erpnext-text);
+        }
+        .yovel-erpnext-primary-button {
+            background: var(--yovel-erpnext-text);
+            color: var(--yovel-erpnext-surface-raised);
+        }
+        .yovel-erpnext-primary-button:hover {
+            background: color-mix(in oklch, var(--yovel-erpnext-text) 84%, var(--yovel-erpnext-accent));
+        }
+        .yovel-erpnext-disabled {
+            color: var(--yovel-erpnext-disabled);
+        }
+        .yovel-erpnext-step {
+            border-radius: 0.5rem;
+            color: var(--yovel-erpnext-text);
+            transition: background-color 140ms ease, color 140ms ease;
+        }
+        .yovel-erpnext-step[aria-current="step"] {
+            background: var(--yovel-erpnext-surface-soft);
+            color: var(--yovel-erpnext-text);
+        }
+        .yovel-erpnext-step-icon {
+            border: 1px solid var(--yovel-erpnext-muted);
+            color: var(--yovel-erpnext-text);
+        }
+        .yovel-erpnext-step[aria-current="step"] .yovel-erpnext-step-icon {
+            background: var(--yovel-erpnext-text);
+            border-color: var(--yovel-erpnext-text);
+            color: var(--yovel-erpnext-surface-raised);
+        }
+        .yovel-erpnext-link-grid a,
+        .yovel-erpnext-link-grid button {
+            color: var(--yovel-erpnext-text);
+            text-align: left;
+        }
+        .yovel-erpnext-link-grid a:hover,
+        .yovel-erpnext-link-grid button:hover {
+            color: var(--yovel-erpnext-accent);
+        }
+        .yovel-tour-highlight {
+            position: relative;
+            z-index: 82;
+            outline: 2px solid rgb(34 211 238 / 0.86);
+            outline-offset: 0.25rem;
+            box-shadow: 0 0 0 0.5rem rgb(34 211 238 / 0.14), 0 0 1.5rem rgb(34 211 238 / 0.28);
+        }
+        .yovel-tour-overlay[hidden] {
+            display: none;
+        }
+        .yovel-tour-overlay {
+            z-index: 80;
+        }
+        .yovel-tour-popover {
+            background: rgb(250 250 249);
+            color: rgb(15 23 42);
+            box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 0.28);
+        }
+        .dark .yovel-tour-popover {
+            background: rgb(16 22 28);
+            border-color: rgb(51 65 85);
+            color: rgb(226 232 240);
+        }
+        .yovel-tour-popover .text-muted-foreground {
+            color: rgb(71 85 105);
+        }
+        .dark .yovel-tour-popover .text-muted-foreground {
+            color: rgb(148 163 184);
+        }
+        .yovel-tour-soft-button {
+            background: rgb(241 245 249);
+            color: rgb(30 41 59);
+            transition: background-color 140ms ease, color 140ms ease;
+        }
+        .yovel-tour-soft-button:hover {
+            background: rgb(226 232 240);
+            color: rgb(15 23 42);
+        }
+        .dark .yovel-tour-soft-button {
+            background: rgb(28 36 44);
+            color: rgb(226 232 240);
+        }
+        .dark .yovel-tour-soft-button:hover {
+            background: rgb(51 65 85);
+            color: white;
+        }
+        .yovel-tour-muted-button {
+            color: rgb(71 85 105);
+            transition: background-color 140ms ease, color 140ms ease;
+        }
+        .yovel-tour-muted-button:hover {
+            background: rgb(241 245 249);
+            color: rgb(15 23 42);
+        }
+        .dark .yovel-tour-muted-button {
+            color: rgb(148 163 184);
+        }
+        .dark .yovel-tour-muted-button:hover {
+            background: rgb(28 36 44);
+            color: rgb(226 232 240);
+        }
+        .yovel-tour-primary-button {
+            background: rgb(15 23 42);
+            color: white;
+            transition: background-color 140ms ease;
+        }
+        .yovel-tour-primary-button:hover {
+            background: rgb(51 65 85);
+        }
+        .dark .yovel-tour-primary-button {
+            background: rgb(226 232 240);
+            color: rgb(15 23 42);
+        }
+        .dark .yovel-tour-primary-button:hover {
+            background: rgb(203 213 225);
+        }
+        @media (prefers-reduced-motion: no-preference) {
+            .yovel-tour-popover {
+                animation: yovelTourEnter 140ms ease-out;
+            }
+            @keyframes yovelTourEnter {
+                from {
+                    opacity: 0;
+                    transform: translateY(0.25rem);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        }
+        .material-symbols-rounded {
+            display: inline-block;
+            direction: ltr;
+            font-family: 'Material Symbols Rounded', 'Material Icons Round', 'Material Icons', sans-serif;
+            font-feature-settings: 'liga';
+            font-size: 1rem;
+            font-style: normal;
+            font-weight: 500;
+            letter-spacing: 0;
+            line-height: 1;
+            text-transform: none;
+            white-space: nowrap;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        .yovel-action-icon {
+            --yovel-action-rgb: 148 163 184;
+            align-items: center;
+            background:
+                linear-gradient(180deg, rgb(var(--yovel-action-rgb) / 0.13), rgb(var(--yovel-action-rgb) / 0.05)),
+                hsl(var(--background));
+            border: 1px solid rgb(var(--yovel-action-rgb) / 0.32);
+            border-radius: 0.375rem;
+            box-shadow:
+                0 0 0.55rem rgb(var(--yovel-action-rgb) / 0.12),
+                inset 0 1px 0 rgb(255 255 255 / 0.05);
+            color: rgb(var(--yovel-action-rgb));
+            display: inline-flex;
+            height: 2rem;
+            justify-content: center;
+            width: 2rem;
+            transition:
+                background-color 140ms ease,
+                border-color 140ms ease,
+                box-shadow 140ms ease,
+                color 140ms ease,
+                transform 140ms ease;
+        }
+        .yovel-action-icon:hover {
+            border-color: rgb(var(--yovel-action-rgb) / 0.62);
+            box-shadow:
+                0 0 0.9rem rgb(var(--yovel-action-rgb) / 0.26),
+                inset 0 1px 0 rgb(255 255 255 / 0.08);
+            transform: translateY(-1px);
+        }
+        .yovel-action-icon:focus-visible {
+            outline: 2px solid rgb(var(--yovel-action-rgb) / 0.72);
+            outline-offset: 2px;
+        }
+        .yovel-action-icon--view {
+            --yovel-action-rgb: 34 211 238;
+        }
+        .yovel-action-icon--success {
+            --yovel-action-rgb: 74 222 128;
+        }
+        .yovel-action-icon--warning {
+            --yovel-action-rgb: 250 204 21;
+        }
+        .yovel-action-icon--info {
+            --yovel-action-rgb: 96 165 250;
+        }
+        .yovel-action-icon--archive {
+            --yovel-action-rgb: 168 162 158;
+        }
+        .yovel-action-icon--danger {
+            --yovel-action-rgb: 248 113 113;
+        }
+        @media (max-width: 640px) {
+            .yovel-action-icon {
+                height: 2.75rem;
+                width: 2.75rem;
+            }
+        }
+        .yovel-hr-panel-body {
+            min-height: 0;
+            flex: 1 1 auto;
+            overflow: auto;
+            overscroll-behavior: contain;
+        }
+        .yovel-modal-scroll {
+            scrollbar-color: rgb(34 211 238 / 0.55) rgb(14 20 22 / 0.82);
+            scrollbar-gutter: stable;
+            scrollbar-width: thin;
+        }
+        .yovel-modal-scroll::-webkit-scrollbar {
+            height: 0.75rem;
+            width: 0.75rem;
+        }
+        .yovel-modal-scroll::-webkit-scrollbar-track {
+            background:
+                linear-gradient(180deg, rgb(16 25 28 / 0.95), rgb(10 14 16 / 0.95));
+            border-left: 1px solid rgb(34 211 238 / 0.1);
+        }
+        .yovel-modal-scroll::-webkit-scrollbar-thumb {
+            background:
+                linear-gradient(180deg, rgb(34 211 238 / 0.72), rgb(34 211 238 / 0.34));
+            border: 0.2rem solid rgb(10 14 16);
+            border-radius: 999px;
+        }
+        .yovel-modal-scroll::-webkit-scrollbar-thumb:hover {
+            background:
+                linear-gradient(180deg, rgb(103 232 249 / 0.9), rgb(34 211 238 / 0.48));
+        }
+        .yovel-modal-scroll::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+        .yovel-form-builder-scroll {
+            background:
+                linear-gradient(180deg, rgb(16 16 16), rgb(14 14 14));
+            scroll-padding-top: 4.75rem;
+        }
+        .yovel-form-builder-scroll .yovel-sticky-ui-surface {
+            background:
+                linear-gradient(180deg, rgb(17 17 17), rgb(16 16 16 / 0.98));
+            box-shadow:
+                0 1px 0 rgb(255 255 255 / 0.08),
+                0 0.8rem 1.25rem rgb(0 0 0 / 0.18);
+        }
+        .yovel-form-builder-modal > section {
+            max-width: min(86rem, calc(100vw - 1.5rem));
+        }
+        .yovel-hr-form-builder {
+            --yovel-builder-accent: #22d3ee;
+            min-width: 0;
+        }
+        .yovel-hr-form-builder-shell {
+            display: grid;
+            gap: 1rem;
+        }
+        @media (min-width: 1180px) {
+            .yovel-hr-form-builder-shell {
+                grid-template-columns: minmax(10rem, 1.7fr) minmax(0, 6.3fr) minmax(18rem, 4fr);
+                align-items: start;
+            }
+            .yovel-hr-form-builder[data-hr-form-builder-mode="customize"] .yovel-hr-form-builder-shell {
+                grid-template-columns: minmax(0, 6.5fr) minmax(19rem, 4.5fr);
+            }
+            .yovel-form-builder-modal .yovel-hr-form-builder-shell {
+                gap: 0;
+            }
+            .yovel-form-builder-modal .yovel-hr-builder-pane + .yovel-hr-builder-pane {
+                border-left: 1px solid hsl(var(--border));
+            }
+        }
+        .yovel-hr-builder-pane {
+            min-width: 0;
+            border-radius: 0.5rem;
+            background: rgb(18 18 18 / 0.62);
+            box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.035);
+        }
+        .yovel-form-builder-modal .yovel-hr-builder-pane {
+            border-radius: 0;
+        }
+        .yovel-form-builder-modal .yovel-hr-builder-pane:first-child {
+            border-bottom-left-radius: 0.5rem;
+            border-top-left-radius: 0.5rem;
+        }
+        .yovel-form-builder-modal .yovel-hr-builder-pane:last-child {
+            border-bottom-right-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+        .yovel-hr-builder-toolbox {
+            position: sticky;
+            top: 4.5rem;
+            align-self: start;
+        }
+        .yovel-form-builder-modal .yovel-hr-builder-toolbox,
+        .yovel-form-builder-modal .yovel-hr-builder-settings {
+            top: 0;
+        }
+        .yovel-hr-builder-tool-grid {
+            display: grid;
+            gap: 0.4rem;
+            grid-template-columns: minmax(0, 1fr);
+        }
+        @media (min-width: 1440px) {
+            .yovel-hr-builder-tool-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        .yovel-hr-builder-tool {
+            align-items: center;
+            background: hsl(var(--background) / 0.78);
+            border: 1px solid hsl(var(--border));
+            border-radius: 0.375rem;
+            display: inline-flex;
+            gap: 0.5rem;
+            min-height: 2.25rem;
+            padding: 0.45rem 0.55rem;
+            text-align: left;
+            transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+        }
+        .yovel-hr-builder-tool:hover {
+            background: color-mix(in oklch, var(--yovel-builder-accent) 9%, hsl(var(--background)));
+            border-color: color-mix(in oklch, var(--yovel-builder-accent) 30%, hsl(var(--border)));
+            box-shadow: 0 0 0.7rem color-mix(in oklch, var(--yovel-builder-accent) 10%, transparent);
+            transform: translateY(-1px);
+        }
+        .yovel-hr-builder-canvas {
+            display: grid;
+            gap: 0.75rem;
+        }
+        .yovel-hr-builder-section {
+            border-radius: 0.5rem;
+            background: hsl(var(--background) / 0.42);
+            overflow: hidden;
+            transition: box-shadow 140ms ease, outline-color 140ms ease;
+        }
+        .yovel-hr-builder-section[data-hr-builder-drop-active="true"] {
+            outline: 1px solid color-mix(in oklch, var(--yovel-builder-accent) 45%, hsl(var(--border)));
+            box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--yovel-builder-accent) 32%, transparent), 0 0 1rem color-mix(in oklch, var(--yovel-builder-accent) 12%, transparent);
+        }
+        .yovel-hr-builder-section-header {
+            border-bottom: 1px solid hsl(var(--border));
+            padding: 0.625rem 0.75rem;
+        }
+        .yovel-hr-builder-field-list {
+            display: grid;
+            gap: 0.4rem;
+            padding: 0.625rem;
+        }
+        .yovel-hr-builder-field-card {
+            border: 1px solid hsl(var(--border));
+            border-radius: 0.5rem;
+            background: hsl(var(--card) / 0.48);
+            cursor: grab;
+            display: grid;
+            gap: 0.35rem;
+            padding: 0.625rem 0.75rem;
+            text-align: left;
+            transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+        }
+        .yovel-hr-builder-field-main {
+            align-items: center;
+            display: grid;
+            gap: 0.5rem;
+            grid-template-columns: minmax(0, 1fr) auto;
+        }
+        .yovel-hr-builder-field-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            line-height: 1.35;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .yovel-hr-builder-field-badges {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            justify-content: flex-end;
+        }
+        .yovel-hr-builder-field-meta {
+            color: hsl(var(--muted-foreground));
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 0.75rem;
+            gap: 0.35rem;
+            line-height: 1.4;
+        }
+        .yovel-hr-builder-field-meta span + span::before {
+            content: "· ";
+        }
+        .yovel-hr-builder-field-card:active {
+            cursor: grabbing;
+        }
+        .yovel-hr-builder-field-card[data-hr-builder-dragging="true"] {
+            opacity: 0.58;
+        }
+        .yovel-hr-builder-field-card[aria-selected="true"],
+        .yovel-hr-builder-field-card:hover {
+            border-color: color-mix(in oklch, var(--yovel-builder-accent) 38%, hsl(var(--border)));
+            box-shadow: 0 0 0.75rem color-mix(in oklch, var(--yovel-builder-accent) 10%, transparent);
+            background: color-mix(in oklch, var(--yovel-builder-accent) 6%, hsl(var(--card)));
+        }
+        .yovel-hr-builder-preview-control {
+            border: 1px solid hsl(var(--border));
+            border-radius: 0.375rem;
+            background: hsl(var(--background) / 0.72);
+            color: hsl(var(--muted-foreground));
+            min-height: 2rem;
+            padding: 0.4rem 0.55rem;
+        }
+        .yovel-hr-builder-settings {
+            position: sticky;
+            top: 4.5rem;
+            align-self: start;
+        }
+        .yovel-hr-builder-settings-panel {
+            background: hsl(var(--background) / 0.36);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+        }
+        .yovel-hr-builder-settings-panel[hidden] {
+            display: none;
+        }
+        .yovel-hr-builder-status-pill {
+            border-radius: 999px;
+            background: color-mix(in oklch, var(--yovel-builder-accent) 12%, hsl(var(--secondary)));
+            color: hsl(var(--secondary-foreground));
+            font-size: 0.625rem;
+            font-weight: 700;
+            line-height: 1.2;
+            padding: 0.125rem 0.42rem;
+        }
+        .yovel-hr-form-builder[data-hr-form-builder-mode="customize"] .yovel-hr-builder-canvas-pane {
+            background: rgb(18 18 18 / 0.44);
+        }
+        .yovel-hr-form-builder[data-hr-form-builder-mode="customize"] .yovel-hr-builder-field-card {
+            cursor: pointer;
+            min-height: 3.25rem;
+        }
+        .yovel-hr-form-builder[data-hr-form-builder-mode="customize"] .yovel-hr-builder-field-card[aria-selected="true"] {
+            background: color-mix(in oklch, var(--yovel-builder-accent) 8%, hsl(var(--card)));
+        }
+        .yovel-hr-form-builder[data-hr-form-builder-mode="customize"] .yovel-hr-builder-section {
+            background: transparent;
+        }
+        .yovel-hr-form-builder[data-hr-form-builder-mode="customize"] .yovel-hr-builder-section-header {
+            border-bottom-color: hsl(var(--border) / 0.55);
+        }
+        .yovel-hr-form-builder[data-hr-form-builder-mode="customize"] .yovel-hr-builder-settings {
+            background: rgb(18 18 18 / 0.72);
+        }
+        .yovel-form-builder-modal .yovel-hr-form-builder-shell {
+            min-height: min(44rem, calc(100dvh - 13rem));
+        }
+        .yovel-form-builder-modal .yovel-hr-builder-pane {
+            border: 1px solid hsl(var(--border) / 0.7);
+            background: hsl(var(--card));
+        }
+        @media (min-width: 1180px) {
+            .yovel-form-builder-modal .yovel-hr-builder-pane {
+                border-bottom-width: 0;
+                border-left-width: 0;
+                border-top-width: 0;
+            }
+            .yovel-form-builder-modal .yovel-hr-builder-pane:first-child {
+                border-left-width: 1px;
+            }
+            .yovel-form-builder-modal .yovel-hr-builder-pane + .yovel-hr-builder-pane {
+                border-left: 1px solid hsl(var(--border) / 0.85);
+            }
+        }
+        .yovel-hr-builder-pane > div:first-child {
+            border-bottom: 1px solid hsl(var(--border) / 0.55);
+            margin: -0.75rem -0.75rem 0;
+            padding: 0.75rem;
+        }
+        .yovel-hr-builder-toolbox > div:first-child {
+            margin-bottom: 0;
+        }
+        .yovel-hr-builder-canvas {
+            gap: 0.95rem;
+        }
+        .yovel-hr-builder-section {
+            border: 1px solid hsl(var(--border) / 0.78);
+            background: hsl(var(--background) / 0.58);
+        }
+        .yovel-hr-builder-section-header {
+            background: color-mix(in oklch, var(--yovel-builder-accent) 7%, hsl(var(--card)));
+            border-bottom: 1px solid hsl(var(--border) / 0.85);
+        }
+        .yovel-hr-builder-section-header h5 {
+            align-items: center;
+            display: inline-flex;
+            gap: 0.5rem;
+        }
+        .yovel-hr-builder-section-header h5::before {
+            background: var(--yovel-builder-accent);
+            border-radius: 999px;
+            box-shadow: 0 0 0.7rem color-mix(in oklch, var(--yovel-builder-accent) 30%, transparent);
+            content: "";
+            display: inline-block;
+            height: 0.75rem;
+            width: 0.22rem;
+        }
+        .yovel-hr-builder-field-list {
+            gap: 0.65rem;
+            padding: 0.75rem;
+        }
+        .yovel-hr-builder-field-card {
+            align-items: stretch;
+            background: hsl(var(--background) / 0.78);
+            border-left: 3px solid transparent;
+            display: grid;
+            gap: 0;
+            grid-template-columns: 2rem minmax(0, 1fr);
+            min-height: 4.75rem;
+            overflow: hidden;
+            padding: 0;
+        }
+        .yovel-hr-builder-field-grip {
+            align-items: center;
+            background: hsl(var(--muted) / 0.35);
+            border-right: 1px solid hsl(var(--border) / 0.72);
+            color: hsl(var(--muted-foreground));
+            display: inline-flex;
+            font-size: 1.15rem;
+            justify-content: center;
+        }
+        .yovel-hr-builder-field-content {
+            display: grid;
+            gap: 0.45rem;
+            min-width: 0;
+            padding: 0.72rem 0.85rem;
+        }
+        .yovel-hr-builder-field-divider {
+            background: linear-gradient(90deg, hsl(var(--border) / 0.9), hsl(var(--border) / 0.18));
+            display: block;
+            height: 1px;
+        }
+        .yovel-hr-builder-field-preview {
+            display: block;
+        }
+        .yovel-hr-builder-field-card[aria-selected="true"],
+        .yovel-hr-builder-field-card:hover {
+            border-left-color: var(--yovel-builder-accent);
+        }
+        .yovel-hr-builder-field-card[aria-selected="true"] .yovel-hr-builder-field-grip,
+        .yovel-hr-builder-field-card:hover .yovel-hr-builder-field-grip {
+            background: color-mix(in oklch, var(--yovel-builder-accent) 13%, hsl(var(--muted)));
+            color: hsl(var(--foreground));
+        }
+        .yovel-hr-builder-preview-control {
+            border-style: dashed;
+            font-size: 0.82rem;
+            line-height: 1.35;
+        }
+        .yovel-hr-builder-settings-panel {
+            border: 1px solid hsl(var(--border) / 0.55);
+            box-shadow: none;
+        }
+        .yovel-hr-builder-property-group {
+            border-top: 1px solid hsl(var(--border) / 0.72);
+            display: grid;
+            gap: 0.75rem;
+            padding-top: 0.85rem;
+        }
+        .yovel-hr-builder-property-group:first-of-type {
+            border-top: 0;
+            padding-top: 0;
+        }
+        .yovel-hr-builder-property-heading {
+            align-items: flex-start;
+            display: flex;
+            gap: 0.65rem;
+        }
+        .yovel-hr-builder-property-heading > span {
+            align-items: center;
+            background: color-mix(in oklch, var(--yovel-builder-accent) 16%, hsl(var(--secondary)));
+            border: 1px solid color-mix(in oklch, var(--yovel-builder-accent) 30%, hsl(var(--border)));
+            border-radius: 999px;
+            color: hsl(var(--foreground));
+            display: inline-flex;
+            flex: 0 0 auto;
+            font-size: 0.7rem;
+            font-weight: 800;
+            height: 1.45rem;
+            justify-content: center;
+            width: 1.45rem;
+        }
+        .yovel-hr-builder-property-heading h6 {
+            font-size: 0.78rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .yovel-hr-builder-property-heading p {
+            color: hsl(var(--muted-foreground));
+            font-size: 0.72rem;
+            line-height: 1.45;
+            margin-top: 0.15rem;
+        }
+        .yovel-hr-google-builder {
+            background:
+                linear-gradient(180deg, hsl(var(--background) / 0.72), hsl(var(--background) / 0.92));
+        }
+        .yovel-hr-dashboard-home {
+            align-content: start;
+        }
+        .yovel-hr-dashboard-setup {
+            background: hsl(var(--card));
+            border-left: 4px solid var(--yovel-hr-accent, #22d3ee);
+        }
+        .yovel-hr-dashboard-task {
+            align-items: center;
+            border-radius: 0.375rem;
+            display: flex;
+            gap: 0.65rem;
+            min-height: 2.25rem;
+            padding: 0.45rem 0.65rem;
+            transition: background-color 140ms ease, color 140ms ease;
+        }
+        .yovel-hr-dashboard-task:hover,
+        .yovel-hr-dashboard-task[aria-current="step"] {
+            background: hsl(var(--muted));
+        }
+        .yovel-hr-dashboard-feature {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: 0.5rem;
+            display: grid;
+            gap: 0.6rem;
+            min-height: 8.5rem;
+            padding: 1rem;
+            transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+        }
+        .yovel-hr-dashboard-feature:hover {
+            border-color: color-mix(in oklch, var(--yovel-hr-accent, #22d3ee) 38%, hsl(var(--border)));
+            box-shadow: 0 0 1rem color-mix(in oklch, var(--yovel-hr-accent, #22d3ee) 10%, transparent);
+            transform: translateY(-1px);
+        }
+        .yovel-hr-dashboard-builder-modal {
+            align-items: center;
+            background: rgb(0 0 0 / 0.72);
+            -webkit-backdrop-filter: blur(8px) saturate(72%);
+            backdrop-filter: blur(8px) saturate(72%);
+            display: flex;
+            inset: 0;
+            justify-content: center;
+            padding: 0.75rem;
+            position: fixed;
+            z-index: 85;
+        }
+        .yovel-hr-dashboard-builder-dialog {
+            background-color: var(--card);
+            background-image: none;
+            border: 1px solid hsl(var(--border));
+            border-radius: 0.5rem;
+            box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 0.45);
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr) auto;
+            height: min(56rem, calc(100dvh - 1.5rem));
+            isolation: isolate;
+            max-width: 96rem;
+            overflow: hidden;
+            width: min(96rem, calc(100vw - 1.5rem));
+        }
+        .yovel-hr-dashboard-builder-dialog > header,
+        .yovel-hr-dashboard-builder-dialog > footer {
+            background-color: var(--card);
+            background-image: none;
+            position: relative;
+            z-index: 10;
+        }
+        .yovel-hr-dashboard-builder-dialog > header {
+            box-shadow: inset 0 2px 0 color-mix(in oklch, var(--yovel-hr-accent, #22d3ee) 48%, transparent);
+        }
+        .yovel-hr-dashboard-builder-body {
+            background-color: var(--background);
+            background-image: none;
+            min-height: 0;
+            overscroll-behavior: contain;
+            overflow: auto;
+            padding: 1rem;
+        }
+        .yovel-hr-dashboard-builder-tabs {
+            background-color: var(--background);
+            background-image: none;
+            border-bottom: 1px solid hsl(var(--border));
+            box-shadow: 0 0.65rem 1rem color-mix(in oklch, var(--background) 92%, transparent);
+            margin: -1rem -1rem 1rem;
+            padding: 0.75rem 1rem;
+            position: sticky;
+            top: -1rem;
+            z-index: 5;
+        }
+        .yovel-hr-google-workbench {
+            display: grid;
+            gap: 0;
+            min-height: min(42rem, calc(100dvh - 16rem));
+        }
+        .yovel-hr-google-workbench > * {
+            min-width: 0;
+            padding: 1rem;
+        }
+        .yovel-hr-google-workbench > * + * {
+            border-top: 1px solid hsl(var(--border));
+        }
+        .yovel-hr-google-tool-button {
+            align-items: center;
+            background: hsl(var(--background));
+            border: 1px solid hsl(var(--border));
+            border-radius: 0.375rem;
+            display: flex;
+            gap: 0.55rem;
+            min-height: 2.35rem;
+            padding: 0.45rem 0.6rem;
+            text-align: left;
+            width: 100%;
+        }
+        .yovel-hr-google-tool-add {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            display: flex;
+            flex: 1 1 auto;
+            gap: 0.55rem;
+            min-width: 0;
+            padding: 0;
+            text-align: left;
+        }
+        .yovel-hr-google-tool-button:hover {
+            background: hsl(var(--muted));
+            border-color: color-mix(in oklch, var(--yovel-hr-accent, #22d3ee) 35%, hsl(var(--border)));
+        }
+        .yovel-hr-google-tool-drag {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            cursor: grab;
+            display: inline-flex;
+            flex: 0 0 auto;
+            height: 1.75rem;
+            justify-content: center;
+            margin-left: auto;
+            padding: 0;
+            touch-action: none;
+            width: 1.75rem;
+        }
+        .yovel-hr-google-tool-drag:active {
+            cursor: grabbing;
+        }
+        .yovel-hr-google-tool-ghost {
+            align-items: center;
+            background: hsl(var(--popover));
+            border: 1px solid hsl(var(--border));
+            border-radius: 0.375rem;
+            box-shadow: 0 0.5rem 1.25rem rgb(0 0 0 / 0.18);
+            color: hsl(var(--popover-foreground));
+            display: inline-flex;
+            font-size: 0.75rem;
+            font-weight: 600;
+            gap: 0.45rem;
+            left: 0;
+            max-width: 13rem;
+            padding: 0.5rem 0.65rem;
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            transform: translate(0.75rem, 0.75rem);
+            z-index: 120;
+        }
+        .yovel-hr-google-builder[data-hr-google-toolbox-dragging="true"] .yovel-hr-google-column {
+            border-color: hsl(var(--foreground) / 0.45);
+            border-style: dashed;
+        }
+        .yovel-hr-google-insertion-marker {
+            background: hsl(var(--foreground));
+            border-radius: 999px;
+            box-shadow: 0 0 0 2px hsl(var(--background));
+            height: 2px;
+            pointer-events: none;
+            width: 100%;
+        }
+        @media (min-width: 1100px) {
+            .yovel-hr-google-workbench {
+                grid-template-columns: minmax(10rem, 2fr) minmax(0, 7fr) minmax(17rem, 3fr);
+            }
+            .yovel-hr-google-workbench > * + * {
+                border-left: 1px solid hsl(var(--border));
+                border-top: 0;
+            }
+            .yovel-hr-google-workbench-aside {
+                align-self: start;
+                position: sticky;
+                top: 3.75rem;
+            }
+        }
+        body:has(.yovel-hr-dashboard-builder-modal) .yovel-shell-footer {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .yovel-hr-builder-feature-tabs {
+            scrollbar-width: thin;
+        }
+        .yovel-hr-builder-feature-tabs a,
+        .yovel-hr-builder-mode-link,
+        .yovel-hr-builder-existing-card {
+            transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, color 140ms ease, transform 140ms ease;
+        }
+        .yovel-hr-builder-feature-tabs a:hover,
+        .yovel-hr-builder-existing-card:hover {
+            border-color: color-mix(in oklch, var(--yovel-hr-accent, #22d3ee) 36%, hsl(var(--border)));
+            box-shadow: 0 0 0.85rem color-mix(in oklch, var(--yovel-hr-accent, #22d3ee) 11%, transparent);
+        }
+        .yovel-hr-builder-existing-card:hover {
+            transform: translateY(-1px);
+        }
+        .yovel-hr-builder-existing-chooser {
+            border-left: 4px solid color-mix(in oklch, var(--yovel-hr-accent, #22d3ee) 55%, hsl(var(--border)));
+        }
+        .yovel-hr-google-form-head {
+            border-left: 4px solid var(--yovel-hr-accent, #22d3ee);
+            box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+        }
+        .yovel-hr-google-row {
+            overflow: hidden;
+            transition: border-color 140ms ease, background-color 140ms ease, opacity 140ms ease;
+        }
+        .yovel-hr-google-row-header {
+            background: color-mix(in oklch, hsl(var(--muted)) 52%, hsl(var(--background)));
+        }
+        .yovel-hr-google-columns,
+        .yovel-hr-google-preview-row,
+        .yovel-hr-google-submission-row {
+            display: grid;
+            gap: 0.75rem;
+            grid-template-columns: repeat(var(--hr-google-column-count, 1), minmax(0, 1fr));
+        }
+        .yovel-hr-google-columns {
+            padding: 0.75rem;
+        }
+        .yovel-hr-google-column {
+            align-content: start;
+            background: hsl(var(--background));
+            border: 1px dashed hsl(var(--border));
+            border-radius: 0.375rem;
+            container-type: inline-size;
+            display: grid;
+            gap: 0.65rem;
+            min-height: 6.5rem;
+            min-width: 0;
+            padding: 0.65rem;
+            transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+        }
+        .yovel-hr-google-column[aria-selected="true"] {
+            border-style: solid;
+            box-shadow: inset 0 0 0 1px hsl(var(--foreground) / 0.32);
+        }
+        .yovel-hr-google-column[data-hr-google-drop-active="true"] {
+            background: hsl(var(--muted) / 0.58);
+            border-color: hsl(var(--foreground) / 0.7);
+            border-style: solid;
+            box-shadow: inset 0 0 0 1px hsl(var(--foreground) / 0.32);
+        }
+        .yovel-hr-google-column-empty {
+            align-self: center;
+            color: hsl(var(--muted-foreground));
+            font-size: 0.75rem;
+            line-height: 1.25rem;
+            margin: auto;
+            padding: 0.75rem;
+            pointer-events: none;
+            text-align: center;
+        }
+        .yovel-hr-google-column-count {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            border-radius: 0.25rem;
+            display: inline-flex;
+            font-size: 0.75rem;
+            font-weight: 600;
+            height: 1.75rem;
+            justify-content: center;
+            width: 1.75rem;
+        }
+        .yovel-hr-google-column-count[aria-pressed="true"] {
+            background: hsl(var(--secondary));
+            color: hsl(var(--secondary-foreground));
+        }
+        [data-hr-google-dragging="true"] {
+            opacity: 0.48;
+        }
+        .yovel-hr-google-mode-button[aria-pressed="true"] {
+            background: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+        }
+        .yovel-hr-google-question {
+            border-left: 4px solid color-mix(in oklch, var(--yovel-hr-accent, #22d3ee) 55%, hsl(var(--border)));
+            box-shadow: 0 0.45rem 1rem rgb(0 0 0 / 0.08);
+            min-width: 0;
+            transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+        }
+        .yovel-hr-google-question-layout {
+            align-items: start;
+            display: grid;
+            gap: 0.75rem;
+            grid-template-columns: minmax(0, 1fr);
+            min-width: 0;
+        }
+        .yovel-hr-google-question-main,
+        .yovel-hr-google-question-controls {
+            display: grid;
+            gap: 0.75rem;
+            min-width: 0;
+        }
+        .yovel-hr-google-question-main {
+            grid-column: 1;
+        }
+        .yovel-hr-google-question-controls {
+            gap: 0.5rem;
+            grid-column: 1;
+        }
+        .yovel-hr-google-question-main > input,
+        .yovel-hr-google-question-main > textarea,
+        .yovel-hr-google-question-controls > select {
+            min-width: 0;
+            width: 100%;
+        }
+        @container (min-width: 32rem) {
+            .yovel-hr-google-question-layout {
+                grid-template-columns: minmax(0, 1fr) minmax(10rem, 14rem);
+            }
+            .yovel-hr-google-question-controls {
+                grid-column: 2;
+                grid-row: 1;
+            }
+        }
+        .yovel-hr-google-question:focus-within,
+        .yovel-hr-google-question:hover {
+            border-left-color: var(--yovel-hr-accent, #22d3ee);
+            box-shadow: 0 0 1rem color-mix(in oklch, var(--yovel-hr-accent, #22d3ee) 12%, transparent);
+            transform: translateY(-1px);
+        }
+        .yovel-hr-google-empty {
+            min-height: 5rem;
+        }
+        .yovel-hr-google-preview {
+            border-left: 4px solid color-mix(in oklch, var(--yovel-hr-accent, #22d3ee) 45%, hsl(var(--border)));
+        }
+        @media (max-width: 767px) {
+            .yovel-hr-google-columns,
+            .yovel-hr-google-preview-row,
+            .yovel-hr-google-submission-row {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .yovel-hr-google-row-header {
+                align-items: flex-start;
+            }
+        }
+        .yovel-employee-modal[hidden] {
+            display: none;
+        }
+        .yovel-confirm-dialog {
+            z-index: 100 !important;
+        }
+        .yovel-employee-modal,
+        .yovel-account-modal {
+            z-index: 70;
+        }
+        body.yovel-shell-modal-active .yovel-shell-footer,
+        body:has(.yovel-employee-modal:not([hidden])) .yovel-shell-footer,
+        body:has(.yovel-account-modal:not([hidden])) .yovel-shell-footer {
+            opacity: 0;
+            pointer-events: none;
+        }
+        body.yovel-shell-modal-active .yovel-hr-workspace,
+        body:has(.yovel-employee-modal:not([hidden])) .yovel-hr-workspace,
+        body:has(.yovel-account-modal:not([hidden])) .yovel-hr-workspace {
+            position: relative;
+            z-index: 60;
+        }
+        .yovel-employee-document-grid {
+            min-height: 0;
+        }
+        .yovel-employee-profile-rail {
+            min-width: 0;
+        }
+        .yovel-employee-avatar {
+            width: 8.5rem;
+            height: 8.5rem;
+            max-width: 100%;
+            font-size: 2.5rem;
+        }
+        .yovel-employee-workspace [data-employee-drop-target] {
+            cursor: default;
+            transition: background-color 140ms ease, box-shadow 140ms ease;
+        }
+        .yovel-employee-workspace [data-employee-drop-target][aria-selected="true"] {
+            background: color-mix(in oklch, var(--yovel-hr-accent) 8%, var(--card));
+            box-shadow: inset 3px 0 0 color-mix(in oklch, var(--yovel-hr-accent) 74%, transparent);
+        }
+        .yovel-employee-name-button {
+            color: inherit;
+            text-align: left;
+        }
+        .yovel-employee-name-button:hover {
+            color: var(--yovel-hr-accent);
+        }
+        .yovel-employee-action-menu {
+            position: relative;
+        }
+        .yovel-employee-action-menu > summary {
+            list-style: none;
+        }
+        .yovel-employee-action-menu > summary::-webkit-details-marker {
+            display: none;
+        }
+        .yovel-employee-action-menu[open] > summary {
+            border-color: color-mix(in oklch, var(--yovel-hr-accent) 40%, var(--border));
+            color: var(--yovel-hr-accent);
+        }
+        .yovel-employee-action-menu-content {
+            background: var(--popover);
+            border: 1px solid var(--border);
+            box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 0.28);
+            min-width: 12rem;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 0.375rem);
+            z-index: 35;
+        }
+        .yovel-employee-action-menu-content form,
+        .yovel-employee-action-menu-content button,
+        .yovel-employee-action-menu-content a {
+            width: 100%;
+        }
+        .yovel-employee-context-tab[aria-selected="true"] {
+            background: var(--secondary);
+            color: var(--secondary-foreground);
+            box-shadow: inset 0 -2px 0 var(--yovel-hr-accent);
+        }
+        .yovel-employee-context-panel[hidden] {
+            display: none;
+        }
+        .yovel-employee-context-card {
+            border-bottom: 1px solid color-mix(in oklch, var(--border) 76%, transparent);
+        }
+        .yovel-hr-workspace .yovel-employee-context-card.yovel-widget-item,
+        .yovel-hr-workspace .yovel-employee-context-card.yovel-widget-item:hover {
+            background: transparent;
+            border-left: 0;
+            border-right: 0;
+            border-top: 0;
+            border-radius: 0;
+            box-shadow: none;
+            transform: none;
+        }
+        .yovel-employee-context-card:last-child {
+            border-bottom: 0;
+        }
+        .yovel-employee-completeness-track {
+            background: color-mix(in oklch, var(--muted) 84%, black);
+        }
+        .yovel-employee-completeness-bar {
+            background: var(--yovel-hr-accent);
+            box-shadow: 0 0 0.7rem color-mix(in oklch, var(--yovel-hr-accent) 30%, transparent);
+            transition: width 180ms ease;
+        }
+        .yovel-employee-modal-surface,
+        .yovel-employee-modal-header,
+        .yovel-employee-modal-footer,
+        .yovel-employee-modal-tabs {
+            background: var(--card);
+        }
+        .yovel-employee-modal-header,
+        .yovel-employee-modal-footer,
+        .yovel-employee-modal-tabs {
+            isolation: isolate;
+        }
+        .yovel-employee-modal-header,
+        .yovel-employee-modal-footer {
+            z-index: 30;
+        }
+        .yovel-employee-modal-tabs {
+            scrollbar-width: none;
+        }
+        .yovel-employee-modal-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        @media (min-width: 1024px) {
+            .yovel-employee-modal-tabs {
+                flex-wrap: wrap;
+                overflow-x: visible;
+            }
+        }
+        .yovel-employee-modal [data-employee-form-state][data-dirty="true"] {
+            background: rgb(245 158 11 / 0.14);
+            color: rgb(180 83 9);
+        }
+        html.dark .yovel-employee-modal [data-employee-form-state][data-dirty="true"] {
+            color: rgb(253 230 138);
+        }
+        body.yovel-shell-modal-active {
+            overflow: hidden;
+        }
+        @media (max-width: 1023px) {
+            .yovel-employee-profile-rail {
+                display: grid;
+                grid-template-columns: auto minmax(0, 1fr);
+                align-items: start;
+            }
+            .yovel-employee-avatar {
+                width: 5rem;
+                height: 5rem;
+                font-size: 1.5rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .yovel-employee-document-grid {
+                grid-template-columns: 13rem minmax(0, 1fr);
+            }
+        }
+        .yovel-account-modal[hidden] {
+            display: none;
+        }
+        .yovel-finance-builder-modal[hidden] {
+            display: none;
+        }
+        .yovel-finance-grid-column > input[type="checkbox"] {
+            height: 1rem;
+            margin: 0;
+            width: 1rem;
+        }
+        .yovel-sticky-shell-header {
+            background: var(--background);
+            isolation: isolate;
+            position: sticky;
+            top: 0;
+            z-index: 60;
+        }
+        .yovel-finance-sticky-nav {
+            background: var(--background);
+            box-shadow: 0 1px 0 var(--border);
+            padding-top: 0.25rem;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+        .yovel-finance-sticky-panel-header {
+            background: var(--card);
+            box-shadow: 0 1px 0 var(--border);
+            isolation: isolate;
+            position: sticky;
+            top: 0;
+            z-index: 30;
+        }
+        .yovel-finance-sticky-table-header {
+            background: var(--card);
+            box-shadow: 0 1px 0 var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+        .yovel-finance-sticky-modal-header,
+        .yovel-finance-operation-modal header {
+            background: var(--popover);
+            box-shadow: 0 1px 0 var(--border);
+            isolation: isolate;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .yovel-finance-dashboard-metrics {
+            grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+        }
+        .yovel-finance-dashboard-links {
+            grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+        }
+        .yovel-general-ledger-table {
+            min-height: 20rem;
+            max-height: calc(100svh - 24rem);
+            scrollbar-color: color-mix(in oklch, var(--muted-foreground) 45%, transparent) transparent;
+            scrollbar-width: thin;
+        }
+        .yovel-finance-overview-grid {
+            grid-template-columns: repeat(auto-fit, minmax(6.75rem, 1fr));
+        }
+        .yovel-finance-section-metrics {
+            grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+        }
+        .yovel-hr-two-panel .yovel-hr-panel-body {
+            scrollbar-color: color-mix(in oklch, var(--muted-foreground) 45%, transparent) transparent;
+            scrollbar-width: thin;
+        }
+        .yovel-hr-two-panel .yovel-hr-panel-body::-webkit-scrollbar {
+            height: 0.5rem;
+            width: 0.5rem;
+        }
+        .yovel-hr-two-panel .yovel-hr-panel-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .yovel-hr-two-panel .yovel-hr-panel-body::-webkit-scrollbar-thumb {
+            background: color-mix(in oklch, var(--muted-foreground) 42%, transparent);
+            border: 0.125rem solid transparent;
+            border-radius: 999px;
+            background-clip: padding-box;
+        }
+        .yovel-hr-two-panel .yovel-hr-panel-body::-webkit-scrollbar-thumb:hover {
+            background: color-mix(in oklch, var(--muted-foreground) 68%, transparent);
+            background-clip: padding-box;
+        }
+        @media (min-width: 640px) {
+            .yovel-finance-grid-column {
+                align-items: center;
+                grid-template-columns: 1rem minmax(0, 1fr) 7rem auto;
+            }
+        }
+        @media (min-width: 1280px) {
+            .yovel-finance-workspace .yovel-hr-two-panel {
+                grid-template-columns: minmax(0, 12fr) minmax(16rem, 4fr);
+            }
+        }
+        .yovel-finance-builder-modal {
+            align-items: center;
+            background: rgb(0 0 0 / 0.72);
+            -webkit-backdrop-filter: blur(8px) saturate(72%);
+            backdrop-filter: blur(8px) saturate(72%);
+            display: flex;
+            inset: 0;
+            justify-content: center;
+            padding: 0.75rem;
+            position: fixed;
+            z-index: 88;
+        }
+        .yovel-finance-builder-dialog {
+            background: var(--card);
+            background-clip: padding-box;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 0.45);
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr) auto;
+            height: min(58rem, calc(100dvh - 1.5rem));
+            isolation: isolate;
+            max-width: 96rem;
+            overflow: hidden;
+            width: min(96rem, calc(100vw - 1.5rem));
+        }
+        .yovel-finance-builder-dialog > header,
+        .yovel-finance-builder-dialog > footer {
+            background: var(--popover);
+            position: relative;
+            z-index: 10;
+        }
+        .yovel-finance-builder-dialog > header {
+            box-shadow: inset 0 2px 0 color-mix(in oklch, var(--primary) 42%, transparent);
+        }
+        .yovel-finance-builder-body {
+            background: var(--background);
+            min-height: 0;
+            overscroll-behavior: contain;
+            overflow: auto;
+            padding: 1rem;
+        }
+        .yovel-finance-builder-tabs {
+            background: var(--background);
+            border-bottom: 1px solid var(--border);
+            margin: -1rem -1rem 1rem;
+            padding: 0.75rem 1rem;
+            position: sticky;
+            top: -1rem;
+            z-index: 6;
+        }
+        .yovel-finance-builder-feature-tabs a,
+        .yovel-finance-builder-existing-row,
+        .yovel-finance-builder-tool,
+        .yovel-finance-builder-question {
+            transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, color 140ms ease;
+        }
+        .yovel-finance-builder-existing-row:hover,
+        .yovel-finance-builder-tool:hover,
+        .yovel-finance-builder-question:hover,
+        .yovel-finance-builder-question[aria-selected="true"] {
+            border-color: color-mix(in oklch, var(--primary) 35%, var(--border));
+            box-shadow: 0 0 0 2px color-mix(in oklch, var(--primary) 12%, transparent);
+        }
+        .yovel-finance-builder-workbench {
+            display: grid;
+            min-height: min(40rem, calc(100dvh - 18rem));
+        }
+        .yovel-finance-builder-pane {
+            background: var(--background);
+            min-width: 0;
+            padding: 1rem;
+        }
+        .yovel-finance-builder-pane + .yovel-finance-builder-pane {
+            border-top: 1px solid var(--border);
+        }
+        .yovel-finance-builder-question[aria-selected="true"] {
+            background: color-mix(in oklch, var(--muted) 72%, var(--background));
+        }
+        body:has(.yovel-finance-builder-modal:not([hidden])) .yovel-shell-footer {
+            opacity: 0;
+            pointer-events: none;
+        }
+        @media (min-width: 1100px) {
+            .yovel-finance-builder-workbench {
+                grid-template-columns: minmax(11rem, 2fr) minmax(0, 7fr) minmax(18rem, 3fr);
+            }
+            .yovel-finance-builder-pane + .yovel-finance-builder-pane {
+                border-left: 1px solid var(--border);
+                border-top: 0;
+            }
+        }
+        .yovel-finance-scroll-shell {
+            isolation: isolate;
+            min-width: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .yovel-finance-scroll-shell::before,
+        .yovel-finance-scroll-shell::after {
+            bottom: 0;
+            content: "";
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            width: 1.5rem;
+            z-index: 2;
+        }
+        .yovel-finance-scroll-shell::before {
+            background: linear-gradient(to right, hsl(var(--background)), transparent);
+            left: 0;
+        }
+        .yovel-finance-scroll-shell::after {
+            background: linear-gradient(to left, hsl(var(--background)), transparent);
+            right: 0;
+        }
+        .yovel-finance-scroll {
+            cursor: grab;
+            scroll-behavior: smooth;
+            scroll-padding-inline: 0.25rem;
+            scroll-snap-type: x proximity;
+            scrollbar-width: none;
+            touch-action: pan-x;
+            -ms-overflow-style: none;
+        }
+        .yovel-finance-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .yovel-finance-scroll.is-dragging {
+            cursor: grabbing;
+            scroll-behavior: auto;
+            scroll-snap-type: none;
+            user-select: none;
+        }
+        .yovel-finance-scroll > a {
+            scroll-snap-align: start;
+            transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+        }
+        .yovel-finance-scroll > a:hover {
+            transform: translateY(-1px);
+        }
+        .yovel-finance-scroll.is-dragging > a {
+            pointer-events: none;
+        }
+        .yovel-widget-item[aria-grabbed="true"] {
+            opacity: 0.65;
+        }
+        .yovel-widget-item {
+            cursor: pointer;
+        }
+        .yovel-employee-feature-button[aria-pressed="true"],
+        .yovel-department-feature-button[aria-pressed="true"],
+        .yovel-job-position-feature-button[aria-pressed="true"],
+        .yovel-team-feature-button[aria-pressed="true"] {
+            background: var(--secondary);
+            color: var(--secondary-foreground);
+        }
+        [data-hr-builder-target][aria-current="true"] {
+            background: hsl(var(--primary));
+            border-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+        }
+        .yovel-sticky-ui-surface {
+            isolation: isolate;
+            background-color: var(--card);
+            background-image: none;
+            box-shadow: 0 1px 0 var(--border);
+        }
+        .yovel-hr-builder-nav {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+        }
+        .yovel-hr-builder-nav-scroll {
+            scrollbar-width: thin;
+        }
+        .yovel-erp-icon-badge {
+            border-radius: 0.375rem;
+            transition: background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, text-shadow 160ms ease;
+        }
+        .yovel-erp-icon-badge--hr {
+            --yovel-hr-icon-accent: #22d3ee;
+            background-color: color-mix(in oklch, var(--yovel-hr-icon-accent) 14%, transparent);
+            box-shadow: 0 0 0 1px color-mix(in oklch, var(--yovel-hr-icon-accent) 30%, transparent), 0 0 0.7rem color-mix(in oklch, var(--yovel-hr-icon-accent) 18%, transparent);
+            color: var(--yovel-hr-icon-accent);
+            text-shadow: 0 0 0.55rem color-mix(in oklch, var(--yovel-hr-icon-accent) 50%, transparent);
+        }
+        .yovel-erp-icon-badge--hr.yovel-erp-icon-badge--active,
+        .yovel-sidebar-summary:hover .yovel-erp-icon-badge--hr {
+            background-color: color-mix(in oklch, var(--yovel-hr-icon-accent) 22%, transparent);
+            box-shadow: 0 0 0 1px color-mix(in oklch, var(--yovel-hr-icon-accent) 48%, transparent), 0 0 1rem color-mix(in oklch, var(--yovel-hr-icon-accent) 28%, transparent);
+        }
+        .yovel-widget-drop-active {
+            outline: 2px dashed hsl(var(--ring));
+            outline-offset: -0.375rem;
+        }
+        .yovel-employee-drop-indicator {
+            display: none;
+            align-items: center;
+            border: 1px solid rgb(34 211 238 / 0.32);
+            border-radius: 0.375rem;
+            background: rgb(34 211 238 / 0.1);
+            box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.05), 0 0 0.65rem rgb(34 211 238 / 0.1);
+            color: rgb(165 243 252);
+            min-height: 2rem;
+            padding: 0 0.625rem;
+            white-space: nowrap;
+        }
+        .yovel-employee-drop-ready {
+            background: rgb(34 211 238 / 0.04);
+        }
+        .yovel-employee-drop-ready .yovel-employee-drop-indicator {
+            display: inline-flex;
+        }
+        .yovel-employee-drop-active {
+            background: rgb(34 211 238 / 0.12);
+            outline: 2px solid rgb(34 211 238 / 0.72);
+            outline-offset: -2px;
+        }
+        .yovel-employee-drop-active .yovel-employee-drop-indicator {
+            background: rgb(34 211 238 / 0.18);
+            border-color: rgb(34 211 238 / 0.58);
+            box-shadow: 0 0 0.85rem rgb(34 211 238 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.08);
+            color: rgb(236 254 255);
+        }
+        @media (max-width: 1279px) {
+            .yovel-hr-two-panel {
+                min-height: auto;
+            }
+            .yovel-hr-panel {
+                max-height: none;
+            }
+        }
+        @media (min-width: 1280px) {
+            .yovel-hr-two-panel:not(.yovel-job-position-layout) {
+                grid-template-columns: minmax(0, 8fr) minmax(18rem, 4fr);
+                height: min(48rem, calc(100svh - 11.5rem));
+            }
+            .yovel-job-position-layout {
+                grid-template-columns: repeat(12, minmax(0, 1fr));
+                height: min(52rem, calc(100svh - 9.5rem));
+            }
+            .yovel-job-position-layout > [data-job-position-tour-target="position-list"] {
+                grid-column: span 8 / span 8;
+            }
+            .yovel-job-position-layout > aside {
+                grid-column: span 4 / span 4;
+            }
+            .yovel-job-position-layout > .yovel-hr-panel > .yovel-hr-surface-header {
+                min-height: 7.125rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .yovel-desktop-sidebar {
+                width: 16rem !important;
+                max-width: 16rem;
+                overflow: hidden;
+                transition: width 240ms cubic-bezier(0.22, 1, 0.36, 1), border-color 240ms ease;
+                will-change: width;
+            }
+            .yovel-sidebar-nav {
+                overflow: hidden !important;
+                transition: padding 240ms cubic-bezier(0.22, 1, 0.36, 1);
+            }
+            .yovel-sidebar-brand,
+            .yovel-sidebar-user,
+            .yovel-sidebar-link,
+            .yovel-sidebar-summary {
+                transition: gap 220ms cubic-bezier(0.22, 1, 0.36, 1), justify-content 220ms ease, padding 220ms ease;
+            }
+            .yovel-sidebar-label {
+                min-width: 0;
+                max-width: 12rem;
+                opacity: 1;
+                overflow: hidden;
+                transform: translateX(0);
+                transition: max-width 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+                white-space: nowrap;
+            }
+            .yovel-sidebar-link,
+            .yovel-sidebar-summary {
+                height: 1.75rem;
+                min-width: 0;
+                overflow: hidden;
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+            .yovel-sidebar-nav .grid {
+                gap: 0.125rem;
+            }
+            .yovel-sidebar-nav > .mt-5 {
+                margin-top: 0.75rem !important;
+            }
+            .yovel-sidebar-link .yovel-sidebar-label,
+            .yovel-sidebar-summary .yovel-sidebar-label,
+            .yovel-sidebar-user .yovel-sidebar-label,
+            .yovel-sidebar-brand .yovel-sidebar-label {
+                flex: 1 1 auto;
+                max-width: none;
+                text-overflow: ellipsis;
+            }
+            .yovel-sidebar-count,
+            .yovel-sidebar-chevron {
+                flex: 0 0 auto;
+            }
+            .yovel-sidebar-count {
+                margin-left: auto;
+            }
+            .yovel-desktop-sidebar * {
+                min-width: 0;
+            }
+            .yovel-sidebar-submenu a {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .yovel-sidebar-section {
+                font-size: 0.75rem;
+                line-height: 1rem;
+                max-height: 1.25rem;
+                padding-left: 0.5rem;
+                padding-bottom: 0.25rem;
+                padding-right: 0.5rem;
+            }
+            .yovel-sidebar-submenu {
+                margin-top: 0.125rem !important;
+            }
+            .yovel-sidebar-submenu a {
+                line-height: 1rem;
+                padding-bottom: 0.25rem;
+                padding-top: 0.25rem;
+            }
+            .yovel-sidebar-section,
+            .yovel-sidebar-count,
+            .yovel-sidebar-chevron {
+                opacity: 1;
+                transition: opacity 150ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+            }
+            .yovel-sidebar-section {
+                max-height: 1.5rem;
+                overflow: hidden;
+                transition: max-height 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease, padding 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+            }
+            .yovel-sidebar-submenu {
+                max-height: 32rem;
+                opacity: 1;
+                overflow: hidden;
+                transform: translateX(0);
+                transition: max-height 240ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease, margin 220ms ease, padding 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+            }
+            html[data-sidebar-collapsed="true"] .yovel-desktop-sidebar {
+                width: 4.5rem !important;
+            }
+            html[data-sidebar-collapsed="true"] .yovel-sidebar-label {
+                max-width: 0;
+                opacity: 0;
+                transform: translateX(-0.35rem);
+            }
+            html[data-sidebar-collapsed="true"] .yovel-sidebar-section,
+            html[data-sidebar-collapsed="true"] .yovel-sidebar-count,
+            html[data-sidebar-collapsed="true"] .yovel-sidebar-chevron {
+                opacity: 0;
+                transform: translateX(-0.25rem);
+                pointer-events: none;
+            }
+            html[data-sidebar-collapsed="true"] .yovel-sidebar-section {
+                max-height: 0;
+                padding-bottom: 0;
+            }
+            html[data-sidebar-collapsed="true"] .yovel-sidebar-submenu {
+                max-height: 0;
+                margin-top: 0;
+                opacity: 0;
+                padding-left: 0;
+                transform: translateX(-0.35rem);
+                pointer-events: none;
+            }
+            html[data-sidebar-collapsed="true"] .yovel-sidebar-brand,
+            html[data-sidebar-collapsed="true"] .yovel-sidebar-user,
+            html[data-sidebar-collapsed="true"] .yovel-sidebar-link,
+            html[data-sidebar-collapsed="true"] .yovel-sidebar-summary {
+                gap: 0;
+                justify-content: center;
+            }
+            html[data-sidebar-collapsed="true"] .yovel-sidebar-nav {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+        }
+
+        /* Shared neutral shadcn theme for every company-admin module. */
+        .yovel-hr-workspace,
+        .yovel-erpnext-hub,
+        .yovel-hr-form-builder {
+            --yovel-hr-accent: var(--foreground);
+            --yovel-builder-accent: var(--foreground);
+            --yovel-erpnext-accent: var(--foreground);
+        }
+        .yovel-hr-workspace .yovel-hr-surface,
+        .yovel-hr-dashboard-setup,
+        .yovel-hr-dashboard-feature,
+        .yovel-erpnext-card {
+            background: var(--card);
+            border-color: var(--border);
+            box-shadow: none;
+            color: var(--card-foreground);
+        }
+        .yovel-hr-workspace .yovel-hr-surface-header {
+            background: var(--card);
+            border-color: var(--border);
+            box-shadow: none;
+            color: var(--card-foreground);
+        }
+        .yovel-hr-workspace .yovel-hr-surface-header .text-muted-foreground {
+            color: var(--muted-foreground);
+        }
+        .yovel-hr-workspace .yovel-hr-metric,
+        .yovel-hr-builder-status-pill {
+            background: var(--secondary);
+            color: var(--secondary-foreground);
+        }
+        .yovel-hr-workspace .yovel-widget-item,
+        .yovel-job-position-control-group {
+            background: color-mix(in oklch, var(--muted) 42%, transparent);
+            border-color: var(--border);
+            box-shadow: none;
+        }
+        .yovel-hr-workspace .yovel-widget-item:hover,
+        .yovel-job-position-shortcuts a:hover,
+        .yovel-job-position-shortcuts button:hover,
+        .yovel-job-position-report-grid a:hover,
+        .yovel-job-position-report-grid button:hover {
+            background: color-mix(in oklch, var(--muted) 72%, transparent);
+            border-color: var(--border);
+            box-shadow: none;
+            color: var(--foreground);
+            transform: none;
+        }
+        .yovel-hr-workspace tbody tr:hover {
+            background: color-mix(in oklch, var(--muted) 42%, transparent);
+        }
+        .yovel-erpnext-hub {
+            --yovel-erpnext-surface: var(--card);
+            --yovel-erpnext-surface-soft: var(--muted);
+            --yovel-erpnext-surface-raised: var(--background);
+            --yovel-erpnext-border: var(--border);
+            --yovel-erpnext-text: var(--foreground);
+            --yovel-erpnext-muted: var(--muted-foreground);
+            --yovel-erpnext-disabled: var(--muted-foreground);
+        }
+        .dark .yovel-erpnext-hub {
+            --yovel-erpnext-surface: var(--card);
+            --yovel-erpnext-surface-soft: var(--muted);
+            --yovel-erpnext-surface-raised: var(--background);
+            --yovel-erpnext-border: var(--border);
+            --yovel-erpnext-text: var(--foreground);
+            --yovel-erpnext-muted: var(--muted-foreground);
+            --yovel-erpnext-disabled: var(--muted-foreground);
+            --yovel-erpnext-accent: var(--foreground);
+        }
+        .yovel-erpnext-soft-button:hover,
+        .yovel-erpnext-primary-button:hover {
+            background: var(--secondary);
+            color: var(--secondary-foreground);
+        }
+        .yovel-erpnext-link-grid a:hover,
+        .yovel-erpnext-link-grid button:hover {
+            color: var(--foreground);
+            text-decoration: underline;
+            text-underline-offset: 0.2rem;
+        }
+        .yovel-tour-highlight {
+            outline-color: var(--foreground);
+            box-shadow: 0 0 0 0.375rem color-mix(in oklch, var(--background) 82%, transparent);
+        }
+        .yovel-tour-popover,
+        .dark .yovel-tour-popover {
+            background: var(--popover);
+            border-color: var(--border);
+            color: var(--popover-foreground);
+        }
+        .yovel-tour-popover .text-muted-foreground,
+        .dark .yovel-tour-popover .text-muted-foreground {
+            color: var(--muted-foreground);
+        }
+        .yovel-action-icon {
+            --yovel-action-rgb: 148 163 184;
+            background: var(--background);
+            border-color: var(--border);
+            box-shadow: none;
+            color: var(--muted-foreground);
+        }
+        .yovel-action-icon:hover {
+            background: var(--muted);
+            border-color: var(--border);
+            box-shadow: none;
+            color: var(--foreground);
+            transform: none;
+        }
+        .yovel-action-icon:focus-visible {
+            outline-color: var(--ring);
+        }
+        .yovel-action-icon--danger,
+        .yovel-action-icon--danger:hover {
+            color: var(--destructive);
+        }
+        .yovel-modal-scroll,
+        .yovel-form-builder-scroll,
+        .yovel-hr-builder-nav-scroll,
+        .yovel-hr-builder-feature-tabs {
+            scrollbar-color: color-mix(in oklch, var(--muted-foreground) 58%, transparent) color-mix(in oklch, var(--muted) 45%, transparent);
+        }
+        .yovel-modal-scroll::-webkit-scrollbar-track,
+        .yovel-form-builder-scroll::-webkit-scrollbar-track {
+            background: color-mix(in oklch, var(--muted) 45%, transparent);
+            border-color: var(--border);
+        }
+        .yovel-modal-scroll::-webkit-scrollbar-thumb,
+        .yovel-form-builder-scroll::-webkit-scrollbar-thumb {
+            background: color-mix(in oklch, var(--muted-foreground) 50%, transparent);
+            border-color: color-mix(in oklch, var(--muted) 45%, transparent);
+            box-shadow: none;
+        }
+        .yovel-modal-scroll::-webkit-scrollbar-thumb:hover,
+        .yovel-form-builder-scroll::-webkit-scrollbar-thumb:hover {
+            background: color-mix(in oklch, var(--foreground) 62%, transparent);
+        }
+        .yovel-hr-form-builder-shell,
+        .yovel-hr-builder-pane,
+        .yovel-hr-builder-canvas,
+        .yovel-hr-builder-settings,
+        .yovel-hr-builder-settings-panel,
+        .yovel-hr-builder-property-group,
+        .yovel-hr-builder-section,
+        .yovel-hr-builder-field-card {
+            border-color: var(--border);
+            box-shadow: none;
+        }
+        .yovel-hr-builder-tool,
+        .yovel-hr-builder-field-card,
+        .yovel-hr-builder-settings-panel,
+        .yovel-hr-builder-property-group {
+            background: var(--card);
+        }
+        .yovel-hr-builder-tool:hover,
+        .yovel-hr-builder-field-card:hover,
+        .yovel-hr-builder-field-card[aria-selected="true"],
+        .yovel-hr-form-builder[data-hr-form-builder-mode="customize"] .yovel-hr-builder-field-card[aria-selected="true"] {
+            background: color-mix(in oklch, var(--muted) 58%, transparent);
+            border-color: var(--border);
+            box-shadow: inset 2px 0 0 var(--foreground);
+            outline: 0;
+            transform: none;
+        }
+        .yovel-hr-builder-section[data-hr-builder-drop-active="true"] {
+            background: color-mix(in oklch, var(--muted) 55%, transparent);
+            border-color: var(--foreground);
+            box-shadow: none;
+            outline: 1px solid var(--foreground);
+        }
+        .yovel-hr-builder-field-grip,
+        .yovel-hr-builder-property-heading > span {
+            background: var(--secondary);
+            border-color: var(--border);
+            box-shadow: none;
+            color: var(--secondary-foreground);
+        }
+        .yovel-hr-builder-section-header h5::before,
+        .yovel-hr-builder-field-divider {
+            background: var(--border);
+            box-shadow: none;
+        }
+        .yovel-hr-dashboard-setup,
+        .yovel-hr-builder-existing-chooser,
+        .yovel-hr-google-form-head,
+        .yovel-hr-google-question,
+        .yovel-hr-google-preview {
+            border-left-color: var(--border);
+        }
+        .yovel-hr-dashboard-feature:hover,
+        .yovel-hr-google-tool-button:hover,
+        .yovel-hr-builder-feature-tabs a:hover,
+        .yovel-hr-builder-existing-card:hover,
+        .yovel-hr-google-question:focus-within,
+        .yovel-hr-google-question:hover {
+            background: color-mix(in oklch, var(--muted) 50%, transparent);
+            border-color: var(--border);
+            box-shadow: none;
+            transform: none;
+        }
+        .yovel-hr-dashboard-builder-dialog > header {
+            box-shadow: inset 0 -1px 0 var(--border);
+        }
+        .yovel-hr-dashboard-builder-dialog {
+            border-color: var(--border);
+        }
+        .yovel-hr-dashboard-builder-tabs {
+            border-color: var(--border);
+            box-shadow: 0 1px 0 var(--border);
+        }
+        .yovel-hr-google-workbench > * + *,
+        .yovel-hr-google-tool-button,
+        .yovel-hr-google-form-head,
+        .yovel-hr-google-question,
+        .yovel-hr-google-preview {
+            border-color: var(--border);
+        }
+        .yovel-hr-google-tool-button {
+            background: var(--background);
+        }
+        .yovel-employee-workspace [data-employee-drop-target][aria-selected="true"] {
+            background: color-mix(in oklch, var(--muted) 50%, transparent);
+            box-shadow: inset 3px 0 0 var(--foreground);
+        }
+        .yovel-employee-name-button:hover,
+        .yovel-employee-action-menu[open] > summary {
+            border-color: var(--border);
+            color: var(--foreground);
+        }
+        .yovel-employee-context-tab[aria-selected="true"] {
+            box-shadow: inset 0 -2px 0 var(--foreground);
+        }
+        .yovel-employee-completeness-track {
+            background: var(--muted);
+        }
+        .yovel-employee-completeness-bar {
+            background: var(--foreground);
+            box-shadow: none;
+        }
+        .yovel-erp-icon-badge,
+        .yovel-erp-icon-badge--hr,
+        .yovel-erp-icon-badge--hr.yovel-erp-icon-badge--active,
+        .yovel-sidebar-summary:hover .yovel-erp-icon-badge--hr {
+            background: var(--sidebar-accent);
+            border: 1px solid var(--sidebar-border);
+            box-shadow: none;
+            color: var(--sidebar-foreground);
+            text-shadow: none;
+        }
+        .yovel-employee-drop-indicator {
+            background: var(--secondary);
+            border-color: var(--border);
+            box-shadow: none;
+            color: var(--secondary-foreground);
+        }
+        .yovel-employee-drop-ready {
+            background: color-mix(in oklch, var(--muted) 32%, transparent);
+        }
+        .yovel-employee-drop-active {
+            background: color-mix(in oklch, var(--muted) 58%, transparent);
+            outline-color: var(--foreground);
+        }
+        .yovel-employee-drop-active .yovel-employee-drop-indicator {
+            background: var(--foreground);
+            border-color: var(--foreground);
+            box-shadow: none;
+            color: var(--background);
+        }
+        @media (min-width: 1280px) {
+            .yovel-department-layout > .yovel-hr-panel > .yovel-hr-surface-header {
+                min-height: 7.125rem;
+            }
+            .yovel-team-layout > .yovel-hr-panel > .yovel-hr-surface-header {
+                min-height: 8.0625rem;
+            }
+        }
+        .yovel-department-layout #yovel-department-widget-board .yovel-department-feature-row,
+        .yovel-department-layout #yovel-department-widget-board .yovel-department-feature-row:hover {
+            background: transparent;
+            border-color: var(--border);
+            border-left: 0;
+            border-right: 0;
+            border-top: 0;
+            border-radius: 0;
+            box-shadow: none;
+            transform: none;
+        }
+        .yovel-department-layout #yovel-department-widget-board .yovel-department-feature-row:hover {
+            background: color-mix(in oklch, var(--muted) 42%, transparent);
+        }
+        .yovel-department-feature-button[aria-pressed="true"],
+        .yovel-job-position-feature-button[aria-pressed="true"],
+        .yovel-team-feature-button[aria-pressed="true"] {
+            background: transparent;
+            color: var(--foreground);
+        }
+        .yovel-department-table,
+        .yovel-job-position-table,
+        .yovel-team-table {
+            min-width: 0;
+            table-layout: fixed;
+        }
+        .yovel-department-table th:nth-child(1),
+        .yovel-department-table td:nth-child(1),
+        .yovel-job-position-table th:nth-child(1),
+        .yovel-job-position-table td:nth-child(1),
+        .yovel-team-table th:nth-child(1),
+        .yovel-team-table td:nth-child(1) {
+            width: 3rem;
+        }
+        .yovel-department-table th:nth-child(3),
+        .yovel-department-table td:nth-child(3) {
+            width: 8.5rem;
+        }
+        .yovel-department-table th:nth-child(4),
+        .yovel-department-table td:nth-child(4),
+        .yovel-job-position-table th:nth-child(4),
+        .yovel-job-position-table td:nth-child(4) {
+            width: 5.25rem;
+        }
+        .yovel-department-table th:nth-child(5),
+        .yovel-department-table td:nth-child(5) {
+            width: 10rem;
+        }
+        .yovel-job-position-table th:nth-child(3),
+        .yovel-job-position-table td:nth-child(3) {
+            width: 6.5rem;
+        }
+        .yovel-job-position-table th:nth-child(5),
+        .yovel-job-position-table td:nth-child(5) {
+            width: 7.5rem;
+        }
+        .yovel-job-position-layout #yovel-job-position-widget-board {
+            gap: 0;
+        }
+        .yovel-job-position-layout #yovel-job-position-widget-board .yovel-widget-item,
+        .yovel-job-position-layout #yovel-job-position-widget-board .yovel-widget-item:hover {
+            background: transparent;
+            border-color: var(--border);
+            border-left: 0;
+            border-right: 0;
+            border-top: 0;
+            border-radius: 0;
+            box-shadow: none;
+            transform: none;
+        }
+        .yovel-job-position-layout #yovel-job-position-widget-board .yovel-widget-item:last-child {
+            border-bottom: 0;
+        }
+        .yovel-job-position-layout #yovel-job-position-widget-board .yovel-widget-item:hover,
+        .yovel-team-layout #yovel-team-widget-board .yovel-widget-item:hover,
+        .yovel-job-position-shortcuts a:hover,
+        .yovel-job-position-shortcuts button:hover,
+        .yovel-job-position-report-grid a:hover,
+        .yovel-job-position-report-grid button:hover {
+            background: color-mix(in oklch, var(--muted) 58%, transparent);
+        }
+        .yovel-job-position-layout .yovel-job-position-side-panel {
+            gap: 0.5rem;
+            padding: 0.625rem;
+        }
+        .yovel-job-position-layout .yovel-job-position-shortcuts {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .yovel-job-position-layout .yovel-job-position-control-group > summary {
+            padding-bottom: 0.5rem;
+            padding-top: 0.5rem;
+        }
+        .yovel-job-position-layout #yovel-job-position-widget-board .yovel-widget-item {
+            padding: 0.5rem 0.625rem;
+        }
+        .yovel-team-table th:nth-child(3),
+        .yovel-team-table td:nth-child(3) {
+            width: 7rem;
+        }
+        .yovel-team-table th:nth-child(4),
+        .yovel-team-table td:nth-child(4) {
+            width: 6.5rem;
+        }
+        .yovel-team-table th:nth-child(5),
+        .yovel-team-table td:nth-child(5) {
+            width: 10rem;
+        }
+        .yovel-team-layout #yovel-team-widget-board .yovel-widget-item,
+        .yovel-team-layout #yovel-team-widget-board .yovel-widget-item:hover {
+            background: transparent;
+            border-color: var(--border);
+            border-left: 0;
+            border-right: 0;
+            border-top: 0;
+            border-radius: 0;
+            box-shadow: none;
+            transform: none;
+        }
+
+        @media (min-width: 1280px) {
+            .yovel-finance-workspace .yovel-hr-two-panel {
+                grid-template-columns: minmax(0, 12fr) minmax(16rem, 4fr);
+            }
+        }

@@ -60,6 +60,32 @@ function bx_db(): ADOConnection
     return $db;
 }
 
+function bx_project_base_path(): string
+{
+    $projectRoot = str_replace('\\', '/', dirname(__DIR__));
+    $documentRoot = str_replace('\\', '/', rtrim((string) ($_SERVER['DOCUMENT_ROOT'] ?? ''), '/'));
+
+    if ($documentRoot !== '' && str_starts_with($projectRoot, $documentRoot)) {
+        $relativePath = trim(substr($projectRoot, strlen($documentRoot)), '/');
+
+        return ($relativePath === '' ? '' : '/' . $relativePath) . '/';
+    }
+
+    $scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? ''));
+    foreach (['/administrator/', '/company/', '/frontend/'] as $marker) {
+        $position = strpos($scriptName, $marker);
+        if ($position !== false) {
+            $basePath = substr($scriptName, 0, $position);
+
+            return ($basePath === '' ? '' : $basePath) . '/';
+        }
+    }
+
+    $basePath = rtrim(dirname($scriptName), '/');
+
+    return ($basePath === '' || $basePath === '.' ? '' : $basePath) . '/';
+}
+
 function bx_run_bridge_database_test(): array
 {
     $db = bx_db();
@@ -200,6 +226,110 @@ function bx_project_company_standard_departments(): array
     ];
 }
 
+function bx_project_erp_groups(): array
+{
+    return [
+        [
+            'icon' => '♙',
+            'label' => 'HR Department',
+            'description' => 'Employee operations, attendance, leave, onboarding, and HR reporting.',
+            'features' => ['Dashboard', 'Employee profiles', 'Departments', 'Job positions', 'Teams', 'Attendance', 'Leave requests', 'Leave approvals', 'Payroll access', 'Recruitment', 'Onboarding', 'Employee documents', 'HR reports'],
+        ],
+        [
+            'icon' => '◫',
+            'label' => 'Accounting / Finance',
+            'description' => 'Financial books, payment movement, fiscal controls, and statutory reports.',
+            'features' => ['Finance Dashboard', 'Chart of accounts', 'Cost centers', 'Accounting dimensions', 'Sales invoices', 'Purchase invoices', 'Journal entries', 'Payment entries', 'Bank accounts', 'Bank reconciliation', 'Budgets', 'Period closing', 'General ledger', 'Profit/loss', 'Balance sheet', 'Cash flow', 'Tax reports'],
+        ],
+        [
+            'icon' => '◇',
+            'label' => 'Sales / CRM',
+            'description' => 'Customer pipeline, sales documents, credit limits, and team performance.',
+            'features' => ['Leads', 'Opportunities', 'Campaigns', 'Customers', 'Quotations', 'Sales orders', 'Customer credit limits', 'Sales analytics', 'Salesperson performance', 'Territory performance'],
+        ],
+        [
+            'icon' => '▤',
+            'label' => 'Buying / Procurement',
+            'description' => 'Supplier sourcing, purchase flow, receiving, and procurement analytics.',
+            'features' => ['Suppliers', 'Material requests', 'Request for quotation', 'Supplier quotations', 'Purchase orders', 'Purchase receipts', 'Purchase analytics', 'Supplier material handoff'],
+        ],
+        [
+            'icon' => '▥',
+            'label' => 'Inventory / Warehouse',
+            'description' => 'Stock control, traceability, warehouse movement, and shipping preparation.',
+            'features' => ['Items', 'Warehouses', 'Stock entries', 'Stock ledger', 'Stock reconciliation', 'Batch numbers', 'Serial numbers', 'Barcode records', 'Reorder levels', 'Putaway', 'Picking', 'Packing', 'Shipment', 'Stock balance reports', 'Traceability reports'],
+        ],
+        [
+            'icon' => '⚙',
+            'label' => 'Manufacturing',
+            'description' => 'Production planning, work execution, material planning, and quality handoff.',
+            'features' => ['BOM', 'Production plan', 'Work orders', 'Job cards', 'Material requirements planning', 'Production forecasting', 'Quality inspection handoff', 'Work order reports'],
+        ],
+        [
+            'icon' => '▧',
+            'label' => 'Projects',
+            'description' => 'Project delivery, tasks, timesheets, collaboration, and project reporting.',
+            'features' => ['Projects', 'Project tasks', 'Timesheets', 'Project collaboration', 'Project summaries', 'Delayed task reports', 'Customer portal access', 'Project portal access'],
+        ],
+        [
+            'icon' => '☏',
+            'label' => 'Support / Service',
+            'description' => 'Issue handling, service commitments, warranty claims, and support portal work.',
+            'features' => ['Issues/tickets', 'SLA rules', 'Warranty claims', 'First response tracking', 'Issue summaries', 'Customer support portal'],
+        ],
+        [
+            'icon' => '◈',
+            'label' => 'Assets / Maintenance',
+            'description' => 'Asset lifecycle, depreciation, maintenance schedules, and inspection records.',
+            'features' => ['Asset records', 'Asset depreciation schedule', 'Fixed asset register', 'Maintenance schedules', 'Quality inspection', 'Maintenance reports'],
+        ],
+        [
+            'icon' => '↻',
+            'label' => 'Operations',
+            'description' => 'Background operations, sync controls, imports, alerts, and release readiness.',
+            'features' => ['Scheduled jobs', 'Notifications', 'Background workers', 'Sync conflict dashboard', 'Import/export jobs', 'System alerts', 'Release checklist'],
+        ],
+        [
+            'icon' => '§',
+            'label' => 'Compliance / Localization',
+            'description' => 'Regional tax, e-invoice, audit evidence, and regulatory exports.',
+            'features' => ['Tax templates', 'VAT settings', 'E-invoice reports', 'Regional compliance reports', 'Audit evidence', 'Regulatory exports'],
+        ],
+        [
+            'icon' => '▣',
+            'label' => 'Mobile / Android Stockroom',
+            'description' => 'Mobile warehouse execution, scanner workflows, offline sync, and conflict review.',
+            'features' => ['Mobile receiving', 'Barcode scanning', 'Putaway', 'Picking and packing', 'Delivery note handoff', 'Stock count', 'Offline sync queue', 'Conflict review', 'Scanner error recovery'],
+        ],
+    ];
+}
+
+function bx_project_company_standard_roles(): array
+{
+    return [
+        ['COMPANY_ADMIN', 'Company Administrator', 'Full company administration for users, roles, groups, permissions, branches, and projects.'],
+        ['BRANCH_MANAGER', 'Branch Manager', 'Branch-level operations and user coordination.'],
+        ['PROJECT_MANAGER', 'Project Manager', 'Project-level operations, records, and activity review.'],
+        ['PROJECT_USER', 'Project User', 'Standard project workspace access.'],
+        ['AUDITOR', 'Auditor', 'Read-only company review and audit access.'],
+    ];
+}
+
+function bx_project_company_standard_permissions(): array
+{
+    return [
+        ['company.users.view', 'View Company Users', 'users'],
+        ['company.users.manage', 'Manage Company Users', 'users'],
+        ['company.admins.manage', 'Manage Company Admins', 'admins'],
+        ['company.roles.manage', 'Manage Company Roles', 'roles'],
+        ['company.groups.manage', 'Manage Company Groups', 'groups'],
+        ['company.permissions.manage', 'Manage Company Permissions', 'permissions'],
+        ['company.branches.view', 'View Company Branches', 'branches'],
+        ['company.projects.view', 'View Company Projects', 'projects'],
+        ['company.audit.view', 'View Company Audit', 'audit'],
+    ];
+}
+
 function bx_csrf_token(): string
 {
     if (empty($_SESSION['builderx_csrf'])) {
@@ -254,6 +384,116 @@ function bx_user_agent(): string
 function bx_project_company_key_hash(string $companyKey): string
 {
     return hash('sha256', $companyKey);
+}
+
+function bx_project_company_slug_candidate(string $name, string $fallback): string
+{
+    $source = trim($name) !== '' ? $name : $fallback;
+    $slug = strtolower(trim((string) preg_replace('/[^a-z0-9]+/i', '-', $source), '-'));
+    $slug = substr($slug, 0, 100);
+
+    return $slug !== '' ? $slug : 'company';
+}
+
+function bx_project_company_unique_slug(string $baseSlug, string $companyKeyHash = ''): string
+{
+    $base = bx_project_company_slug_candidate($baseSlug, 'company');
+    $slug = $base;
+    $suffix = 2;
+
+    while (true) {
+        $existingHash = (string) bx_db()->GetOne(
+            'SELECT company_key_hash FROM project_company WHERE company_slug = ? LIMIT 1',
+            [$slug]
+        );
+        if ($existingHash === '' || ($companyKeyHash !== '' && hash_equals($companyKeyHash, $existingHash))) {
+            return $slug;
+        }
+
+        $suffixText = '-' . $suffix;
+        $slug = substr($base, 0, 120 - strlen($suffixText)) . $suffixText;
+        $suffix++;
+    }
+}
+
+function bx_project_company_admin_url(string $companySlug): string
+{
+    return bx_project_base_path() . 'company/' . rawurlencode($companySlug) . '/admin/';
+}
+
+function bx_seed_project_company_identity(): void
+{
+    $db = bx_db();
+    $companies = $db->GetAll("
+        SELECT company_key, company_key_hash, company_code, company_name
+        FROM project_company
+        WHERE company_status <> 'DELETED'
+        ORDER BY company_name ASC
+    ");
+    if (!is_array($companies)) {
+        return;
+    }
+
+    foreach ($companies as $company) {
+        $companyKey = (string) ($company['company_key'] ?? '');
+        $companyKeyHash = (string) ($company['company_key_hash'] ?? '');
+        if ($companyKey === '' || $companyKeyHash === '') {
+            continue;
+        }
+
+        foreach (bx_project_company_standard_roles() as [$roleCode, $roleName, $roleDescription]) {
+            $insertedRole = $db->Execute(
+                "INSERT IGNORE INTO project_company_role (
+                    role_key, company_key, company_key_hash, role_code, role_name, role_description, role_status, is_system
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                [bx_uuid(), $companyKey, $companyKeyHash, $roleCode, $roleName, $roleDescription, 'ACTIVE', 1]
+            );
+            if ($insertedRole === false) {
+                $databaseError = trim((string) $db->ErrorMsg());
+                throw new RuntimeException('Project company role seed failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+            }
+        }
+
+        foreach (bx_project_company_standard_permissions() as [$permissionCode, $permissionName, $permissionScope]) {
+            $insertedPermission = $db->Execute(
+                "INSERT IGNORE INTO project_company_permission (
+                    permission_key, company_key, company_key_hash, permission_code, permission_name, permission_scope, permission_status, is_system
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                [bx_uuid(), $companyKey, $companyKeyHash, $permissionCode, $permissionName, $permissionScope, 'ACTIVE', 1]
+            );
+            if ($insertedPermission === false) {
+                $databaseError = trim((string) $db->ErrorMsg());
+                throw new RuntimeException('Project company permission seed failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+            }
+        }
+
+        $administratorRoleKey = (string) $db->GetOne(
+            'SELECT role_key FROM project_company_role WHERE company_key_hash = ? AND role_code = ? LIMIT 1',
+            [$companyKeyHash, 'COMPANY_ADMIN']
+        );
+        if ($administratorRoleKey === '') {
+            continue;
+        }
+
+        $permissions = $db->GetAll('SELECT permission_key FROM project_company_permission WHERE company_key_hash = ?', [$companyKeyHash]);
+        if (!is_array($permissions)) {
+            continue;
+        }
+        foreach ($permissions as $permission) {
+            $permissionKey = (string) ($permission['permission_key'] ?? '');
+            if ($permissionKey === '') {
+                continue;
+            }
+            $insertedRolePermission = $db->Execute(
+                'INSERT IGNORE INTO project_company_role_permission (company_key_hash, role_key, permission_key) VALUES (?, ?, ?)',
+                [$companyKeyHash, $administratorRoleKey, $permissionKey]
+            );
+            if ($insertedRolePermission === false) {
+                $databaseError = trim((string) $db->ErrorMsg());
+                throw new RuntimeException('Project company administrator permission seed failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+            }
+        }
+    }
 }
 
 function bx_add_column_if_missing(string $table, string $column, string $definition): void
@@ -813,6 +1053,7 @@ function bx_schema(): void
             company_key VARCHAR(1500) NOT NULL,
             company_key_hash CHAR(64) NOT NULL,
             company_code VARCHAR(40) NOT NULL UNIQUE,
+            company_slug VARCHAR(120) NOT NULL DEFAULT '',
             company_name VARCHAR(160) NOT NULL,
             company_status ENUM('DRAFT','ACTIVE','INACTIVE','ARCHIVED','DELETED') NOT NULL DEFAULT 'ACTIVE',
             company_email VARCHAR(190) NULL,
@@ -826,6 +1067,7 @@ function bx_schema(): void
             INDEX idx_project_company_name (company_name)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
+    bx_add_column_if_missing('project_company', 'company_slug', "VARCHAR(120) NOT NULL DEFAULT '' AFTER company_code");
 
     $oldCompanyTableExists = (int) $db->GetOne(
         'SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?',
@@ -834,15 +1076,32 @@ function bx_schema(): void
     if ($oldCompanyTableExists) {
         $db->Execute("
             INSERT IGNORE INTO project_company (
-                company_key, company_key_hash, company_code, company_name, company_status,
+                company_key, company_key_hash, company_code, company_slug, company_name, company_status,
                 company_email, company_phone, company_address, company_description, created_at, updated_at
             )
             SELECT
-                company_key, company_key_hash, company_code, company_name, company_status,
+                company_key, company_key_hash, company_code, '', company_name, company_status,
                 company_email, company_phone, company_address, company_description, created_at, updated_at
             FROM builder_company
         ");
     }
+
+    $companySlugRows = $db->GetAll("SELECT company_key_hash, company_code, company_name, company_slug FROM project_company ORDER BY x_id ASC");
+    if (is_array($companySlugRows)) {
+        foreach ($companySlugRows as $companySlugRow) {
+            $existingSlug = trim((string) ($companySlugRow['company_slug'] ?? ''));
+            if ($existingSlug !== '') {
+                continue;
+            }
+            $companyKeyHash = (string) ($companySlugRow['company_key_hash'] ?? '');
+            $slug = bx_project_company_unique_slug(
+                bx_project_company_slug_candidate((string) ($companySlugRow['company_name'] ?? ''), (string) ($companySlugRow['company_code'] ?? '')),
+                $companyKeyHash
+            );
+            $db->Execute('UPDATE project_company SET company_slug = ? WHERE company_key_hash = ?', [$slug, $companyKeyHash]);
+        }
+    }
+    bx_add_index_if_missing('project_company', 'uq_project_company_slug', 'UNIQUE KEY uq_project_company_slug (company_slug)');
 
     $db->Execute("
         CREATE TABLE IF NOT EXISTS project_company_admin (
@@ -908,6 +1167,282 @@ function bx_schema(): void
             INDEX idx_project_company_project_name (project_name)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_module (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            module_key CHAR(36) NOT NULL UNIQUE,
+            company_key VARCHAR(1500) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            module_code VARCHAR(80) NOT NULL,
+            module_name VARCHAR(160) NOT NULL,
+            module_icon VARCHAR(20) NULL,
+            module_description TEXT NULL,
+            module_status ENUM('DRAFT','ACTIVE','INACTIVE','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            module_sort_order INT UNSIGNED NOT NULL DEFAULT 0,
+            created_by_admin_key CHAR(36) NULL,
+            updated_by_admin_key CHAR(36) NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_module_code (company_key_hash, module_code),
+            INDEX idx_project_company_module_company (company_key_hash),
+            INDEX idx_project_company_module_status (module_status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_module_group (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            module_group_key CHAR(36) NOT NULL UNIQUE,
+            company_key_hash CHAR(64) NOT NULL,
+            branch_key CHAR(36) NOT NULL,
+            project_key CHAR(36) NOT NULL,
+            source_company_module_key CHAR(36) NULL,
+            module_group_code VARCHAR(80) NOT NULL,
+            module_group_name VARCHAR(160) NOT NULL,
+            module_group_index INT UNSIGNED NOT NULL DEFAULT 0,
+            module_group_icon VARCHAR(20) NULL,
+            module_group_description TEXT NULL,
+            module_group_status ENUM('DRAFT','ACTIVE','INACTIVE','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            created_by_user_key CHAR(36) NULL,
+            updated_by_user_key CHAR(36) NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_module_group_project_code (project_key, module_group_code),
+            INDEX idx_project_module_group_scope (company_key_hash, branch_key, project_key, module_group_status),
+            INDEX idx_project_module_group_sort (project_key, module_group_index)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_module (
+            module_index BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            module_key CHAR(36) NOT NULL UNIQUE,
+            company_key_hash CHAR(64) NOT NULL,
+            branch_key CHAR(36) NOT NULL,
+            project_key CHAR(36) NOT NULL,
+            module_group_key CHAR(36) NOT NULL,
+            module_code VARCHAR(120) NOT NULL,
+            module_name VARCHAR(180) NOT NULL,
+            module_table_name VARCHAR(80) NOT NULL,
+            module_sort_order INT UNSIGNED NOT NULL DEFAULT 0,
+            module_description TEXT NULL,
+            module_status ENUM('DRAFT','ACTIVE','INACTIVE','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            created_by_user_key CHAR(36) NULL,
+            updated_by_user_key CHAR(36) NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_module_table_name (module_table_name),
+            UNIQUE KEY uq_project_module_scope_code (project_key, module_group_key, module_code),
+            INDEX idx_project_module_scope (company_key_hash, branch_key, project_key, module_group_key, module_status),
+            INDEX idx_project_module_sort (module_group_key, module_sort_order)
+        ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_module_form (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            form_key CHAR(36) NOT NULL UNIQUE,
+            company_key_hash CHAR(64) NOT NULL,
+            branch_key CHAR(36) NOT NULL,
+            project_key CHAR(36) NOT NULL,
+            module_group_key CHAR(36) NOT NULL,
+            module_key CHAR(36) NOT NULL,
+            source_form_schema_key CHAR(36) NULL,
+            source_builder_form_key CHAR(36) NULL,
+            form_code VARCHAR(120) NOT NULL,
+            form_name VARCHAR(180) NOT NULL,
+            form_description TEXT NULL,
+            form_schema_json LONGTEXT NULL,
+            form_status ENUM('DRAFT','ACTIVE','ARCHIVED','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            form_sort_order INT UNSIGNED NOT NULL DEFAULT 0,
+            created_by_user_key CHAR(36) NULL,
+            updated_by_user_key CHAR(36) NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_module_form_code (module_key, form_code),
+            INDEX idx_project_module_form_scope (project_key, module_group_key, module_key, form_status),
+            INDEX idx_project_module_form_sort (module_key, form_sort_order),
+            INDEX idx_project_module_form_source_schema (source_form_schema_key),
+            INDEX idx_project_module_form_source_builder (source_builder_form_key)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_role (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            role_key CHAR(36) NOT NULL UNIQUE,
+            company_key VARCHAR(1500) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            role_code VARCHAR(80) NOT NULL,
+            role_name VARCHAR(160) NOT NULL,
+            role_description TEXT NULL,
+            role_status ENUM('ACTIVE','INACTIVE','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            is_system TINYINT(1) NOT NULL DEFAULT 0,
+            created_by_admin_key CHAR(36) NULL,
+            updated_by_admin_key CHAR(36) NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_role_code (company_key_hash, role_code),
+            INDEX idx_project_company_role_company (company_key_hash),
+            INDEX idx_project_company_role_status (role_status),
+            INDEX idx_project_company_role_name (role_name)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+    bx_add_column_if_missing('project_company_role', 'is_system', "TINYINT(1) NOT NULL DEFAULT 0 AFTER role_status");
+    bx_add_column_if_missing('project_company_role', 'created_by_admin_key', "CHAR(36) NULL AFTER is_system");
+    bx_add_column_if_missing('project_company_role', 'updated_by_admin_key', "CHAR(36) NULL AFTER created_by_admin_key");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_permission (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            permission_key CHAR(36) NOT NULL UNIQUE,
+            company_key VARCHAR(1500) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            module_key CHAR(36) NULL,
+            permission_code VARCHAR(120) NOT NULL,
+            permission_name VARCHAR(160) NOT NULL,
+            permission_scope VARCHAR(80) NOT NULL,
+            permission_status ENUM('ACTIVE','INACTIVE','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            is_system TINYINT(1) NOT NULL DEFAULT 0,
+            created_by_admin_key CHAR(36) NULL,
+            updated_by_admin_key CHAR(36) NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_permission_code (company_key_hash, permission_code),
+            INDEX idx_project_company_permission_company (company_key_hash),
+            INDEX idx_project_company_permission_module (module_key),
+            INDEX idx_project_company_permission_scope (permission_scope),
+            INDEX idx_project_company_permission_status (permission_status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+    bx_add_column_if_missing('project_company_permission', 'module_key', "CHAR(36) NULL AFTER company_key_hash");
+    bx_add_column_if_missing('project_company_permission', 'is_system', "TINYINT(1) NOT NULL DEFAULT 0 AFTER permission_status");
+    bx_add_column_if_missing('project_company_permission', 'created_by_admin_key', "CHAR(36) NULL AFTER is_system");
+    bx_add_column_if_missing('project_company_permission', 'updated_by_admin_key', "CHAR(36) NULL AFTER created_by_admin_key");
+    bx_add_index_if_missing('project_company_permission', 'idx_project_company_permission_module', 'INDEX idx_project_company_permission_module (module_key)');
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_role_permission (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            company_key_hash CHAR(64) NOT NULL,
+            role_key CHAR(36) NOT NULL,
+            permission_key CHAR(36) NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_role_permission (company_key_hash, role_key, permission_key),
+            INDEX idx_project_company_role_permission_role (company_key_hash, role_key),
+            INDEX idx_project_company_role_permission_permission (company_key_hash, permission_key)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+    bx_add_column_if_missing('project_company_role_permission', 'company_key_hash', "CHAR(64) NOT NULL DEFAULT '' FIRST");
+    $backfilledRolePermissions = $db->Execute("
+        UPDATE project_company_role_permission role_permission
+        INNER JOIN project_company_role role_record ON role_record.role_key = role_permission.role_key
+        SET role_permission.company_key_hash = role_record.company_key_hash
+        WHERE role_permission.company_key_hash = ''
+    ");
+    if ($backfilledRolePermissions === false) {
+        $databaseError = trim((string) $db->ErrorMsg());
+        throw new RuntimeException('Project company role permission migration failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+    }
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_group (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            group_key CHAR(36) NOT NULL UNIQUE,
+            company_key VARCHAR(1500) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            group_name VARCHAR(120) NOT NULL,
+            group_description TEXT NULL,
+            group_status ENUM('ACTIVE','INACTIVE','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_group_name (company_key_hash, group_name),
+            INDEX idx_project_company_group_company (company_key_hash),
+            INDEX idx_project_company_group_status (group_status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_user (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_key CHAR(36) NOT NULL UNIQUE,
+            company_key VARCHAR(1500) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            user_login VARCHAR(80) NOT NULL,
+            user_password_hash VARCHAR(255) NOT NULL,
+            user_name VARCHAR(160) NOT NULL,
+            user_email VARCHAR(190) NOT NULL,
+            user_status ENUM('DRAFT','ACTIVE','INACTIVE','LOCKED','DELETED') NOT NULL DEFAULT 'ACTIVE',
+            user_failed_login_count INT UNSIGNED NOT NULL DEFAULT 0,
+            user_last_login_at TIMESTAMP NULL,
+            user_password_changed_at TIMESTAMP NULL,
+            user_created_by_key CHAR(36) NULL,
+            user_updated_by_key CHAR(36) NULL,
+            user_deleted_at TIMESTAMP NULL,
+            user_deleted_by_key CHAR(36) NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_user_login (company_key_hash, user_login),
+            UNIQUE KEY uq_project_company_user_email (company_key_hash, user_email),
+            INDEX idx_project_company_user_company (company_key_hash),
+            INDEX idx_project_company_user_status (user_status),
+            INDEX idx_project_company_user_login (user_login)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+    bx_add_column_if_missing('project_company_user', 'user_failed_login_count', "INT UNSIGNED NOT NULL DEFAULT 0 AFTER user_status");
+    bx_add_column_if_missing('project_company_user', 'user_last_login_at', "TIMESTAMP NULL AFTER user_failed_login_count");
+    bx_add_column_if_missing('project_company_user', 'user_password_changed_at', "TIMESTAMP NULL AFTER user_last_login_at");
+    bx_add_column_if_missing('project_company_user', 'user_created_by_key', "CHAR(36) NULL AFTER user_password_changed_at");
+    bx_add_column_if_missing('project_company_user', 'user_updated_by_key', "CHAR(36) NULL AFTER user_created_by_key");
+    bx_add_column_if_missing('project_company_user', 'user_deleted_at', "TIMESTAMP NULL AFTER user_updated_by_key");
+    bx_add_column_if_missing('project_company_user', 'user_deleted_by_key', "CHAR(36) NULL AFTER user_deleted_at");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_user_role (
+            user_key CHAR(36) NOT NULL,
+            role_key CHAR(36) NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_user_role (user_key, role_key),
+            INDEX idx_project_company_user_role_user (user_key),
+            INDEX idx_project_company_user_role_role (role_key)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_user_group (
+            user_key CHAR(36) NOT NULL,
+            group_key CHAR(36) NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_user_group (user_key, group_key),
+            INDEX idx_project_company_user_group_user (user_key),
+            INDEX idx_project_company_user_group_group (group_key)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_user_branch (
+            user_key CHAR(36) NOT NULL,
+            branch_key CHAR(36) NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_user_branch (user_key, branch_key),
+            INDEX idx_project_company_user_branch_user (user_key),
+            INDEX idx_project_company_user_branch_branch (branch_key)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $db->Execute("
+        CREATE TABLE IF NOT EXISTS project_company_user_project (
+            user_key CHAR(36) NOT NULL,
+            project_key CHAR(36) NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_project_company_user_project (user_key, project_key),
+            INDEX idx_project_company_user_project_user (user_key),
+            INDEX idx_project_company_user_project_project (project_key)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    bx_seed_project_company_identity();
 
     $db->Execute("
         CREATE TABLE IF NOT EXISTS project_company_department_master (
@@ -1585,6 +2120,7 @@ function bx_schema(): void
     bx_backup_phase_builder_narrative_draft();
 
     bx_seed_foundation();
+    bx_seed_project_module_hierarchy();
 }
 
 function bx_seed_foundation(): void
@@ -1693,6 +2229,627 @@ function bx_seed_foundation(): void
     }
 
     (new \BuilderX\AI\AiSpecialistRegistry())->ensureSystemSpecialists();
+}
+
+function bx_project_module_code(string $value): string
+{
+    $code = strtoupper(trim((string) preg_replace('/[^a-zA-Z0-9]+/', '_', $value), '_'));
+
+    return $code !== '' ? $code : 'ITEM';
+}
+
+function bx_project_module_feature_candidates(string $recordType): array
+{
+    $base = bx_project_module_code($recordType);
+    $special = [
+        'ACCOUNT' => 'CHART_OF_ACCOUNTS',
+        'COST_CENTER' => 'COST_CENTERS',
+        'ACCOUNTING_DIMENSION' => 'ACCOUNTING_DIMENSIONS',
+        'SALES_INVOICE' => 'SALES_INVOICES',
+        'PURCHASE_INVOICE' => 'PURCHASE_INVOICES',
+        'JOURNAL_ENTRY' => 'JOURNAL_ENTRIES',
+        'PAYMENT_ENTRY' => 'PAYMENT_ENTRIES',
+        'BANK_ACCOUNT' => 'BANK_ACCOUNTS',
+        'BUDGET' => 'BUDGETS',
+        'LEAD' => 'LEADS',
+        'OPPORTUNITY' => 'OPPORTUNITIES',
+        'CAMPAIGN' => 'CAMPAIGNS',
+        'CUSTOMER' => 'CUSTOMERS',
+        'QUOTATION' => 'QUOTATIONS',
+        'SALES_ORDER' => 'SALES_ORDERS',
+        'TAX_REPORT' => 'TAX_REPORTS',
+    ];
+    $candidates = [$special[$base] ?? '', $base];
+    if (!str_ends_with($base, 'S')) {
+        $candidates[] = $base . 'S';
+    }
+    if (str_ends_with($base, 'Y')) {
+        $candidates[] = substr($base, 0, -1) . 'IES';
+    }
+    if (str_ends_with($base, '_REPORT')) {
+        $candidates[] = substr($base, 0, -7);
+        $candidates[] = substr($base, 0, -7) . '_REPORTS';
+    }
+
+    return array_values(array_unique(array_filter($candidates, static fn (string $candidate): bool => $candidate !== '')));
+}
+
+function bx_project_module_table_exists(string $table): bool
+{
+    $allowed = ['project_company_form_schema', 'project_company_hr_builder_form', 'project_company_hr_form_field'];
+    if (!in_array($table, $allowed, true)) {
+        return false;
+    }
+
+    return (int) bx_db()->GetOne(
+        'SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?',
+        [BUILDERX_DB_NAME, $table]
+    ) > 0;
+}
+
+function bx_project_module_section_label(string $section): string
+{
+    $labels = [
+        'overview' => 'Overview',
+        'joining' => 'Joining',
+        'address-contacts' => 'Address & Contacts',
+        'attendance-leaves' => 'Attendance & Leaves',
+        'salary' => 'Salary',
+        'personal' => 'Personal',
+        'profile' => 'Profile',
+        'exit' => 'Exit',
+        'details' => 'Details',
+    ];
+    $section = strtolower(trim($section));
+
+    return $labels[$section] ?? ucwords(str_replace(['-', '_'], ' ', $section));
+}
+
+function bx_project_module_write(ADOConnection $db, mixed $result, string $operation): void
+{
+    if ($result !== false) {
+        return;
+    }
+    $databaseError = trim((string) $db->ErrorMsg());
+    throw new RuntimeException($operation . ' failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+}
+
+function bx_project_module_find_feature(ADOConnection $db, string $projectKey, string $moduleGroupKey, string $recordType): ?array
+{
+    foreach (bx_project_module_feature_candidates($recordType) as $candidate) {
+        $module = $db->GetRow(
+            "SELECT module_key, module_group_key, module_code, module_name
+            FROM project_module
+            WHERE project_key = ? AND module_group_key = ? AND module_code = ? AND module_status <> 'DELETED'
+            LIMIT 1",
+            [$projectKey, $moduleGroupKey, $candidate]
+        );
+        if (is_array($module) && $module !== []) {
+            return $module;
+        }
+    }
+
+    return null;
+}
+
+function bx_project_module_upsert_form(
+    ADOConnection $db,
+    array $project,
+    array $moduleGroup,
+    array $module,
+    string $formCode,
+    string $formName,
+    string $formDescription,
+    string $formSchemaJson,
+    ?string $sourceFormSchemaKey,
+    ?string $sourceBuilderFormKey,
+    string $formStatus,
+    int $formSortOrder
+): void {
+    $projectKey = (string) $project['project_key'];
+    $moduleKey = (string) $module['module_key'];
+    $moduleGroupKey = (string) $moduleGroup['module_group_key'];
+    $companyKeyHash = (string) $project['company_key_hash'];
+    $branchKey = (string) $project['branch_key'];
+    $formCode = bx_project_module_code($formCode);
+    $formStatus = strtoupper(trim($formStatus));
+    if (!in_array($formStatus, ['DRAFT', 'ACTIVE', 'ARCHIVED'], true)) {
+        throw new RuntimeException('Project module form status is invalid.');
+    }
+    $userKey = isset($_SESSION['builderx_user_key']) ? (string) $_SESSION['builderx_user_key'] : null;
+    $existing = $db->GetRow(
+        'SELECT * FROM project_module_form WHERE module_key = ? AND form_code = ? FOR UPDATE',
+        [$moduleKey, $formCode]
+    );
+    $formKey = is_array($existing) && $existing !== [] ? (string) $existing['form_key'] : bx_uuid();
+    $expected = [
+        'company_key_hash' => $companyKeyHash,
+        'branch_key' => $branchKey,
+        'project_key' => $projectKey,
+        'module_group_key' => $moduleGroupKey,
+        'module_key' => $moduleKey,
+        'source_form_schema_key' => $sourceFormSchemaKey,
+        'source_builder_form_key' => $sourceBuilderFormKey,
+        'form_code' => $formCode,
+        'form_name' => $formName,
+        'form_description' => $formDescription,
+        'form_schema_json' => $formSchemaJson,
+        'form_status' => $formStatus,
+        'form_sort_order' => $formSortOrder,
+    ];
+    $changed = !is_array($existing) || $existing === [];
+    if (!$changed) {
+        foreach ($expected as $field => $value) {
+            if ((string) ($existing[$field] ?? '') !== (string) ($value ?? '')) {
+                $changed = true;
+                break;
+            }
+        }
+    }
+
+    if (!is_array($existing) || $existing === []) {
+        bx_project_module_write($db, $db->Execute(
+            "INSERT INTO project_module_form (
+                form_key, company_key_hash, branch_key, project_key, module_group_key, module_key,
+                source_form_schema_key, source_builder_form_key, form_code, form_name, form_description,
+                form_schema_json, form_status, form_sort_order, created_by_user_key, updated_by_user_key
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [
+                $formKey, $companyKeyHash, $branchKey, $projectKey, $moduleGroupKey, $moduleKey,
+                $sourceFormSchemaKey, $sourceBuilderFormKey, $formCode, $formName, $formDescription,
+                $formSchemaJson, $formStatus, $formSortOrder, $userKey, $userKey,
+            ]
+        ), 'Project module form create');
+    } elseif ($changed) {
+        bx_project_module_write($db, $db->Execute(
+            "UPDATE project_module_form
+            SET company_key_hash = ?, branch_key = ?, project_key = ?, module_group_key = ?,
+                source_form_schema_key = ?, source_builder_form_key = ?, form_name = ?, form_description = ?,
+                form_schema_json = ?, form_status = ?, form_sort_order = ?, updated_by_user_key = ?
+            WHERE form_key = ? AND module_key = ?",
+            [
+                $companyKeyHash, $branchKey, $projectKey, $moduleGroupKey,
+                $sourceFormSchemaKey, $sourceBuilderFormKey, $formName, $formDescription,
+                $formSchemaJson, $formStatus, $formSortOrder, $userKey, $formKey, $moduleKey,
+            ]
+        ), 'Project module form update');
+    }
+
+    if ($changed) {
+        bx_audit(is_array($existing) && $existing !== [] ? 'UPDATE' : 'CREATE', 'project_module_form', $formKey, [
+            'project_key' => $projectKey,
+            'module_key' => $moduleKey,
+            'form_code' => $formCode,
+        ], 'Project module form registry synchronized.');
+    }
+
+    $readBack = $db->GetRow('SELECT * FROM project_module_form WHERE form_key = ? AND module_key = ? LIMIT 1', [$formKey, $moduleKey]);
+    if (!is_array($readBack) || (string) ($readBack['form_key'] ?? '') !== $formKey) {
+        throw new RuntimeException('Project module form direct read-back failed.');
+    }
+    foreach ($expected as $field => $value) {
+        if ((string) ($readBack[$field] ?? '') !== (string) ($value ?? '')) {
+            throw new RuntimeException('Project module form direct read-back mismatch for ' . $field . '.');
+        }
+    }
+}
+
+function bx_seed_project_module_hierarchy(): void
+{
+    $db = bx_db();
+    $projects = $db->GetAll("
+        SELECT
+            project_record.project_key,
+            project_record.company_key,
+            project_record.company_key_hash,
+            project_record.branch_key,
+            project_record.project_name,
+            branch_record.company_key_hash AS branch_company_key_hash,
+            company_record.company_key_hash AS company_record_key_hash
+        FROM project_company_project project_record
+        INNER JOIN project_company_branch branch_record ON branch_record.branch_key = project_record.branch_key
+        INNER JOIN project_company company_record ON company_record.company_key_hash = project_record.company_key_hash
+        WHERE project_record.project_status <> 'DELETED'
+          AND branch_record.branch_status <> 'DELETED'
+          AND company_record.company_status <> 'DELETED'
+        ORDER BY project_record.x_id
+    ");
+    if (!is_array($projects) || $projects === []) {
+        return;
+    }
+
+    $hasFormSchema = bx_project_module_table_exists('project_company_form_schema');
+    $hasHrBuilderForm = bx_project_module_table_exists('project_company_hr_builder_form');
+    $hasHrFormFields = bx_project_module_table_exists('project_company_hr_form_field');
+    $transactionStarted = false;
+    try {
+        if ($db->BeginTrans() === false) {
+            throw new RuntimeException('Project module seed transaction could not start.');
+        }
+        $transactionStarted = true;
+        $userKey = isset($_SESSION['builderx_user_key']) ? (string) $_SESSION['builderx_user_key'] : null;
+
+        foreach ($projects as $project) {
+            $companyKeyHash = (string) ($project['company_key_hash'] ?? '');
+            $branchKey = (string) ($project['branch_key'] ?? '');
+            $projectKey = (string) ($project['project_key'] ?? '');
+            if ($companyKeyHash === '' || $branchKey === '' || $projectKey === ''
+                || $companyKeyHash !== (string) ($project['branch_company_key_hash'] ?? '')
+                || $companyKeyHash !== (string) ($project['company_record_key_hash'] ?? '')) {
+                throw new RuntimeException('Project module seed rejected an invalid company, branch, and project ownership chain.');
+            }
+
+            $groupRows = [];
+            foreach (bx_project_erp_groups() as $groupOffset => $groupDefinition) {
+                $groupCode = bx_project_module_code((string) $groupDefinition['label']);
+                $groupIndex = ($groupOffset + 1) * 10;
+                $companyModule = $db->GetRow(
+                    'SELECT * FROM project_company_module WHERE company_key_hash = ? AND module_code = ? FOR UPDATE',
+                    [$companyKeyHash, $groupCode]
+                );
+                $companyModuleKey = is_array($companyModule) && $companyModule !== [] ? (string) $companyModule['module_key'] : bx_uuid();
+                $companyModuleChanged = !is_array($companyModule) || $companyModule === []
+                    || (string) ($companyModule['module_name'] ?? '') !== (string) $groupDefinition['label']
+                    || (string) ($companyModule['module_icon'] ?? '') !== (string) $groupDefinition['icon']
+                    || (string) ($companyModule['module_description'] ?? '') !== (string) $groupDefinition['description']
+                    || (string) ($companyModule['module_status'] ?? '') !== 'ACTIVE'
+                    || (int) ($companyModule['module_sort_order'] ?? -1) !== $groupIndex;
+                if (!is_array($companyModule) || $companyModule === []) {
+                    bx_project_module_write($db, $db->Execute(
+                        "INSERT INTO project_company_module (
+                            module_key, company_key, company_key_hash, module_code, module_name, module_icon,
+                            module_description, module_status, module_sort_order, created_by_admin_key, updated_by_admin_key
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, 'ACTIVE', ?, ?, ?)",
+                        [
+                            $companyModuleKey, (string) $project['company_key'], $companyKeyHash, $groupCode,
+                            (string) $groupDefinition['label'], (string) $groupDefinition['icon'],
+                            (string) $groupDefinition['description'], $groupIndex, $userKey, $userKey,
+                        ]
+                    ), 'Company module template create');
+                } elseif ($companyModuleChanged) {
+                    bx_project_module_write($db, $db->Execute(
+                        "UPDATE project_company_module
+                        SET module_name = ?, module_icon = ?, module_description = ?, module_status = 'ACTIVE',
+                            module_sort_order = ?, updated_by_admin_key = ?
+                        WHERE module_key = ? AND company_key_hash = ?",
+                        [
+                            (string) $groupDefinition['label'], (string) $groupDefinition['icon'],
+                            (string) $groupDefinition['description'], $groupIndex, $userKey,
+                            $companyModuleKey, $companyKeyHash,
+                        ]
+                    ), 'Company module template update');
+                }
+                if ($companyModuleChanged) {
+                    bx_audit(is_array($companyModule) && $companyModule !== [] ? 'UPDATE' : 'CREATE', 'project_company_module', $companyModuleKey, [
+                        'company_key_hash' => $companyKeyHash,
+                        'module_code' => $groupCode,
+                        'module_name' => (string) $groupDefinition['label'],
+                    ], 'Company ERP module template synchronized.');
+                }
+
+                $templateReadBack = $db->GetRow(
+                    'SELECT module_key, module_code, module_name, module_status, module_sort_order FROM project_company_module WHERE module_key = ? AND company_key_hash = ? LIMIT 1',
+                    [$companyModuleKey, $companyKeyHash]
+                );
+                if (!is_array($templateReadBack)
+                    || (string) ($templateReadBack['module_code'] ?? '') !== $groupCode
+                    || (string) ($templateReadBack['module_name'] ?? '') !== (string) $groupDefinition['label']
+                    || (string) ($templateReadBack['module_status'] ?? '') !== 'ACTIVE'
+                    || (int) ($templateReadBack['module_sort_order'] ?? -1) !== $groupIndex) {
+                    throw new RuntimeException('Company module template direct read-back verification failed.');
+                }
+
+                $moduleGroup = $db->GetRow(
+                    'SELECT * FROM project_module_group WHERE project_key = ? AND module_group_code = ? FOR UPDATE',
+                    [$projectKey, $groupCode]
+                );
+                $moduleGroupKey = is_array($moduleGroup) && $moduleGroup !== [] ? (string) $moduleGroup['module_group_key'] : bx_uuid();
+                $groupExpected = [
+                    'company_key_hash' => $companyKeyHash,
+                    'branch_key' => $branchKey,
+                    'project_key' => $projectKey,
+                    'source_company_module_key' => $companyModuleKey,
+                    'module_group_code' => $groupCode,
+                    'module_group_name' => (string) $groupDefinition['label'],
+                    'module_group_index' => $groupIndex,
+                    'module_group_icon' => (string) $groupDefinition['icon'],
+                    'module_group_description' => (string) $groupDefinition['description'],
+                    'module_group_status' => 'ACTIVE',
+                ];
+                $groupChanged = !is_array($moduleGroup) || $moduleGroup === [];
+                if (!$groupChanged) {
+                    foreach ($groupExpected as $field => $value) {
+                        if ((string) ($moduleGroup[$field] ?? '') !== (string) $value) {
+                            $groupChanged = true;
+                            break;
+                        }
+                    }
+                }
+                if (!is_array($moduleGroup) || $moduleGroup === []) {
+                    bx_project_module_write($db, $db->Execute(
+                        "INSERT INTO project_module_group (
+                            module_group_key, company_key_hash, branch_key, project_key, source_company_module_key,
+                            module_group_code, module_group_name, module_group_index, module_group_icon,
+                            module_group_description, module_group_status, created_by_user_key, updated_by_user_key
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ACTIVE', ?, ?)",
+                        [
+                            $moduleGroupKey, $companyKeyHash, $branchKey, $projectKey, $companyModuleKey,
+                            $groupCode, (string) $groupDefinition['label'], $groupIndex,
+                            (string) $groupDefinition['icon'], (string) $groupDefinition['description'], $userKey, $userKey,
+                        ]
+                    ), 'Project module group create');
+                } elseif ($groupChanged) {
+                    bx_project_module_write($db, $db->Execute(
+                        "UPDATE project_module_group
+                        SET company_key_hash = ?, branch_key = ?, source_company_module_key = ?, module_group_name = ?,
+                            module_group_index = ?, module_group_icon = ?, module_group_description = ?,
+                            module_group_status = 'ACTIVE', updated_by_user_key = ?
+                        WHERE module_group_key = ? AND project_key = ?",
+                        [
+                            $companyKeyHash, $branchKey, $companyModuleKey, (string) $groupDefinition['label'],
+                            $groupIndex, (string) $groupDefinition['icon'], (string) $groupDefinition['description'],
+                            $userKey, $moduleGroupKey, $projectKey,
+                        ]
+                    ), 'Project module group update');
+                }
+                if ($groupChanged) {
+                    bx_audit(is_array($moduleGroup) && $moduleGroup !== [] ? 'UPDATE' : 'CREATE', 'project_module_group', $moduleGroupKey, [
+                        'project_key' => $projectKey,
+                        'module_group_code' => $groupCode,
+                    ], 'Project ERP module group synchronized.');
+                }
+
+                $groupReadBack = $db->GetRow('SELECT * FROM project_module_group WHERE module_group_key = ? AND project_key = ? LIMIT 1', [$moduleGroupKey, $projectKey]);
+                if (!is_array($groupReadBack) || (string) ($groupReadBack['module_group_key'] ?? '') !== $moduleGroupKey) {
+                    throw new RuntimeException('Project module group direct read-back failed.');
+                }
+                foreach ($groupExpected as $field => $value) {
+                    if ((string) ($groupReadBack[$field] ?? '') !== (string) $value) {
+                        throw new RuntimeException('Project module group direct read-back mismatch for ' . $field . '.');
+                    }
+                }
+                $groupRows[$groupCode] = $groupReadBack;
+
+                foreach ((array) $groupDefinition['features'] as $featureOffset => $featureName) {
+                    $moduleCode = bx_project_module_code((string) $featureName);
+                    $moduleSortOrder = ($featureOffset + 1) * 10;
+                    $module = $db->GetRow(
+                        'SELECT * FROM project_module WHERE project_key = ? AND module_group_key = ? AND module_code = ? FOR UPDATE',
+                        [$projectKey, $moduleGroupKey, $moduleCode]
+                    );
+                    $moduleKey = is_array($module) && $module !== [] ? (string) $module['module_key'] : bx_uuid();
+                    $moduleChanged = !is_array($module) || $module === []
+                        || (string) ($module['company_key_hash'] ?? '') !== $companyKeyHash
+                        || (string) ($module['branch_key'] ?? '') !== $branchKey
+                        || (string) ($module['module_name'] ?? '') !== (string) $featureName
+                        || (int) ($module['module_sort_order'] ?? -1) !== $moduleSortOrder
+                        || (string) ($module['module_status'] ?? '') !== 'ACTIVE';
+                    if (!is_array($module) || $module === []) {
+                        $pendingName = 'pending_' . str_replace('-', '', $moduleKey);
+                        bx_project_module_write($db, $db->Execute(
+                            "INSERT INTO project_module (
+                                module_key, company_key_hash, branch_key, project_key, module_group_key,
+                                module_code, module_name, module_table_name, module_sort_order, module_description,
+                                module_status, created_by_user_key, updated_by_user_key
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ACTIVE', ?, ?)",
+                            [
+                                $moduleKey, $companyKeyHash, $branchKey, $projectKey, $moduleGroupKey,
+                                $moduleCode, (string) $featureName, $pendingName, $moduleSortOrder,
+                                (string) $groupDefinition['description'], $userKey, $userKey,
+                            ]
+                        ), 'Project module create');
+                        $moduleIndex = (int) $db->Insert_ID();
+                        if ($moduleIndex < 100) {
+                            throw new RuntimeException('Project module index generation returned a value below 100.');
+                        }
+                        bx_project_module_write($db, $db->Execute(
+                            'UPDATE project_module SET module_table_name = ? WHERE module_key = ? AND module_index = ?',
+                            ['project_module_' . $moduleIndex, $moduleKey, $moduleIndex]
+                        ), 'Project module logical table name update');
+                    } elseif ($moduleChanged) {
+                        bx_project_module_write($db, $db->Execute(
+                            "UPDATE project_module
+                            SET company_key_hash = ?, branch_key = ?, module_name = ?, module_sort_order = ?,
+                                module_description = ?, module_status = 'ACTIVE', updated_by_user_key = ?
+                            WHERE module_key = ? AND project_key = ? AND module_group_key = ?",
+                            [
+                                $companyKeyHash, $branchKey, (string) $featureName, $moduleSortOrder,
+                                (string) $groupDefinition['description'], $userKey,
+                                $moduleKey, $projectKey, $moduleGroupKey,
+                            ]
+                        ), 'Project module update');
+                    }
+                    if ($moduleChanged) {
+                        bx_audit(is_array($module) && $module !== [] ? 'UPDATE' : 'CREATE', 'project_module', $moduleKey, [
+                            'project_key' => $projectKey,
+                            'module_group_key' => $moduleGroupKey,
+                            'module_code' => $moduleCode,
+                        ], 'Project module registry synchronized.');
+                    }
+
+                    $moduleReadBack = $db->GetRow('SELECT * FROM project_module WHERE module_key = ? AND project_key = ? LIMIT 1', [$moduleKey, $projectKey]);
+                    $moduleIndex = (int) ($moduleReadBack['module_index'] ?? 0);
+                    if (!is_array($moduleReadBack)
+                        || (string) ($moduleReadBack['company_key_hash'] ?? '') !== $companyKeyHash
+                        || (string) ($moduleReadBack['branch_key'] ?? '') !== $branchKey
+                        || (string) ($moduleReadBack['module_group_key'] ?? '') !== $moduleGroupKey
+                        || (string) ($moduleReadBack['module_code'] ?? '') !== $moduleCode
+                        || (string) ($moduleReadBack['module_name'] ?? '') !== (string) $featureName
+                        || (int) ($moduleReadBack['module_sort_order'] ?? -1) !== $moduleSortOrder
+                        || (string) ($moduleReadBack['module_status'] ?? '') !== 'ACTIVE'
+                        || $moduleIndex < 100
+                        || (string) ($moduleReadBack['module_table_name'] ?? '') !== 'project_module_' . $moduleIndex) {
+                        throw new RuntimeException('Project module direct read-back verification failed.');
+                    }
+                }
+            }
+
+            if ($hasFormSchema) {
+                $schemaRows = $db->GetAll("
+                    SELECT form_schema_key, module_code, record_type, schema_json, schema_version
+                    FROM project_company_form_schema
+                    WHERE company_key_hash = ? AND schema_status = 'ACTIVE'
+                    ORDER BY module_code, record_type, schema_version DESC, x_id DESC
+                ", [$companyKeyHash]);
+                $seenSchemas = [];
+                foreach (is_array($schemaRows) ? $schemaRows : [] as $schemaRow) {
+                    $sourceIdentity = bx_project_module_code((string) $schemaRow['module_code']) . ':' . bx_project_module_code((string) $schemaRow['record_type']);
+                    if (isset($seenSchemas[$sourceIdentity])) {
+                        continue;
+                    }
+                    $seenSchemas[$sourceIdentity] = true;
+                    $groupCode = bx_project_module_code((string) $schemaRow['module_code']);
+                    $moduleGroup = $groupRows[$groupCode] ?? null;
+                    if (!is_array($moduleGroup)) {
+                        continue;
+                    }
+                    $module = bx_project_module_find_feature($db, $projectKey, (string) $moduleGroup['module_group_key'], (string) $schemaRow['record_type']);
+                    if (!is_array($module)) {
+                        continue;
+                    }
+                    bx_project_module_upsert_form(
+                        $db,
+                        $project,
+                        $moduleGroup,
+                        $module,
+                        (string) $schemaRow['record_type'],
+                        (string) $module['module_name'],
+                        'Schema-backed form for ' . (string) $module['module_name'] . '.',
+                        (string) ($schemaRow['schema_json'] ?? ''),
+                        (string) $schemaRow['form_schema_key'],
+                        null,
+                        'ACTIVE',
+                        (int) ($schemaRow['schema_version'] ?? 1) * 10
+                    );
+                }
+            }
+
+            if ($hasHrFormFields && isset($groupRows['HR_DEPARTMENT'])) {
+                $hrFieldRows = $db->GetAll("
+                    SELECT
+                        form_key,
+                        field_section,
+                        field_name,
+                        field_label,
+                        field_type,
+                        field_placeholder,
+                        field_help,
+                        field_options,
+                        is_required,
+                        is_visible,
+                        is_core,
+                        sort_order
+                    FROM project_company_hr_form_field
+                    WHERE company_key_hash = ? AND field_status = 'ACTIVE'
+                    ORDER BY form_key, field_section, sort_order, x_id
+                ", [$companyKeyHash]);
+                $builtInForms = [];
+                foreach (is_array($hrFieldRows) ? $hrFieldRows : [] as $fieldRow) {
+                    $formKey = (string) $fieldRow['form_key'];
+                    $section = strtolower(trim((string) $fieldRow['field_section']));
+                    $identity = $formKey . ':' . $section;
+                    if (!isset($builtInForms[$identity])) {
+                        $builtInForms[$identity] = [
+                            'form_key' => $formKey,
+                            'section' => $section,
+                            'fields' => [],
+                        ];
+                    }
+                    $builtInForms[$identity]['fields'][] = [
+                        'name' => (string) $fieldRow['field_name'],
+                        'label' => (string) $fieldRow['field_label'],
+                        'type' => (string) $fieldRow['field_type'],
+                        'placeholder' => (string) ($fieldRow['field_placeholder'] ?? ''),
+                        'help' => (string) ($fieldRow['field_help'] ?? ''),
+                        'options' => (string) ($fieldRow['field_options'] ?? ''),
+                        'required' => (int) $fieldRow['is_required'] === 1,
+                        'visible' => (int) $fieldRow['is_visible'] === 1,
+                        'core' => (int) $fieldRow['is_core'] === 1,
+                        'sort_order' => (int) $fieldRow['sort_order'],
+                    ];
+                }
+
+                $moduleGroup = $groupRows['HR_DEPARTMENT'];
+                $sectionOffsets = [];
+                foreach ($builtInForms as $builtInForm) {
+                    $module = bx_project_module_find_feature(
+                        $db,
+                        $projectKey,
+                        (string) $moduleGroup['module_group_key'],
+                        (string) $builtInForm['form_key']
+                    );
+                    if (!is_array($module)) {
+                        continue;
+                    }
+                    $moduleKey = (string) $module['module_key'];
+                    $sectionOffsets[$moduleKey] = ($sectionOffsets[$moduleKey] ?? 0) + 1;
+                    $section = (string) $builtInForm['section'];
+                    $schemaJson = json_encode([
+                        'version' => 1,
+                        'source' => 'project_company_hr_form_field',
+                        'form_key' => (string) $builtInForm['form_key'],
+                        'section' => $section,
+                        'fields' => $builtInForm['fields'],
+                    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+                    bx_project_module_upsert_form(
+                        $db,
+                        $project,
+                        $moduleGroup,
+                        $module,
+                        'BUILT_IN_' . bx_project_module_code($section),
+                        bx_project_module_section_label($section),
+                        'Built-in ' . (string) $module['module_name'] . ' form section.',
+                        $schemaJson,
+                        null,
+                        null,
+                        'ACTIVE',
+                        $sectionOffsets[$moduleKey] * 10
+                    );
+                }
+            }
+
+            if ($hasHrBuilderForm && isset($groupRows['HR_DEPARTMENT'])) {
+                $hrBuilderRows = $db->GetAll("
+                    SELECT builder_form_key, target_section, form_title, form_description, form_status, schema_json
+                    FROM project_company_hr_builder_form
+                    WHERE company_key_hash = ? AND form_status <> 'DELETED'
+                    ORDER BY target_section, updated_at, x_id
+                ", [$companyKeyHash]);
+                foreach (is_array($hrBuilderRows) ? $hrBuilderRows : [] as $formOffset => $builderForm) {
+                    $moduleGroup = $groupRows['HR_DEPARTMENT'];
+                    $module = bx_project_module_find_feature($db, $projectKey, (string) $moduleGroup['module_group_key'], (string) $builderForm['target_section']);
+                    if (!is_array($module)) {
+                        continue;
+                    }
+                    $sourceBuilderKey = (string) $builderForm['builder_form_key'];
+                    bx_project_module_upsert_form(
+                        $db,
+                        $project,
+                        $moduleGroup,
+                        $module,
+                        'HR_BUILDER_' . bx_project_module_code($sourceBuilderKey),
+                        (string) $builderForm['form_title'],
+                        (string) ($builderForm['form_description'] ?? ''),
+                        (string) ($builderForm['schema_json'] ?? ''),
+                        null,
+                        $sourceBuilderKey,
+                        (string) $builderForm['form_status'],
+                        ($formOffset + 1) * 10
+                    );
+                }
+            }
+        }
+
+        if ($db->CommitTrans() === false) {
+            throw new RuntimeException('Project module seed transaction commit failed.');
+        }
+        $transactionStarted = false;
+    } catch (Throwable $error) {
+        if ($transactionStarted) {
+            $db->RollbackTrans();
+        }
+        throw $error;
+    }
 }
 
 function bx_setting(string $name, ?string $default = null): ?string
@@ -2069,11 +3226,79 @@ function bx_logout(): void
     unset($_SESSION['builderx_user_key'], $_SESSION['builderx_user_name'], $_SESSION['builderx_session_key']);
 }
 
+function bx_ensure_project_company_admin(ADOConnection $db, array $company, string $defaultPassword = 'admin12345'): array
+{
+    $companyKey = (string) ($company['company_key'] ?? '');
+    $companyKeyHash = (string) (($company['company_key_hash'] ?? '') ?: bx_project_company_key_hash($companyKey));
+    $companyCode = (string) ($company['company_code'] ?? '');
+    $companyName = (string) ($company['company_name'] ?? 'Company');
+    $companySlug = (string) (($company['company_slug'] ?? '') ?: bx_project_company_slug_candidate($companyName, $companyCode));
+
+    $existing = $db->GetRow(
+        'SELECT admin_key, company_key, company_key_hash, admin_login, admin_name, admin_email, admin_status FROM project_company_admin WHERE company_key_hash = ? AND admin_login = ? LIMIT 1',
+        [$companyKeyHash, 'admin']
+    );
+    if ($existing) {
+        return $existing;
+    }
+
+    $adminKey = bx_uuid();
+    $adminEmail = 'admin@' . $companySlug . '.local';
+    $adminName = $companyName . ' Company Administrator';
+    $passwordHash = bx_password_hash($defaultPassword);
+
+    $saved = $db->Execute(
+        "INSERT INTO project_company_admin (
+            admin_key, company_key, company_key_hash, admin_login, admin_password_hash,
+            admin_name, admin_email, admin_status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, 'ACTIVE')",
+        [
+            $adminKey,
+            $companyKey,
+            $companyKeyHash,
+            'admin',
+            $passwordHash,
+            $adminName,
+            $adminEmail,
+        ]
+    );
+    if ($saved === false) {
+        $databaseError = trim((string) $db->ErrorMsg());
+        throw new RuntimeException('Company admin provisioning failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
+    }
+
+    bx_audit('CREATE', 'project_company_admin', $adminKey, [
+        'company_code' => $companyCode,
+        'company_name' => $companyName,
+        'company_slug' => $companySlug,
+        'admin_login' => 'admin',
+    ], 'Provisioned company administrator.');
+
+    $readBack = $db->GetRow(
+        'SELECT admin_key, company_key, company_key_hash, admin_login, admin_password_hash, admin_name, admin_email, admin_status FROM project_company_admin WHERE admin_key = ? LIMIT 1',
+        [$adminKey]
+    );
+    if (!$readBack
+        || (string) $readBack['company_key'] !== $companyKey
+        || (string) $readBack['company_key_hash'] !== $companyKeyHash
+        || (string) $readBack['admin_login'] !== 'admin'
+        || (string) $readBack['admin_name'] !== $adminName
+        || (string) $readBack['admin_email'] !== $adminEmail
+        || (string) $readBack['admin_status'] !== 'ACTIVE'
+        || !password_verify($defaultPassword, (string) $readBack['admin_password_hash'])) {
+        throw new RuntimeException('Company admin provisioning read-back verification failed.');
+    }
+
+    unset($readBack['admin_password_hash']);
+
+    return $readBack;
+}
+
 function bx_seed_yovel_east_company_admin(): void
 {
     $db = bx_db();
     $company = $db->GetRow(
-        "SELECT company_key, company_key_hash, company_code, company_name
+        "SELECT company_key, company_key_hash, company_code, company_slug, company_name
         FROM project_company
         WHERE company_code = ? AND company_status <> 'DELETED'
         LIMIT 1",
@@ -2083,59 +3308,9 @@ function bx_seed_yovel_east_company_admin(): void
         return;
     }
 
-    $companyKey = (string) $company['company_key'];
-    $companyKeyHash = (string) ($company['company_key_hash'] ?: bx_project_company_key_hash($companyKey));
-    $existing = $db->GetRow(
-        'SELECT admin_key FROM project_company_admin WHERE company_key_hash = ? AND admin_login = ? LIMIT 1',
-        [$companyKeyHash, 'admin']
-    );
-    if ($existing) {
-        return;
-    }
-
-    $adminKey = bx_uuid();
-    $passwordHash = bx_password_hash('admin12345');
-
     $db->BeginTrans();
     try {
-        $saved = $db->Execute(
-            "INSERT INTO project_company_admin (
-                admin_key, company_key, company_key_hash, admin_login, admin_password_hash,
-                admin_name, admin_email, admin_status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, 'ACTIVE')",
-            [
-                $adminKey,
-                $companyKey,
-                $companyKeyHash,
-                'admin',
-                $passwordHash,
-                'Yovel East Company Administrator',
-                'admin@yoveleast.local',
-            ]
-        );
-        if ($saved === false) {
-            $databaseError = trim((string) $db->ErrorMsg());
-            throw new RuntimeException('Yovel East company admin seed insert failed' . ($databaseError !== '' ? ': ' . $databaseError : '.'));
-        }
-
-        bx_audit('CREATE', 'project_company_admin', $adminKey, [
-            'company_code' => (string) $company['company_code'],
-            'company_name' => (string) $company['company_name'],
-            'admin_login' => 'admin',
-        ], 'Seeded Yovel East company administrator.');
-
-        $readBack = $db->GetRow(
-            'SELECT admin_key, company_key_hash, admin_login, admin_password_hash, admin_status FROM project_company_admin WHERE admin_key = ? LIMIT 1',
-            [$adminKey]
-        );
-        if (!$readBack
-            || (string) $readBack['company_key_hash'] !== $companyKeyHash
-            || (string) $readBack['admin_login'] !== 'admin'
-            || (string) $readBack['admin_status'] !== 'ACTIVE'
-            || !password_verify('admin12345', (string) $readBack['admin_password_hash'])) {
-            throw new RuntimeException('Yovel East company admin seed read-back verification failed.');
-        }
-
+        bx_ensure_project_company_admin($db, $company, 'admin12345');
         $db->CommitTrans();
     } catch (Throwable $error) {
         $db->RollbackTrans();

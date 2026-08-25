@@ -271,8 +271,13 @@ type AdminPayload = {
   companyBranches: Array<Record<string, string>>
   companyProjects: Array<Record<string, string>>
   companyAdmins: Array<Record<string, string>>
-  companyDepartmentMasters: Array<Record<string, string>>
-  companyDepartments: Array<Record<string, string>>
+  projectModuleGroups: Array<Record<string, string>>
+  projectModules: Array<Record<string, string>>
+  projectModuleForms: Array<Record<string, string>>
+  companyUsers: Array<Record<string, string>>
+  companyRoles: Array<Record<string, string>>
+  companyGroups: Array<Record<string, string>>
+  companyPermissions: Array<Record<string, string>>
   projects: Array<Record<string, string>>
   forms: Array<Record<string, string>>
   formVersions: Array<Record<string, string>>
@@ -477,13 +482,15 @@ function loginSettingValue(name: string, fallback = ''): string {
   return settingValue(`login_${name}`, fallback)
 }
 
-const adminViewKeys = ['dashboard', 'companies', 'company-branches', 'company-projects', 'company-departments', 'users', 'groups', 'roles', 'permissions', 'branches', 'projects', 'settings', 'audit', 'health', 'template']
+const adminViewKeys = ['dashboard', 'companies', 'company-branches', 'company-projects', 'users', 'groups', 'roles', 'permissions', 'branches', 'projects', 'settings', 'audit', 'health', 'template']
 const projectCompanyTabKey = 'project-company'
 const projectCompanyViewPrefix = `${projectCompanyTabKey}:`
 const projectCompanyBranchSeparator = '::'
 
-function projectCompanyViewKey(companyKey: string, branchKey = ''): string {
-  return `${projectCompanyViewPrefix}${companyKey}${branchKey !== '' ? `${projectCompanyBranchSeparator}${branchKey}` : ''}`
+function projectCompanyViewKey(companyKey: string, branchKey = '', projectKey = ''): string {
+  const branchSegment = branchKey !== '' ? `${projectCompanyBranchSeparator}${branchKey}` : ''
+  const projectSegment = branchKey !== '' && projectKey !== '' ? `${projectCompanyBranchSeparator}${projectKey}` : ''
+  return `${projectCompanyViewPrefix}${companyKey}${branchSegment}${projectSegment}`
 }
 
 function projectCompanyKeyFromView(view: string): string {
@@ -494,6 +501,11 @@ function projectCompanyKeyFromView(view: string): string {
 function projectCompanyBranchKeyFromView(view: string): string {
   if (!view.startsWith(projectCompanyViewPrefix)) return ''
   return view.slice(projectCompanyViewPrefix.length).split(projectCompanyBranchSeparator)[1] || ''
+}
+
+function projectCompanyProjectKeyFromView(view: string): string {
+  if (!view.startsWith(projectCompanyViewPrefix)) return ''
+  return view.slice(projectCompanyViewPrefix.length).split(projectCompanyBranchSeparator)[2] || ''
 }
 
 function activeProjectSidebarCompanies(): Array<Record<string, string>> {
@@ -668,7 +680,6 @@ const sidebarSections = [
       { key: 'companies', label: 'Companies' },
       { key: 'company-branches', label: 'Branches' },
       { key: 'company-projects', label: 'Projects' },
-      { key: 'company-departments', label: 'Departments' },
     ],
   },
   {
@@ -820,7 +831,7 @@ function Shell({
       >
         <AdminSidebarMobilePersistence defaultOpen={defaultSidebarOpen} />
         <AppSidebar activeView={activeView} onViewChange={onViewChange} />
-        <SidebarInset>
+        <SidebarInset className="flex h-svh min-h-0 flex-col overflow-hidden">
           <header className="sticky top-0 z-20 flex min-h-16 shrink-0 flex-col items-stretch justify-center gap-2 border-b bg-background/95 px-4 py-2 backdrop-blur transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:min-h-12 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex min-w-0 items-center gap-2">
               <SidebarTrigger className="-ml-1" />
@@ -865,7 +876,9 @@ function Shell({
           </header>
 
           <main className={cn(
-            'flex w-full flex-1 flex-col',
+            activeView === 'permissions'
+              ? 'flex min-h-0 w-full flex-1 flex-col overflow-hidden'
+              : 'flex min-h-0 w-full flex-1 flex-col overflow-y-auto overscroll-contain',
             'gap-4 p-4'
           )}>
             <FlashMessage />
@@ -1121,8 +1134,11 @@ function NavProjects({
   onViewChange: (view: string) => void
 }) {
   const activeCompanies = activeProjectSidebarCompanies()
+    .slice()
+    .sort((left, right) => (left.company_name || '').localeCompare(right.company_name || ''))
   const activeCompanyKey = projectCompanyKeyFromView(activeView)
   const activeBranchKey = projectCompanyBranchKeyFromView(activeView)
+  const activeProjectKey = projectCompanyProjectKeyFromView(activeView)
   const branchesByCompany = data.companyBranches.reduce<Record<string, Array<Record<string, string>>>>((groups, branch) => {
     if (branch.branch_status !== 'DELETED') {
       groups[branch.company_key] = groups[branch.company_key] || []
@@ -1130,10 +1146,24 @@ function NavProjects({
     }
     return groups
   }, {})
+  const projectsByBranch = data.companyProjects.reduce<Record<string, Array<Record<string, string>>>>((groups, project) => {
+    if (project.project_status !== 'DELETED') {
+      groups[project.branch_key] = groups[project.branch_key] || []
+      groups[project.branch_key].push(project)
+    }
+    return groups
+  }, {})
+
+  Object.values(branchesByCompany).forEach((branches) => {
+    branches.sort((left, right) => (left.branch_name || '').localeCompare(right.branch_name || ''))
+  })
+  Object.values(projectsByBranch).forEach((projects) => {
+    projects.sort((left, right) => (left.project_name || '').localeCompare(right.project_name || ''))
+  })
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Projects</SidebarGroupLabel>
+      <SidebarGroupLabel>Company</SidebarGroupLabel>
       <SidebarMenu>
         {activeCompanies.length === 0 ? (
           <SidebarMenuItem>
@@ -1157,14 +1187,39 @@ function NavProjects({
                     <SidebarMenuSubItem>
                       <span className="block px-2 py-1 text-xs text-muted-foreground">No branches</span>
                     </SidebarMenuSubItem>
-                  ) : companyBranches.map((branch) => (
-                    <SidebarMenuSubItem key={branch.branch_key}>
-                      <SidebarMenuSubButton isActive={activeBranchKey === branch.branch_key} onClick={() => onViewChange(projectCompanyViewKey(company.company_key, branch.branch_key))}>
-                        <Frame className="size-3.5" />
-                        <span>{branch.branch_name}</span>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
+                  ) : companyBranches.map((branch) => {
+                    const branchProjects = projectsByBranch[branch.branch_key] || []
+                    const branchIsActive = activeBranchKey === branch.branch_key
+                    return (
+                      <Collapsible key={branch.branch_key} defaultOpen={branchIsActive} className="group/branch" render={<SidebarMenuSubItem />}>
+                        <CollapsibleTrigger render={<SidebarMenuSubButton render={<button type="button" />} isActive={branchIsActive} onClick={() => onViewChange(projectCompanyViewKey(company.company_key, branch.branch_key))} />}>
+                          <Frame className="size-3.5" />
+                          <span>{branch.branch_name}</span>
+                          <ChevronRight className="ml-auto size-3.5 transition-transform duration-200 group-data-open/branch:rotate-90" />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <SidebarMenuSub className="mr-0 pr-0">
+                            {branchProjects.length === 0 ? (
+                              <SidebarMenuSubItem>
+                                <span className="block px-2 py-1 text-xs text-muted-foreground">No projects</span>
+                              </SidebarMenuSubItem>
+                            ) : branchProjects.map((project) => (
+                              <SidebarMenuSubItem key={project.project_key}>
+                                <SidebarMenuSubButton
+                                  render={<button type="button" />}
+                                  isActive={activeProjectKey === project.project_key}
+                                  onClick={() => onViewChange(projectCompanyViewKey(company.company_key, branch.branch_key, project.project_key))}
+                                >
+                                  <FolderKanban className="size-3.5" />
+                                  <span>{project.project_name}</span>
+                                </SidebarMenuSubButton>
+                              </SidebarMenuSubItem>
+                            ))}
+                          </SidebarMenuSub>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    )
+                  })}
                 </SidebarMenuSub>
               </CollapsibleContent>
             </Collapsible>
@@ -1353,7 +1408,7 @@ function AuthLanding({ theme, onThemeToggle }: { theme: AdminThemeMode; onThemeT
             </CardContent>
           </Card>
 
-          <div className="flex flex-wrap gap-2">
+	                        <div className="flex flex-wrap justify-start gap-1.5">
             <a className={buttonClassName({ variant: 'outline', size: 'sm' })} href={projectUrl()}>
               {loginSettingValue('user_portal_label', 'User Portal')}
             </a>
@@ -1442,9 +1497,10 @@ function DashboardPanel({
   )
 }
 
-const platformTwoPanelClass = 'grid min-h-0 gap-4 xl:h-[clamp(34rem,calc(100svh-15rem),72rem)] xl:grid-cols-[minmax(0,8fr)_minmax(320px,4fr)]'
-const platformLeftPanelStackClass = 'grid min-h-0 gap-4 xl:overflow-y-auto xl:overscroll-contain'
-const platformRightPanelStackClass = 'grid min-h-0 gap-4 xl:overflow-hidden'
+const platformTwoPanelClass = 'grid min-h-[28rem] gap-4 lg:h-[min(72rem,calc(100svh-13.5rem))] lg:min-h-0 lg:grid-cols-[minmax(0,8fr)_minmax(300px,4fr)]'
+const platformFillTwoPanelClass = 'grid min-h-0 flex-1 gap-4 overflow-hidden lg:grid-cols-[minmax(0,8fr)_minmax(300px,4fr)]'
+const platformLeftPanelStackClass = 'grid min-h-0 gap-4 lg:overflow-hidden'
+const platformRightPanelStackClass = 'grid min-h-0 gap-4 lg:overflow-hidden'
 const platformPanelBodyClass = 'min-h-0 flex-1 overflow-y-auto overscroll-contain p-4'
 const platformTableBodyClass = 'min-h-0 flex-1 overflow-auto overscroll-contain'
 
@@ -1458,8 +1514,9 @@ type ConfirmationState = {
 
 function ConfirmationModal({ confirmation, onClose }: { confirmation: ConfirmationState; onClose: () => void }) {
   if (!confirmation) return null
+  if (typeof document === 'undefined') return null
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/50 px-4 backdrop-blur-[1px]" role="dialog" aria-modal="true" aria-labelledby="confirmation-title">
       <div className="w-full max-w-md rounded-lg border border-border bg-card p-5 shadow-2xl">
         <h2 id="confirmation-title" className="text-lg font-bold tracking-normal">{confirmation.title}</h2>
@@ -1479,7 +1536,8 @@ function ConfirmationModal({ confirmation, onClose }: { confirmation: Confirmati
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
 
@@ -1992,14 +2050,6 @@ const firebaseDocumentIdAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqr
 
 type CompanyIconButtonTone = 'add' | 'edit' | 'deactivate' | 'restore' | 'archive' | 'delete'
 
-type ErpDepartmentTemplate = {
-  key: string
-  code: string
-  name: string
-  type: string
-  description: string
-}
-
 const companyIconButtonGlowClass: Record<CompanyIconButtonTone, string> = {
   add: 'text-emerald-400 shadow-[0_0_6px_rgba(34,197,94,0.12)] hover:shadow-[0_0_10px_rgba(34,197,94,0.24)] [&_svg]:drop-shadow-[0_0_4px_rgba(34,197,94,0.55)]',
   edit: 'text-sky-400 shadow-[0_0_6px_rgba(56,189,248,0.12)] hover:shadow-[0_0_10px_rgba(56,189,248,0.24)] [&_svg]:drop-shadow-[0_0_4px_rgba(56,189,248,0.55)]',
@@ -2035,6 +2085,11 @@ function CompanyManagementCountBadge({
       <span>{value === 1 ? singular : plural}</span>
     </Badge>
   )
+}
+
+function companyAdminPortalUrl(company: Record<string, string>): string {
+  const slug = company.company_slug || (company.company_code === 'YE' ? 'yovel-east' : (company.company_code || company.company_name || 'company').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))
+  return projectUrl(`company/${slug}/admin/`)
 }
 
 function createFirebaseDocumentId(): string {
@@ -2139,16 +2194,22 @@ function CompanyCrudView() {
             </CardAction>
           </CardHeader>
           <CardContent className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-0">
-            <FoundationTable headers={['Company', 'Contact', 'Branches', 'Status', 'Actions']} actionAlign="left">
+            <FoundationTable headers={['Company', 'Admin URL', 'Contact', 'Branches', 'Status', 'Actions']} actionAlign="left">
               {data.companies.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">No companies have been created yet.</TableCell>
+                  <TableCell colSpan={6} className="py-10 text-center text-muted-foreground">No companies have been created yet.</TableCell>
                 </TableRow>
               ) : data.companies.map((company) => (
                 <TableRow key={company.company_key}>
                   <TableCell>
                     <strong>{company.company_name}</strong>
                     {company.company_description ? <p className="mt-1 text-xs text-muted-foreground">{company.company_description}</p> : null}
+                  </TableCell>
+                  <TableCell>
+                    <a className="inline-flex items-center gap-2 text-sm font-medium hover:underline" href={companyAdminPortalUrl(company)}>
+                      Company Admin
+                      <ExternalLink className="size-3.5" aria-hidden="true" />
+                    </a>
                   </TableCell>
                   <TableCell>
                     <div>{company.company_email || 'No email'}</div>
@@ -2971,462 +3032,6 @@ function CompanyProjectStatusButton({
   )
 }
 
-function CompanyDepartmentCrudView() {
-  const standardDepartments = React.useMemo<ErpDepartmentTemplate[]>(() => (
-    data.companyDepartmentMasters
-      .filter((department) => department.department_status === 'ACTIVE')
-      .map((department) => ({
-        key: department.department_master_key,
-        code: department.department_code,
-        name: department.department_name,
-        type: department.department_type,
-        description: department.department_description || '',
-      }))
-  ), [data.companyDepartmentMasters])
-  const [editingDepartmentKey, setEditingDepartmentKey] = React.useState('')
-  const [departmentFormOpen, setDepartmentFormOpen] = React.useState(false)
-  const [selectedCompanyKey, setSelectedCompanyKey] = React.useState('')
-  const [selectedBranchKey, setSelectedBranchKey] = React.useState('')
-  const [departmentMode, setDepartmentMode] = React.useState<'ERP_DEFAULT' | 'CUSTOM'>('ERP_DEFAULT')
-  const [selectedTemplateKey, setSelectedTemplateKey] = React.useState('')
-  const [departmentCode, setDepartmentCode] = React.useState('')
-  const [departmentName, setDepartmentName] = React.useState('')
-  const [departmentType, setDepartmentType] = React.useState('')
-  const [departmentStatus, setDepartmentStatus] = React.useState('ACTIVE')
-  const [departmentDescription, setDepartmentDescription] = React.useState('')
-  const [confirmation, setConfirmation] = React.useState<ConfirmationState>(null)
-  const departmentFormRef = React.useRef<HTMLFormElement>(null)
-  const activeCompanies = React.useMemo(
-    () => data.companies.filter((company) => company.company_status !== 'DELETED'),
-    [data.companies],
-  )
-  const activeCompanyBranches = React.useMemo(
-    () => data.companyBranches.filter((branch) => branch.branch_status !== 'DELETED'),
-    [data.companyBranches],
-  )
-  const editingDepartment = data.companyDepartments.find((department) => department.department_key === editingDepartmentKey)
-  const departmentCompanyKey = selectedCompanyKey || editingDepartment?.company_key || activeCompanies[0]?.company_key || ''
-  const filteredBranches = React.useMemo(
-    () => activeCompanyBranches.filter((branch) => branch.company_key === departmentCompanyKey),
-    [activeCompanyBranches, departmentCompanyKey],
-  )
-  const departmentBranchKey = filteredBranches.some((branch) => branch.branch_key === selectedBranchKey)
-    ? selectedBranchKey
-    : filteredBranches[0]?.branch_key || ''
-  const departmentFormKey = editingDepartment?.department_key || `new-department-${departmentCompanyKey || 'none'}`
-  const departmentSummary = React.useMemo(() => {
-    const total = data.companyDepartments.length
-    const active = data.companyDepartments.filter((department) => department.department_status === 'ACTIVE').length
-    const draft = data.companyDepartments.filter((department) => department.department_status === 'DRAFT').length
-    const inactive = data.companyDepartments.filter((department) => department.department_status === 'INACTIVE').length
-    const archived = data.companyDepartments.filter((department) => department.department_status === 'ARCHIVED').length
-    const deleted = data.companyDepartments.filter((department) => department.department_status === 'DELETED').length
-    const fromDefaults = data.companyDepartments.filter((department) => department.department_source === 'ERP_DEFAULT').length
-    const custom = data.companyDepartments.filter((department) => department.department_source === 'CUSTOM').length
-
-    return { total, active, draft, inactive, archived, deleted, fromDefaults, custom, standard: standardDepartments.length }
-  }, [data.companyDepartments, standardDepartments.length])
-
-  function applyDepartmentTemplate(templateKey: string) {
-    const template = standardDepartments.find((item) => item.key === templateKey) || standardDepartments[0]
-    if (!template) return
-    setSelectedTemplateKey(template.key)
-    setDepartmentCode(template.code)
-    setDepartmentName(template.name)
-    setDepartmentType(template.type)
-    setDepartmentDescription(template.description)
-  }
-
-  function openDepartmentForm(departmentKey = '') {
-    const department = data.companyDepartments.find((item) => item.department_key === departmentKey)
-    const nextCompanyKey = department?.company_key || activeCompanies[0]?.company_key || ''
-    if (departmentKey === '' && (activeCompanies.length === 0 || activeCompanyBranches.length === 0)) {
-      return
-    }
-    const nextBranches = activeCompanyBranches.filter((branch) => branch.company_key === nextCompanyKey)
-    const nextMode = department?.department_source === 'CUSTOM' ? 'CUSTOM' : 'ERP_DEFAULT'
-    const nextTemplate = department?.default_department_key || standardDepartments[0]?.key || ''
-    const template = standardDepartments.find((item) => item.key === nextTemplate) || standardDepartments[0]
-
-    setEditingDepartmentKey(departmentKey)
-    setSelectedCompanyKey(nextCompanyKey)
-    setSelectedBranchKey(department?.branch_key || nextBranches[0]?.branch_key || '')
-    setDepartmentMode(nextMode)
-    setSelectedTemplateKey(nextMode === 'ERP_DEFAULT' ? nextTemplate : '')
-    setDepartmentCode(department?.department_code || template?.code || '')
-    setDepartmentName(department?.department_name || template?.name || '')
-    setDepartmentType(department?.department_type || template?.type || 'OPERATIONS')
-    setDepartmentStatus(department?.department_status || 'ACTIVE')
-    setDepartmentDescription(department?.department_description || template?.description || '')
-    setDepartmentFormOpen(true)
-  }
-
-  function handleDepartmentDialogOpen(open: boolean) {
-    setDepartmentFormOpen(open)
-    if (!open) {
-      setEditingDepartmentKey('')
-      setSelectedCompanyKey('')
-      setSelectedBranchKey('')
-      setDepartmentMode('ERP_DEFAULT')
-      setSelectedTemplateKey('')
-      setDepartmentCode('')
-      setDepartmentName('')
-      setDepartmentType('')
-      setDepartmentStatus('ACTIVE')
-      setDepartmentDescription('')
-    }
-  }
-
-  function handleDepartmentCompanyChange(companyKey: string) {
-    const nextBranches = activeCompanyBranches.filter((branch) => branch.company_key === companyKey)
-    setSelectedCompanyKey(companyKey)
-    setSelectedBranchKey(nextBranches[0]?.branch_key || '')
-  }
-
-  function handleDepartmentModeChange(mode: 'ERP_DEFAULT' | 'CUSTOM') {
-    setDepartmentMode(mode)
-    if (mode === 'ERP_DEFAULT') {
-      applyDepartmentTemplate(selectedTemplateKey || standardDepartments[0]?.key || '')
-      return
-    }
-
-    setSelectedTemplateKey('')
-    if (!editingDepartment) {
-      setDepartmentCode('')
-      setDepartmentName('')
-      setDepartmentType('OPERATIONS')
-      setDepartmentDescription('')
-    }
-  }
-
-  function confirmDepartmentForm() {
-    if (!departmentFormRef.current?.reportValidity()) {
-      return
-    }
-
-    setConfirmation({
-      title: editingDepartment ? 'Confirm department update' : 'Confirm department creation',
-      message: editingDepartment
-        ? `Update department ${editingDepartment.department_code}?`
-        : departmentMode === 'ERP_DEFAULT'
-          ? 'Create this branch department from the selected standard department?'
-          : 'Create this custom department under the selected branch?',
-      confirmLabel: editingDepartment ? 'Update Department' : 'Create Department',
-      onConfirm: () => departmentFormRef.current?.requestSubmit(),
-    })
-  }
-
-  return (
-    <>
-      <ConfirmationModal confirmation={confirmation} onClose={() => setConfirmation(null)} />
-
-      <div className="mb-5">
-        <div>
-          <Badge>Company Management</Badge>
-          <h2 className="mt-2 text-2xl font-bold tracking-normal">Departments</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Use fixed standard departments or add custom departments under company branches.</p>
-        </div>
-      </div>
-
-      <div className="grid min-h-0 gap-4 xl:h-[calc(100svh-15rem)] xl:grid-cols-[minmax(0,8fr)_minmax(320px,4fr)]">
-        <Card className="flex min-w-0 flex-col overflow-hidden">
-          <CardHeader className="border-b">
-            <CardTitle>Departments</CardTitle>
-            <CardDescription>Review saved departments from the project company department database.</CardDescription>
-            <CardAction>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                className={companyIconButtonClass('add')}
-                aria-label="Add new company department"
-                title={activeCompanies.length === 0 ? 'Create a company first' : activeCompanyBranches.length === 0 ? 'Create a company branch first' : 'Add new company department'}
-                disabled={activeCompanies.length === 0 || activeCompanyBranches.length === 0}
-                onClick={() => openDepartmentForm()}
-              >
-                <Plus />
-              </Button>
-            </CardAction>
-          </CardHeader>
-          <CardContent className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-0">
-            <FoundationTable headers={['Company', 'Branch', 'Department', 'Type', 'Source', 'Status', 'Actions']} actionAlign="left">
-              {data.companyDepartments.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">No company departments have been created yet.</TableCell>
-                </TableRow>
-              ) : data.companyDepartments.map((department) => (
-                <TableRow key={department.department_key}>
-                  <TableCell><strong>{department.company_name || 'Company unavailable'}</strong></TableCell>
-                  <TableCell><strong>{department.branch_name || 'Branch unavailable'}</strong></TableCell>
-                  <TableCell>
-                    <strong>{department.department_name}</strong>
-                    {department.department_description ? <p className="mt-1 text-xs text-muted-foreground">{department.department_description}</p> : null}
-                  </TableCell>
-                  <TableCell>{department.department_type}</TableCell>
-                  <TableCell><Badge variant="outline">{department.department_source === 'ERP_DEFAULT' ? 'Standard' : 'Custom'}</Badge></TableCell>
-                  <TableCell><Badge>{department.department_status}</Badge></TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap justify-start gap-1.5">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon-sm"
-                        className={companyIconButtonClass('edit')}
-                        aria-label={`Edit ${department.department_code}`}
-                        title={`Edit ${department.department_code}`}
-                        onClick={() => openDepartmentForm(department.department_key)}
-                      >
-                        <Pencil aria-hidden="true" />
-                      </Button>
-                      <CompanyDepartmentStatusButton department={department} status="INACTIVE" label="Deactivate" icon={<Ban className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
-                      <CompanyDepartmentStatusButton department={department} status="ACTIVE" label="Restore" icon={<RotateCcw className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
-                      <CompanyDepartmentStatusButton department={department} status="ARCHIVED" label="Archive" icon={<Archive className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
-                      <CompanyDepartmentStatusButton department={department} status="DELETED" label="Delete" icon={<Trash2 className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </FoundationTable>
-          </CardContent>
-        </Card>
-
-        <Card className="flex min-w-0 flex-col overflow-hidden">
-          <CardHeader className="border-b">
-            <CardTitle>Summary</CardTitle>
-            <CardDescription>Branch department records available for project ERP workspaces.</CardDescription>
-          </CardHeader>
-          <CardContent className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-            <dl className="grid gap-3">
-              <div className="bg-muted/20 p-3">
-                <dt className="text-xs font-medium text-muted-foreground">Total departments</dt>
-                <dd className="mt-1 text-2xl font-semibold tracking-normal">{departmentSummary.total}</dd>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-emerald-500/10 p-3 text-emerald-700 dark:text-emerald-300">
-                  <dt className="text-xs font-medium">Active</dt>
-                  <dd className="mt-1 text-xl font-semibold">{departmentSummary.active}</dd>
-                </div>
-                <div className="bg-muted/20 p-3">
-                  <dt className="text-xs font-medium text-muted-foreground">Draft</dt>
-                  <dd className="mt-1 text-xl font-semibold">{departmentSummary.draft}</dd>
-                </div>
-                <div className="bg-muted/20 p-3">
-                  <dt className="text-xs font-medium text-muted-foreground">Inactive</dt>
-                  <dd className="mt-1 text-xl font-semibold">{departmentSummary.inactive}</dd>
-                </div>
-                <div className="bg-muted/20 p-3">
-                  <dt className="text-xs font-medium text-muted-foreground">Archived</dt>
-                  <dd className="mt-1 text-xl font-semibold">{departmentSummary.archived}</dd>
-                </div>
-                <div className="bg-muted/20 p-3">
-                  <dt className="text-xs font-medium text-muted-foreground">Standard used</dt>
-                  <dd className="mt-1 text-xl font-semibold">{departmentSummary.fromDefaults}</dd>
-                </div>
-                <div className="bg-muted/20 p-3">
-                  <dt className="text-xs font-medium text-muted-foreground">Custom</dt>
-                  <dd className="mt-1 text-xl font-semibold">{departmentSummary.custom}</dd>
-                </div>
-              </div>
-              <div className="bg-muted/20 p-3">
-                <dt className="text-xs font-medium text-muted-foreground">Fixed standards</dt>
-                <dd className="mt-1 text-xl font-semibold">{departmentSummary.standard}</dd>
-              </div>
-              <div className="grid gap-2 bg-muted/20 p-3">
-                <dt className="text-xs font-medium text-muted-foreground">Standard departments</dt>
-                <dd className="grid max-h-56 gap-2 overflow-y-auto pr-1">
-                  {standardDepartments.map((department) => (
-                    <span key={department.key} className="grid gap-0.5 bg-background/60 p-2">
-                      <span className="text-sm font-medium">{department.name}</span>
-                      <span className="text-xs text-muted-foreground">{department.code} · {department.type}</span>
-                    </span>
-                  ))}
-                </dd>
-              </div>
-              <div className="bg-muted/20 p-3">
-                <dt className="text-xs font-medium text-muted-foreground">Deleted</dt>
-                <dd className="mt-1 text-xl font-semibold">{departmentSummary.deleted}</dd>
-              </div>
-            </dl>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Dialog open={departmentFormOpen} onOpenChange={handleDepartmentDialogOpen}>
-        <DialogContent showCloseButton={false} className="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
-          <DialogHeader className="sticky top-0 z-30 shrink-0 border-b bg-popover px-6 py-5 pr-14">
-            <DialogClose render={<Button type="button" variant="ghost" size="icon-sm" className="absolute right-4 top-4 text-muted-foreground hover:text-foreground" aria-label="Close department form" title="Close department form" />}>
-              <X />
-            </DialogClose>
-            <DialogTitle>{editingDepartment ? 'Edit Department' : 'Create Department'}</DialogTitle>
-            <DialogDescription>Select a company and branch, then save a fixed standard department copy or a custom department.</DialogDescription>
-          </DialogHeader>
-          <form key={departmentFormKey} ref={departmentFormRef} method="post" className="contents">
-            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-6">
-              <div className="grid gap-4">
-                <input type="hidden" name="csrf" value={data.csrf} />
-                <input type="hidden" name="action" value="save_company_department" />
-                <input type="hidden" name="department_key" value={editingDepartment?.department_key || ''} readOnly />
-                <input type="hidden" name="department_source" value={departmentMode} readOnly />
-                <input type="hidden" name="default_department_key" value={departmentMode === 'ERP_DEFAULT' ? selectedTemplateKey : ''} readOnly />
-                <div className="grid gap-2">
-                  <Label>Department Source</Label>
-                  <div className="flex flex-wrap gap-2">
-                    <Button type="button" variant={departmentMode === 'ERP_DEFAULT' ? 'default' : 'outline'} disabled={standardDepartments.length === 0} onClick={() => handleDepartmentModeChange('ERP_DEFAULT')}>Use Standard Department</Button>
-                    <Button type="button" variant={departmentMode === 'CUSTOM' ? 'default' : 'outline'} onClick={() => handleDepartmentModeChange('CUSTOM')}>Create Custom Department</Button>
-                  </div>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="company_department_company_key">Company</Label>
-                  <select
-                    id="company_department_company_key"
-                    name="company_key"
-                    value={departmentCompanyKey}
-                    onChange={(event) => handleDepartmentCompanyChange(event.target.value)}
-                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
-                    required
-                  >
-                    {activeCompanies.length === 0 ? <option value="">Create a company first</option> : null}
-                    {activeCompanies.map((company) => (
-                      <option key={company.company_key} value={company.company_key}>
-                        {company.company_code} - {company.company_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="company_department_branch_key">Branch</Label>
-                  <select
-                    id="company_department_branch_key"
-                    name="branch_key"
-                    value={departmentBranchKey}
-                    onChange={(event) => setSelectedBranchKey(event.target.value)}
-                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
-                    required
-                  >
-                    {filteredBranches.length === 0 ? <option value="">Create a branch for this company first</option> : null}
-                    {filteredBranches.map((branch) => (
-                      <option key={branch.branch_key} value={branch.branch_key}>
-                        {branch.branch_code} - {branch.branch_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                {departmentMode === 'ERP_DEFAULT' ? (
-                  <div className="grid gap-2">
-                    <Label htmlFor="company_department_template">Standard Department</Label>
-                    <select
-                      id="company_department_template"
-                      value={selectedTemplateKey}
-                      onChange={(event) => applyDepartmentTemplate(event.target.value)}
-                      className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
-                      required
-                    >
-                      {standardDepartments.length === 0 ? <option value="">No standard departments available</option> : null}
-                      {standardDepartments.map((template) => (
-                        <option key={template.key} value={template.key}>
-                          {template.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                ) : null}
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="grid gap-2">
-                    <Label htmlFor="company_department_code">Department Code</Label>
-                    <Input id="company_department_code" name="department_code" value={departmentCode} onChange={(event) => setDepartmentCode(event.target.value.toUpperCase())} maxLength={40} pattern="[A-Za-z0-9_-]{2,40}" placeholder="HR" required />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="company_department_type">Type</Label>
-                    <Input id="company_department_type" name="department_type" value={departmentType} onChange={(event) => setDepartmentType(event.target.value.toUpperCase())} maxLength={60} pattern="[A-Za-z0-9_ -]{2,60}" placeholder="OPERATIONS" required />
-                  </div>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="company_department_name">Department Name</Label>
-                  <Input id="company_department_name" name="department_name" value={departmentName} onChange={(event) => setDepartmentName(event.target.value)} maxLength={160} placeholder="Human Resources" required />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="company_department_status">Status</Label>
-                  <select
-                    id="company_department_status"
-                    name="department_status"
-                    value={departmentStatus}
-                    onChange={(event) => setDepartmentStatus(event.target.value)}
-                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
-                  >
-                    <option value="DRAFT">DRAFT</option>
-                    <option value="ACTIVE">ACTIVE</option>
-                    <option value="INACTIVE">INACTIVE</option>
-                    <option value="ARCHIVED">ARCHIVED</option>
-                    <option value="DELETED">DELETED</option>
-                  </select>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="company_department_description">Description</Label>
-                  <Textarea id="company_department_description" name="department_description" value={departmentDescription} onChange={(event) => setDepartmentDescription(event.target.value)} rows={4} />
-                </div>
-              </div>
-            </div>
-            <DialogFooter className="sticky bottom-0 z-30 m-0 w-full shrink-0 flex-row items-center justify-between gap-3 rounded-none border-t bg-popover px-6 py-4 sm:justify-between">
-              <span className="text-xs text-muted-foreground">{editingDepartment ? 'Updates require confirmation before saving.' : 'New records require confirmation before saving.'}</span>
-              <div className="flex shrink-0 items-center">
-                <Button type="button" onClick={confirmDepartmentForm}>
-                  <Plus className="h-4 w-4" aria-hidden="true" />
-                  {editingDepartment ? 'Save Department' : 'Create Department'}
-                </Button>
-              </div>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </>
-  )
-}
-
-function CompanyDepartmentStatusButton({
-  department,
-  status,
-  label,
-  icon,
-  setConfirmation,
-}: {
-  department: Record<string, string>
-  status: string
-  label: string
-  icon: React.ReactNode
-  setConfirmation: (confirmation: ConfirmationState) => void
-}) {
-  const formRef = React.useRef<HTMLFormElement>(null)
-  const destructive = status === 'DELETED' || status === 'ARCHIVED'
-
-  return (
-    <form ref={formRef} method="post">
-      <input type="hidden" name="csrf" value={data.csrf} />
-      <input type="hidden" name="action" value="set_company_department_status" />
-      <input type="hidden" name="department_key" value={department.department_key} />
-      <input type="hidden" name="department_status" value={status} />
-      <Button
-        type="button"
-        variant="outline"
-        size="icon-sm"
-        className={companyIconButtonClass(companyStatusTone(status))}
-        aria-label={`${label} ${department.department_code}`}
-        title={`${label} ${department.department_code}`}
-        onClick={() => setConfirmation({
-          title: `${label} department`,
-          message: destructive
-            ? `${label} department ${department.department_code}? This changes availability under ${department.branch_name || 'the selected branch'}.`
-            : `${label} department ${department.department_code}?`,
-          confirmLabel: label,
-          destructive,
-          onConfirm: () => formRef.current?.requestSubmit(),
-        })}
-      >
-        {icon}
-      </Button>
-    </form>
-  )
-}
-
 function CompanyAdminSummary({
   companyAdmins,
   companyAdminUrl,
@@ -3476,8 +3081,10 @@ function ProjectDetailsDialog({
   branch: Record<string, string>
   companyAdmins: Array<Record<string, string>>
 }) {
+  const dialogOpen = open && project !== null
+
   if (!project) {
-    return null
+    return <Dialog open={false} onOpenChange={onOpenChange} />
   }
 
   const projectDescription = project.project_description || 'No description set.'
@@ -3485,7 +3092,7 @@ function ProjectDetailsDialog({
   const updatedAt = project.updated_at || 'Not recorded'
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={dialogOpen} onOpenChange={onOpenChange}>
       <DialogContent showCloseButton={false} className="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
         <DialogHeader className="sticky top-0 z-30 shrink-0 border-b bg-popover px-6 py-5 pr-14">
           <DialogClose render={<Button type="button" variant="ghost" size="icon-sm" className="absolute right-4 top-4 text-muted-foreground hover:text-foreground" aria-label="Close project details" title="Close project details" />}>
@@ -3571,14 +3178,147 @@ function ProjectDetailsDialog({
   )
 }
 
+function ProjectModuleWorkspace({
+  company,
+  branch,
+  project,
+}: {
+  company: Record<string, string>
+  branch: Record<string, string>
+  project: Record<string, string>
+}) {
+  const [selectedModuleGroupKey, setSelectedModuleGroupKey] = React.useState<string | null>(null)
+  const moduleGroups = data.projectModuleGroups
+    .filter((group) => group.project_key === project.project_key && group.module_group_status !== 'DELETED')
+    .slice()
+    .sort((left, right) => Number(left.module_group_index || 0) - Number(right.module_group_index || 0))
+  const projectModules = data.projectModules.filter((module) => module.project_key === project.project_key && module.module_status !== 'DELETED')
+  const projectForms = data.projectModuleForms.filter((form) => form.project_key === project.project_key && form.form_status !== 'DELETED')
+  const modulesByGroup = projectModules.reduce<Record<string, Array<Record<string, string>>>>((groups, module) => {
+    groups[module.module_group_key] = groups[module.module_group_key] || []
+    groups[module.module_group_key].push(module)
+    return groups
+  }, {})
+
+  Object.values(modulesByGroup).forEach((modules) => {
+    modules.sort((left, right) => Number(left.module_sort_order || 0) - Number(right.module_sort_order || 0))
+  })
+
+  const selectedModuleGroup = selectedModuleGroupKey ? moduleGroups.find((group) => group.module_group_key === selectedModuleGroupKey) : null
+  const selectedGroupModules = selectedModuleGroup ? modulesByGroup[selectedModuleGroup.module_group_key] || [] : []
+  const selectedGroupFormCount = selectedGroupModules.reduce((total, module) => total + Number(module.form_count || 0), 0)
+
+  return (
+    <div className="flex min-h-0 flex-1 flex-col gap-4">
+      <div>
+        <Badge>Project modules</Badge>
+        <h2 className="mt-2 text-2xl font-bold tracking-normal">{project.project_name}</h2>
+        <p className="mt-1 text-sm text-muted-foreground">{company.company_name} / {branch.branch_name} / {project.project_code || 'No project code'}</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <CompanyManagementCountBadge value={moduleGroups.length} singular="Module group" plural="Module groups" />
+          <CompanyManagementCountBadge value={projectModules.length} singular="Project module" plural="Project modules" />
+          <CompanyManagementCountBadge value={projectForms.length} singular="Form" plural="Forms" />
+          <Badge variant="outline">{project.project_status}</Badge>
+        </div>
+      </div>
+
+      <DashboardPanel
+        title="Project module registry"
+        description="Select an ERP module group to review its project features, logical database names, and registered forms."
+        className="min-h-[32rem] flex-1"
+      >
+        <div className="min-h-0 flex-1 overflow-auto overscroll-contain p-4">
+          {moduleGroups.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No module groups are registered for this project.</p>
+          ) : moduleGroups.map((group) => {
+            const groupModules = modulesByGroup[group.module_group_key] || []
+            const groupFormCount = groupModules.reduce((total, module) => total + Number(module.form_count || 0), 0)
+            return (
+              <button
+                key={group.module_group_key}
+                type="button"
+                onClick={() => setSelectedModuleGroupKey(group.module_group_key)}
+                className="mb-3 flex w-full items-start justify-between gap-4 rounded-md border bg-background/45 px-4 py-3 text-left transition hover:border-primary/60 hover:bg-muted/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <span className="flex min-w-0 items-start gap-3">
+                  <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-md bg-muted text-sm font-semibold text-foreground">
+                    {group.module_group_icon || <Database className="size-4" aria-hidden="true" />}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold">{group.module_group_name}</span>
+                    {group.module_group_description ? <span className="mt-1 block max-w-5xl text-xs leading-5 text-muted-foreground">{group.module_group_description}</span> : null}
+                    <span className="mt-2 flex flex-wrap gap-2">
+                      <CompanyManagementCountBadge value={groupModules.length} singular="Module" plural="Modules" />
+                      <CompanyManagementCountBadge value={groupFormCount} singular="Form" plural="Forms" />
+                    </span>
+                  </span>
+                </span>
+                <span className="flex shrink-0 flex-wrap justify-end gap-2">
+                  <Badge variant="outline">{group.module_group_code}</Badge>
+                  <Badge variant="outline">{group.module_group_status}</Badge>
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </DashboardPanel>
+      <Dialog open={Boolean(selectedModuleGroup)} onOpenChange={(open) => { if (!open) setSelectedModuleGroupKey(null) }}>
+        <DialogContent showCloseButton={false} className="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-5xl">
+          <DialogHeader className="sticky top-0 z-30 shrink-0 border-b bg-popover px-6 py-5 pr-14">
+            <DialogClose render={<Button type="button" variant="ghost" size="icon-sm" className="absolute right-4 top-4 text-muted-foreground hover:text-foreground" aria-label="Close module group details" title="Close module group details" />}>
+              <X className="size-4" aria-hidden="true" />
+            </DialogClose>
+            <DialogTitle>{selectedModuleGroup?.module_group_name || 'Project module group'}</DialogTitle>
+            <DialogDescription>{selectedModuleGroup?.module_group_description || 'Project modules registered under this ERP group.'}</DialogDescription>
+          </DialogHeader>
+          <div className="min-h-0 flex-1 overflow-auto overscroll-contain p-6">
+            <div className="mb-4 flex flex-wrap gap-2">
+              <CompanyManagementCountBadge value={selectedGroupModules.length} singular="Module" plural="Modules" />
+              <CompanyManagementCountBadge value={selectedGroupFormCount} singular="Form" plural="Forms" />
+              {selectedModuleGroup ? <Badge variant="outline">{selectedModuleGroup.module_group_code}</Badge> : null}
+              {selectedModuleGroup ? <Badge variant="outline">{selectedModuleGroup.module_group_status}</Badge> : null}
+            </div>
+            {selectedGroupModules.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No project modules are registered in this group.</p>
+            ) : (
+              <FoundationTable headers={['Module', 'Logical table', 'Forms', 'Status']}>
+                {selectedGroupModules.map((module) => (
+                  <TableRow key={module.module_key}>
+                    <TableCell>
+                      <p className="font-medium">{module.module_name}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{module.module_code}</p>
+                      {module.module_description ? <p className="mt-2 max-w-2xl text-xs leading-5 text-muted-foreground">{module.module_description}</p> : null}
+                    </TableCell>
+                    <TableCell><code className="text-xs text-muted-foreground">{module.module_table_name}</code></TableCell>
+                    <TableCell>{module.form_count || '0'}</TableCell>
+                    <TableCell><Badge variant="outline">{module.module_status}</Badge></TableCell>
+                  </TableRow>
+                ))}
+              </FoundationTable>
+            )}
+          </div>
+          <DialogFooter className="sticky bottom-0 z-30 m-0 w-full shrink-0 flex-row items-center justify-between gap-3 rounded-none border-t bg-popover px-6 py-4 sm:justify-between">
+            <p className="text-xs text-muted-foreground">{project.project_name} module registry</p>
+            <DialogClose render={<Button type="button" variant="outline">Close</Button>} />
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
+
 function ProjectCompanyOverviewView({
   companyKey,
   selectedBranchKey,
+  selectedProjectKey,
   onBranchSelect,
+  onProjectSelect,
 }: {
   companyKey: string
   selectedBranchKey: string
+  selectedProjectKey: string
   onBranchSelect: (branchKey: string) => void
+  onProjectSelect: (branchKey: string, projectKey: string) => void
 }) {
   const company = data.companies.find((item) => item.company_key === companyKey && item.company_status === 'ACTIVE')
   const branches = data.companyBranches.filter((branch) => branch.company_key === companyKey && branch.branch_status !== 'DELETED')
@@ -3596,12 +3336,15 @@ function ProjectCompanyOverviewView({
   const companyAdmins = data.companyAdmins.filter((admin) => admin.company_key === companyKey && admin.admin_status !== 'DELETED')
   const selectedBranch = branches.find((branch) => branch.branch_key === selectedBranchKey) || null
   const selectedBranchProjects = selectedBranch ? (projectsByBranch[selectedBranch.branch_key] || []) : []
+  const selectedProject = selectedBranchProjects.find((project) => project.project_key === selectedProjectKey) || null
   const activeBranchCount = branches.filter((branch) => branch.branch_status === 'ACTIVE').length
   const activeProjectCount = projects.filter((project) => project.project_status === 'ACTIVE').length
-  const companySlug = company?.company_code === 'YE' ? 'yovel-east' : (company?.company_code || company?.company_name || 'company').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-  const companyAdminUrl = projectUrl(`company/${companySlug}/admin/`)
+  const companyAdminUrl = company ? companyAdminPortalUrl(company) : projectUrl('company/admin/')
   const [projectDetailKey, setProjectDetailKey] = React.useState('')
   const projectDetail = selectedBranchProjects.find((project) => project.project_key === projectDetailKey) || null
+  const openProjectDetails = React.useCallback((projectKey: string) => {
+    setProjectDetailKey(projectKey)
+  }, [])
   const handleProjectDetailsOpenChange = React.useCallback((open: boolean) => {
     if (!open) {
       setProjectDetailKey('')
@@ -3616,12 +3359,26 @@ function ProjectCompanyOverviewView({
 
   if (!company) {
     return (
-      <DashboardPanel title="Company unavailable" description="Select an active company from the Projects menu.">
+      <DashboardPanel title="Company unavailable" description="Select an active company from the Company menu.">
         <div className={platformPanelBodyClass}>
           <p className="text-sm text-muted-foreground">This company is not active or is no longer available.</p>
         </div>
       </DashboardPanel>
     )
+  }
+
+  if (selectedProjectKey !== '' && (!selectedBranch || !selectedProject)) {
+    return (
+      <DashboardPanel title="Project unavailable" description="Select a project that belongs to the active company and branch.">
+        <div className={platformPanelBodyClass}>
+          <p className="text-sm text-muted-foreground">The requested project is inactive, deleted, or outside the selected branch.</p>
+        </div>
+      </DashboardPanel>
+    )
+  }
+
+  if (selectedBranch && selectedProject) {
+    return <ProjectModuleWorkspace company={company} branch={selectedBranch} project={selectedProject} />
   }
 
   return (
@@ -3640,27 +3397,50 @@ function ProjectCompanyOverviewView({
         >
           <div className={platformTableBodyClass}>
             {selectedBranch ? (
-              <FoundationTable headers={['Project', 'Status']}>
+              <FoundationTable headers={['Project', 'Status', 'Actions']}>
                 {selectedBranchProjects.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={2} className="py-10 text-center text-muted-foreground">No projects are connected to this branch yet.</TableCell>
+                    <TableCell colSpan={3} className="py-10 text-center text-muted-foreground">No projects are connected to this branch yet.</TableCell>
                   </TableRow>
                 ) : selectedBranchProjects.map((project) => (
-                  <TableRow key={project.project_key}>
+                  <TableRow
+                    key={project.project_key}
+                    className="cursor-pointer hover:bg-muted/30"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View details for ${project.project_name}`}
+                    onClick={() => openProjectDetails(project.project_key)}
+                    onKeyDown={(event) => {
+                      if (event.key !== 'Enter' && event.key !== ' ') {
+                        return
+                      }
+                      event.preventDefault()
+                      openProjectDetails(project.project_key)
+                    }}
+                  >
                     <TableCell>
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-2 text-left font-semibold hover:underline"
-                        aria-label={`View details for ${project.project_name}`}
-                        title={`View details for ${project.project_name}`}
-                        onClick={() => setProjectDetailKey(project.project_key)}
-                      >
+                      <div className="inline-flex items-center gap-2 text-left font-semibold">
                         <Eye className="size-3.5" aria-hidden="true" />
                         <span>{project.project_name}</span>
-                      </button>
+                      </div>
                       {project.project_description ? <p className="mt-1 text-xs leading-5 text-muted-foreground">{project.project_description}</p> : null}
                     </TableCell>
                     <TableCell><Badge>{project.project_status}</Badge></TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={`Open modules for ${project.project_name}`}
+                        title={`Open modules for ${project.project_name}`}
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          onProjectSelect(project.branch_key, project.project_key)
+                        }}
+                      >
+                        <FolderKanban aria-hidden="true" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </FoundationTable>
@@ -3767,7 +3547,7 @@ function ProjectCompanyOverviewView({
 
       {selectedBranch ? (
         <ProjectDetailsDialog
-          open={projectDetail !== null}
+          open={projectDetailKey !== ''}
           onOpenChange={handleProjectDetailsOpenChange}
           project={projectDetail}
           company={company}
@@ -3929,6 +3709,7 @@ function AssignmentCheckboxGrid({
 }
 
 function UserCrudView() {
+  const [userMode, setUserMode] = React.useState<'system' | 'company'>('system')
   const [activeTab, setActiveTab] = React.useState<'standard' | 'gui'>('standard')
   const [editingUserKey, setEditingUserKey] = React.useState('')
   const [assignmentUserKey, setAssignmentUserKey] = React.useState('')
@@ -3956,12 +3737,26 @@ function UserCrudView() {
           <h2 className="mt-2 text-2xl font-bold tracking-normal">Users</h2>
           <p className="mt-1 text-sm text-muted-foreground">Create, edit, activate, deactivate, lock users, reset passwords, assign access, and inspect login history.</p>
         </div>
-        <Button type="button" onClick={() => setEditingUserKey('')}>
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          New User
-        </Button>
+        <div className="flex flex-wrap justify-start gap-2">
+          <Button type="button" variant={userMode === 'system' ? 'default' : 'outline'} onClick={() => setUserMode('system')}>
+            System Users
+          </Button>
+          <Button type="button" variant={userMode === 'company' ? 'default' : 'outline'} onClick={() => setUserMode('company')}>
+            Company Users
+          </Button>
+          {userMode === 'system' ? (
+            <Button type="button" onClick={() => setEditingUserKey('')}>
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              New User
+            </Button>
+          ) : null}
+        </div>
       </div>
 
+      {userMode === 'company' ? (
+        <CompanyUserCrudView />
+      ) : (
+      <>
       <ViewTabs activeTab={activeTab} onChange={setActiveTab} />
 
       {activeTab === 'gui' ? (
@@ -4149,12 +3944,19 @@ function UserCrudView() {
                     <p className="text-muted-foreground">Projects: {user.project_codes || 'None'}</p>
                   </TableCell>
                   <TableCell>{user.user_last_login_at || 'Never'}</TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-2">
-                      <button type="button" className={buttonClassName({ variant: 'outline', size: 'sm' })} onClick={() => setEditingUserKey(user.user_key)}>
-                        <Pencil className="h-4 w-4" aria-hidden="true" />
-                        Edit
-                      </button>
+	                  <TableCell>
+	                    <div className="flex flex-wrap justify-start gap-1.5">
+	                      <Button
+	                        type="button"
+	                        variant="outline"
+	                        size="icon-sm"
+	                        className={companyIconButtonClass('edit')}
+	                        aria-label={`Edit ${user.user_login}`}
+	                        title={`Edit ${user.user_login}`}
+	                        onClick={() => setEditingUserKey(user.user_key)}
+	                      >
+	                        <Pencil aria-hidden="true" />
+	                      </Button>
                       <UserStatusButton user={user} status="ACTIVE" label="Activate" icon={<RotateCcw className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
                       <UserStatusButton user={user} status="INACTIVE" label="Deactivate" icon={<Ban className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
                       <UserStatusButton user={user} status="LOCKED" label="Lock" icon={<LockKeyhole className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
@@ -4185,7 +3987,296 @@ function UserCrudView() {
         </div>
       </div>
       )}
+      </>
+      )}
     </>
+  )
+}
+
+function CompanyUserCrudView() {
+  const activeCompanies = React.useMemo(
+    () => data.companies.filter((company) => company.company_status !== 'DELETED'),
+    [],
+  )
+  const [selectedCompanyKey, setSelectedCompanyKey] = React.useState(activeCompanies[0]?.company_key || '')
+  const [editingCompanyUserKey, setEditingCompanyUserKey] = React.useState('')
+  const [companyUserFormOpen, setCompanyUserFormOpen] = React.useState(false)
+  const [confirmation, setConfirmation] = React.useState<ConfirmationState>(null)
+  const companyUserFormRef = React.useRef<HTMLFormElement>(null)
+  const selectedCompany = activeCompanies.find((company) => company.company_key === selectedCompanyKey) || activeCompanies[0]
+  const companyKey = selectedCompany?.company_key || ''
+  const companyUsers = data.companyUsers.filter((user) => user.company_key === companyKey && user.user_status !== 'DELETED')
+  const companyAdmins = data.companyAdmins.filter((admin) => admin.company_key === companyKey && admin.admin_status !== 'DELETED')
+  const companyRoles = data.companyRoles.filter((role) => role.company_key === companyKey && role.role_status !== 'DELETED')
+  const companyGroups = data.companyGroups.filter((group) => group.company_key === companyKey && group.group_status !== 'DELETED')
+  const companyPermissions = data.companyPermissions.filter((permission) => permission.company_key === companyKey && permission.permission_status !== 'DELETED')
+  const companyBranches = data.companyBranches.filter((branch) => branch.company_key === companyKey && branch.branch_status !== 'DELETED')
+  const companyProjects = data.companyProjects.filter((project) => project.company_key === companyKey && project.project_status !== 'DELETED')
+  const editingCompanyUser = companyUsers.find((user) => user.user_key === editingCompanyUserKey)
+
+  React.useEffect(() => {
+    if (activeCompanies.length > 0 && !activeCompanies.some((company) => company.company_key === selectedCompanyKey)) {
+      setSelectedCompanyKey(activeCompanies[0].company_key)
+    }
+  }, [activeCompanies, selectedCompanyKey])
+
+  function openCompanyUserForm(userKey = '') {
+    setEditingCompanyUserKey(userKey)
+    setCompanyUserFormOpen(true)
+  }
+
+  function closeCompanyUserForm(open: boolean) {
+    setCompanyUserFormOpen(open)
+    if (!open) {
+      setEditingCompanyUserKey('')
+    }
+  }
+
+  if (!selectedCompany) {
+    return (
+      <DashboardPanel title="Company Users" description="Create a company first before adding company-scoped users.">
+        <div className={platformPanelBodyClass}>
+          <p className="text-sm text-muted-foreground">No active companies are available.</p>
+        </div>
+      </DashboardPanel>
+    )
+  }
+
+  return (
+    <>
+      <ConfirmationModal confirmation={confirmation} onClose={() => setConfirmation(null)} />
+
+      <Dialog open={companyUserFormOpen} onOpenChange={closeCompanyUserForm}>
+        <DialogContent className="flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-3xl flex-col overflow-hidden p-0 sm:max-w-3xl">
+          <DialogHeader className="shrink-0 border-b bg-popover px-6 py-5">
+            <DialogTitle>{editingCompanyUser ? 'Edit Company User' : 'Create Company User'}</DialogTitle>
+            <DialogDescription>
+              {selectedCompany.company_name} user account, role, branch, and project access.
+            </DialogDescription>
+          </DialogHeader>
+          <form id="company-user-form" key={editingCompanyUser?.user_key || `new-${companyKey}`} ref={companyUserFormRef} method="post" action="./?tab=users" className="flex min-h-0 flex-1 flex-col">
+            <div className="min-h-0 flex-1 overflow-y-auto p-6">
+              <div className="grid gap-4">
+              <input type="hidden" name="csrf" value={data.csrf} />
+              <input type="hidden" name="action" value="save_company_user" />
+              <input type="hidden" name="company_key" value={companyKey} />
+              <input type="hidden" name="company_user_key" value={editingCompanyUser?.user_key || ''} />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label htmlFor="company_user_login">Username</Label>
+                  <Input id="company_user_login" name="company_user_login" defaultValue={editingCompanyUser?.user_login || ''} required />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company_user_status">Status</Label>
+                  <select
+                    id="company_user_status"
+                    name="company_user_status"
+                    defaultValue={editingCompanyUser?.user_status || 'ACTIVE'}
+                    className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+                  >
+                    <option value="DRAFT">DRAFT</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="INACTIVE">INACTIVE</option>
+                    <option value="LOCKED">LOCKED</option>
+                    <option value="DELETED">DELETED</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="company_user_name">Full Name</Label>
+                <Input id="company_user_name" name="company_user_name" defaultValue={editingCompanyUser?.user_name || ''} required />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="company_user_email">Email</Label>
+                <Input id="company_user_email" name="company_user_email" type="email" defaultValue={editingCompanyUser?.user_email || ''} required />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="company_user_password">{editingCompanyUser ? 'New Password' : 'Password'}</Label>
+                <Input id="company_user_password" name="company_user_password" type="password" minLength={10} required={!editingCompanyUser} />
+              </div>
+              <MultiSelect id="company_role_keys" name="company_role_keys[]" label="Company Roles" options={companyRoles} valueKey="role_key" labelKey="role_name" defaultValues={csvToArray(editingCompanyUser?.role_keys)} />
+              <MultiSelect id="company_group_keys" name="company_group_keys[]" label="Company Groups" options={companyGroups} valueKey="group_key" labelKey="group_name" defaultValues={csvToArray(editingCompanyUser?.group_keys)} />
+              <MultiSelect id="company_branch_keys" name="company_branch_keys[]" label="Branches" options={companyBranches} valueKey="branch_key" labelKey="branch_name" defaultValues={csvToArray(editingCompanyUser?.branch_keys)} />
+                <MultiSelect id="company_project_keys" name="company_project_keys[]" label="Projects" options={companyProjects} valueKey="project_key" labelKey="project_name" defaultValues={csvToArray(editingCompanyUser?.project_keys)} />
+              </div>
+            </div>
+            <DialogFooter className="m-0 shrink-0 rounded-none border-t bg-popover px-6 py-4">
+              <Button type="submit">
+                <Save className="h-4 w-4" aria-hidden="true" />
+                {editingCompanyUser ? 'Save User' : 'Create User'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <div className={platformTwoPanelClass}>
+        <div className={cn(platformLeftPanelStackClass, 'xl:order-1')}>
+          <DashboardPanel title="Company Users" description="View and manage users inside the selected company." className="xl:min-h-0">
+            <div className="shrink-0 border-b p-4">
+              <div className="grid gap-2 md:max-w-md">
+                <Label htmlFor="company_user_company_key">Company</Label>
+                <select
+                  id="company_user_company_key"
+                  value={companyKey}
+                  onChange={(event) => {
+                    setSelectedCompanyKey(event.target.value)
+                    setEditingCompanyUserKey('')
+                  }}
+                  className="min-h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
+                >
+                  {activeCompanies.map((company) => (
+                    <option key={company.company_key} value={company.company_key}>{company.company_name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className={platformTableBodyClass}>
+              <FoundationTable headers={['User', 'Company', 'Roles', 'Access', 'Status', 'Actions']} actionAlign="left">
+                {companyUsers.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="py-10 text-center text-muted-foreground">No company users have been created for {selectedCompany.company_name}.</TableCell>
+                  </TableRow>
+                ) : companyUsers.map((user) => (
+                  <TableRow key={user.user_key}>
+                    <TableCell>
+                      <strong>{user.user_name}</strong>
+                      <p className="text-muted-foreground">{user.user_login} - {user.user_email}</p>
+                    </TableCell>
+                    <TableCell>{user.company_name}</TableCell>
+                    <TableCell>
+                      <p>{user.role_names || 'No roles'}</p>
+                      <p className="text-muted-foreground">Groups: {user.group_names || 'None'}</p>
+                    </TableCell>
+                    <TableCell>
+                      <p>Branches: {user.branch_names || 'None'}</p>
+                      <p className="text-muted-foreground">Projects: {user.project_names || 'None'}</p>
+                    </TableCell>
+                    <TableCell>
+                      <Badge>{user.user_status}</Badge>
+                      {parseInt(user.user_failed_login_count || '0', 10) > 0 ? <p className="text-muted-foreground">{user.user_failed_login_count} failed login(s)</p> : null}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap justify-start gap-1.5">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon-sm"
+                          className={companyIconButtonClass('edit')}
+                          aria-label={`Edit ${user.user_login}`}
+                          title={`Edit ${user.user_login}`}
+                          onClick={() => openCompanyUserForm(user.user_key)}
+                        >
+                          <Pencil aria-hidden="true" />
+                        </Button>
+                        <CompanyUserStatusButton companyKey={companyKey} user={user} status="ACTIVE" label="Activate" icon={<RotateCcw className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                        <CompanyUserStatusButton companyKey={companyKey} user={user} status="INACTIVE" label="Deactivate" icon={<Ban className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                        <CompanyUserStatusButton companyKey={companyKey} user={user} status="LOCKED" label="Lock" icon={<LockKeyhole className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                        <CompanyUserStatusButton companyKey={companyKey} user={user} status="DELETED" label="Delete" icon={<Trash2 className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </FoundationTable>
+            </div>
+          </DashboardPanel>
+        </div>
+
+        <div className={cn(platformRightPanelStackClass, 'xl:order-2')}>
+          <DashboardPanel title="Company Access Summary" description="Administrator can control company users above the company admin layer." className="xl:min-h-0">
+            <div className={platformPanelBodyClass}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold">{selectedCompany.company_name}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{selectedCompany.company_code || 'Company'}</p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-sm"
+                  className={companyIconButtonClass('add')}
+                  aria-label={`Create user for ${selectedCompany.company_name}`}
+                  title={`Create user for ${selectedCompany.company_name}`}
+                  onClick={() => openCompanyUserForm('')}
+                >
+                  <Plus aria-hidden="true" />
+                </Button>
+              </div>
+              <dl className="mt-4 grid gap-3">
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Company admins</dt>
+                  <dd className="mt-1 text-2xl font-semibold tracking-normal">{companyAdmins.length}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Company users</dt>
+                  <dd className="mt-1 text-2xl font-semibold tracking-normal">{companyUsers.length}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Roles</dt>
+                  <dd className="mt-1 text-2xl font-semibold tracking-normal">{companyRoles.length}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Groups</dt>
+                  <dd className="mt-1 text-2xl font-semibold tracking-normal">{companyGroups.length}</dd>
+                </div>
+                <div className="bg-muted/20 p-3">
+                  <dt className="text-xs font-medium text-muted-foreground">Permissions</dt>
+                  <dd className="mt-1 text-2xl font-semibold tracking-normal">{companyPermissions.length}</dd>
+                </div>
+              </dl>
+            </div>
+          </DashboardPanel>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function CompanyUserStatusButton({
+  companyKey,
+  user,
+  status,
+  label,
+  icon,
+  setConfirmation,
+}: {
+  companyKey: string
+  user: Record<string, string>
+  status: string
+  label: string
+  icon: React.ReactNode
+  setConfirmation: (confirmation: ConfirmationState) => void
+}) {
+  const formRef = React.useRef<HTMLFormElement>(null)
+  const destructive = status === 'DELETED' || status === 'LOCKED' || status === 'INACTIVE'
+
+  return (
+    <form ref={formRef} method="post">
+      <input type="hidden" name="csrf" value={data.csrf} />
+      <input type="hidden" name="action" value="set_company_user_status" />
+      <input type="hidden" name="company_key" value={companyKey} />
+      <input type="hidden" name="company_user_key" value={user.user_key} />
+      <input type="hidden" name="company_user_status" value={status} />
+      <Button
+        type="button"
+        variant="outline"
+        size="icon-sm"
+        className={companyIconButtonClass(companyStatusTone(status))}
+        aria-label={`${label} ${user.user_login}`}
+        title={`${label} ${user.user_login}`}
+        onClick={() => setConfirmation({
+          title: `${label} company user`,
+          message: destructive
+            ? `${label} company user ${user.user_login}? This changes company dashboard access immediately.`
+            : `${label} company user ${user.user_login}?`,
+          confirmLabel: label,
+          destructive,
+          onConfirm: () => formRef.current?.requestSubmit(),
+        })}
+      >
+        {icon}
+      </Button>
+    </form>
   )
 }
 
@@ -4211,11 +4302,14 @@ function UserStatusButton({
       <input type="hidden" name="action" value="set_user_status" />
       <input type="hidden" name="user_key" value={user.user_key} />
       <input type="hidden" name="user_status" value={status} />
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={() => setConfirmation({
+	      <Button
+	        type="button"
+	        variant="outline"
+	        size="icon-sm"
+	        className={companyIconButtonClass(companyStatusTone(status))}
+	        aria-label={`${label} ${user.user_login}`}
+	        title={`${label} ${user.user_login}`}
+	        onClick={() => setConfirmation({
           title: `${label} user`,
           message: destructive
             ? `${label} user ${user.user_login}? This changes sign-in access immediately.`
@@ -4224,10 +4318,9 @@ function UserStatusButton({
           destructive,
           onConfirm: () => formRef.current?.requestSubmit(),
         })}
-      >
-        {icon}
-        {label}
-      </Button>
+	      >
+	        {icon}
+	      </Button>
     </form>
   )
 }
@@ -4388,16 +4481,19 @@ function GroupCrudView() {
                   <strong>{group.member_count || '0'} member(s)</strong>
                   <p className="text-muted-foreground">{group.member_names || 'No members assigned'}</p>
                 </TableCell>
-                <TableCell>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      className={buttonClassName({ variant: 'outline', size: 'sm' })}
-                      onClick={() => setEditingGroupKey(group.group_key)}
-                    >
-                      <Pencil className="h-4 w-4" aria-hidden="true" />
-                      Edit
-                    </button>
+	                <TableCell>
+	                  <div className="flex flex-wrap justify-start gap-1.5">
+	                    <Button
+	                      type="button"
+	                      variant="outline"
+	                      size="icon-sm"
+	                      className={companyIconButtonClass('edit')}
+	                      aria-label={`Edit ${group.group_name}`}
+	                      title={`Edit ${group.group_name}`}
+	                      onClick={() => setEditingGroupKey(group.group_key)}
+	                    >
+	                      <Pencil aria-hidden="true" />
+	                    </Button>
                     <GroupStatusButton group={group} status="ACTIVE" label="Restore" icon={<RotateCcw className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
                     <GroupStatusButton group={group} status="INACTIVE" label="Deactivate" icon={<Ban className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
                     <GroupStatusButton group={group} status="DELETED" label="Delete" icon={<Trash2 className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
@@ -4437,11 +4533,14 @@ function GroupStatusButton({
       <input type="hidden" name="action" value="set_group_status" />
       <input type="hidden" name="group_key" value={group.group_key} />
       <input type="hidden" name="group_status" value={status} />
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={() => setConfirmation({
+	      <Button
+	        type="button"
+	        variant="outline"
+	        size="icon-sm"
+	        className={companyIconButtonClass(companyStatusTone(status))}
+	        aria-label={`${label} ${group.group_name}`}
+	        title={`${label} ${group.group_name}`}
+	        onClick={() => setConfirmation({
           title: `${label} group`,
           message: destructive
             ? `${label} group ${group.group_name}? This changes membership availability for access workflows.`
@@ -4450,10 +4549,9 @@ function GroupStatusButton({
           destructive,
           onConfirm: () => formRef.current?.requestSubmit(),
         })}
-      >
-        {icon}
-        {label}
-      </Button>
+	      >
+	        {icon}
+	      </Button>
     </form>
   )
 }
@@ -4656,16 +4754,19 @@ function RoleCrudView() {
                   <p className="text-muted-foreground">Scopes: {role.permission_scopes || 'None'}</p>
                   <p className="text-muted-foreground">{role.permission_codes || 'No permissions assigned'}</p>
                 </TableCell>
-                <TableCell>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      className={buttonClassName({ variant: 'outline', size: 'sm' })}
-                      onClick={() => setEditingRoleKey(role.role_key)}
-                    >
-                      <Pencil className="h-4 w-4" aria-hidden="true" />
-                      Edit
-                    </button>
+	                <TableCell>
+	                  <div className="flex flex-wrap justify-start gap-1.5">
+	                    <Button
+	                      type="button"
+	                      variant="outline"
+	                      size="icon-sm"
+	                      className={companyIconButtonClass('edit')}
+	                      aria-label={`Edit ${role.role_name}`}
+	                      title={`Edit ${role.role_name}`}
+	                      onClick={() => setEditingRoleKey(role.role_key)}
+	                    >
+	                      <Pencil aria-hidden="true" />
+	                    </Button>
                     <RoleStatusButton role={role} status="ACTIVE" label="Restore" icon={<RotateCcw className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
                     <RoleStatusButton role={role} status="INACTIVE" label="Deactivate" icon={<Ban className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
                     <RoleStatusButton role={role} status="DELETED" label="Delete" icon={<Trash2 className="h-4 w-4" aria-hidden="true" />} setConfirmation={setConfirmation} />
@@ -4705,11 +4806,14 @@ function RoleStatusButton({
       <input type="hidden" name="action" value="set_role_status" />
       <input type="hidden" name="role_key" value={role.role_key} />
       <input type="hidden" name="role_status" value={status} />
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={() => setConfirmation({
+	      <Button
+	        type="button"
+	        variant="outline"
+	        size="icon-sm"
+	        className={companyIconButtonClass(companyStatusTone(status))}
+	        aria-label={`${label} ${role.role_name}`}
+	        title={`${label} ${role.role_name}`}
+	        onClick={() => setConfirmation({
           title: `${label} role`,
           message: destructive
             ? `${label} role ${role.role_name}? This changes permission availability for assigned users.`
@@ -4718,10 +4822,9 @@ function RoleStatusButton({
           destructive,
           onConfirm: () => formRef.current?.requestSubmit(),
         })}
-      >
-        {icon}
-        {label}
-      </Button>
+	      >
+	        {icon}
+	      </Button>
     </form>
   )
 }
@@ -4739,10 +4842,10 @@ function PermissionMatrixView() {
   }, {})
 
   return (
-    <>
+    <div className="flex min-h-0 flex-1 flex-col">
       <ConfirmationModal confirmation={confirmation} onClose={() => setConfirmation(null)} />
 
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div className="mb-5 shrink-0 flex flex-wrap items-end justify-between gap-3">
         <div>
           <Badge>Administrator Permission Matrix</Badge>
           <h2 className="mt-2 text-2xl font-bold tracking-normal">Permissions</h2>
@@ -4750,18 +4853,18 @@ function PermissionMatrixView() {
         </div>
       </div>
 
-      <Tabs defaultValue="matrix" className="flex min-h-0 flex-col gap-4">
-        <div className="border-b pb-3">
+      <Tabs defaultValue="matrix" className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden">
+        <div className="shrink-0 border-b pb-3">
           <TabsList>
             <TabsTrigger value="matrix">Matrix</TabsTrigger>
             <TabsTrigger value="permissions">Permissions</TabsTrigger>
           </TabsList>
         </div>
-        <TabsContent value="matrix" className="m-0 min-h-0">
-          <div className={platformTwoPanelClass}>
-            <DashboardPanel title="Role-Permission Matrix" description="Rows are permission scopes and codes. Columns are active roles. Save replaces only role-permission assignments for listed roles." className="xl:min-h-0">
+        <TabsContent value="matrix" className="m-0 flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className={platformFillTwoPanelClass}>
+            <DashboardPanel title="Role-Permission Matrix" description="Rows are permission scopes and codes. Columns are active roles. Save replaces only role-permission assignments for listed roles." className="min-h-0">
               <div className={platformPanelBodyClass}>
-                <form ref={matrixFormRef} method="post" className="flex min-h-full flex-col gap-4">
+                <form ref={matrixFormRef} method="post" className="flex h-full min-h-0 flex-col gap-4">
                   <input type="hidden" name="csrf" value={data.csrf} />
                   <input type="hidden" name="action" value="save_permission_matrix" />
                   {activeRoles.map((role) => <input key={role.role_key} type="hidden" name="matrix_role_keys[]" value={role.role_key} />)}
@@ -4811,6 +4914,7 @@ function PermissionMatrixView() {
                     </Table>
                   </div>
                   <Button
+                    className="shrink-0"
                     type="button"
                     onClick={() => setConfirmation({
                       title: 'Confirm permission matrix update',
@@ -4825,7 +4929,7 @@ function PermissionMatrixView() {
               </div>
             </DashboardPanel>
 
-            <DashboardPanel title="Matrix Summary" description="Permission matrix helper details." className="xl:min-h-0">
+            <DashboardPanel title="Matrix Summary" description="Permission matrix helper details." className="min-h-0">
               <div className={platformPanelBodyClass}>
                 <dl className="grid gap-3">
                   <div className="bg-muted/20 p-3">
@@ -4845,9 +4949,9 @@ function PermissionMatrixView() {
             </DashboardPanel>
           </div>
         </TabsContent>
-        <TabsContent value="permissions" className="m-0 min-h-0">
-          <div className={platformTwoPanelClass}>
-            <DashboardPanel title="Permissions by Scope" description="Toggle permission availability without changing permission codes or building role CRUD." className="xl:min-h-0">
+        <TabsContent value="permissions" className="m-0 flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className={platformFillTwoPanelClass}>
+            <DashboardPanel title="Permissions by Scope" description="Toggle permission availability without changing permission codes or building role CRUD." className="min-h-0">
               <div className={platformTableBodyClass}>
                 <FoundationTable headers={['Scope', 'Permission', 'Status', 'Mapped Roles', 'Actions']} actionAlign="left">
                   {matrixPermissions.map((permission) => (
@@ -4871,7 +4975,7 @@ function PermissionMatrixView() {
               </div>
             </DashboardPanel>
 
-            <DashboardPanel title="Permission Summary" description="Scope and role coverage for the permission list." className="xl:min-h-0">
+            <DashboardPanel title="Permission Summary" description="Scope and role coverage for the permission list." className="min-h-0">
               <div className={platformPanelBodyClass}>
                 <dl className="grid gap-3">
                   <div className="bg-muted/20 p-3">
@@ -4892,7 +4996,7 @@ function PermissionMatrixView() {
           </div>
         </TabsContent>
       </Tabs>
-    </>
+    </div>
   )
 }
 
@@ -4907,8 +5011,11 @@ function PermissionStatusButton({
   label: string
   setConfirmation: (confirmation: ConfirmationState) => void
 }) {
-  const formRef = React.useRef<HTMLFormElement>(null)
-  const destructive = status === 'INACTIVE'
+	  const formRef = React.useRef<HTMLFormElement>(null)
+	  const destructive = status === 'INACTIVE'
+	  const icon = status === 'ACTIVE'
+	    ? <RotateCcw className="h-4 w-4" aria-hidden="true" />
+	    : <Ban className="h-4 w-4" aria-hidden="true" />
 
   return (
     <form ref={formRef} method="post">
@@ -4917,19 +5024,22 @@ function PermissionStatusButton({
       <input type="hidden" name="permission_key" value={permission.permission_key} />
       <input type="hidden" name="permission_status" value={status} />
       <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={() => setConfirmation({
+	        type="button"
+	        variant="outline"
+	        size="icon-sm"
+	        className={companyIconButtonClass(companyStatusTone(status))}
+	        aria-label={`${label} ${permission.permission_code}`}
+	        title={`${label} ${permission.permission_code}`}
+	        onClick={() => setConfirmation({
           title: `${label} permission`,
           message: `${label} ${permission.permission_code}? This changes whether the permission is available for assignment and enforcement.`,
           confirmLabel: label,
           destructive,
           onConfirm: () => formRef.current?.requestSubmit(),
         })}
-      >
-        {label}
-      </Button>
+	      >
+	        {icon}
+	      </Button>
     </form>
   )
 }
@@ -26988,9 +27098,10 @@ function AdminApp() {
   const hasExplicitTab = urlParams.has('tab')
   const requestedProjectCompanyKey = urlParams.get('company_key') || ''
   const requestedProjectCompanyBranchKey = urlParams.get('branch_key') || ''
+  const requestedProjectCompanyProjectKey = urlParams.get('project_key') || ''
   const savedAdminView = window.localStorage.getItem('builderx:administrator:lastTab') || ''
   const requestedInitialView = hasExplicitTab
-    ? (data.initialTab === projectCompanyTabKey ? projectCompanyViewKey(requestedProjectCompanyKey, requestedProjectCompanyBranchKey) : data.initialTab)
+    ? (data.initialTab === projectCompanyTabKey ? projectCompanyViewKey(requestedProjectCompanyKey, requestedProjectCompanyBranchKey, requestedProjectCompanyProjectKey) : data.initialTab)
     : (isKnownAdminView(savedAdminView) ? savedAdminView : configuredDefaultView)
   const initialView = isKnownAdminView(requestedInitialView) ? requestedInitialView : 'dashboard'
   const [activeView, setActiveView] = React.useState(initialView)
@@ -27005,6 +27116,7 @@ function AdminApp() {
     const nextUrl = new URL(window.location.href)
     const projectCompanyKey = projectCompanyKeyFromView(view)
     const projectCompanyBranchKey = projectCompanyBranchKeyFromView(view)
+    const projectCompanyProjectKey = projectCompanyProjectKeyFromView(view)
     if (projectCompanyKey) {
       nextUrl.searchParams.set('tab', projectCompanyTabKey)
       nextUrl.searchParams.set('company_key', projectCompanyKey)
@@ -27013,10 +27125,16 @@ function AdminApp() {
       } else {
         nextUrl.searchParams.delete('branch_key')
       }
+      if (projectCompanyProjectKey) {
+        nextUrl.searchParams.set('project_key', projectCompanyProjectKey)
+      } else {
+        nextUrl.searchParams.delete('project_key')
+      }
     } else {
       nextUrl.searchParams.set('tab', view)
       nextUrl.searchParams.delete('company_key')
       nextUrl.searchParams.delete('branch_key')
+      nextUrl.searchParams.delete('project_key')
     }
     window.history.pushState({ tab: view }, '', `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`)
   }, [])
@@ -27029,7 +27147,7 @@ function AdminApp() {
     const syncFromBrowserNavigation = () => {
       const params = new URLSearchParams(window.location.search)
       const tab = params.get('tab') || ''
-      const nextView = tab === projectCompanyTabKey ? projectCompanyViewKey(params.get('company_key') || '', params.get('branch_key') || '') : tab
+      const nextView = tab === projectCompanyTabKey ? projectCompanyViewKey(params.get('company_key') || '', params.get('branch_key') || '', params.get('project_key') || '') : tab
       if (isKnownAdminView(nextView)) {
         setActiveView(nextView)
       }
@@ -27051,11 +27169,17 @@ function AdminApp() {
 
   const activeProjectCompanyKey = projectCompanyKeyFromView(activeView)
   const activeProjectCompanyBranchKey = projectCompanyBranchKeyFromView(activeView)
+  const activeProjectCompanyProjectKey = projectCompanyProjectKeyFromView(activeView)
   const activeProjectCompany = activeProjectCompanyKey
     ? data.companies.find((company) => company.company_key === activeProjectCompanyKey)
     : undefined
-  const viewTitle = activeProjectCompany
-    ? activeProjectCompany.company_name
+  const activeProjectCompanyProject = activeProjectCompanyProjectKey
+    ? data.companyProjects.find((project) => project.project_key === activeProjectCompanyProjectKey)
+    : undefined
+  const viewTitle = activeProjectCompanyProject
+    ? activeProjectCompanyProject.project_name
+    : activeProjectCompany
+      ? activeProjectCompany.company_name
     : activeView === 'branches'
       ? 'Branches'
       : activeView === 'companies'
@@ -27064,9 +27188,7 @@ function AdminApp() {
         ? 'Company Branches'
         : activeView === 'company-projects'
           ? 'Company Projects'
-          : activeView === 'company-departments'
-            ? 'Company Departments'
-            : activeView === 'projects'
+          : activeView === 'projects'
               ? 'Projects'
               : activeView === 'users'
                 ? 'Users'
@@ -27085,7 +27207,7 @@ function AdminApp() {
                             : activeView === 'template'
                                 ? 'Template'
                                 : 'Dashboard'
-  const buildTarget = activeProjectCompanyKey ? 'P1-PROJECT-COMPANY' : activeView === 'companies' ? 'P1-COMPANY' : activeView === 'company-branches' ? 'P1-COMPANY-BRANCH' : activeView === 'company-projects' ? 'P1-COMPANY-PROJECT' : activeView === 'company-departments' ? 'P1-COMPANY-DEPARTMENT' : activeView === 'template' ? 'TEMPLATE' : activeView === 'health' ? 'P1-T17' : activeView === 'audit' ? 'P1-T15' : activeView === 'settings' ? 'P1-T14' : activeView === 'permissions' ? 'P1-T13' : activeView === 'roles' ? 'P1-T12' : activeView === 'groups' ? 'P1-T11' : activeView === 'users' ? 'P1-T10' : activeView === 'projects' ? 'P1-T9' : activeView === 'branches' ? 'P1-T8' : 'P1'
+  const buildTarget = activeProjectCompanyKey ? 'P1-PROJECT-COMPANY' : activeView === 'companies' ? 'P1-COMPANY' : activeView === 'company-branches' ? 'P1-COMPANY-BRANCH' : activeView === 'company-projects' ? 'P1-COMPANY-PROJECT' : activeView === 'template' ? 'TEMPLATE' : activeView === 'health' ? 'P1-T17' : activeView === 'audit' ? 'P1-T15' : activeView === 'settings' ? 'P1-T14' : activeView === 'permissions' ? 'P1-T13' : activeView === 'roles' ? 'P1-T12' : activeView === 'groups' ? 'P1-T11' : activeView === 'users' ? 'P1-T10' : activeView === 'projects' ? 'P1-T9' : activeView === 'branches' ? 'P1-T8' : 'P1'
   const breadcrumbItems = ['Administrator', viewTitle]
 
   return (
@@ -27100,7 +27222,13 @@ function AdminApp() {
     >
       {data.isSignedIn && data.isAdmin ? (
         activeProjectCompanyKey
-          ? <ProjectCompanyOverviewView companyKey={activeProjectCompanyKey} selectedBranchKey={activeProjectCompanyBranchKey} onBranchSelect={(branchKey) => handleViewChange(projectCompanyViewKey(activeProjectCompanyKey, branchKey))} />
+          ? <ProjectCompanyOverviewView
+              companyKey={activeProjectCompanyKey}
+              selectedBranchKey={activeProjectCompanyBranchKey}
+              selectedProjectKey={activeProjectCompanyProjectKey}
+              onBranchSelect={(branchKey) => handleViewChange(projectCompanyViewKey(activeProjectCompanyKey, branchKey))}
+              onProjectSelect={(branchKey, projectKey) => handleViewChange(projectCompanyViewKey(activeProjectCompanyKey, branchKey, projectKey))}
+            />
           : activeView === 'branches'
             ? <BranchCrudView />
             : activeView === 'companies'
@@ -27109,9 +27237,7 @@ function AdminApp() {
               ? <CompanyBranchCrudView />
               : activeView === 'company-projects'
                 ? <CompanyProjectCrudView />
-                : activeView === 'company-departments'
-                  ? <CompanyDepartmentCrudView />
-                  : activeView === 'projects'
+                : activeView === 'projects'
                     ? <ProjectCrudView />
                     : activeView === 'users'
                       ? <UserCrudView />

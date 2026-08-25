@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "form-builder": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "form-builder/SKILL.md",
+      "computedHash": "76befb46400c973afc8bad99d960a03354e9604753a2544cad524d09a10e7076"
+    }
+  }
+}
