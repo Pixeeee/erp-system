@@ -142,6 +142,18 @@ function buying_test_cleanup_temporary_company(ADOConnection $db, array $fixture
         'SELECT supplier_key FROM project_company_buying_supplier WHERE company_key_hash = ?',
         [$companyHash]
     );
+    buying_test_execute($db, 'DELETE FROM project_company_buying_scorecard_period_score WHERE company_key_hash = ?', [$companyHash], 'Temporary Buying scorecard-period score cleanup');
+    buying_test_execute($db, 'DELETE FROM project_company_buying_scorecard_period WHERE company_key_hash = ?', [$companyHash], 'Temporary Buying scorecard-period cleanup');
+    buying_test_execute($db, 'DELETE FROM project_company_buying_scorecard_criteria WHERE company_key_hash = ?', [$companyHash], 'Temporary Buying scorecard-criteria cleanup');
+    buying_test_execute($db, 'DELETE FROM project_company_buying_scorecard_variable WHERE company_key_hash = ?', [$companyHash], 'Temporary Buying scorecard-variable cleanup');
+    buying_test_execute($db, 'DELETE FROM project_company_buying_scorecard_standing WHERE company_key_hash = ?', [$companyHash], 'Temporary Buying scorecard-standing cleanup');
+    buying_test_execute($db, 'DELETE FROM project_company_buying_scorecard_definition WHERE company_key_hash = ?', [$companyHash], 'Temporary Buying scorecard-definition cleanup');
+    buying_test_execute(
+        $db,
+        "DELETE FROM builder_audit_log WHERE module IN ('project_company_buying_scorecard_definition', 'project_company_buying_scorecard_period') AND new_values LIKE ?",
+        ['%' . $companyHash . '%'],
+        'Temporary Buying scorecard audit cleanup'
+    );
     foreach (is_array($supplierKeys) ? $supplierKeys : [] as $supplierKey) {
         buying_test_execute(
             $db,

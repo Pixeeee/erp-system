@@ -6,6 +6,7 @@ require_once __DIR__ . '/core.php';
 require_once __DIR__ . '/forms.php';
 require_once __DIR__ . '/settings.php';
 require_once __DIR__ . '/suppliers.php';
+require_once __DIR__ . '/scorecards.php';
 
 function yovel_admin_buying_procurement_sections(): array
 {
@@ -51,6 +52,7 @@ function yovel_admin_buying_procurement_dependency_state(): array
         'yovel_admin_finance_create_purchase_invoice_from_buying',
         'yovel_admin_finance_buying_snapshot',
     ];
+    $operationsNotificationFunctions = ['yovel_admin_operations_create_notification_handoff'];
     $allAvailable = static fn (array $functions): bool => array_reduce(
         $functions,
         static fn (bool $available, string $function): bool => $available && function_exists($function),
@@ -73,6 +75,12 @@ function yovel_admin_buying_procurement_dependency_state(): array
             'available' => $allAvailable($financeFunctions),
             'label' => 'Finance contract',
             'required_functions' => $financeFunctions,
+        ],
+        'operations_notification' => [
+            'available' => $allAvailable($operationsNotificationFunctions),
+            'label' => 'Operations notification contract',
+            'required_functions' => $operationsNotificationFunctions,
+            'blocking' => false,
         ],
     ];
 }
@@ -109,6 +117,11 @@ function yovel_admin_buying_procurement_data(array $company, ?array $admin = nul
         ),
     ];
     $suppliers = yovel_admin_buying_suppliers($company);
+    $scorecards = yovel_admin_buying_scorecards($company);
+    foreach ($scorecards as &$scorecard) {
+        $scorecard['restrictions'] = yovel_admin_buying_supplier_restrictions($company, (string) $scorecard['supplier_key']);
+    }
+    unset($scorecard);
     $settings = yovel_admin_buying_settings($company);
     $adapter = yovel_admin_buying_procurement_form_adapter();
     $schemas = yovel_admin_buying_procurement_default_form_schemas();
@@ -122,6 +135,7 @@ function yovel_admin_buying_procurement_data(array $company, ?array $admin = nul
         'company_key_hash' => $companyKeyHash,
         'counts' => $counts,
         'suppliers' => $suppliers,
+        'scorecards' => $scorecards,
         'settings' => $settings,
         'dependencies' => yovel_admin_buying_procurement_dependency_state(),
         'formAdapter' => $adapter,
@@ -157,6 +171,30 @@ function yovel_admin_buying_procurement_handle_post(
             'message' => 'Supplier saved.',
             'section' => 'suppliers',
             'query' => ['supplier' => (string) $saved['supplier_key']],
+        ];
+    }
+    if ($action === 'save_buying_scorecard') {
+        $saved = yovel_admin_buying_save_scorecard_definition(bx_db(), $company, $admin, $input);
+        return [
+            'message' => 'Supplier scorecard saved.',
+            'section' => 'supplier-scorecards',
+            'query' => ['scorecard' => (string) $saved['scorecard_key']],
+        ];
+    }
+    if ($action === 'calculate_buying_scorecard_period') {
+        $scorecardKey = trim((string) ($input['scorecard_key'] ?? ''));
+        yovel_admin_buying_calculate_scorecard_period(
+            bx_db(),
+            $company,
+            $admin,
+            $scorecardKey,
+            trim((string) ($input['period_start'] ?? '')),
+            trim((string) ($input['period_end'] ?? ''))
+        );
+        return [
+            'message' => 'Supplier scorecard period calculated.',
+            'section' => 'supplier-scorecards',
+            'query' => ['scorecard' => $scorecardKey],
         ];
     }
     $supplierLifecycleActions = [

@@ -16,6 +16,8 @@ $buyingReopenTargetModal = $buyingFormError !== ''
     && $buyingFormAction === 'review_buying_form_target';
 $buyingReopenSettingsModal = $buyingFormError !== '' && $buyingFormAction === 'save_buying_settings';
 $buyingReopenSupplierModal = $buyingFormError !== '' && $buyingFormAction === 'save_buying_supplier';
+$buyingReopenScorecardModal = $buyingFormError !== '' && $buyingFormAction === 'save_buying_scorecard';
+$buyingReopenScorecardPeriodModal = $buyingFormError !== '' && $buyingFormAction === 'calculate_buying_scorecard_period';
 $buyingLifecycleActions = [
     'hold_buying_supplier',
     'release_buying_supplier',
@@ -68,6 +70,8 @@ $buyingCountKey = match ($buyingSection) {
                     <?php require __DIR__ . '/form-builder.php'; ?>
                 <?php elseif ($buyingSection === 'suppliers'): ?>
                     <?php require __DIR__ . '/suppliers.php'; ?>
+                <?php elseif ($buyingSection === 'supplier-scorecards'): ?>
+                    <?php require __DIR__ . '/scorecards.php'; ?>
                 <?php elseif ($buyingSection === 'buying-settings'): ?>
                     <?php require __DIR__ . '/settings.php'; ?>
                 <?php elseif (in_array($buyingSection, ['material-requests', 'purchase-receipts', 'purchase-analytics', 'reports'], true)): ?>
@@ -108,7 +112,7 @@ $buyingCountKey = match ($buyingSection) {
                     <section class="border-t pt-4">
                         <h3 class="text-sm font-semibold">Dependency status</h3>
                         <div class="mt-2 divide-y">
-                            <?php foreach (['shared', 'inventory', 'finance'] as $dependencyKey): ?>
+                            <?php foreach (['shared', 'inventory', 'finance', 'operations_notification'] as $dependencyKey): ?>
                                 <?php $dependency = is_array($buyingDependencies[$dependencyKey] ?? null) ? $buyingDependencies[$dependencyKey] : ['available' => false, 'label' => ucfirst($dependencyKey) . ' contract']; ?>
                                 <div class="flex items-center justify-between gap-3 py-2.5 text-sm">
                                     <span><?= bx_h((string) $dependency['label']) ?></span>
@@ -118,6 +122,7 @@ $buyingCountKey = match ($buyingSection) {
                         </div>
                         <?php if (empty($buyingDependencies['inventory']['available'])): ?><p class="mt-2 text-xs text-muted-foreground">Inventory contract unavailable</p><?php endif; ?>
                         <?php if (empty($buyingDependencies['finance']['available'])): ?><p class="mt-1 text-xs text-muted-foreground">Finance contract unavailable</p><?php endif; ?>
+                        <?php if (empty($buyingDependencies['operations_notification']['available'])): ?><p class="mt-1 text-xs text-muted-foreground">Operations notification contract unavailable; scorecards remain operational.</p><?php endif; ?>
                     </section>
                     <section class="border-t pt-4">
                         <div class="flex flex-wrap gap-2">

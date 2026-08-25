@@ -260,9 +260,14 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/scorecards.php (yovel_admin_buying_scorecard_definition and yovel_admin_buying_save_scorecard_definition) plus schema.php (project_company_buying_scorecard_definition).",
+                "UI: company/admin/modules/buying-procurement/views/scorecards.php and views/workspace.php (12/8 workspace, body-owned definition/period modals, shared confirmation, escaped server rehydration, and explicit non-blocking Operations state).",
+                "PASS: php tests/buying-procurement-scorecards.php - Buying / Procurement scorecard checks passed, including company isolation, authorization, row locks, one transaction, audit, exact read-back, stable child keys, and injected rollback.",
+                "PASS: authenticated desktop/mobile browser check - exact 12/8 desktop ratio, main-first mobile stack, both dialogs visible, confirmation Cancel restored values/focus, no horizontal overflow, no POST before Confirm, and zero persisted browser scorecards."
+            ],
+            "reason": "Company-scoped supplier scorecard definitions now persist registered variables, weighted criteria, complete standings, lifecycle status, stable child identities, and supplier ownership through an authorized locked transaction with audit and exact read-back."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/supplier_scorecard_criteria/supplier_scorecard_criteria.json:doctype:Supplier Scorecard Criteria",
@@ -275,9 +280,13 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (project_company_buying_scorecard_criteria with company scope, stable key, code uniqueness, formula, maximum, and weight).",
+                "Implementation: company/admin/modules/buying-procurement/scorecards.php (criteria normalization, unique codes, exact 100.0000 weight validation, registered-variable expression validation, stable-key replacement, audit, and exact child read-back).",
+                "PASS: php tests/buying-procurement-scorecards.php - rejects invalid totals and malicious criteria expressions, preserves criteria keys on update, and rolls back injected criteria writes."
+            ],
+            "reason": "Scorecard criteria are company-scoped stable child records with deterministic formulas, bounded maxima, exact weights totaling 100, transactional replacement, and verified read-back."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/supplier_scorecard_period/supplier_scorecard_period.json:doctype:Supplier Scorecard Period",
@@ -290,9 +299,13 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (project_company_buying_scorecard_period with unique company/scorecard/date range and metric snapshot).",
+                "Implementation: company/admin/modules/buying-procurement/scorecards.php (yovel_admin_buying_calculate_scorecard_period and yovel_admin_buying_scorecard_period_read) with authorization, definition/duplicate row locks, one transaction, audit, exact read-back, and post-commit notification handoff.",
+                "PASS: php tests/buying-procurement-scorecards.php - deterministic 84.0000 and 32.0000 periods, duplicate rejection, zero-division rollback, injected child rollback, company isolation, and immutable metric snapshots."
+            ],
+            "reason": "Unique scorecard periods are calculated and persisted as company-scoped metric and scoring snapshots in one locked transaction, with local completion independent of the optional post-commit Operations notification."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/supplier_scorecard_scoring_criteria/supplier_scorecard_scoring_criteria.json:doctype:Supplier Scorecard Scoring Criteria",
@@ -305,9 +318,13 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (project_company_buying_scorecard_period_score criteria score, weighted score, stable criteria key, and variable snapshot).",
+                "Implementation: company/admin/modules/buying-procurement/scorecards.php (bounded criteria evaluation, maximum-score normalization, four-decimal weighted scoring, period-score insertion, and row-by-row exact read-back).",
+                "PASS: php tests/buying-procurement-scorecards.php - verifies both criteria scores persist, deterministic weighted totals, and injected first score-row failure rolls back parent and children."
+            ],
+            "reason": "Each calculated period persists deterministic per-criteria raw and weighted scores with the exact variable snapshot and verifies every row before commit."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/supplier_scorecard_scoring_standing/supplier_scorecard_scoring_standing.json:doctype:Supplier Scorecard Scoring Standing",
@@ -320,9 +337,13 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/scorecards.php (deterministic half-open standing selection with final inclusive 100 boundary and persisted standing_key on each period).",
+                "Implementation: company/admin/modules/buying-procurement/scorecards.php (yovel_admin_buying_supplier_restrictions and yovel_admin_buying_assert_supplier_purchase_allowed) applies the latest scored standing to RFQ and purchase-order warn/prevent validation.",
+                "PASS: php tests/buying-procurement-scorecards.php - 84.0000 maps to GOOD, 32.0000 maps to BLOCKED, and the latest BLOCKED result warns and prevents both RFQs and purchase orders."
+            ],
+            "reason": "Calculated totals map deterministically to one persisted standing, and the latest company-scoped score drives enforceable RFQ and purchase-order warnings and prevention."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/supplier_scorecard_scoring_variable/supplier_scorecard_scoring_variable.json:doctype:Supplier Scorecard Scoring Variable",
@@ -335,9 +356,13 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/scorecards.php (yovel_admin_buying_scorecard_metric_snapshot) resolves only registered normalized Buying metrics or the focused normalized provider contract and rejects missing, non-numeric, and non-finite values.",
+                "Implementation: company/admin/modules/buying-procurement/schema.php and scorecards.php persist canonical variable_snapshot_json on every period-score row and verify the exact JSON before commit.",
+                "PASS: php tests/buying-procurement-scorecards.php - registered delivery/order/quality snapshots produce repeatable criteria values while zero denominators and unsafe values cannot persist a period."
+            ],
+            "reason": "Scoring uses a canonical finite numeric snapshot keyed only by registered variables; the same immutable snapshot is persisted with each per-criteria result."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/supplier_scorecard_standing/supplier_scorecard_standing.json:doctype:Supplier Scorecard Standing",
@@ -350,9 +375,13 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (project_company_buying_scorecard_standing with score bounds, warn/prevent flags, notification flags, optional employee key, status, stable key, and company scope).",
+                "Implementation: company/admin/modules/buying-procurement/scorecards.php validates unique codes, finite 0-100 bounds, contiguous non-overlapping full coverage, prevent-implies-warn, employee notification ownership, stable-key updates, and exact read-back.",
+                "PASS: php tests/buying-procurement-scorecards.php - overlapping ranges are rejected before mutation, valid 0-100 standings persist, and blocking flags flow into supplier restrictions."
+            ],
+            "reason": "Supplier scorecard standings are stable company-scoped configuration records whose ranges cover exactly 0-100 without overlap and whose warn, prevent, and notification controls are enforced."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/supplier_scorecard_variable/supplier_scorecard_variable.json:doctype:Supplier Scorecard Variable",
@@ -365,9 +394,13 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (project_company_buying_scorecard_variable with stable key, unique registered code, label, normalized metric path, description, status, and company scope).",
+                "Implementation: company/admin/modules/buying-procurement/scorecards.php registers only uppercase identifier codes and allow-listed normalized metric paths, preserves stable keys by code, and permits expressions to resolve only those variables.",
+                "PASS: php tests/buying-procurement-scorecards.php - unknown variables plus PHP, SQL, function, property, file, bracket, exponent, and other prohibited syntax are rejected; valid variables persist and retain keys on update."
+            ],
+            "reason": "Scorecard variables are stable, unique, company-scoped registrations over an allow-listed normalized metric registry and are the only identifiers accepted by the deterministic numeric grammar."
         },
         {
             "source_id": "erpnext:erpnext/buying/print_format/drop_shipping_format/drop_shipping_format.json:print_format:Drop Shipping Format",
