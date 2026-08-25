@@ -27,15 +27,27 @@ The central canvas gains explicit layout structure:
 1. `Add Row` creates an empty one-column row.
 2. Each row has a compact `1 / 2 / 3` segmented column selector.
 3. Each column is a visible drop zone with an empty-state instruction.
-4. Questions can be dragged from one row or column into another.
-5. Questions within a column can be reordered by dragging or with accessible move buttons.
-6. Rows can be reordered with a row drag handle or row move buttons.
-7. Empty rows can be deleted with a row-level delete action.
-8. Changing a row to fewer columns redistributes displaced questions from left to right while preserving their relative order.
+4. Field types can be dragged from the Question Toolbox into any visible column to create a new question at that location.
+5. Questions can be dragged from one row or column into another.
+6. Questions within a column can be reordered by dragging or with accessible move buttons.
+7. Rows can be reordered with a row drag handle or row move buttons.
+8. Empty rows can be deleted with a row-level delete action.
+9. Changing a row to fewer columns redistributes displaced questions from left to right while preserving their relative order.
 
-Adding a question from the toolbox places it into the currently selected column. If no column is selected, it goes into the final column of the final row. If the form has no rows, the builder creates a one-column row automatically.
+Clicking a question in the toolbox places it into the currently selected column. If no column is selected, it goes into the final column of the final row. If the form has no rows, the builder creates a one-column row automatically.
 
-The active row, active column, dragged question, and valid drop destination receive clear but restrained shadcn-style indicators. Drop zones remain visible during dragging so admins can predict exactly where a field will land.
+Dragging a toolbox field follows these rules:
+
+- Pointer movement must cross a small threshold before the interaction becomes a drag, preserving ordinary click behavior.
+- The dragged field displays a compact floating label so the admin knows which field type is being placed.
+- Valid columns display a drop-ready state; the column currently under the pointer receives the active destination state.
+- The new question is inserted at the pointer's vertical position among existing questions in that column.
+- Dropping a section field creates a dedicated full-width row immediately after the targeted row.
+- Dropping outside a valid column cancels without changing the form.
+- A completed drag suppresses the subsequent click event so only one question is created.
+- Mouse, touch, and stylus use the same pointer-based path. Click-to-add and move buttons remain available as keyboard and accessibility fallbacks.
+
+The active row, active column, dragged toolbox field, dragged question, and valid drop destination receive clear but restrained shadcn-style indicators. Drop zones remain visible during dragging so admins can predict exactly where a field will land.
 
 ## Schema Version 2
 
@@ -124,6 +136,9 @@ Automated coverage will verify:
 Browser verification will cover:
 
 - Creating rows and switching between one, two, and three columns.
+- Dragging Short Answer from the toolbox into a selected column creates exactly one new question at the indicated position.
+- Dragging a Section toolbox item creates a dedicated full-width row.
+- Dropping a toolbox item outside a valid column leaves the form unchanged.
 - Dragging First Name and Last Name into the same two-column row.
 - Reordering rows and questions with drag/drop and buttons.
 - Clear drop indicators and empty-column targets.
