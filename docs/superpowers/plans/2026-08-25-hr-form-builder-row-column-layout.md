@@ -195,3 +195,61 @@ git diff --check
 ```
 
 Expected: all tests and syntax checks exit 0 and `git diff --check` reports no whitespace errors.
+
+### Task 5: Toolbox-to-Canvas Drag and Drop
+
+**Files:**
+- Modify: `company/admin/views/partials/scripts.php:2034-2370`
+- Modify: `company/admin/assets/css/admin.css:1016-1185`
+
+**Interfaces:**
+- Consumes: toolbox buttons with `data-hr-google-add-type` and canvas columns with `data-hr-google-column`.
+- Produces: pointer-driven field creation at a valid column insertion point while preserving existing click-to-add behavior.
+
+- [ ] **Step 1: Verify the missing behavior in the browser**
+
+Open a blank form, create a two-column row, drag Short Answer from the toolbox into the second column, and inspect the serialized schema.
+
+Expected before implementation: the question count remains zero because toolbox buttons only handle clicks.
+
+- [ ] **Step 2: Add a threshold-based toolbox drag state**
+
+Track the source button, field type, label, starting coordinates, pointer identifier, active destination, and whether the movement exceeded six CSS pixels. Preserve an ordinary click when the threshold is not crossed.
+
+- [ ] **Step 3: Add destination and insertion behavior**
+
+While dragging, mark every column as available, mark the column under the pointer as active, and calculate the insertion point from the pointer's vertical position. On pointer release inside a valid column, create one question card at that position. For `SECTION`, create one dedicated one-column row immediately after the targeted row.
+
+- [ ] **Step 4: Add cancellation and duplicate-click protection**
+
+Dropping outside a valid column must not mutate the schema. A completed drag sets a one-shot suppression flag so the click generated after pointer release does not add a second question.
+
+- [ ] **Step 5: Add neutral drag feedback**
+
+Render a small floating field-type label, use neutral dashed borders for available columns, and use the existing foreground/muted tokens for the active destination. Do not introduce a new color family.
+
+- [ ] **Step 6: Verify pointer and fallback behavior**
+
+In the signed-in browser, verify all of the following:
+
+```text
+Drag Short Answer into column 2 -> exactly one question in column 2
+Drag Short Answer between two existing fields -> question inserted at the indicated position
+Drag Section into a column -> one new full-width row after the target row
+Drop outside the canvas -> no schema change
+Click Short Answer -> exactly one question in the selected column
+```
+
+- [ ] **Step 7: Run the final regression suite**
+
+Run:
+
+```bash
+php tests/hr-database-driven-forms.php
+php tests/company-admin-modular-architecture.php
+php -l company/admin/views/partials/scripts.php
+php -l company/admin/modules/hr/views/dashboard.php
+git diff --check
+```
+
+Expected: all commands exit 0 and browser console logs contain no errors or warnings.
