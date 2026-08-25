@@ -14,10 +14,13 @@
             "source_name": "POS Closing Entry",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_closing_entry_detail/pos_closing_entry_detail.json:doctype:POS Closing Entry Detail",
@@ -29,10 +32,13 @@
             "source_name": "POS Closing Entry Detail",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_closing_entry_taxes/pos_closing_entry_taxes.json:doctype:POS Closing Entry Taxes",
@@ -44,10 +50,13 @@
             "source_name": "POS Closing Entry Taxes",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_customer_group/pos_customer_group.json:doctype:POS Customer Group",
@@ -59,10 +68,13 @@
             "source_name": "POS Customer Group",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_field/pos_field.json:doctype:POS Field",
@@ -74,10 +86,13 @@
             "source_name": "POS Field",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_invoice/pos_invoice.json:doctype:POS Invoice",
@@ -89,10 +104,13 @@
             "source_name": "POS Invoice",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_invoice_item/pos_invoice_item.json:doctype:POS Invoice Item",
@@ -104,10 +122,13 @@
             "source_name": "POS Invoice Item",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_invoice_merge_log/pos_invoice_merge_log.json:doctype:POS Invoice Merge Log",
@@ -119,10 +140,13 @@
             "source_name": "POS Invoice Merge Log",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_invoice_reference/pos_invoice_reference.json:doctype:POS Invoice Reference",
@@ -134,10 +158,13 @@
             "source_name": "POS Invoice Reference",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_item_group/pos_item_group.json:doctype:POS Item Group",
@@ -149,10 +176,13 @@
             "source_name": "POS Item Group",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_opening_entry/pos_opening_entry.json:doctype:POS Opening Entry",
@@ -164,10 +194,13 @@
             "source_name": "POS Opening Entry",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_opening_entry_detail/pos_opening_entry_detail.json:doctype:POS Opening Entry Detail",
@@ -179,10 +212,13 @@
             "source_name": "POS Opening Entry Detail",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_payment_method/pos_payment_method.json:doctype:POS Payment Method",
@@ -194,10 +230,13 @@
             "source_name": "POS Payment Method",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_profile/pos_profile.json:doctype:POS Profile",
@@ -209,10 +248,13 @@
             "source_name": "POS Profile",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_profile_user/pos_profile_user.json:doctype:POS Profile User",
@@ -224,10 +266,13 @@
             "source_name": "POS Profile User",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_search_fields/pos_search_fields.json:doctype:POS Search Fields",
@@ -239,10 +284,13 @@
             "source_name": "POS Search Fields",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/pos_settings/pos_settings.json:doctype:POS Settings",
@@ -254,10 +302,13 @@
             "source_name": "POS Settings",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/print_format/pos_invoice/pos_invoice.json:print_format:POS Invoice",
@@ -269,10 +320,13 @@
             "source_name": "POS Invoice",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/print_format/pos_invoice_standard/pos_invoice_standard.json:print_format:POS Invoice Standard",
@@ -284,10 +338,13 @@
             "source_name": "POS Invoice Standard",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/print_format/pos_invoice_with_item_image/pos_invoice_with_item_image.json:print_format:POS Invoice with Item Image",
@@ -299,10 +356,13 @@
             "source_name": "POS Invoice with Item Image",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/report/pos_register/pos_register.json:report:POS Register",
@@ -314,10 +374,13 @@
             "source_name": "POS Register",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/accounts/report/pos_register/pos_register.py:report_code:Pos Register",
@@ -329,10 +392,13 @@
             "source_name": "Pos Register",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/appointment/appointment.json:doctype:Appointment",
@@ -347,7 +413,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/appointment_booking_settings/appointment_booking_settings.json:doctype:Appointment Booking Settings",
@@ -362,7 +428,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/appointment_booking_slots/appointment_booking_slots.json:doctype:Appointment Booking Slots",
@@ -377,7 +443,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/availability_of_slots/availability_of_slots.json:doctype:Availability Of Slots",
@@ -392,7 +458,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/campaign/campaign.json:doctype:Campaign",
@@ -405,9 +471,14 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/sales-crm/functions.php:63",
+                "company/admin/modules/sales-crm/functions.php:220",
+                "company/admin/modules/sales-crm/views/workspace.php:110",
+                "php -l company/admin/modules/sales-crm/functions.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-05] PARTIAL: Campaign has a company-scoped table and configurable default form schema, but no module-local create/update/lifecycle service, modal, populated workspace, attribution workflow, or focused Sales/CRM test."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/campaign_email_schedule/campaign_email_schedule.json:doctype:Campaign Email Schedule",
@@ -422,7 +493,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-05] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/competitor/competitor.json:doctype:Competitor",
@@ -437,7 +508,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/competitor_detail/competitor_detail.json:doctype:Competitor Detail",
@@ -452,7 +523,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/contract/contract.json:doctype:Contract",
@@ -467,7 +538,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/contract_fulfilment_checklist/contract_fulfilment_checklist.json:doctype:Contract Fulfilment Checklist",
@@ -482,7 +553,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/contract_template/contract_template.json:doctype:Contract Template",
@@ -497,7 +568,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/contract_template_fulfilment_terms/contract_template_fulfilment_terms.json:doctype:Contract Template Fulfilment Terms",
@@ -512,7 +583,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/crm_note/crm_note.json:doctype:CRM Note",
@@ -527,7 +598,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/crm_settings/crm_settings.json:doctype:CRM Settings",
@@ -542,7 +613,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-02] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/email_campaign/email_campaign.json:doctype:Email Campaign",
@@ -557,7 +628,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-05] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/frappe_crm_allowed_user/frappe_crm_allowed_user.json:doctype:Frappe CRM Allowed User",
@@ -572,7 +643,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-02] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/lead/lead.json:doctype:Lead",
@@ -585,9 +656,17 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/sales-crm/functions.php:115",
+                "company/admin/modules/sales-crm/functions.php:535",
+                "company/admin/modules/sales-crm/functions.php:704",
+                "company/admin/modules/sales-crm/views/workspace.php:30",
+                "company/admin/modules/sales-crm/views/workspace.php:197",
+                "php -l company/admin/modules/sales-crm/functions.php (PASS 2026-08-25)",
+                "php -l company/admin/modules/sales-crm/views/workspace.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] PARTIAL: Lead has company-scoped CRUD, validation, status changes, audit calls, direct read-back, a modal, and schema-driven fields; it still lacks focused passing Sales/CRM tests and substantial pinned Lead lifecycle, assignment, communication, conversion, import/export, and timeline behavior."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/lost_reason_detail/lost_reason_detail.json:doctype:Lost Reason Detail",
@@ -602,7 +681,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/market_segment/market_segment.json:doctype:Market Segment",
@@ -617,7 +696,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/opportunity/opportunity.json:doctype:Opportunity",
@@ -630,9 +709,13 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/sales-crm/functions.php:203",
+                "company/admin/modules/sales-crm/views/workspace.php:110",
+                "php -l company/admin/modules/sales-crm/functions.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-04] PARTIAL: Opportunity has a configurable default form schema and routed placeholder only; persistence, item rows, stage/lost workflows, modal CRUD, reports, and focused tests are absent."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/opportunity_item/opportunity_item.json:doctype:Opportunity Item",
@@ -647,7 +730,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/opportunity_lost_reason/opportunity_lost_reason.json:doctype:Opportunity Lost Reason",
@@ -662,7 +745,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/opportunity_lost_reason_detail/opportunity_lost_reason_detail.json:doctype:Opportunity Lost Reason Detail",
@@ -677,7 +760,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/opportunity_type/opportunity_type.json:doctype:Opportunity Type",
@@ -692,7 +775,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/prospect/prospect.json:doctype:Prospect",
@@ -707,7 +790,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/prospect_lead/prospect_lead.json:doctype:Prospect Lead",
@@ -722,7 +805,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/prospect_opportunity/prospect_opportunity.json:doctype:Prospect Opportunity",
@@ -737,7 +820,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/sales_stage/sales_stage.json:doctype:Sales Stage",
@@ -752,7 +835,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/campaign_efficiency/campaign_efficiency.json:report:Campaign Efficiency",
@@ -767,7 +850,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-05] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/campaign_efficiency/campaign_efficiency.py:report_code:Campaign Efficiency",
@@ -782,7 +865,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-05] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/first_response_time_for_opportunity/first_response_time_for_opportunity.json:report:First Response Time for Opportunity",
@@ -797,7 +880,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/first_response_time_for_opportunity/first_response_time_for_opportunity.py:report_code:First Response Time For Opportunity",
@@ -812,7 +895,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lead_conversion_time/lead_conversion_time.json:report:Lead Conversion Time",
@@ -827,7 +910,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lead_conversion_time/lead_conversion_time.py:report_code:Lead Conversion Time",
@@ -842,7 +925,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lead_details/lead_details.json:report:Lead Details",
@@ -857,7 +940,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lead_details/lead_details.py:report_code:Lead Details",
@@ -872,7 +955,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lead_owner_efficiency/lead_owner_efficiency.json:report:Lead Owner Efficiency",
@@ -887,7 +970,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lead_owner_efficiency/lead_owner_efficiency.py:report_code:Lead Owner Efficiency",
@@ -902,7 +985,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lost_opportunity/lost_opportunity.json:report:Lost Opportunity",
@@ -917,7 +1000,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lost_opportunity/lost_opportunity.py:report_code:Lost Opportunity",
@@ -932,7 +1015,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/opportunity_summary_by_sales_stage/opportunity_summary_by_sales_stage.json:report:Opportunity Summary by Sales Stage",
@@ -947,7 +1030,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/opportunity_summary_by_sales_stage/opportunity_summary_by_sales_stage.py:report_code:Opportunity Summary By Sales Stage",
@@ -962,7 +1045,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/opportunity_summary_by_sales_stage/test_opportunity_summary_by_sales_stage.py:report_code:Test Opportunity Summary By Sales Stage",
@@ -977,7 +1060,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/prospects_engaged_but_not_converted/prospects_engaged_but_not_converted.json:report:Prospects Engaged But Not Converted",
@@ -992,7 +1075,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/prospects_engaged_but_not_converted/prospects_engaged_but_not_converted.py:report_code:Prospects Engaged But Not Converted",
@@ -1007,7 +1090,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/sales_pipeline_analytics/sales_pipeline_analytics.json:report:Sales Pipeline Analytics",
@@ -1022,7 +1105,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/sales_pipeline_analytics/sales_pipeline_analytics.py:report_code:Sales Pipeline Analytics",
@@ -1037,7 +1120,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/sales_pipeline_analytics/test_sales_pipeline_analytics.py:report_code:Test Sales Pipeline Analytics",
@@ -1052,7 +1135,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/crm/workspace/crm/crm.json:workspace:CRM",
@@ -1065,9 +1148,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/sales-crm/functions.php:4",
+                "company/admin/modules/sales-crm/views/workspace.php:1",
+                "company/admin/modules/sales-crm/views/workspace.php:24",
+                "company/admin/modules/sales-crm/views/workspace.php:110",
+                "php tests/company-admin-modular-architecture.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-02] PARTIAL: the local Sales/CRM workspace routes ten sections and renders a Lead list plus utility panel, but most destinations are placeholders, the desktop ratio is 8fr/4fr rather than 12/20 and 8/20, and no Sales/CRM interaction or route suite exists."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/customer/customer.json:doctype:Customer",
@@ -1080,9 +1169,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/sales-crm/functions.php:76",
+                "company/admin/modules/sales-crm/functions.php:238",
+                "company/admin/modules/sales-crm/functions.php:505",
+                "company/admin/modules/sales-crm/views/workspace.php:110",
+                "php -l company/admin/modules/sales-crm/functions.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-06] PARTIAL: Customer has a company-scoped table, reference read, and configurable default form schema; full master data, modal CRUD, lifecycle, addresses/contacts, permissions, import/export, and focused tests are absent."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/customer_credit_limit/customer_credit_limit.json:doctype:Customer Credit Limit",
@@ -1094,10 +1189,16 @@
             "source_name": "Customer Credit Limit",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "dependencies": [
+                "accounting-finance"
+            ],
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/sales-crm/functions.php:288",
+                "company/admin/modules/sales-crm/views/workspace.php:110",
+                "php -l company/admin/modules/sales-crm/functions.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-06] PARTIAL: Customer Credit Limit has a configurable default form schema and route placeholder, but no persistence table/service, Finance-backed exposure check, approval lifecycle, modal, or focused tests."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/delivery_schedule_item/delivery_schedule_item.json:doctype:Delivery Schedule Item",
@@ -1112,7 +1213,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/industry_type/industry_type.json:doctype:Industry Type",
@@ -1127,7 +1228,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/installation_note/installation_note.json:doctype:Installation Note",
@@ -1142,7 +1243,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/installation_note_item/installation_note_item.json:doctype:Installation Note Item",
@@ -1157,7 +1258,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/party_specific_item/party_specific_item.json:doctype:Party Specific Item",
@@ -1172,7 +1273,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/product_bundle/product_bundle.json:doctype:Product Bundle",
@@ -1184,10 +1285,13 @@
             "source_name": "Product Bundle",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/product_bundle_item/product_bundle_item.json:doctype:Product Bundle Item",
@@ -1199,10 +1303,13 @@
             "source_name": "Product Bundle Item",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/quotation/quotation.json:doctype:Quotation",
@@ -1214,10 +1321,17 @@
             "source_name": "Quotation",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/sales-crm/functions.php:256",
+                "company/admin/modules/sales-crm/views/workspace.php:110",
+                "php -l company/admin/modules/sales-crm/functions.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-07] PARTIAL: Quotation has a configurable default form schema and route placeholder, but no header/item/tax persistence, calculations, lifecycle, print, conversion, modal, or focused tests."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/quotation/test_records.json:doctype:Test Records",
@@ -1229,10 +1343,13 @@
             "source_name": "Test Records",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-07] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/quotation_item/quotation_item.json:doctype:Quotation Item",
@@ -1244,10 +1361,13 @@
             "source_name": "Quotation Item",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-07] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/sales_order/sales_order.json:doctype:Sales Order",
@@ -1259,10 +1379,17 @@
             "source_name": "Sales Order",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/sales-crm/functions.php:272",
+                "company/admin/modules/sales-crm/views/workspace.php:110",
+                "php -l company/admin/modules/sales-crm/functions.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-08] PARTIAL: Sales Order has a configurable default form schema and route placeholder, but no header/item/schedule persistence, submit/cancel/amend/close lifecycle, fulfillment handoff, modal, or focused tests."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/sales_order/test_records.json:doctype:Test Records",
@@ -1274,10 +1401,13 @@
             "source_name": "Test Records",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/sales_order_item/sales_order_item.json:doctype:Sales Order Item",
@@ -1289,10 +1419,13 @@
             "source_name": "Sales Order Item",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/sales_partner_type/sales_partner_type.json:doctype:Sales Partner Type",
@@ -1307,7 +1440,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/sales_team/sales_team.json:doctype:Sales Team",
@@ -1322,7 +1455,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/selling_settings/selling_settings.json:doctype:Selling Settings",
@@ -1337,7 +1470,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-02] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/sms_center/sms_center.json:doctype:SMS Center",
@@ -1352,7 +1485,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/supplier_number_at_customer/supplier_number_at_customer.json:doctype:Supplier Number At Customer",
@@ -1367,7 +1500,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/page/point_of_sale/point_of_sale.json:page:point-of-sale",
@@ -1379,10 +1512,13 @@
             "source_name": "point-of-sale",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/page/sales_funnel/sales_funnel.json:page:sales-funnel",
@@ -1397,7 +1533,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-04] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/print_format/pos_invoice/pos_invoice.json:print_format:POS Invoice",
@@ -1409,10 +1545,13 @@
             "source_name": "POS Invoice",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/print_format/quotation_standard/quotation_standard.json:print_format:Quotation Standard",
@@ -1424,10 +1563,13 @@
             "source_name": "Quotation Standard",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-07] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/print_format/quotation_with_item_image/quotation_with_item_image.json:print_format:Quotation with Item Image",
@@ -1439,10 +1581,13 @@
             "source_name": "Quotation with Item Image",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-07] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/print_format/return_pos_invoice/return_pos_invoice.json:print_format:Return POS Invoice",
@@ -1454,10 +1599,13 @@
             "source_name": "Return POS Invoice",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-09] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/print_format/sales_order_standard/sales_order_standard.json:print_format:Sales Order Standard",
@@ -1469,10 +1617,13 @@
             "source_name": "Sales Order Standard",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/print_format/sales_order_with_item_image/sales_order_with_item_image.json:print_format:Sales Order with Item Image",
@@ -1484,10 +1635,13 @@
             "source_name": "Sales Order with Item Image",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/address_and_contacts/address_and_contacts.json:report:Address And Contacts",
@@ -1502,7 +1656,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/address_and_contacts/address_and_contacts.py:report_code:Address And Contacts",
@@ -1517,7 +1671,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/available_stock_for_packing_items/available_stock_for_packing_items.json:report:Available Stock for Packing Items",
@@ -1529,10 +1683,13 @@
             "source_name": "Available Stock for Packing Items",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/available_stock_for_packing_items/available_stock_for_packing_items.py:report_code:Available Stock For Packing Items",
@@ -1544,10 +1701,13 @@
             "source_name": "Available Stock For Packing Items",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/customer_acquisition_and_loyalty/customer_acquisition_and_loyalty.json:report:Customer Acquisition and Loyalty",
@@ -1562,7 +1722,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/customer_acquisition_and_loyalty/customer_acquisition_and_loyalty.py:report_code:Customer Acquisition And Loyalty",
@@ -1577,7 +1737,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/customer_credit_balance/customer_credit_balance.json:report:Customer Credit Balance",
@@ -1589,10 +1749,12 @@
             "source_name": "Customer Credit Balance",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/customer_credit_balance/customer_credit_balance.py:report_code:Customer Credit Balance",
@@ -1604,10 +1766,12 @@
             "source_name": "Customer Credit Balance",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/customer_wise_item_price/customer_wise_item_price.json:report:Customer-wise Item Price",
@@ -1622,7 +1786,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/customer_wise_item_price/customer_wise_item_price.py:report_code:Customer Wise Item Price",
@@ -1637,7 +1801,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/customers_without_any_sales_transactions/customers_without_any_sales_transactions.json:report:Customers Without Any Sales Transactions",
@@ -1652,7 +1816,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/inactive_customers/inactive_customers.json:report:Inactive Customers",
@@ -1667,7 +1831,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/inactive_customers/inactive_customers.py:report_code:Inactive Customers",
@@ -1682,7 +1846,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/inactive_customers/test_inactive_customers.py:report_code:Test Inactive Customers",
@@ -1697,7 +1861,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-06] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/item_wise_sales_history/item_wise_sales_history.json:report:Item-wise Sales History",
@@ -1709,10 +1873,13 @@
             "source_name": "Item-wise Sales History",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/item_wise_sales_history/item_wise_sales_history.py:report_code:Item Wise Sales History",
@@ -1724,10 +1891,13 @@
             "source_name": "Item Wise Sales History",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/lost_quotations/lost_quotations.json:report:Lost Quotations",
@@ -1739,10 +1909,13 @@
             "source_name": "Lost Quotations",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-07] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/lost_quotations/lost_quotations.py:report_code:Lost Quotations",
@@ -1754,10 +1927,13 @@
             "source_name": "Lost Quotations",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-07] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/payment_terms_status_for_sales_order/payment_terms_status_for_sales_order.json:report:Payment Terms Status for Sales Order",
@@ -1769,10 +1945,12 @@
             "source_name": "Payment Terms Status for Sales Order",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/payment_terms_status_for_sales_order/payment_terms_status_for_sales_order.py:report_code:Payment Terms Status For Sales Order",
@@ -1784,10 +1962,12 @@
             "source_name": "Payment Terms Status For Sales Order",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/payment_terms_status_for_sales_order/test_payment_terms_status_for_sales_order.py:report_code:Test Payment Terms Status For Sales Order",
@@ -1799,10 +1979,12 @@
             "source_name": "Test Payment Terms Status For Sales Order",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/pending_so_items_for_purchase_request/pending_so_items_for_purchase_request.json:report:Pending SO Items For Purchase Request",
@@ -1814,10 +1996,13 @@
             "source_name": "Pending SO Items For Purchase Request",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "buying-procurement",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/pending_so_items_for_purchase_request/pending_so_items_for_purchase_request.py:report_code:Pending So Items For Purchase Request",
@@ -1829,10 +2014,13 @@
             "source_name": "Pending So Items For Purchase Request",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "buying-procurement",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/pending_so_items_for_purchase_request/test_pending_so_items_for_purchase_request.py:report_code:Test Pending So Items For Purchase Request",
@@ -1844,10 +2032,13 @@
             "source_name": "Test Pending So Items For Purchase Request",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "buying-procurement",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/quotation_trends/quotation_trends.json:report:Quotation Trends",
@@ -1859,10 +2050,13 @@
             "source_name": "Quotation Trends",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-07] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/quotation_trends/quotation_trends.py:report_code:Quotation Trends",
@@ -1874,10 +2068,13 @@
             "source_name": "Quotation Trends",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-07] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_analytics/sales_analytics.json:report:Sales Analytics",
@@ -1889,10 +2086,12 @@
             "source_name": "Sales Analytics",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_analytics/sales_analytics.py:report_code:Sales Analytics",
@@ -1904,10 +2103,12 @@
             "source_name": "Sales Analytics",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_analytics/test_analytics.py:report_code:Test Analytics",
@@ -1919,10 +2120,12 @@
             "source_name": "Test Analytics",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_order_analysis/sales_order_analysis.json:report:Sales Order Analysis",
@@ -1934,10 +2137,13 @@
             "source_name": "Sales Order Analysis",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_order_analysis/sales_order_analysis.py:report_code:Sales Order Analysis",
@@ -1949,10 +2155,13 @@
             "source_name": "Sales Order Analysis",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_order_analysis/test_sales_order_analysis.py:report_code:Test Sales Order Analysis",
@@ -1964,10 +2173,13 @@
             "source_name": "Test Sales Order Analysis",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_order_trends/sales_order_trends.json:report:Sales Order Trends",
@@ -1979,10 +2191,13 @@
             "source_name": "Sales Order Trends",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_order_trends/sales_order_trends.py:report_code:Sales Order Trends",
@@ -1994,10 +2209,13 @@
             "source_name": "Sales Order Trends",
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance",
+                "inventory-warehouse"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-08] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_partner_commission_summary/sales_partner_commission_summary.json:report:Sales Partner Commission Summary",
@@ -2012,7 +2230,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_partner_commission_summary/sales_partner_commission_summary.py:report_code:Sales Partner Commission Summary",
@@ -2027,7 +2245,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_partner_commission_summary/test_sales_partner_commission_summary.py:report_code:Test Sales Partner Commission Summary",
@@ -2042,7 +2260,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_partner_target_variance_based_on_item_group/item_group_wise_sales_target_variance.py:report_code:Item Group Wise Sales Target Variance",
@@ -2057,7 +2275,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_partner_target_variance_based_on_item_group/sales_partner_target_variance_based_on_item_group.json:report:Sales Partner Target Variance based on Item Group",
@@ -2072,7 +2290,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_partner_target_variance_based_on_item_group/sales_partner_target_variance_based_on_item_group.py:report_code:Sales Partner Target Variance Based On Item Group",
@@ -2087,7 +2305,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_partner_target_variance_based_on_item_group/test_sales_partner_target_variance_based_on_item_group.py:report_code:Test Sales Partner Target Variance Based On Item Group",
@@ -2102,7 +2320,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_partner_transaction_summary/sales_partner_transaction_summary.json:report:Sales Partner Transaction Summary",
@@ -2117,7 +2335,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_partner_transaction_summary/sales_partner_transaction_summary.py:report_code:Sales Partner Transaction Summary",
@@ -2132,7 +2350,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_partner_transaction_summary/test_sales_partner_transaction_summary.py:report_code:Test Sales Partner Transaction Summary",
@@ -2147,7 +2365,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_person_commission_summary/sales_person_commission_summary.json:report:Sales Person Commission Summary",
@@ -2162,7 +2380,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_person_commission_summary/sales_person_commission_summary.py:report_code:Sales Person Commission Summary",
@@ -2177,7 +2395,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_person_target_variance_based_on_item_group/sales_person_target_variance_based_on_item_group.json:report:Sales Person Target Variance Based On Item Group",
@@ -2192,7 +2410,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_person_target_variance_based_on_item_group/sales_person_target_variance_based_on_item_group.py:report_code:Sales Person Target Variance Based On Item Group",
@@ -2207,7 +2425,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_person_target_variance_based_on_item_group/test_sales_person_target_variance_based_on_item_group.py:report_code:Test Sales Person Target Variance Based On Item Group",
@@ -2222,7 +2440,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_person_wise_transaction_summary/sales_person_wise_transaction_summary.json:report:Sales Person-wise Transaction Summary",
@@ -2237,7 +2455,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_person_wise_transaction_summary/sales_person_wise_transaction_summary.py:report_code:Sales Person Wise Transaction Summary",
@@ -2252,7 +2470,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/sales_person_wise_transaction_summary/test_sales_person_wise_transaction_summary.py:report_code:Test Sales Person Wise Transaction Summary",
@@ -2267,7 +2485,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/territory_target_variance_based_on_item_group/territory_target_variance_based_on_item_group.json:report:Territory Target Variance Based On Item Group",
@@ -2282,7 +2500,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/territory_target_variance_based_on_item_group/territory_target_variance_based_on_item_group.py:report_code:Territory Target Variance Based On Item Group",
@@ -2297,7 +2515,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/territory_wise_sales/territory_wise_sales.json:report:Territory-wise Sales",
@@ -2312,7 +2530,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/territory_wise_sales/territory_wise_sales.py:report_code:Territory Wise Sales",
@@ -2327,7 +2545,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[SC-10] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
         },
         {
             "source_id": "erpnext:erpnext/selling/workspace/selling/selling.json:workspace:Selling",
@@ -2340,9 +2558,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/sales-crm/functions.php:4",
+                "company/admin/modules/sales-crm/functions.php:155",
+                "company/admin/modules/sales-crm/views/workspace.php:13",
+                "company/admin/modules/sales-crm/views/workspace.php:110",
+                "php tests/company-admin-modular-architecture.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-02] PARTIAL: Selling destinations are present in the local section navigation and schema registry, but only Leads has operational behavior; the selling workspace, shortcuts, masters, reports, and guided workspace behavior are incomplete and untested."
         }
     ]
 }

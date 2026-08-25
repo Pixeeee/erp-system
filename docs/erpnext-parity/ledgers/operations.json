@@ -14,10 +14,18 @@
             "source_name": "Bulk Transaction Log",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.record-type-directory.v1",
+                "owners.bulk-command.v1",
+                "operations.job-runner.v1",
+                "shared.audit-log.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-08: Job control, bulk processing, and governed deletion workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/bulk_transaction/doctype/bulk_transaction_log_detail/bulk_transaction_log_detail.json:doctype:Bulk Transaction Log Detail",
@@ -29,10 +37,18 @@
             "source_name": "Bulk Transaction Log Detail",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.record-type-directory.v1",
+                "owners.bulk-command.v1",
+                "operations.job-runner.v1",
+                "shared.audit-log.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-08: Job control, bulk processing, and governed deletion workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/communication/doctype/communication_medium/communication_medium.json:doctype:Communication Medium",
@@ -44,10 +60,17 @@
             "source_name": "Communication Medium",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "hr.employee-group-directory.v1",
+                "buying-procurement.supplier-directory.v1",
+                "operations.job-runner.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-07: Communication and digest workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/communication/doctype/communication_medium_timeslot/communication_medium_timeslot.json:doctype:Communication Medium Timeslot",
@@ -59,10 +82,15 @@
             "source_name": "Communication Medium Timeslot",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "hr.employee-group-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-07: Communication and digest workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/edi/doctype/code_list/code_list.json:doctype:Code List",
@@ -74,10 +102,15 @@
             "source_name": "Code List",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "operations.edi-code-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-09: EDI code-list and bank-integration settings workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/edi/doctype/common_code/common_code.json:doctype:Common Code",
@@ -89,10 +122,15 @@
             "source_name": "Common Code",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "operations.edi-code-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-09: EDI code-list and bank-integration settings workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/erpnext_integrations/doctype/plaid_settings/plaid_settings.json:doctype:Plaid Settings",
@@ -104,10 +142,17 @@
             "source_name": "Plaid Settings",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.secret-store.v1",
+                "accounting-finance.bank-sync.v1",
+                "operations.job-runner.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-09: EDI code-list and bank-integration settings workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/portal/doctype/website_attribute/website_attribute.json:doctype:Website Attribute",
@@ -119,10 +164,16 @@
             "source_name": "Website Attribute",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse.catalog-directory.v1",
+                "shared.portal-publication.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-10: Portal and media utility workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/portal/doctype/website_filter_field/website_filter_field.json:doctype:Website Filter Field",
@@ -134,10 +185,16 @@
             "source_name": "Website Filter Field",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse.catalog-directory.v1",
+                "shared.portal-publication.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-10: Portal and media utility workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/authorization_control/authorization_control.json:doctype:Authorization Control",
@@ -149,10 +206,15 @@
             "source_name": "Authorization Control",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.identity-permission-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-02: Authorization, company, and global-default setup integration is absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/authorization_rule/authorization_rule.json:doctype:Authorization Rule",
@@ -164,10 +226,18 @@
             "source_name": "Authorization Rule",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.identity-permission-directory.v1",
+                "platform.company-scope.v1",
+                "owners.document-lifecycle-catalog.v1",
+                "hr.workforce-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-02: Authorization, company, and global-default setup integration is absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/branch/branch.json:doctype:Branch",
@@ -179,10 +249,15 @@
             "source_name": "Branch",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "platform.company-branch-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-02: Authorization, company, and global-default setup integration is absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/brand/brand.json:doctype:Brand",
@@ -194,10 +269,16 @@
             "source_name": "Brand",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse.catalog-directory.v1",
+                "accounting-finance.tax-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-05: Catalog and unit setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/company/company.json:doctype:Company",
@@ -209,10 +290,18 @@
             "source_name": "Company",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "platform.company-directory.v1",
+                "accounting-finance.company-defaults.v1",
+                "inventory-warehouse.company-defaults.v1",
+                "assets-maintenance.company-defaults.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-02: Authorization, company, and global-default setup integration is absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/company/test_records.json:doctype:Test Records",
@@ -224,10 +313,15 @@
             "source_name": "Test Records",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "dependencies": [
+                "erpnext/setup/doctype/company/company.json"
+            ],
+            "status": "NOT_APPLICABLE",
+            "evidence": [
+                "Pinned upstream inspection at commit 11e0ba0a1c45f217e2e73e885f699102d06da325 confirms erpnext/setup/doctype/company/test_records.json is an array of test fixture records, not runtime DocType metadata.",
+                "The corresponding Company, Currency Exchange, or Item Group runtime capability remains tracked by its own ledger row."
+            ],
+            "reason": "Upstream test_records.json is fixture data only; BuilderX must not reproduce upstream test fixtures as a product capability."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/currency_exchange/currency_exchange.json:doctype:Currency Exchange",
@@ -239,10 +333,15 @@
             "source_name": "Currency Exchange",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance.currency-exchange.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-04: Commercial and trading setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/currency_exchange/test_records.json:doctype:Test Records",
@@ -254,10 +353,15 @@
             "source_name": "Test Records",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "dependencies": [
+                "erpnext/setup/doctype/currency_exchange/currency_exchange.json"
+            ],
+            "status": "NOT_APPLICABLE",
+            "evidence": [
+                "Pinned upstream inspection at commit 11e0ba0a1c45f217e2e73e885f699102d06da325 confirms erpnext/setup/doctype/currency_exchange/test_records.json is an array of test fixture records, not runtime DocType metadata.",
+                "The corresponding Company, Currency Exchange, or Item Group runtime capability remains tracked by its own ledger row."
+            ],
+            "reason": "Upstream test_records.json is fixture data only; BuilderX must not reproduce upstream test fixtures as a product capability."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/customer_group/customer_group.json:doctype:Customer Group",
@@ -269,10 +373,18 @@
             "source_name": "Customer Group",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm.commercial-masters.v1",
+                "hr.workforce-directory.v1",
+                "inventory-warehouse.catalog-directory.v1",
+                "accounting-finance.planning-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-04: Commercial and trading setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/department/department.json:doctype:Department",
@@ -284,10 +396,16 @@
             "source_name": "Department",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "hr.workforce-directory.v1",
+                "platform.company-scope.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-03: Workforce and calendar setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/designation/designation.json:doctype:Designation",
@@ -299,10 +417,16 @@
             "source_name": "Designation",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "hr.workforce-directory.v1",
+                "platform.company-scope.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-03: Workforce and calendar setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/driver/driver.json:doctype:Driver",
@@ -314,10 +438,18 @@
             "source_name": "Driver",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance.fleet-directory.v1",
+                "hr.workforce-directory.v1",
+                "buying-procurement.supplier-directory.v1",
+                "shared.identity-address-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-06: Fleet and delivery setup workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/driving_license_category/driving_license_category.json:doctype:Driving License Category",
@@ -329,10 +461,15 @@
             "source_name": "Driving License Category",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance.fleet-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-06: Fleet and delivery setup workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/email_digest/email_digest.json:doctype:Email Digest",
@@ -344,10 +481,17 @@
             "source_name": "Email Digest",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.identity-directory.v1",
+                "owners.digest-metrics.v1",
+                "operations.job-runner.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-07: Communication and digest workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/email_digest_recipient/email_digest_recipient.json:doctype:Email Digest Recipient",
@@ -359,10 +503,15 @@
             "source_name": "Email Digest Recipient",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.identity-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-07: Communication and digest workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/employee/employee.json:doctype:Employee",
@@ -374,10 +523,16 @@
             "source_name": "Employee",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "hr.workforce-directory.v1",
+                "platform.company-scope.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-03: Workforce and calendar setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/employee_education/employee_education.json:doctype:Employee Education",
@@ -389,10 +544,16 @@
             "source_name": "Employee Education",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "hr.workforce-directory.v1",
+                "platform.company-scope.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-03: Workforce and calendar setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/employee_external_work_history/employee_external_work_history.json:doctype:Employee External Work History",
@@ -404,10 +565,16 @@
             "source_name": "Employee External Work History",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "hr.workforce-directory.v1",
+                "platform.company-scope.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-03: Workforce and calendar setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/employee_group/employee_group.json:doctype:Employee Group",
@@ -419,10 +586,16 @@
             "source_name": "Employee Group",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "hr.workforce-directory.v1",
+                "platform.company-scope.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-03: Workforce and calendar setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/employee_group_table/employee_group_table.json:doctype:Employee Group Table",
@@ -434,10 +607,16 @@
             "source_name": "Employee Group Table",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "hr.workforce-directory.v1",
+                "platform.company-scope.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-03: Workforce and calendar setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/employee_internal_work_history/employee_internal_work_history.json:doctype:Employee Internal Work History",
@@ -449,10 +628,16 @@
             "source_name": "Employee Internal Work History",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "hr.workforce-directory.v1",
+                "platform.company-scope.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-03: Workforce and calendar setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/global_defaults/global_defaults.json:doctype:Global Defaults",
@@ -464,10 +649,17 @@
             "source_name": "Global Defaults",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "platform.company-directory.v1",
+                "accounting-finance.currency-directory.v1",
+                "inventory-warehouse.unit-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-02: Authorization, company, and global-default setup integration is absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/holiday/holiday.json:doctype:Holiday",
@@ -479,10 +671,16 @@
             "source_name": "Holiday",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "hr.calendar-directory.v1",
+                "platform.company-scope.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-03: Workforce and calendar setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/holiday_list/holiday_list.json:doctype:Holiday List",
@@ -494,10 +692,16 @@
             "source_name": "Holiday List",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "hr.calendar-directory.v1",
+                "platform.company-scope.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-03: Workforce and calendar setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/incoterm/incoterm.json:doctype:Incoterm",
@@ -509,10 +713,16 @@
             "source_name": "Incoterm",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm.trade-terms.v1",
+                "buying-procurement.trade-terms.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-04: Commercial and trading setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/item_group/item_group.json:doctype:Item Group",
@@ -524,10 +734,16 @@
             "source_name": "Item Group",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse.catalog-directory.v1",
+                "accounting-finance.tax-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-05: Catalog and unit setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/item_group/test_records.json:doctype:Test Records",
@@ -539,10 +755,15 @@
             "source_name": "Test Records",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "dependencies": [
+                "erpnext/setup/doctype/item_group/item_group.json"
+            ],
+            "status": "NOT_APPLICABLE",
+            "evidence": [
+                "Pinned upstream inspection at commit 11e0ba0a1c45f217e2e73e885f699102d06da325 confirms erpnext/setup/doctype/item_group/test_records.json is an array of test fixture records, not runtime DocType metadata.",
+                "The corresponding Company, Currency Exchange, or Item Group runtime capability remains tracked by its own ledger row."
+            ],
+            "reason": "Upstream test_records.json is fixture data only; BuilderX must not reproduce upstream test fixtures as a product capability."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/party_type/party_type.json:doctype:Party Type",
@@ -554,10 +775,16 @@
             "source_name": "Party Type",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.record-type-directory.v1",
+                "accounting-finance.party-account-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-04: Commercial and trading setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/quotation_lost_reason/quotation_lost_reason.json:doctype:Quotation Lost Reason",
@@ -569,10 +796,18 @@
             "source_name": "Quotation Lost Reason",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm.commercial-masters.v1",
+                "hr.workforce-directory.v1",
+                "inventory-warehouse.catalog-directory.v1",
+                "accounting-finance.planning-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-04: Commercial and trading setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/quotation_lost_reason_detail/quotation_lost_reason_detail.json:doctype:Quotation Lost Reason Detail",
@@ -584,10 +819,18 @@
             "source_name": "Quotation Lost Reason Detail",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm.commercial-masters.v1",
+                "hr.workforce-directory.v1",
+                "inventory-warehouse.catalog-directory.v1",
+                "accounting-finance.planning-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-04: Commercial and trading setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/sales_partner/sales_partner.json:doctype:Sales Partner",
@@ -599,10 +842,18 @@
             "source_name": "Sales Partner",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm.commercial-masters.v1",
+                "hr.workforce-directory.v1",
+                "inventory-warehouse.catalog-directory.v1",
+                "accounting-finance.planning-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-04: Commercial and trading setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/sales_person/sales_person.json:doctype:Sales Person",
@@ -614,10 +865,18 @@
             "source_name": "Sales Person",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm.commercial-masters.v1",
+                "hr.workforce-directory.v1",
+                "inventory-warehouse.catalog-directory.v1",
+                "accounting-finance.planning-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-04: Commercial and trading setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/supplier_group/supplier_group.json:doctype:Supplier Group",
@@ -629,10 +888,16 @@
             "source_name": "Supplier Group",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "buying-procurement.supplier-masters.v1",
+                "accounting-finance.party-account-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-04: Commercial and trading setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/target_detail/target_detail.json:doctype:Target Detail",
@@ -644,10 +909,18 @@
             "source_name": "Target Detail",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm.commercial-masters.v1",
+                "hr.workforce-directory.v1",
+                "inventory-warehouse.catalog-directory.v1",
+                "accounting-finance.planning-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-04: Commercial and trading setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/terms_and_conditions/terms_and_conditions.json:doctype:Terms and Conditions",
@@ -659,10 +932,17 @@
             "source_name": "Terms and Conditions",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm.trade-terms.v1",
+                "buying-procurement.trade-terms.v1",
+                "shared.attachment-service.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-04: Commercial and trading setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/territory/territory.json:doctype:Territory",
@@ -674,10 +954,18 @@
             "source_name": "Territory",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm.commercial-masters.v1",
+                "hr.workforce-directory.v1",
+                "inventory-warehouse.catalog-directory.v1",
+                "accounting-finance.planning-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-04: Commercial and trading setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/transaction_deletion_record/transaction_deletion_record.json:doctype:Transaction Deletion Record",
@@ -689,10 +977,18 @@
             "source_name": "Transaction Deletion Record",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "platform.company-scope.v1",
+                "owners.governed-delete.v1",
+                "operations.job-runner.v1",
+                "shared.audit-log.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-08: Job control, bulk processing, and governed deletion workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/transaction_deletion_record_item/transaction_deletion_record_item.json:doctype:Transaction Deletion Record Item",
@@ -704,10 +1000,18 @@
             "source_name": "Transaction Deletion Record Item",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "platform.company-scope.v1",
+                "owners.governed-delete.v1",
+                "operations.job-runner.v1",
+                "shared.audit-log.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-08: Job control, bulk processing, and governed deletion workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/transaction_deletion_record_to_delete/transaction_deletion_record_to_delete.json:doctype:Transaction Deletion Record To Delete",
@@ -719,10 +1023,18 @@
             "source_name": "Transaction Deletion Record To Delete",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "platform.company-scope.v1",
+                "owners.governed-delete.v1",
+                "operations.job-runner.v1",
+                "shared.audit-log.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-08: Job control, bulk processing, and governed deletion workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/uom/uom.json:doctype:UOM",
@@ -734,10 +1046,16 @@
             "source_name": "UOM",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse.catalog-directory.v1",
+                "accounting-finance.tax-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-05: Catalog and unit setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/uom_conversion_factor/uom_conversion_factor.json:doctype:UOM Conversion Factor",
@@ -749,10 +1067,16 @@
             "source_name": "UOM Conversion Factor",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse.catalog-directory.v1",
+                "accounting-finance.tax-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-05: Catalog and unit setup adapters are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/vehicle/vehicle.json:doctype:Vehicle",
@@ -764,10 +1088,18 @@
             "source_name": "Vehicle",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance.fleet-directory.v1",
+                "hr.workforce-directory.v1",
+                "inventory-warehouse.unit-directory.v1",
+                "platform.company-scope.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-06: Fleet and delivery setup workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/website_item_group/website_item_group.json:doctype:Website Item Group",
@@ -779,10 +1111,16 @@
             "source_name": "Website Item Group",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse.catalog-directory.v1",
+                "shared.portal-publication.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-10: Portal and media utility workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/workspace/erpnext_settings/erpnext_settings.json:workspace:ERPNext Settings",
@@ -794,10 +1132,19 @@
             "source_name": "ERPNext Settings",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.module-routing.v1",
+                "shared.modal-confirmation.v1",
+                "shared.form-builder.v1",
+                "platform.company-scope.v1",
+                "owners.workspace-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-01: Operations workspace shell and module-local Form Builder are absent."
         },
         {
             "source_id": "erpnext:erpnext/setup/workspace/home/home.json:workspace:Home",
@@ -809,10 +1156,19 @@
             "source_name": "Home",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.module-routing.v1",
+                "shared.modal-confirmation.v1",
+                "shared.form-builder.v1",
+                "platform.company-scope.v1",
+                "owners.workspace-directory.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-01: Operations workspace shell and module-local Form Builder are absent."
         },
         {
             "source_id": "erpnext:erpnext/utilities/doctype/portal_user/portal_user.json:doctype:Portal User",
@@ -824,10 +1180,16 @@
             "source_name": "Portal User",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.identity-directory.v1",
+                "shared.portal-publication.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-10: Portal and media utility workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/utilities/doctype/rename_tool/rename_tool.json:doctype:Rename Tool",
@@ -839,10 +1201,17 @@
             "source_name": "Rename Tool",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.record-type-directory.v1",
+                "owners.governed-rename.v1",
+                "shared.audit-log.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-10: Portal and media utility workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/utilities/doctype/video/video.json:doctype:Video",
@@ -854,10 +1223,17 @@
             "source_name": "Video",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.external-provider-secrets.v1",
+                "operations.job-runner.v1",
+                "shared.portal-publication.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-10: Portal and media utility workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/utilities/doctype/video_settings/video_settings.json:doctype:Video Settings",
@@ -869,10 +1245,17 @@
             "source_name": "Video Settings",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.external-provider-secrets.v1",
+                "operations.job-runner.v1",
+                "shared.portal-publication.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-10: Portal and media utility workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/utilities/report/youtube_interactions/youtube_interactions.json:report:YouTube Interactions",
@@ -884,10 +1267,17 @@
             "source_name": "YouTube Interactions",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.external-provider-secrets.v1",
+                "operations.job-runner.v1",
+                "shared.portal-publication.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-10: Portal and media utility workflows are absent."
         },
         {
             "source_id": "erpnext:erpnext/utilities/report/youtube_interactions/youtube_interactions.py:report_code:Youtube Interactions",
@@ -899,10 +1289,40 @@
             "source_name": "Youtube Interactions",
             "module_owner": "operations",
             "builderx_target": "operations",
-            "dependencies": [],
+            "dependencies": [
+                "shared.external-provider-secrets.v1",
+                "operations.job-runner.v1",
+                "shared.portal-publication.v1"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
+                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+            ],
+            "reason": "OP-10: Portal and media utility workflows are absent."
         }
-    ]
+    ],
+    "audit": {
+        "audited_on": "2026-08-25",
+        "audit_scope": [
+            "company/admin/modules/operations/",
+            "tests/operations-*"
+        ],
+        "upstream_baseline": {
+            "repository": "erpnext",
+            "commit": "11e0ba0a1c45f217e2e73e885f699102d06da325"
+        },
+        "local_findings": [
+            "company/admin/modules/operations/ does not exist.",
+            "No tests/operations-* files exist.",
+            "The shared module registry contains an Operations label and feature list, but no module-local route implementation or passing Operations test evidence; labels and routes are not completion evidence."
+        ],
+        "status_counts": {
+            "MISSING": 57,
+            "PARTIAL": 0,
+            "COMPLETE": 0,
+            "NOT_APPLICABLE": 3,
+            "DEFERRED": 0
+        }
+    }
 }

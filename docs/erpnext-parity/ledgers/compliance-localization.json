@@ -13,11 +13,18 @@
             "source_module": "Regional",
             "source_name": "Import Supplier Invoice",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/supplier-einvoice-imports",
+            "dependencies": [
+                "accounting-finance",
+                "buying-procurement",
+                "operations",
+                "orchestration"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local import workflow or focused passing test exists. Build a Philippine supplier e-invoice batch import with schema-version validation, attachment hashing, staged review, approval, idempotent Finance projection, error evidence, and retry controls; do not copy the Italy implementation.",
+            "audit_id": "CL-001",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/regional/doctype/lower_deduction_certificate/lower_deduction_certificate.json:doctype:Lower Deduction Certificate",
@@ -28,11 +35,16 @@
             "source_module": "Regional",
             "source_name": "Lower Deduction Certificate",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/withholding-certificates",
+            "dependencies": [
+                "accounting-finance",
+                "buying-procurement"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local withholding authority or focused passing test exists. Build an effective-dated Philippine reduced-withholding authority with supplier/TIN, tax category, approved rate, amount ceiling, validity, evidence, approval, and consumption tracking after authoritative BIR review.",
+            "audit_id": "CL-002",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/regional/doctype/south_africa_vat_settings/south_africa_vat_settings.json:doctype:South Africa VAT Settings",
@@ -43,11 +55,15 @@
             "source_module": "Regional",
             "source_name": "South Africa VAT Settings",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/vat-settings",
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local VAT settings aggregate or focused passing test exists. Build a company-scoped Philippine VAT configuration version that owns effective dates, legal-source metadata, approval state, and account-map membership while Finance remains authoritative for tax calculation and posting.",
+            "audit_id": "CL-003",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/regional/doctype/uae_vat_account/uae_vat_account.json:doctype:UAE VAT Account",
@@ -58,11 +74,15 @@
             "source_module": "Regional",
             "source_name": "UAE VAT Account",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/vat-settings",
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local VAT account mapping or focused passing test exists. Build allow-listed Philippine input, output, withholding, adjustment, and settlement account mappings that reference stable Finance account keys and are version-bound to approved settings.",
+            "audit_id": "CL-004",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/regional/doctype/uae_vat_settings/uae_vat_settings.json:doctype:UAE VAT Settings",
@@ -73,11 +93,15 @@
             "source_module": "Regional",
             "source_name": "UAE VAT Settings",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/vat-settings",
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local effective-dated VAT settings workflow or focused passing test exists. Build draft, approve, supersede, and archive lifecycle controls with overlap prevention, immutable approved versions, direct read-back, and historical invoice non-mutation.",
+            "audit_id": "CL-005",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/regional/print_format/detailed_tax_invoice/detailed_tax_invoice.json:print_format:Detailed Tax Invoice",
@@ -88,11 +112,16 @@
             "source_module": "Regional",
             "source_name": "Detailed Tax Invoice",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/tax-document-templates",
+            "dependencies": [
+                "accounting-finance",
+                "sales-crm"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local detailed tax-document template or focused passing test exists. Build a versioned Philippine invoice output profile with protected registration, serial, party, line, tax-breakdown, total, and source-snapshot fields.",
+            "audit_id": "CL-006",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/regional/print_format/irs_1099_form/irs_1099_form.json:print_format:IRS 1099 Form",
@@ -103,11 +132,16 @@
             "source_module": "Regional",
             "source_name": "IRS 1099 Form",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/withholding-certificates",
+            "dependencies": [
+                "accounting-finance",
+                "buying-procurement"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no Philippine supplier withholding-certificate output or focused passing test exists. Build an approved-template data package and controlled issuance/reprint workflow for the applicable current BIR certificate revision, with signatures, watermark state, evidence hash, and immutable issued snapshots.",
+            "audit_id": "CL-007",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/regional/print_format/purchase_einvoice/purchase_einvoice.json:print_format:Purchase eInvoice",
@@ -118,11 +152,17 @@
             "source_module": "Regional",
             "source_name": "Purchase eInvoice",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/tax-document-templates",
+            "dependencies": [
+                "accounting-finance",
+                "buying-procurement",
+                "operations"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local purchase e-invoice representation or focused passing test exists. Build a versioned Philippine supplier e-invoice rendering/export profile over immutable Finance purchase-invoice snapshots and retain source payload, checksum, validation result, and transmission evidence.",
+            "audit_id": "CL-008",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/regional/print_format/simplified_tax_invoice/simplified_tax_invoice.json:print_format:Simplified Tax Invoice",
@@ -133,11 +173,16 @@
             "source_module": "Regional",
             "source_name": "Simplified Tax Invoice",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/tax-document-templates",
+            "dependencies": [
+                "accounting-finance",
+                "sales-crm"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local simplified invoice output profile or focused passing test exists. Build a Philippine profile selected only by approved rule conditions, preserving protected invoice identity and tax fields and binding every render to an immutable template version.",
+            "audit_id": "CL-009",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/regional/print_format/tax_invoice/tax_invoice.json:print_format:Tax Invoice",
@@ -148,11 +193,16 @@
             "source_module": "Regional",
             "source_name": "Tax Invoice",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/tax-document-templates",
+            "dependencies": [
+                "accounting-finance",
+                "sales-crm"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local standard tax-invoice output profile or focused passing test exists. Build a Philippine electronic/print invoice profile with effective-dated required fields, serial controls, tax classifications, amendment references, and evidence-ready immutable output snapshots.",
+            "audit_id": "CL-010",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/regional/report/electronic_invoice_register/electronic_invoice_register.json:report:Electronic Invoice Register",
@@ -163,11 +213,16 @@
             "source_module": "Regional",
             "source_name": "Electronic Invoice Register",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/einvoice-register",
+            "dependencies": [
+                "accounting-finance",
+                "operations"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local e-invoice register surface or focused passing test exists. Build company/date/status filters, immutable Finance source keys, payload checksums, validation and transmission states, acknowledgement references, correction links, export controls, and row-level evidence.",
+            "audit_id": "CL-011",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/regional/report/electronic_invoice_register/electronic_invoice_register.py:report_code:Electronic Invoice Register",
@@ -178,11 +233,16 @@
             "source_module": "Regional",
             "source_name": "Electronic Invoice Register",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/einvoice-register",
+            "dependencies": [
+                "accounting-finance",
+                "operations"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local e-invoice register service or focused passing test exists. Build parameterized company-scoped queries and deterministic register rows over Finance snapshots plus Compliance-owned validation/transmission evidence, without direct Finance table writes.",
+            "audit_id": "CL-012",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/regional/report/irs_1099/irs_1099.json:report:IRS 1099",
@@ -193,11 +253,16 @@
             "source_module": "Regional",
             "source_name": "IRS 1099",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/withholding-certificates",
+            "dependencies": [
+                "accounting-finance",
+                "buying-procurement"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no Philippine withholding register surface or focused passing test exists. Build company, supplier, tax-category, and period filters with issued/reprinted/cancelled states and links to payment snapshots, approvals, retained evidence, and regulatory exports.",
+            "audit_id": "CL-013",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/regional/report/irs_1099/irs_1099.py:report_code:Irs 1099",
@@ -208,11 +273,16 @@
             "source_module": "Regional",
             "source_name": "Irs 1099",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/withholding-certificates",
+            "dependencies": [
+                "accounting-finance",
+                "buying-procurement"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local withholding aggregation or certificate-generation service and no focused passing test exists. Build decimal-safe aggregation from Finance-owned submitted payments, controlled certificate issuance, duplicate prevention, exact read-back, and auditable reprint behavior.",
+            "audit_id": "CL-014",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/regional/report/uae_vat_201/test_uae_vat_201.py:report_code:Test Uae Vat 201",
@@ -223,11 +293,15 @@
             "source_module": "Regional",
             "source_name": "Test Uae Vat 201",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/vat-returns",
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no focused Philippine VAT return test suite exists. Add fixture-backed tests for company isolation, period boundaries, Finance snapshot inputs, VAT buckets, adjustments, approval, amendment lineage, export checksum, rollback, and historical non-mutation.",
+            "audit_id": "CL-015",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/regional/report/uae_vat_201/uae_vat_201.json:report:UAE VAT 201",
@@ -238,11 +312,15 @@
             "source_module": "Regional",
             "source_name": "UAE VAT 201",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/vat-returns",
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local Philippine VAT return package surface or focused passing test exists. Build a controlled BIR 2550Q review-package workflow over Finance tax snapshots with original/amended status, preparer/reviewer approval, evidence links, and versioned regulatory export.",
+            "audit_id": "CL-016",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/regional/report/uae_vat_201/uae_vat_201.py:report_code:Uae Vat 201",
@@ -253,11 +331,15 @@
             "source_module": "Regional",
             "source_name": "Uae Vat 201",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/vat-returns",
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local VAT return service or focused passing test exists. Build decimal-safe period aggregation, explicit adjustments, reconciliation to Finance source totals, approval locks, direct read-back verification, and deterministic export generation without becoming a filing service.",
+            "audit_id": "CL-017",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/regional/report/vat_audit_report/test_vat_audit_report.py:report_code:Test Vat Audit Report",
@@ -268,11 +350,15 @@
             "source_module": "Regional",
             "source_name": "Test Vat Audit Report",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/vat-audit",
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no focused Philippine VAT audit test suite exists. Add tests for rate/classification grouping, sales and purchase separation, source-document drilldown, account-map validation, evidence hashes, retention/hold behavior, export determinism, and immutable posted history.",
+            "audit_id": "CL-018",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/regional/report/vat_audit_report/vat_audit_report.json:report:VAT Audit Report",
@@ -283,11 +369,15 @@
             "source_module": "Regional",
             "source_name": "VAT Audit Report",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/vat-audit",
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local Philippine VAT audit surface or focused passing test exists. Build filters, reconciled totals by VAT class and rate, source-document drilldown, exception queues, account-map diagnostics, evidence completeness, approval state, and regulatory export actions.",
+            "audit_id": "CL-019",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/regional/report/vat_audit_report/vat_audit_report.py:report_code:Vat Audit Report",
@@ -298,11 +388,36 @@
             "source_module": "Regional",
             "source_name": "Vat Audit Report",
             "module_owner": "compliance-localization",
-            "builderx_target": "compliance-localization",
-            "dependencies": [],
+            "builderx_target": "compliance-localization/vat-audit",
+            "dependencies": [
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "MISSING: no module-local VAT audit service or focused passing test exists. Build company-scoped parameterized aggregation from immutable Finance snapshots, reconcile mapped accounts and document tax totals, expose exceptions without rewriting source records, and produce deterministic evidence-backed outputs.",
+            "audit_id": "CL-020",
+            "work_package": "WP-06"
         }
-    ]
+    ],
+    "audit": {
+        "audited_on": "2026-08-25",
+        "scope": [
+            "company/admin/modules/compliance-localization/",
+            "tests/compliance-localization-*"
+        ],
+        "pinned_source_verification": "ERPNext commit 11e0ba0a1c45f217e2e73e885f699102d06da325 checked out and the exact source_path for every row inspected.",
+        "local_findings": [
+            "company/admin/modules/compliance-localization/ does not exist.",
+            "No focused test file matches tests/compliance-localization-*.",
+            "Accounting/Finance Philippine VAT behavior is a dependency and is not local Compliance implementation evidence."
+        ],
+        "classification_policy": "A foreign regional artifact remains applicable as a functional Philippine analogue. No row is COMPLETE without exact module-local implementation files and passing focused test evidence.",
+        "status_counts": {
+            "COMPLETE": 0,
+            "PARTIAL": 0,
+            "MISSING": 20,
+            "NOT_APPLICABLE": 0,
+            "DEFERRED": 0
+        }
+    }
 }

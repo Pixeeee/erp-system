@@ -14,10 +14,15 @@
             "source_name": "Blanket Order",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/blanket_order_item/blanket_order_item.json:doctype:Blanket Order Item",
@@ -29,10 +34,15 @@
             "source_name": "Blanket Order Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom/bom.json:doctype:BOM",
@@ -44,10 +54,14 @@
             "source_name": "BOM",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom/test_records.json:doctype:Test Records",
@@ -60,9 +74,10 @@
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "Pinned ERPNext source identity is an upstream test fixture or test helper, not a web or business capability to reproduce in BuilderX.",
+            "work_package": "N/A-TEST"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom_creator/bom_creator.json:doctype:BOM Creator",
@@ -74,10 +89,14 @@
             "source_name": "BOM Creator",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom_creator_item/bom_creator_item.json:doctype:BOM Creator Item",
@@ -89,10 +108,14 @@
             "source_name": "BOM Creator Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom_explosion_item/bom_explosion_item.json:doctype:BOM Explosion Item",
@@ -104,10 +127,14 @@
             "source_name": "BOM Explosion Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom_item/bom_item.json:doctype:BOM Item",
@@ -119,10 +146,14 @@
             "source_name": "BOM Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom_operation/bom_operation.json:doctype:BOM Operation",
@@ -134,10 +165,14 @@
             "source_name": "BOM Operation",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom_secondary_item/bom_secondary_item.json:doctype:BOM Secondary Item",
@@ -149,10 +184,14 @@
             "source_name": "BOM Secondary Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom_update_batch/bom_update_batch.json:doctype:BOM Update Batch",
@@ -164,10 +203,14 @@
             "source_name": "BOM Update Batch",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom_update_log/bom_update_log.json:doctype:BOM Update Log",
@@ -179,10 +222,14 @@
             "source_name": "BOM Update Log",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom_update_tool/bom_update_tool.json:doctype:BOM Update Tool",
@@ -194,10 +241,14 @@
             "source_name": "BOM Update Tool",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom_website_item/bom_website_item.json:doctype:BOM Website Item",
@@ -209,10 +260,14 @@
             "source_name": "BOM Website Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/bom_website_operation/bom_website_operation.json:doctype:BOM Website Operation",
@@ -224,10 +279,14 @@
             "source_name": "BOM Website Operation",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/downtime_entry/downtime_entry.json:doctype:Downtime Entry",
@@ -239,10 +298,14 @@
             "source_name": "Downtime Entry",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/job_card/job_card.json:doctype:Job Card",
@@ -254,10 +317,14 @@
             "source_name": "Job Card",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/job_card_item/job_card_item.json:doctype:Job Card Item",
@@ -269,10 +336,14 @@
             "source_name": "Job Card Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/job_card_operation/job_card_operation.json:doctype:Job Card Operation",
@@ -284,10 +355,14 @@
             "source_name": "Job Card Operation",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/job_card_scheduled_time/job_card_scheduled_time.json:doctype:Job Card Scheduled Time",
@@ -299,10 +374,14 @@
             "source_name": "Job Card Scheduled Time",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/job_card_secondary_item/job_card_secondary_item.json:doctype:Job Card Secondary Item",
@@ -314,10 +393,14 @@
             "source_name": "Job Card Secondary Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/job_card_time_log/job_card_time_log.json:doctype:Job Card Time Log",
@@ -329,10 +412,14 @@
             "source_name": "Job Card Time Log",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/manufacturing_settings/manufacturing_settings.json:doctype:Manufacturing Settings",
@@ -344,10 +431,15 @@
             "source_name": "Manufacturing Settings",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-01"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/master_production_schedule/master_production_schedule.json:doctype:Master Production Schedule",
@@ -359,10 +451,15 @@
             "source_name": "Master Production Schedule",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/master_production_schedule_item/master_production_schedule_item.json:doctype:Master Production Schedule Item",
@@ -374,10 +471,15 @@
             "source_name": "Master Production Schedule Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/material_request_plan_item/material_request_plan_item.json:doctype:Material Request Plan Item",
@@ -389,10 +491,15 @@
             "source_name": "Material Request Plan Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/operation/operation.json:doctype:Operation",
@@ -404,10 +511,14 @@
             "source_name": "Operation",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/plant_floor/plant_floor.json:doctype:Plant Floor",
@@ -419,10 +530,14 @@
             "source_name": "Plant Floor",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/production_plan/production_plan.json:doctype:Production Plan",
@@ -434,10 +549,15 @@
             "source_name": "Production Plan",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/production_plan_item/production_plan_item.json:doctype:Production Plan Item",
@@ -449,10 +569,15 @@
             "source_name": "Production Plan Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/production_plan_item_reference/production_plan_item_reference.json:doctype:Production Plan Item Reference",
@@ -464,10 +589,15 @@
             "source_name": "Production Plan Item Reference",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/production_plan_material_request/production_plan_material_request.json:doctype:Production Plan Material Request",
@@ -479,10 +609,15 @@
             "source_name": "Production Plan Material Request",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/production_plan_material_request_warehouse/production_plan_material_request_warehouse.json:doctype:Production Plan Material Request Warehouse",
@@ -494,10 +629,15 @@
             "source_name": "Production Plan Material Request Warehouse",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/production_plan_sales_order/production_plan_sales_order.json:doctype:Production Plan Sales Order",
@@ -509,10 +649,15 @@
             "source_name": "Production Plan Sales Order",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/production_plan_sub_assembly_item/production_plan_sub_assembly_item.json:doctype:Production Plan Sub Assembly Item",
@@ -524,10 +669,15 @@
             "source_name": "Production Plan Sub Assembly Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/routing/routing.json:doctype:Routing",
@@ -539,10 +689,14 @@
             "source_name": "Routing",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/sales_forecast/sales_forecast.json:doctype:Sales Forecast",
@@ -554,10 +708,15 @@
             "source_name": "Sales Forecast",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/sales_forecast_item/sales_forecast_item.json:doctype:Sales Forecast Item",
@@ -569,10 +728,15 @@
             "source_name": "Sales Forecast Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/sub_operation/sub_operation.json:doctype:Sub Operation",
@@ -584,10 +748,14 @@
             "source_name": "Sub Operation",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/work_order/work_order.json:doctype:Work Order",
@@ -599,10 +767,14 @@
             "source_name": "Work Order",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/work_order_additional_item/work_order_additional_item.json:doctype:Work Order Additional Item",
@@ -614,10 +786,14 @@
             "source_name": "Work Order Additional Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/work_order_item/work_order_item.json:doctype:Work Order Item",
@@ -629,10 +805,14 @@
             "source_name": "Work Order Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/work_order_operation/work_order_operation.json:doctype:Work Order Operation",
@@ -644,10 +824,14 @@
             "source_name": "Work Order Operation",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/workstation/workstation.json:doctype:Workstation",
@@ -659,10 +843,14 @@
             "source_name": "Workstation",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/workstation_cost/workstation_cost.json:doctype:Workstation Cost",
@@ -674,10 +862,14 @@
             "source_name": "Workstation Cost",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/workstation_operating_component/workstation_operating_component.json:doctype:Workstation Operating Component",
@@ -689,10 +881,14 @@
             "source_name": "Workstation Operating Component",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/workstation_operating_component_account/workstation_operating_component_account.json:doctype:Workstation Operating Component Account",
@@ -704,10 +900,14 @@
             "source_name": "Workstation Operating Component Account",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/workstation_type/workstation_type.json:doctype:Workstation Type",
@@ -719,10 +919,14 @@
             "source_name": "Workstation Type",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/doctype/workstation_working_hour/workstation_working_hour.json:doctype:Workstation Working Hour",
@@ -734,10 +938,14 @@
             "source_name": "Workstation Working Hour",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/notification/material_request_receipt_notification/material_request_receipt_notification.json:notification:Material Request Receipt Notification",
@@ -749,10 +957,15 @@
             "source_name": "Material Request Receipt Notification",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/page/bom_comparison_tool/bom_comparison_tool.json:page:bom-comparison-tool",
@@ -764,10 +977,14 @@
             "source_name": "bom-comparison-tool",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/page/visual_plant_floor/visual_plant_floor.json:page:visual-plant-floor",
@@ -779,10 +996,14 @@
             "source_name": "visual-plant-floor",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/bom_explorer/bom_explorer.json:report:BOM Explorer",
@@ -794,10 +1015,14 @@
             "source_name": "BOM Explorer",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/bom_explorer/bom_explorer.py:report_code:Bom Explorer",
@@ -809,10 +1034,14 @@
             "source_name": "Bom Explorer",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/bom_explorer/test_bom_explorer.py:report_code:Test Bom Explorer",
@@ -825,9 +1054,10 @@
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "Pinned ERPNext source identity is an upstream test fixture or test helper, not a web or business capability to reproduce in BuilderX.",
+            "work_package": "N/A-TEST"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/bom_operations_time/bom_operations_time.json:report:BOM Operations Time",
@@ -839,10 +1069,14 @@
             "source_name": "BOM Operations Time",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/bom_operations_time/bom_operations_time.py:report_code:Bom Operations Time",
@@ -854,10 +1088,14 @@
             "source_name": "Bom Operations Time",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/bom_stock_analysis/bom_stock_analysis.json:report:BOM Stock Analysis",
@@ -869,10 +1107,14 @@
             "source_name": "BOM Stock Analysis",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/bom_stock_analysis/bom_stock_analysis.py:report_code:Bom Stock Analysis",
@@ -884,10 +1126,14 @@
             "source_name": "Bom Stock Analysis",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/bom_stock_analysis/test_bom_stock_analysis.py:report_code:Test Bom Stock Analysis",
@@ -900,9 +1146,10 @@
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "Pinned ERPNext source identity is an upstream test fixture or test helper, not a web or business capability to reproduce in BuilderX.",
+            "work_package": "N/A-TEST"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/bom_variance_report/bom_variance_report.json:report:BOM Variance Report",
@@ -914,10 +1161,14 @@
             "source_name": "BOM Variance Report",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/bom_variance_report/bom_variance_report.py:report_code:Bom Variance Report",
@@ -929,10 +1180,14 @@
             "source_name": "Bom Variance Report",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-02"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/completed_work_orders/completed_work_orders.json:report:Completed Work Orders",
@@ -944,10 +1199,14 @@
             "source_name": "Completed Work Orders",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/cost_of_poor_quality_report/cost_of_poor_quality_report.json:report:Cost of Poor Quality Report",
@@ -959,10 +1218,15 @@
             "source_name": "Cost of Poor Quality Report",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/cost_of_poor_quality_report/cost_of_poor_quality_report.py:report_code:Cost Of Poor Quality Report",
@@ -974,10 +1238,15 @@
             "source_name": "Cost Of Poor Quality Report",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/downtime_analysis/downtime_analysis.json:report:Downtime Analysis",
@@ -989,10 +1258,14 @@
             "source_name": "Downtime Analysis",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/downtime_analysis/downtime_analysis.py:report_code:Downtime Analysis",
@@ -1004,10 +1277,14 @@
             "source_name": "Downtime Analysis",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-03"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/exponential_smoothing_forecasting/exponential_smoothing_forecasting.json:report:Exponential Smoothing Forecasting",
@@ -1019,10 +1296,15 @@
             "source_name": "Exponential Smoothing Forecasting",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/exponential_smoothing_forecasting/exponential_smoothing_forecasting.py:report_code:Exponential Smoothing Forecasting",
@@ -1034,10 +1316,15 @@
             "source_name": "Exponential Smoothing Forecasting",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/issued_items_against_work_order/issued_items_against_work_order.json:report:Issued Items Against Work Order",
@@ -1049,10 +1336,14 @@
             "source_name": "Issued Items Against Work Order",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/job_card_summary/job_card_summary.json:report:Job Card Summary",
@@ -1064,10 +1355,14 @@
             "source_name": "Job Card Summary",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/job_card_summary/job_card_summary.py:report_code:Job Card Summary",
@@ -1079,10 +1374,14 @@
             "source_name": "Job Card Summary",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/material_requirements_planning_report/material_requirements_planning_report.json:report:Material Requirements Planning Report",
@@ -1094,10 +1393,15 @@
             "source_name": "Material Requirements Planning Report",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/material_requirements_planning_report/material_requirements_planning_report.py:report_code:Material Requirements Planning Report",
@@ -1109,10 +1413,15 @@
             "source_name": "Material Requirements Planning Report",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/open_work_orders/open_work_orders.json:report:Open Work Orders",
@@ -1124,10 +1433,14 @@
             "source_name": "Open Work Orders",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/process_loss_report/process_loss_report.json:report:Process Loss Report",
@@ -1139,10 +1452,15 @@
             "source_name": "Process Loss Report",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/process_loss_report/process_loss_report.py:report_code:Process Loss Report",
@@ -1154,10 +1472,15 @@
             "source_name": "Process Loss Report",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/production_analytics/production_analytics.json:report:Production Analytics",
@@ -1169,10 +1492,15 @@
             "source_name": "Production Analytics",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/production_analytics/production_analytics.py:report_code:Production Analytics",
@@ -1184,10 +1512,15 @@
             "source_name": "Production Analytics",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/production_plan_summary/production_plan_summary.json:report:Production Plan Summary",
@@ -1199,10 +1532,15 @@
             "source_name": "Production Plan Summary",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/production_plan_summary/production_plan_summary.py:report_code:Production Plan Summary",
@@ -1214,10 +1552,15 @@
             "source_name": "Production Plan Summary",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/production_planning_report/production_planning_report.json:report:Production Planning Report",
@@ -1229,10 +1572,15 @@
             "source_name": "Production Planning Report",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/production_planning_report/production_planning_report.py:report_code:Production Planning Report",
@@ -1244,10 +1592,15 @@
             "source_name": "Production Planning Report",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-04"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/quality_inspection_summary/quality_inspection_summary.json:report:Quality Inspection Summary",
@@ -1259,10 +1612,15 @@
             "source_name": "Quality Inspection Summary",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/quality_inspection_summary/quality_inspection_summary.py:report_code:Quality Inspection Summary",
@@ -1274,10 +1632,15 @@
             "source_name": "Quality Inspection Summary",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/test_reports.py:report_code:Test Reports",
@@ -1290,9 +1653,10 @@
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "Pinned ERPNext source identity is an upstream test fixture or test helper, not a web or business capability to reproduce in BuilderX.",
+            "work_package": "N/A-TEST"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/work_order_consumed_materials/work_order_consumed_materials.json:report:Work Order Consumed Materials",
@@ -1304,10 +1668,14 @@
             "source_name": "Work Order Consumed Materials",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/work_order_consumed_materials/work_order_consumed_materials.py:report_code:Work Order Consumed Materials",
@@ -1319,10 +1687,14 @@
             "source_name": "Work Order Consumed Materials",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/work_order_stock_report/work_order_stock_report.json:report:Work Order Stock Report",
@@ -1334,10 +1706,14 @@
             "source_name": "Work Order Stock Report",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/work_order_stock_report/work_order_stock_report.py:report_code:Work Order Stock Report",
@@ -1349,10 +1725,14 @@
             "source_name": "Work Order Stock Report",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/work_order_summary/work_order_summary.json:report:Work Order Summary",
@@ -1364,10 +1744,14 @@
             "source_name": "Work Order Summary",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/work_order_summary/work_order_summary.py:report_code:Work Order Summary",
@@ -1379,10 +1763,14 @@
             "source_name": "Work Order Summary",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/report/work_orders_in_progress/work_orders_in_progress.json:report:Work Orders in Progress",
@@ -1394,10 +1782,14 @@
             "source_name": "Work Orders in Progress",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-05"
         },
         {
             "source_id": "erpnext:erpnext/manufacturing/workspace/manufacturing/manufacturing.json:workspace:Manufacturing",
@@ -1409,10 +1801,15 @@
             "source_name": "Manufacturing",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-01"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/non_conformance/non_conformance.json:doctype:Non Conformance",
@@ -1424,10 +1821,15 @@
             "source_name": "Non Conformance",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_action/quality_action.json:doctype:Quality Action",
@@ -1439,10 +1841,15 @@
             "source_name": "Quality Action",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_action_resolution/quality_action_resolution.json:doctype:Quality Action Resolution",
@@ -1454,10 +1861,15 @@
             "source_name": "Quality Action Resolution",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_feedback/quality_feedback.json:doctype:Quality Feedback",
@@ -1469,10 +1881,15 @@
             "source_name": "Quality Feedback",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_feedback_parameter/quality_feedback_parameter.json:doctype:Quality Feedback Parameter",
@@ -1484,10 +1901,15 @@
             "source_name": "Quality Feedback Parameter",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_feedback_template/quality_feedback_template.json:doctype:Quality Feedback Template",
@@ -1499,10 +1921,15 @@
             "source_name": "Quality Feedback Template",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_feedback_template_parameter/quality_feedback_template_parameter.json:doctype:Quality Feedback Template Parameter",
@@ -1514,10 +1941,15 @@
             "source_name": "Quality Feedback Template Parameter",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_goal/quality_goal.json:doctype:Quality Goal",
@@ -1529,10 +1961,15 @@
             "source_name": "Quality Goal",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_goal_objective/quality_goal_objective.json:doctype:Quality Goal Objective",
@@ -1544,10 +1981,15 @@
             "source_name": "Quality Goal Objective",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_meeting/quality_meeting.json:doctype:Quality Meeting",
@@ -1559,10 +2001,15 @@
             "source_name": "Quality Meeting",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_meeting_agenda/quality_meeting_agenda.json:doctype:Quality Meeting Agenda",
@@ -1574,10 +2021,15 @@
             "source_name": "Quality Meeting Agenda",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_meeting_minutes/quality_meeting_minutes.json:doctype:Quality Meeting Minutes",
@@ -1589,10 +2041,15 @@
             "source_name": "Quality Meeting Minutes",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_procedure/quality_procedure.json:doctype:Quality Procedure",
@@ -1604,10 +2061,15 @@
             "source_name": "Quality Procedure",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_procedure_process/quality_procedure_process.json:doctype:Quality Procedure Process",
@@ -1619,10 +2081,15 @@
             "source_name": "Quality Procedure Process",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_review/quality_review.json:doctype:Quality Review",
@@ -1634,10 +2101,15 @@
             "source_name": "Quality Review",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/doctype/quality_review_objective/quality_review_objective.json:doctype:Quality Review Objective",
@@ -1649,10 +2121,15 @@
             "source_name": "Quality Review Objective",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/report/review/review.json:report:Review",
@@ -1664,10 +2141,15 @@
             "source_name": "Review",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/quality_management/workspace/quality/quality.json:workspace:Quality",
@@ -1679,10 +2161,15 @@
             "source_name": "Quality",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-06"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_bom/subcontracting_bom.json:doctype:Subcontracting BOM",
@@ -1694,10 +2181,15 @@
             "source_name": "Subcontracting BOM",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_inward_order/subcontracting_inward_order.json:doctype:Subcontracting Inward Order",
@@ -1709,10 +2201,15 @@
             "source_name": "Subcontracting Inward Order",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_inward_order_item/subcontracting_inward_order_item.json:doctype:Subcontracting Inward Order Item",
@@ -1724,10 +2221,15 @@
             "source_name": "Subcontracting Inward Order Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_inward_order_received_item/subcontracting_inward_order_received_item.json:doctype:Subcontracting Inward Order Received Item",
@@ -1739,10 +2241,15 @@
             "source_name": "Subcontracting Inward Order Received Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_inward_order_secondary_item/subcontracting_inward_order_secondary_item.json:doctype:Subcontracting Inward Order Secondary Item",
@@ -1754,10 +2261,15 @@
             "source_name": "Subcontracting Inward Order Secondary Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_inward_order_service_item/subcontracting_inward_order_service_item.json:doctype:Subcontracting Inward Order Service Item",
@@ -1769,10 +2281,15 @@
             "source_name": "Subcontracting Inward Order Service Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_order/subcontracting_order.json:doctype:Subcontracting Order",
@@ -1784,10 +2301,15 @@
             "source_name": "Subcontracting Order",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_order_item/subcontracting_order_item.json:doctype:Subcontracting Order Item",
@@ -1799,10 +2321,15 @@
             "source_name": "Subcontracting Order Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_order_service_item/subcontracting_order_service_item.json:doctype:Subcontracting Order Service Item",
@@ -1814,10 +2341,15 @@
             "source_name": "Subcontracting Order Service Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_order_supplied_item/subcontracting_order_supplied_item.json:doctype:Subcontracting Order Supplied Item",
@@ -1829,10 +2361,15 @@
             "source_name": "Subcontracting Order Supplied Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_receipt/subcontracting_receipt.json:doctype:Subcontracting Receipt",
@@ -1844,10 +2381,15 @@
             "source_name": "Subcontracting Receipt",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_receipt_item/subcontracting_receipt_item.json:doctype:Subcontracting Receipt Item",
@@ -1859,10 +2401,15 @@
             "source_name": "Subcontracting Receipt Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/doctype/subcontracting_receipt_supplied_item/subcontracting_receipt_supplied_item.json:doctype:Subcontracting Receipt Supplied Item",
@@ -1874,10 +2421,15 @@
             "source_name": "Subcontracting Receipt Supplied Item",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         },
         {
             "source_id": "erpnext:erpnext/subcontracting/workspace/subcontracting/subcontracting.json:workspace:Subcontracting",
@@ -1889,10 +2441,55 @@
             "source_name": "Subcontracting",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "accounting-finance"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+            "work_package": "WP-07"
         }
-    ]
+    ],
+    "audit": {
+        "audited_on": "2026-08-25",
+        "audit_scope": [
+            "company/admin/modules/manufacturing/",
+            "tests/manufacturing-*"
+        ],
+        "baseline": {
+            "repository": "erpnext",
+            "commit": "11e0ba0a1c45f217e2e73e885f699102d06da325"
+        },
+        "finding": "No Manufacturing module directory and no focused Manufacturing test files exist in the authorized audit scope.",
+        "status_counts": {
+            "MISSING": 122,
+            "PARTIAL": 0,
+            "COMPLETE": 0,
+            "NOT_APPLICABLE": 4,
+            "DEFERRED": 0
+        },
+        "dependency_owners": [
+            "inventory-warehouse",
+            "buying-procurement",
+            "accounting-finance"
+        ],
+        "work_packages": {
+            "WP-01": "Module foundation, Manufacturing settings, workspace, universal Form Builder adapter, 12/8 shell, and modal-confirmation wiring",
+            "WP-02": "BOM authoring, explosion, costing, update tools, comparison, and BOM reports",
+            "WP-03": "Operations, routings, workstations, capacity, downtime, and plant-floor views",
+            "WP-04": "Blanket demand, master schedules, production plans, MRP, forecasting, notifications, and planning analytics",
+            "WP-05": "Work orders, job cards, material issue/receipt handoffs, execution lifecycle, and execution reports",
+            "WP-06": "Quality management, non-conformance, actions, feedback, goals, meetings, procedures, reviews, and quality reports",
+            "WP-07": "Subcontracting BOM, inward/order/receipt lifecycles, workspace, and dependency handoffs",
+            "N/A-TEST": "Pinned upstream test fixture/helper; not a BuilderX runtime capability"
+        },
+        "verification": [
+            "NO_MANUFACTURING_MODULE_DIRECTORY",
+            "0 files matched tests/manufacturing-*",
+            "php tests/erpnext-parity-ledger.php: passed",
+            "php tools/erpnext-parity.php validate-ledger: passed"
+        ]
+    }
 }

@@ -14,10 +14,17 @@
             "source_name": "Issue",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm:customer-reference",
+                "projects:service-work-reference",
+                "operations:communication-and-portal-contracts"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-ISSUE: no company-scoped issue lifecycle, customer/project linkage, communication timeline, portal service, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/issue_priority/issue_priority.json:doctype:Issue Priority",
@@ -31,8 +38,11 @@
             "builderx_target": "support-service",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-ISSUE: no Issue Priority master, persistence service, modal flow, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/issue_type/issue_type.json:doctype:Issue Type",
@@ -46,8 +56,11 @@
             "builderx_target": "support-service",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-ISSUE: no Issue Type master, persistence service, modal flow, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/pause_sla_on_status/pause_sla_on_status.json:doctype:Pause SLA On Status",
@@ -59,10 +72,15 @@
             "source_name": "Pause SLA On Status",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:service-level-agreement"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-SLA: no company-scoped pause-status child model, validation, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/service_day/service_day.json:doctype:Service Day",
@@ -74,10 +92,16 @@
             "source_name": "Service Day",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:service-level-agreement",
+                "operations:calendar-contract"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-SLA: no working-day schedule model, overlap validation, calendar integration, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/service_level_agreement/service_level_agreement.json:doctype:Service Level Agreement",
@@ -89,10 +113,16 @@
             "source_name": "Service Level Agreement",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm:customer-segmentation-reference",
+                "operations:calendar-and-communication-contracts"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-SLA: no SLA master, applicability resolver, business-hours clock, status lifecycle, persistence, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/service_level_priority/service_level_priority.json:doctype:Service Level Priority",
@@ -104,10 +134,16 @@
             "source_name": "Service Level Priority",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:service-level-agreement",
+                "support-service:issue-priority"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-SLA: no per-priority response/resolution target model or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/sla_fulfilled_on_status/sla_fulfilled_on_status.json:doctype:SLA Fulfilled On Status",
@@ -119,10 +155,15 @@
             "source_name": "SLA Fulfilled On Status",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:service-level-agreement"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-SLA: no fulfilled-status child model, transition validation, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/support_search_source/support_search_source.json:doctype:Support Search Source",
@@ -134,10 +175,15 @@
             "source_name": "Support Search Source",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "operations:portal-search-contract"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-WORKSPACE: no allowlisted support search-source configuration, safe execution boundary, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/support_settings/support_settings.json:doctype:Support Settings",
@@ -149,10 +195,15 @@
             "source_name": "Support Settings",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "operations:portal-and-background-job-contracts"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-WORKSPACE: no company-scoped support settings, auto-close policy, portal configuration, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/warranty_claim/warranty_claim.json:doctype:Warranty Claim",
@@ -164,10 +215,18 @@
             "source_name": "Warranty Claim",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm:customer-reference",
+                "projects:service-work-handoff",
+                "inventory-warehouse:item-and-serial-reference",
+                "assets-maintenance:warranty-reference"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-WARRANTY: no warranty claim lifecycle, item/serial snapshot, customer link, service-work handoff, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/support/report/first_response_time_for_issues/first_response_time_for_issues.json:report:First Response Time for Issues",
@@ -179,10 +238,16 @@
             "source_name": "First Response Time for Issues",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:issue-lifecycle",
+                "support-service:sla-engine"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-REPORTS: no first-response report definition, filters, authorization, or rendering exists."
         },
         {
             "source_id": "erpnext:erpnext/support/report/first_response_time_for_issues/first_response_time_for_issues.py:report_code:First Response Time For Issues",
@@ -194,10 +259,16 @@
             "source_name": "First Response Time For Issues",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:issue-lifecycle",
+                "support-service:sla-engine"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-REPORTS: no company-scoped daily average first-response calculation or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/support/report/issue_analytics/issue_analytics.json:report:Issue Analytics",
@@ -209,10 +280,17 @@
             "source_name": "Issue Analytics",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:issue-lifecycle",
+                "sales-crm:customer-reference",
+                "projects:service-work-reference"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-REPORTS: no issue analytics report definition, filters, authorization, or rendering exists."
         },
         {
             "source_id": "erpnext:erpnext/support/report/issue_analytics/issue_analytics.py:report_code:Issue Analytics",
@@ -224,10 +302,17 @@
             "source_name": "Issue Analytics",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:issue-lifecycle",
+                "sales-crm:customer-reference",
+                "projects:service-work-reference"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-REPORTS: no weekly/monthly/quarterly/yearly issue grouping by customer, assignee, type, or priority exists."
         },
         {
             "source_id": "erpnext:erpnext/support/report/issue_analytics/test_issue_analytics.py:report_code:Test Issue Analytics",
@@ -239,10 +324,15 @@
             "source_name": "Test Issue Analytics",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:issue-analytics"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-REPORTS: the pinned analytics test behavior has no BuilderX equivalent test coverage."
         },
         {
             "source_id": "erpnext:erpnext/support/report/issue_summary/issue_summary.json:report:Issue Summary",
@@ -254,10 +344,18 @@
             "source_name": "Issue Summary",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:issue-lifecycle",
+                "support-service:sla-engine",
+                "sales-crm:customer-reference",
+                "projects:service-work-reference"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-REPORTS: no issue summary report definition, filters, authorization, or rendering exists."
         },
         {
             "source_id": "erpnext:erpnext/support/report/issue_summary/issue_summary.py:report_code:Issue Summary",
@@ -269,10 +367,18 @@
             "source_name": "Issue Summary",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:issue-lifecycle",
+                "support-service:sla-engine",
+                "sales-crm:customer-reference",
+                "projects:service-work-reference"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-REPORTS: no status/SLA counts or average response and resolution metrics by selected grouping exist."
         },
         {
             "source_id": "erpnext:erpnext/support/report/support_hour_distribution/support_hour_distribution.json:report:Support Hour Distribution",
@@ -284,10 +390,15 @@
             "source_name": "Support Hour Distribution",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:issue-lifecycle"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-REPORTS: no support-hour distribution report definition, filters, authorization, or rendering exists."
         },
         {
             "source_id": "erpnext:erpnext/support/report/support_hour_distribution/support_hour_distribution.py:report_code:Support Hour Distribution",
@@ -299,10 +410,15 @@
             "source_name": "Support Hour Distribution",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:issue-lifecycle"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-REPORTS: no hourly issue-volume aggregation, total row, or chart-ready result exists."
         },
         {
             "source_id": "erpnext:erpnext/support/workspace/support/support.json:workspace:Support",
@@ -314,10 +430,17 @@
             "source_name": "Support",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "orchestration:module-registry-modal-and-form-builder",
+                "sales-crm:customer-reference",
+                "projects:service-work-reference"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-WORKSPACE: no routed Support/Service workspace, 12/8 page shell, modal actions, Form Builder adapter, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/telephony/doctype/call_log/call_log.json:doctype:Call Log",
@@ -329,10 +452,17 @@
             "source_name": "Call Log",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm:contact-lead-and-customer-reference",
+                "hr:employee-reference",
+                "operations:realtime-and-communication-contracts"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-TELEPHONY: no idempotent call-log ingestion, participant linkage, lifecycle, summary/type update, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/telephony/doctype/incoming_call_handling_schedule/incoming_call_handling_schedule.json:doctype:Incoming Call Handling Schedule",
@@ -344,10 +474,16 @@
             "source_name": "Incoming Call Handling Schedule",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "support-service:incoming-call-settings",
+                "hr:employee-group-reference"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-TELEPHONY: no day/time/agent-group schedule child model, overlap validation, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/telephony/doctype/incoming_call_settings/incoming_call_settings.json:doctype:Incoming Call Settings",
@@ -359,10 +495,16 @@
             "source_name": "Incoming Call Settings",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "hr:employee-group-reference",
+                "operations:telephony-provider-contract"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-TELEPHONY: no incoming-call routing settings, schedule persistence, provider boundary, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/telephony/doctype/telephony_call_type/telephony_call_type.json:doctype:Telephony Call Type",
@@ -376,8 +518,11 @@
             "builderx_target": "support-service",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-TELEPHONY: no call-type master, persistence service, modal flow, or focused verification exists."
         },
         {
             "source_id": "erpnext:erpnext/telephony/doctype/voice_call_settings/voice_call_settings.json:doctype:Voice Call Settings",
@@ -389,10 +534,16 @@
             "source_name": "Voice Call Settings",
             "module_owner": "support-service",
             "builderx_target": "support-service",
-            "dependencies": [],
+            "dependencies": [
+                "hr:user-reference",
+                "operations:telephony-provider-contract"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
+                "Audit 2026-08-25: no tests/support-service-* files exist."
+            ],
+            "reason": "WP-TELEPHONY: no per-user voice settings, device selection, provider boundary, or focused verification exists."
         }
     ]
 }

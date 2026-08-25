@@ -3,6 +3,39 @@
     "baseline_captured_on": "2026-08-25",
     "owner": "buying-procurement",
     "thread_id": "01a037da-71f4-72d2-bce4-6ed2b5480789",
+    "audit": {
+        "audited_on": "2026-08-25",
+        "source_repository": "https://github.com/frappe/erpnext.git",
+        "source_commit": "11e0ba0a1c45f217e2e73e885f699102d06da325",
+        "local_scope": [
+            "company/admin/modules/buying-procurement/",
+            "tests/buying-procurement-*"
+        ],
+        "local_implementation_files": [],
+        "local_test_files": [],
+        "status_counts": {
+            "COMPLETE": 0,
+            "PARTIAL": 0,
+            "MISSING": 50,
+            "NOT_APPLICABLE": 0,
+            "DEFERRED": 0
+        },
+        "verification": [
+            {
+                "command": "php tests/erpnext-parity-ledger.php",
+                "result": "PASS: ERPNext parity baseline tests passed."
+            },
+            {
+                "command": "php tools/erpnext-parity.php validate-baseline",
+                "result": "PASS: ERPNext parity baseline is valid for 11 owners."
+            },
+            {
+                "command": "php tools/erpnext-parity.php validate-ledger",
+                "result": "PASS: ERPNext parity ledgers are structurally valid against 2026-08-25. This is not module completion evidence."
+            }
+        ],
+        "classification_reason": "The audited module directory and focused test files do not exist. No row has local implementation plus passing focused test evidence, so all 50 source identities remain MISSING. Similar Buying labels and Finance purchase-invoice behavior outside the assigned audit scope were not credited."
+    },
     "rows": [
         {
             "source_id": "erpnext:erpnext/buying/doctype/buying_settings/buying_settings.json:doctype:Buying Settings",

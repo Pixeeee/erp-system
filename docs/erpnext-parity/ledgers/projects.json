@@ -3,6 +3,32 @@
     "baseline_captured_on": "2026-08-25",
     "owner": "projects",
     "thread_id": "01a037db-cca6-7a03-a82b-31a34e6935f0",
+    "audit_summary": {
+        "audited_on": "2026-08-25",
+        "scope": [
+            "company/admin/modules/projects/",
+            "tests/projects-*"
+        ],
+        "baseline": {
+            "repository": "https://github.com/frappe/erpnext.git",
+            "branch": "version-16",
+            "commit": "11e0ba0a1c45f217e2e73e885f699102d06da325"
+        },
+        "status_counts": {
+            "COMPLETE": 0,
+            "PARTIAL": 0,
+            "MISSING": 27,
+            "NOT_APPLICABLE": 0,
+            "DEFERRED": 0
+        },
+        "verification": [
+            "PASS: php tests/erpnext-parity-ledger.php - ERPNext parity baseline tests passed.",
+            "PASS: php tools/erpnext-parity.php validate-baseline - baseline valid for 11 owners.",
+            "PASS: php tools/erpnext-parity.php validate-ledger - ledgers valid against 2026-08-25.",
+            "ABSENT: company/admin/modules/projects/ does not exist.",
+            "ABSENT: no tests/projects-* files exist; there is no scoped Projects implementation test evidence."
+        ]
+    },
     "rows": [
         {
             "source_id": "erpnext:erpnext/projects/doctype/activity_cost/activity_cost.json:doctype:Activity Cost",
@@ -13,11 +39,16 @@
             "source_module": "Projects",
             "source_name": "Activity Cost",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/time.php::activity-cost",
+            "dependencies": [
+                "hr"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No module-local activity-cost master, employee-rate integration, persistence workflow, or focused test exists. HR employee and assignment data must be consumed through an HR-owned service."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/activity_type/activity_type.json:doctype:Activity Type",
@@ -28,11 +59,16 @@
             "source_module": "Projects",
             "source_name": "Activity Type",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/time.php::activity-type",
+            "dependencies": [
+                "hr"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No activity-type master, import/list/form surface, persisted workflow, or focused test exists; HR-owned timesheets are an integration dependency."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/dependent_task/dependent_task.json:doctype:Dependent Task",
@@ -43,11 +79,14 @@
             "source_module": "Projects",
             "source_name": "Dependent Task",
             "module_owner": "projects",
-            "builderx_target": "projects",
+            "builderx_target": "company/admin/modules/projects/tasks.php::dependent-task",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No task dependency projection, scheduling behavior, persistence workflow, or focused test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/project/project.json:doctype:Project",
@@ -58,11 +97,19 @@
             "source_module": "Projects",
             "source_name": "Project",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/projects.php::project",
+            "dependencies": [
+                "sales-crm",
+                "hr",
+                "accounting-finance",
+                "operations"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No company-scoped Project master, lifecycle, progress/cost rollup, customer/employee links, portal access, modal workflow, or focused test exists. Customer, employee, Finance, and notification identities remain owner-service dependencies."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/project_template/project_template.json:doctype:Project Template",
@@ -73,11 +120,14 @@
             "source_module": "Projects",
             "source_name": "Project Template",
             "module_owner": "projects",
-            "builderx_target": "projects",
+            "builderx_target": "company/admin/modules/projects/templates.php::project-template",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No Project Template master, versioned task graph, project-instantiation workflow, or focused test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/project_template_task/project_template_task.json:doctype:Project Template Task",
@@ -88,11 +138,14 @@
             "source_module": "Projects",
             "source_name": "Project Template Task",
             "module_owner": "projects",
-            "builderx_target": "projects",
+            "builderx_target": "company/admin/modules/projects/templates.php::project-template-task",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No ordered template-task child records, dependency preservation, transactional read-back, or focused test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/project_type/project_type.json:doctype:Project Type",
@@ -103,11 +156,14 @@
             "source_module": "Projects",
             "source_name": "Project Type",
             "module_owner": "projects",
-            "builderx_target": "projects",
+            "builderx_target": "company/admin/modules/projects/projects.php::project-type",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No Project Type master, modal CRUD workflow, or focused test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/project_update/project_update.json:doctype:Project Update",
@@ -118,11 +174,16 @@
             "source_module": "Projects",
             "source_name": "Project Update",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/collaboration.php::project-update",
+            "dependencies": [
+                "operations"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No draft/submit/cancel Project Update lifecycle, recipient workflow, notification handoff, audit trail, or focused test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/project_user/project_user.json:doctype:Project User",
@@ -133,11 +194,16 @@
             "source_module": "Projects",
             "source_name": "Project User",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/collaboration.php::project-user",
+            "dependencies": [
+                "operations"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No project-user membership, project-scoped authorization, access grant/revoke handoff, customer portal projection, or focused test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/projects_settings/projects_settings.json:doctype:Projects Settings",
@@ -148,11 +214,17 @@
             "source_module": "Projects",
             "source_name": "Projects Settings",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/settings.php::projects-settings",
+            "dependencies": [
+                "hr",
+                "accounting-finance"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No company-scoped Projects Settings, timesheet-overlap policy adapter, Finance billing policy handoff, persisted confirmation workflow, or focused test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/task/task.json:doctype:Task",
@@ -163,11 +235,18 @@
             "source_module": "Projects",
             "source_name": "Task",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/tasks.php::task",
+            "dependencies": [
+                "hr",
+                "support-service",
+                "operations"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No Task tree, lifecycle, progress/date/dependency validation, HR assignment handoff, issue link, kanban/calendar/list surfaces, or focused test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/task_depends_on/task_depends_on.json:doctype:Task Depends On",
@@ -178,11 +257,14 @@
             "source_module": "Projects",
             "source_name": "Task Depends On",
             "module_owner": "projects",
-            "builderx_target": "projects",
+            "builderx_target": "company/admin/modules/projects/tasks.php::task-depends-on",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No task dependency child table, circular-reference guard, dependent-task rescheduling, transactional verification, or focused test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/task_type/task_type.json:doctype:Task Type",
@@ -193,11 +275,14 @@
             "source_module": "Projects",
             "source_name": "Task Type",
             "module_owner": "projects",
-            "builderx_target": "projects",
+            "builderx_target": "company/admin/modules/projects/tasks.php::task-type",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No Task Type master, modal CRUD workflow, or focused test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/timesheet/timesheet.json:doctype:Timesheet",
@@ -208,11 +293,17 @@
             "source_module": "Projects",
             "source_name": "Timesheet",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/time.php::hr-timesheet-adapter",
+            "dependencies": [
+                "hr",
+                "accounting-finance"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No Projects adapter consumes HR-owned timesheets, validates project/task references, projects status and billable totals, or hands billing to Finance; Projects must not write HR or Finance authoritative tables."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/timesheet_detail/timesheet_detail.json:doctype:Timesheet Detail",
@@ -223,11 +314,17 @@
             "source_module": "Projects",
             "source_name": "Timesheet Detail",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/time.php::hr-timesheet-detail-adapter",
+            "dependencies": [
+                "hr",
+                "accounting-finance"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No read-only Projects projection of HR-owned time-log detail, project/task validation contract, billing-state projection, or focused integration test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/report/daily_timesheet_summary/daily_timesheet_summary.json:report:Daily Timesheet Summary",
@@ -238,11 +335,16 @@
             "source_module": "Projects",
             "source_name": "Daily Timesheet Summary",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/reports.php::daily-timesheet-summary",
+            "dependencies": [
+                "hr"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No Daily Timesheet Summary report definition, filters, authorization, export surface, or focused test exists; report data must come from the HR timesheet service."
         },
         {
             "source_id": "erpnext:erpnext/projects/report/daily_timesheet_summary/daily_timesheet_summary.py:report_code:Daily Timesheet Summary",
@@ -253,11 +355,16 @@
             "source_module": "Projects",
             "source_name": "Daily Timesheet Summary",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/reports.php::daily-timesheet-summary-query",
+            "dependencies": [
+                "hr"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No server-side daily timesheet aggregation through an HR-owned read service or focused calculation test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/report/delayed_tasks_summary/delayed_tasks_summary.json:report:Delayed Tasks Summary",
@@ -268,11 +375,14 @@
             "source_module": "Projects",
             "source_name": "Delayed Tasks Summary",
             "module_owner": "projects",
-            "builderx_target": "projects",
+            "builderx_target": "company/admin/modules/projects/reports.php::delayed-tasks-summary",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No Delayed Tasks Summary report definition, date/project/status/priority filters, chart, export surface, or focused test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/report/delayed_tasks_summary/delayed_tasks_summary.py:report_code:Delayed Tasks Summary",
@@ -283,11 +393,14 @@
             "source_module": "Projects",
             "source_name": "Delayed Tasks Summary",
             "module_owner": "projects",
-            "builderx_target": "projects",
+            "builderx_target": "company/admin/modules/projects/reports.php::delayed-tasks-summary-query",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No server-side delayed/on-track calculation, deterministic ordering, company isolation, or focused calculation test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/report/delayed_tasks_summary/test_delayed_tasks_summary.py:report_code:Test Delayed Tasks Summary",
@@ -298,11 +411,13 @@
             "source_module": "Projects",
             "source_name": "Test Delayed Tasks Summary",
             "module_owner": "projects",
-            "builderx_target": "projects",
+            "builderx_target": "tests/projects-delayed-tasks.php",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No BuilderX regression test covers open and completed delayed-task rows, delay-day calculations, filters, chart totals, or company isolation."
         },
         {
             "source_id": "erpnext:erpnext/projects/report/project_summary/project_summary.json:report:Project Summary",
@@ -313,11 +428,14 @@
             "source_module": "Projects",
             "source_name": "Project Summary",
             "module_owner": "projects",
-            "builderx_target": "projects",
+            "builderx_target": "company/admin/modules/projects/reports.php::project-summary",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No Project Summary report definition, filters, chart, number summaries, export surface, or focused test exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/report/project_summary/project_summary.py:report_code:Project Summary",
@@ -328,11 +446,14 @@
             "source_module": "Projects",
             "source_name": "Project Summary",
             "module_owner": "projects",
-            "builderx_target": "projects",
+            "builderx_target": "company/admin/modules/projects/reports.php::project-summary-query",
             "dependencies": [],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No server-side project/task count, completion, overdue, chart, or summary calculation with company isolation and focused tests exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/report/project_wise_stock_tracking/project_wise_stock_tracking.json:report:Project wise Stock Tracking",
@@ -343,11 +464,19 @@
             "source_module": "Projects",
             "source_name": "Project wise Stock Tracking",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/reports.php::project-stock-tracking",
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "sales-crm",
+                "accounting-finance"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No Project Stock Tracking report surface or owner-service projections for purchase receipts, stock issues, deliveries, or stock-updating invoices exist."
         },
         {
             "source_id": "erpnext:erpnext/projects/report/project_wise_stock_tracking/project_wise_stock_tracking.py:report_code:Project Wise Stock Tracking",
@@ -358,11 +487,19 @@
             "source_module": "Projects",
             "source_name": "Project Wise Stock Tracking",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/reports.php::project-stock-tracking-query",
+            "dependencies": [
+                "inventory-warehouse",
+                "buying-procurement",
+                "sales-crm",
+                "accounting-finance"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No service-composed cost aggregation or focused integration test exists; Projects must not query or mutate another module's authoritative tables directly."
         },
         {
             "source_id": "erpnext:erpnext/projects/report/timesheet_billing_summary/timesheet_billing_summary.json:report:Timesheet Billing Summary",
@@ -373,11 +510,17 @@
             "source_module": "Projects",
             "source_name": "Timesheet Billing Summary",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/reports.php::timesheet-billing-summary",
+            "dependencies": [
+                "hr",
+                "accounting-finance"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No Timesheet Billing Summary report definition, filters/grouping, draft inclusion, export surface, or focused test exists; HR supplies time and Finance supplies billing state."
         },
         {
             "source_id": "erpnext:erpnext/projects/report/timesheet_billing_summary/timesheet_billing_summary.py:report_code:Timesheet Billing Summary",
@@ -388,11 +531,17 @@
             "source_module": "Projects",
             "source_name": "Timesheet Billing Summary",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/reports.php::timesheet-billing-summary-query",
+            "dependencies": [
+                "hr",
+                "accounting-finance"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No service-composed working-hours, billable-hours, billed-state, or grouped billing aggregation with focused tests exists."
         },
         {
             "source_id": "erpnext:erpnext/projects/workspace/projects/projects.json:workspace:Projects",
@@ -403,11 +552,18 @@
             "source_module": "Projects",
             "source_name": "Projects",
             "module_owner": "projects",
-            "builderx_target": "projects",
-            "dependencies": [],
+            "builderx_target": "company/admin/modules/projects/views/workspace.php::projects-workspace",
+            "dependencies": [
+                "hr",
+                "accounting-finance",
+                "operations"
+            ],
             "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "evidence": [
+                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
+                "Audit 2026-08-25: no tests/projects-* files exist."
+            ],
+            "reason": "No real Projects workspace, shortcuts, number cards, chart, 12/8 shell, modal create flows, module-local Form Builder, reports navigation, portal tools, or responsive interaction test exists. Shared route/modal/Form Builder registration requires orchestration ownership."
         }
     ]
 }

@@ -17,7 +17,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/appointment_letter_content/appointment_letter_content.json:doctype:Appointment Letter content",
@@ -32,7 +32,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/appointment_letter_template/appointment_letter_template.json:doctype:Appointment Letter Template",
@@ -47,7 +47,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/appraisal/appraisal.json:doctype:Appraisal",
@@ -62,7 +62,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/appraisal_cycle/appraisal_cycle.json:doctype:Appraisal Cycle",
@@ -77,7 +77,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/appraisal_goal/appraisal_goal.json:doctype:Appraisal Goal",
@@ -92,7 +92,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/appraisal_kra/appraisal_kra.json:doctype:Appraisal KRA",
@@ -107,7 +107,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/appraisal_template/appraisal_template.json:doctype:Appraisal Template",
@@ -122,7 +122,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/appraisal_template_goal/appraisal_template_goal.json:doctype:Appraisal Template Goal",
@@ -137,7 +137,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/appraisee/appraisee.json:doctype:Appraisee",
@@ -152,7 +152,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/attendance/attendance.json:doctype:Attendance",
@@ -167,7 +167,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/attendance_request/attendance_request.json:doctype:Attendance Request",
@@ -182,7 +182,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/compensatory_leave_request/compensatory_leave_request.json:doctype:Compensatory Leave Request",
@@ -197,7 +197,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/daily_work_summary/daily_work_summary.json:doctype:Daily Work Summary",
@@ -212,7 +212,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-08] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/daily_work_summary_group/daily_work_summary_group.json:doctype:Daily Work Summary Group",
@@ -227,7 +227,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-08] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/daily_work_summary_group_user/daily_work_summary_group_user.json:doctype:Daily Work Summary Group User",
@@ -242,7 +242,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-08] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/department_approver/department_approver.json:doctype:Department Approver",
@@ -257,7 +257,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/designation_skill/designation_skill.json:doctype:Designation Skill",
@@ -272,7 +272,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/earned_leave_schedule/earned_leave_schedule.json:doctype:Earned Leave Schedule",
@@ -287,7 +287,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_advance/employee_advance.json:doctype:Employee Advance",
@@ -302,7 +302,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_attendance_tool/employee_attendance_tool.json:doctype:Employee Attendance Tool",
@@ -317,7 +317,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_boarding_activity/employee_boarding_activity.json:doctype:Employee Boarding Activity",
@@ -332,7 +332,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_checkin/employee_checkin.json:doctype:Employee Checkin",
@@ -347,7 +347,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_feedback_criteria/employee_feedback_criteria.json:doctype:Employee Feedback Criteria",
@@ -362,7 +362,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_feedback_rating/employee_feedback_rating.json:doctype:Employee Feedback Rating",
@@ -377,7 +377,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_grade/employee_grade.json:doctype:Employee Grade",
@@ -392,7 +392,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_grievance/employee_grievance.json:doctype:Employee Grievance",
@@ -407,7 +407,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_health_insurance/employee_health_insurance.json:doctype:Employee Health Insurance",
@@ -422,7 +422,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_onboarding/employee_onboarding.json:doctype:Employee Onboarding",
@@ -437,7 +437,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_onboarding_template/employee_onboarding_template.json:doctype:Employee Onboarding Template",
@@ -452,7 +452,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_performance_feedback/employee_performance_feedback.json:doctype:Employee Performance Feedback",
@@ -467,7 +467,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_promotion/employee_promotion.json:doctype:Employee Promotion",
@@ -482,7 +482,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_property_history/employee_property_history.json:doctype:Employee Property History",
@@ -497,7 +497,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_referral/employee_referral.json:doctype:Employee Referral",
@@ -512,7 +512,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_separation/employee_separation.json:doctype:Employee Separation",
@@ -525,9 +525,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/schema.php:501-501",
+                "company/admin/modules/hr/schema.php:538-541",
+                "company/admin/modules/hr/employees.php:428-475",
+                "company/admin/modules/hr/views/employee-profiles.php:139-156"
+            ],
+            "reason": "[HR-WP-05] Employee status and exit fields support a basic separated state, but no Employee Separation document, template, approval, or activity workflow exists."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_separation_template/employee_separation_template.json:doctype:Employee Separation Template",
@@ -542,7 +547,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_skill/employee_skill.json:doctype:Employee Skill",
@@ -557,7 +562,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_skill_map/employee_skill_map.json:doctype:Employee Skill Map",
@@ -572,7 +577,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_training/employee_training.json:doctype:Employee Training",
@@ -587,7 +592,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_transfer/employee_transfer.json:doctype:Employee Transfer",
@@ -600,9 +605,12 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/employees.php:37-210",
+                "tests/hr-database-driven-forms.php:126-232 (PASS 2026-08-25: assignment history and validation)"
+            ],
+            "reason": "[HR-WP-01] Effective-dated primary assignment history supports tested reassignment, but no Employee Transfer document, approval, or transfer lifecycle exists."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employment_type/employment_type.json:doctype:Employment Type",
@@ -615,9 +623,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/schema.php:512",
+                "company/admin/modules/hr/employees.php:236-236",
+                "company/admin/modules/hr/employees.php:313-405",
+                "company/admin/modules/hr/views/employee-profiles.php:452-453"
+            ],
+            "reason": "[HR-WP-01] Employee profiles persist a free-text employment_type field, but there is no governed Employment Type master, lifecycle, permissions, or focused test."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employment_type/test_records.json:doctype:Test Records",
@@ -630,9 +643,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/exit_interview/exit_interview.json:doctype:Exit Interview",
@@ -645,9 +658,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/schema.php:540-541",
+                "company/admin/modules/hr/forms.php:880-963",
+                "tests/hr-database-driven-forms.php:234-348 (PASS 2026-08-25: typed custom-value persistence)"
+            ],
+            "reason": "[HR-WP-05] Employee profiles can store an exit interview date and leaving reason, but no Exit Interview record, scheduling, questionnaire, notification, or focused workflow test exists."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/expected_skill_set/expected_skill_set.json:doctype:Expected Skill Set",
@@ -662,7 +679,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/expense_claim/expense_claim.json:doctype:Expense Claim",
@@ -677,7 +694,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/expense_claim_account/expense_claim_account.json:doctype:Expense Claim Account",
@@ -692,7 +709,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/expense_claim_advance/expense_claim_advance.json:doctype:Expense Claim Advance",
@@ -707,7 +724,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/expense_claim_detail/expense_claim_detail.json:doctype:Expense Claim Detail",
@@ -722,7 +739,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/expense_claim_type/expense_claim_type.json:doctype:Expense Claim Type",
@@ -737,7 +754,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/expense_taxes_and_charges/expense_taxes_and_charges.json:doctype:Expense Taxes and Charges",
@@ -752,7 +769,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/full_and_final_asset/full_and_final_asset.json:doctype:Full and Final Asset",
@@ -767,7 +784,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/full_and_final_outstanding_statement/full_and_final_outstanding_statement.json:doctype:Full and Final Outstanding Statement",
@@ -782,7 +799,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/full_and_final_statement/full_and_final_statement.json:doctype:Full and Final Statement",
@@ -797,7 +814,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/goal/goal.json:doctype:Goal",
@@ -812,7 +829,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/grievance_type/grievance_type.json:doctype:Grievance Type",
@@ -827,7 +844,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/holiday_list_assignment/holiday_list_assignment.json:doctype:Holiday List Assignment",
@@ -840,9 +857,12 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/schema.php:523",
+                "company/admin/modules/hr/forms.php:880-963"
+            ],
+            "reason": "[HR-WP-03] Employee profiles expose a holiday_list text field, but no Holiday List Assignment master, effective dates, assignment workflow, or source validation exists."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/hr_settings/hr_settings.json:doctype:HR Settings",
@@ -857,7 +877,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/identification_document_type/identification_document_type.json:doctype:Identification Document Type",
@@ -872,7 +892,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/interest/interest.json:doctype:Interest",
@@ -887,7 +907,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/interview/interview.json:doctype:Interview",
@@ -902,7 +922,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/interview_detail/interview_detail.json:doctype:Interview Detail",
@@ -917,7 +937,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/interview_feedback/interview_feedback.json:doctype:Interview Feedback",
@@ -932,7 +952,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/interview_type/interview_type.json:doctype:Interview Type",
@@ -947,7 +967,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/interviewer/interviewer.json:doctype:Interviewer",
@@ -962,7 +982,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_applicant/job_applicant.json:doctype:Job Applicant",
@@ -977,7 +997,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_applicant_source/job_applicant_source.json:doctype:Job Applicant Source",
@@ -992,7 +1012,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_offer/job_offer.json:doctype:Job Offer",
@@ -1007,7 +1027,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_offer_term/job_offer_term.json:doctype:Job Offer Term",
@@ -1022,7 +1042,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_offer_term_template/job_offer_term_template.json:doctype:Job Offer Term Template",
@@ -1037,7 +1057,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_opening/job_opening.json:doctype:Job Opening",
@@ -1052,7 +1072,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_opening_template/job_opening_template.json:doctype:Job Opening Template",
@@ -1067,7 +1087,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_requisition/job_requisition.json:doctype:Job Requisition",
@@ -1082,7 +1102,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/kra/kra.json:doctype:KRA",
@@ -1097,7 +1117,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_adjustment/leave_adjustment.json:doctype:Leave Adjustment",
@@ -1112,7 +1132,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_allocation/leave_allocation.json:doctype:Leave Allocation",
@@ -1127,7 +1147,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_application/leave_application.json:doctype:Leave Application",
@@ -1142,7 +1162,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_application/test_records.json:doctype:Test Records",
@@ -1155,9 +1175,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_block_list/leave_block_list.json:doctype:Leave Block List",
@@ -1172,7 +1192,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_block_list/test_records.json:doctype:Test Records",
@@ -1185,9 +1205,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_block_list_allow/leave_block_list_allow.json:doctype:Leave Block List Allow",
@@ -1202,7 +1222,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_block_list_date/leave_block_list_date.json:doctype:Leave Block List Date",
@@ -1217,7 +1237,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_control_panel/leave_control_panel.json:doctype:Leave Control Panel",
@@ -1232,7 +1252,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_encashment/leave_encashment.json:doctype:Leave Encashment",
@@ -1247,7 +1267,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_ledger_entry/leave_ledger_entry.json:doctype:Leave Ledger Entry",
@@ -1262,7 +1282,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_period/leave_period.json:doctype:Leave Period",
@@ -1277,7 +1297,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_policy/leave_policy.json:doctype:Leave Policy",
@@ -1292,7 +1312,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_policy_assignment/leave_policy_assignment.json:doctype:Leave Policy Assignment",
@@ -1307,7 +1327,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_policy_detail/leave_policy_detail.json:doctype:Leave Policy Detail",
@@ -1322,7 +1342,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_type/leave_type.json:doctype:Leave Type",
@@ -1337,7 +1357,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_type/test_records.json:doctype:Test Records",
@@ -1350,9 +1370,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/offer_term/offer_term.json:doctype:Offer Term",
@@ -1367,7 +1387,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/overtime_details/overtime_details.json:doctype:Overtime Details",
@@ -1382,7 +1402,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/overtime_salary_component/overtime_salary_component.json:doctype:Overtime Salary Component",
@@ -1397,7 +1417,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/overtime_slip/overtime_slip.json:doctype:Overtime Slip",
@@ -1412,7 +1432,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/overtime_type/overtime_type.json:doctype:Overtime Type",
@@ -1427,7 +1447,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/purpose_of_travel/purpose_of_travel.json:doctype:Purpose of Travel",
@@ -1442,7 +1462,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/pwa_notification/pwa_notification.json:doctype:PWA Notification",
@@ -1457,7 +1477,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-08] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_assignment/shift_assignment.json:doctype:Shift Assignment",
@@ -1472,7 +1492,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_assignment_tool/shift_assignment_tool.json:doctype:Shift Assignment Tool",
@@ -1487,7 +1507,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_location/shift_location.json:doctype:Shift Location",
@@ -1502,7 +1522,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_request/shift_request.json:doctype:Shift Request",
@@ -1517,7 +1537,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_schedule/shift_schedule.json:doctype:Shift Schedule",
@@ -1532,7 +1552,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_schedule_assignment/shift_schedule_assignment.json:doctype:Shift Schedule Assignment",
@@ -1547,7 +1567,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_type/shift_type.json:doctype:Shift Type",
@@ -1562,7 +1582,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/shift_type/test_records.json:doctype:Test Records",
@@ -1575,9 +1595,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/skill/skill.json:doctype:Skill",
@@ -1592,7 +1612,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/skill_assessment/skill_assessment.json:doctype:Skill Assessment",
@@ -1607,7 +1627,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/staffing_plan/staffing_plan.json:doctype:Staffing Plan",
@@ -1622,7 +1642,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/staffing_plan_detail/staffing_plan_detail.json:doctype:Staffing Plan Detail",
@@ -1637,7 +1657,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/training_event/training_event.json:doctype:Training Event",
@@ -1652,7 +1672,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/training_event_employee/training_event_employee.json:doctype:Training Event Employee",
@@ -1667,7 +1687,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/training_feedback/training_feedback.json:doctype:Training Feedback",
@@ -1682,7 +1702,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/training_program/training_program.json:doctype:Training Program",
@@ -1697,7 +1717,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/training_result/training_result.json:doctype:Training Result",
@@ -1712,7 +1732,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/training_result_employee/training_result_employee.json:doctype:Training Result Employee",
@@ -1727,7 +1747,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/travel_itinerary/travel_itinerary.json:doctype:Travel Itinerary",
@@ -1742,7 +1762,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/travel_request/travel_request.json:doctype:Travel Request",
@@ -1757,7 +1777,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/travel_request_costing/travel_request_costing.json:doctype:Travel Request Costing",
@@ -1772,7 +1792,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/vehicle_log/vehicle_log.json:doctype:Vehicle Log",
@@ -1787,7 +1807,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/vehicle_service/vehicle_service.json:doctype:Vehicle Service",
@@ -1802,7 +1822,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/vehicle_service_item/vehicle_service_item.json:doctype:Vehicle Service Item",
@@ -1817,7 +1837,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/notification/exit_interview_scheduled/exit_interview_scheduled.json:notification:Exit Interview Scheduled",
@@ -1832,7 +1852,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-05] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/notification/training_feedback/training_feedback.json:notification:Training Feedback",
@@ -1847,7 +1867,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/notification/training_scheduled/training_scheduled.json:notification:Training Scheduled",
@@ -1862,7 +1882,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/page/organizational_chart/organizational_chart.json:page:organizational-chart",
@@ -1877,7 +1897,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-01] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/page/team_updates/team_updates.json:page:team-updates",
@@ -1892,7 +1912,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-08] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/print_format/job_offer/job_offer.json:print_format:Job Offer",
@@ -1907,7 +1927,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/print_format/standard_appointment_letter/standard_appointment_letter.json:print_format:Standard Appointment Letter",
@@ -1922,7 +1942,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/appraisal_overview/appraisal_overview.json:report:Appraisal Overview",
@@ -1937,7 +1957,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/appraisal_overview/appraisal_overview.py:report_code:Appraisal Overview",
@@ -1952,7 +1972,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/appraisal_overview/test_appraisal_overview.py:report_code:Test Appraisal Overview",
@@ -1965,9 +1985,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/daily_work_summary_replies/daily_work_summary_replies.json:report:Daily Work Summary Replies",
@@ -1982,7 +2002,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/daily_work_summary_replies/daily_work_summary_replies.py:report_code:Daily Work Summary Replies",
@@ -1997,7 +2017,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_advance_summary/employee_advance_summary.json:report:Employee Advance Summary",
@@ -2012,7 +2032,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_advance_summary/employee_advance_summary.py:report_code:Employee Advance Summary",
@@ -2027,7 +2047,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_advance_summary/test_employee_advance_summary.py:report_code:Test Employee Advance Summary",
@@ -2040,9 +2060,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_analytics/employee_analytics.json:report:Employee Analytics",
@@ -2057,7 +2077,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_analytics/employee_analytics.py:report_code:Employee Analytics",
@@ -2072,7 +2092,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_analytics/test_employee_analytics.py:report_code:Test Employee Analytics",
@@ -2085,9 +2105,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_birthday/employee_birthday.json:report:Employee Birthday",
@@ -2102,7 +2122,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_birthday/employee_birthday.py:report_code:Employee Birthday",
@@ -2117,7 +2137,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_birthday/test_employee_birthday.py:report_code:Test Employee Birthday",
@@ -2130,9 +2150,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_exits/employee_exits.json:report:Employee Exits",
@@ -2147,7 +2167,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_exits/employee_exits.py:report_code:Employee Exits",
@@ -2162,7 +2182,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_exits/test_employee_exits.py:report_code:Test Employee Exits",
@@ -2175,9 +2195,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_hours_utilization_based_on_timesheet/employee_hours_utilization_based_on_timesheet.json:report:Employee Hours Utilization Based On Timesheet",
@@ -2192,7 +2212,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_hours_utilization_based_on_timesheet/employee_hours_utilization_based_on_timesheet.py:report_code:Employee Hours Utilization Based On Timesheet",
@@ -2207,7 +2227,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_hours_utilization_based_on_timesheet/test_employee_util.py:report_code:Test Employee Util",
@@ -2220,9 +2240,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_information/employee_information.json:report:Employee Information",
@@ -2237,7 +2257,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_leave_balance/employee_leave_balance.json:report:Employee Leave Balance",
@@ -2252,7 +2272,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_leave_balance/employee_leave_balance.py:report_code:Employee Leave Balance",
@@ -2267,7 +2287,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_leave_balance/test_employee_leave_balance.py:report_code:Test Employee Leave Balance",
@@ -2280,9 +2300,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_leave_balance_summary/employee_leave_balance_summary.json:report:Employee Leave Balance Summary",
@@ -2297,7 +2317,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_leave_balance_summary/employee_leave_balance_summary.py:report_code:Employee Leave Balance Summary",
@@ -2312,7 +2332,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employee_leave_balance_summary/test_employee_leave_balance_summary.py:report_code:Test Employee Leave Balance Summary",
@@ -2325,9 +2345,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employees_working_on_a_holiday/employees_working_on_a_holiday.json:report:Employees working on a holiday",
@@ -2342,7 +2362,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employees_working_on_a_holiday/employees_working_on_a_holiday.py:report_code:Employees Working On A Holiday",
@@ -2357,7 +2377,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/employees_working_on_a_holiday/test_employees_working_on_a_holiday.py:report_code:Test Employees Working On A Holiday",
@@ -2370,9 +2390,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/leave_ledger/leave_ledger.json:report:Leave Ledger",
@@ -2387,7 +2407,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/leave_ledger/leave_ledger.py:report_code:Leave Ledger",
@@ -2402,7 +2422,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/leave_ledger/test_leave_ledger.py:report_code:Test Leave Ledger",
@@ -2415,9 +2435,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/monthly_attendance_sheet/monthly_attendance_sheet.json:report:Monthly Attendance Sheet",
@@ -2432,7 +2452,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/monthly_attendance_sheet/monthly_attendance_sheet.py:report_code:Monthly Attendance Sheet",
@@ -2447,7 +2467,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/monthly_attendance_sheet/test_monthly_attendance_sheet.py:report_code:Test Monthly Attendance Sheet",
@@ -2460,9 +2480,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/project_profitability/project_profitability.json:report:Project Profitability",
@@ -2477,7 +2497,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/project_profitability/project_profitability.py:report_code:Project Profitability",
@@ -2492,7 +2512,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/project_profitability/test_project_profitability.py:report_code:Test Project Profitability",
@@ -2505,9 +2525,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/recruitment_analytics/recruitment_analytics.json:report:Recruitment Analytics",
@@ -2522,7 +2542,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/recruitment_analytics/recruitment_analytics.py:report_code:Recruitment Analytics",
@@ -2537,7 +2557,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/shift_attendance/shift_attendance.json:report:Shift Attendance",
@@ -2552,7 +2572,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/shift_attendance/shift_attendance.py:report_code:Shift Attendance",
@@ -2567,7 +2587,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/shift_attendance/test_shift_attendance.py:report_code:Test Shift Attendance",
@@ -2580,9 +2600,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/unpaid_expense_claim/unpaid_expense_claim.json:report:Unpaid Expense Claim",
@@ -2597,7 +2617,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/unpaid_expense_claim/unpaid_expense_claim.py:report_code:Unpaid Expense Claim",
@@ -2612,7 +2632,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/vehicle_expenses/test_vehicle_expenses.py:report_code:Test Vehicle Expenses",
@@ -2625,9 +2645,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/vehicle_expenses/vehicle_expenses.json:report:Vehicle Expenses",
@@ -2642,7 +2662,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/report/vehicle_expenses/vehicle_expenses.py:report_code:Vehicle Expenses",
@@ -2657,7 +2677,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-09] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/workspace/expenses/expenses.json:workspace:Expenses",
@@ -2672,7 +2692,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-07] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/workspace/hr_setup/hr_setup.json:workspace:HR Setup",
@@ -2685,9 +2705,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/hr/views/dashboard.php:38-108",
+                "company/admin/modules/hr/views/dashboard.php:110-418",
+                "tests/hr-database-driven-forms.php (PASS 2026-08-25: form builder, immutable versions, submissions, rollback)",
+                "tests/project-module-hierarchy.php (PASS 2026-08-25: sidebar contract and immediate HR form projection)"
+            ],
+            "reason": "[HR-WP-01] BuilderX has an HR workspace and completed Form Builder foundation, but the pinned setup workspace full masters, settings, and actions are not implemented."
         },
         {
             "source_id": "hrms:hrms/hr/workspace/leaves/leaves.json:workspace:Leaves",
@@ -2702,7 +2727,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/workspace/performance/performance.json:workspace:Performance",
@@ -2717,7 +2742,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/workspace/recruitment/recruitment.json:workspace:Recruitment",
@@ -2732,7 +2757,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/workspace/shift_&_attendance/shift_&_attendance.json:workspace:Shift & Attendance",
@@ -2747,7 +2772,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-02] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/hr/workspace/tenure/tenure.json:workspace:Tenure",
@@ -2762,7 +2787,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-06] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/additional_salary/additional_salary.json:doctype:Additional Salary",
@@ -2777,7 +2802,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/arrear/arrear.json:doctype:Arrear",
@@ -2792,7 +2817,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/bulk_salary_structure_assignment/bulk_salary_structure_assignment.json:doctype:Bulk Salary Structure Assignment",
@@ -2807,7 +2832,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_benefit_application/employee_benefit_application.json:doctype:Employee Benefit Application",
@@ -2822,7 +2847,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_benefit_application_detail/employee_benefit_application_detail.json:doctype:Employee Benefit Application Detail",
@@ -2837,7 +2862,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_benefit_claim/employee_benefit_claim.json:doctype:Employee Benefit Claim",
@@ -2852,7 +2877,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_benefit_detail/employee_benefit_detail.json:doctype:Employee Benefit Detail",
@@ -2867,7 +2892,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_benefit_ledger/employee_benefit_ledger.json:doctype:Employee Benefit Ledger",
@@ -2882,7 +2907,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_cost_center/employee_cost_center.json:doctype:Employee Cost Center",
@@ -2897,7 +2922,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_incentive/employee_incentive.json:doctype:Employee Incentive",
@@ -2912,7 +2937,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_other_income/employee_other_income.json:doctype:Employee Other Income",
@@ -2927,7 +2952,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_tax_exemption_category/employee_tax_exemption_category.json:doctype:Employee Tax Exemption Category",
@@ -2942,7 +2967,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_tax_exemption_declaration/employee_tax_exemption_declaration.json:doctype:Employee Tax Exemption Declaration",
@@ -2957,7 +2982,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_tax_exemption_declaration_category/employee_tax_exemption_declaration_category.json:doctype:Employee Tax Exemption Declaration Category",
@@ -2972,7 +2997,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_tax_exemption_proof_submission/employee_tax_exemption_proof_submission.json:doctype:Employee Tax Exemption Proof Submission",
@@ -2987,7 +3012,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_tax_exemption_proof_submission_detail/employee_tax_exemption_proof_submission_detail.json:doctype:Employee Tax Exemption Proof Submission Detail",
@@ -3002,7 +3027,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/employee_tax_exemption_sub_category/employee_tax_exemption_sub_category.json:doctype:Employee Tax Exemption Sub Category",
@@ -3017,7 +3042,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/gratuity/gratuity.json:doctype:Gratuity",
@@ -3032,7 +3057,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/gratuity_applicable_component/gratuity_applicable_component.json:doctype:Gratuity Applicable Component",
@@ -3047,7 +3072,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/gratuity_rule/gratuity_rule.json:doctype:Gratuity Rule",
@@ -3062,7 +3087,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/gratuity_rule_slab/gratuity_rule_slab.json:doctype:Gratuity Rule Slab",
@@ -3077,7 +3102,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/income_tax_slab/income_tax_slab.json:doctype:Income Tax Slab",
@@ -3092,7 +3117,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/income_tax_slab_other_charges/income_tax_slab_other_charges.json:doctype:Income Tax Slab Other Charges",
@@ -3107,7 +3132,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/payroll_correction/payroll_correction.json:doctype:Payroll Correction",
@@ -3122,7 +3147,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/payroll_correction_child/payroll_correction_child.json:doctype:Payroll Correction Child",
@@ -3137,7 +3162,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/payroll_employee_detail/payroll_employee_detail.json:doctype:Payroll Employee Detail",
@@ -3152,7 +3177,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/payroll_entry/payroll_entry.json:doctype:Payroll Entry",
@@ -3167,7 +3192,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/payroll_period/payroll_period.json:doctype:Payroll Period",
@@ -3182,7 +3207,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/payroll_period_date/payroll_period_date.json:doctype:Payroll Period Date",
@@ -3197,7 +3222,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/payroll_settings/payroll_settings.json:doctype:Payroll Settings",
@@ -3212,7 +3237,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/retention_bonus/retention_bonus.json:doctype:Retention Bonus",
@@ -3227,7 +3252,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/salary_component/salary_component.json:doctype:Salary Component",
@@ -3242,7 +3267,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/salary_component/test_records.json:doctype:Test Records",
@@ -3255,9 +3280,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/salary_component_account/salary_component_account.json:doctype:Salary Component Account",
@@ -3272,7 +3297,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/salary_detail/salary_detail.json:doctype:Salary Detail",
@@ -3287,7 +3312,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/salary_slip/salary_slip.json:doctype:Salary Slip",
@@ -3302,7 +3327,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/salary_slip_leave/salary_slip_leave.json:doctype:Salary Slip Leave",
@@ -3317,7 +3342,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/salary_slip_loan/salary_slip_loan.json:doctype:Salary Slip Loan",
@@ -3332,7 +3357,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/salary_slip_timesheet/salary_slip_timesheet.json:doctype:Salary Slip Timesheet",
@@ -3347,7 +3372,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/salary_structure/salary_structure.json:doctype:Salary Structure",
@@ -3362,7 +3387,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/salary_structure_assignment/salary_structure_assignment.json:doctype:Salary Structure Assignment",
@@ -3377,7 +3402,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/salary_withholding/salary_withholding.json:doctype:Salary Withholding",
@@ -3392,7 +3417,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/salary_withholding_cycle/salary_withholding_cycle.json:doctype:Salary Withholding Cycle",
@@ -3407,7 +3432,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-10] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/doctype/taxable_salary_slab/taxable_salary_slab.json:doctype:Taxable Salary Slab",
@@ -3422,7 +3447,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-11] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/notification/retention_bonus/retention_bonus.json:notification:Retention Bonus",
@@ -3437,7 +3462,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/print_format/salary_slip_based_on_timesheet/salary_slip_based_on_timesheet.json:print_format:Salary Slip based on Timesheet",
@@ -3452,7 +3477,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/print_format/salary_slip_standard/salary_slip_standard.json:print_format:Salary Slip Standard",
@@ -3467,7 +3492,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/print_format/salary_slip_with_year_to_date/salary_slip_with_year_to_date.json:print_format:Salary Slip with Year to Date",
@@ -3482,7 +3507,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/accrued_earnings_report/accrued_earnings_report.json:report:Accrued Earnings Report",
@@ -3497,7 +3522,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/accrued_earnings_report/accrued_earnings_report.py:report_code:Accrued Earnings Report",
@@ -3512,7 +3537,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/bank_remittance/bank_remittance.json:report:Bank Remittance",
@@ -3527,7 +3552,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/bank_remittance/bank_remittance.py:report_code:Bank Remittance",
@@ -3542,7 +3567,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/employee_ctc_break_up/employee_ctc_break_up.json:report:Employee CTC Break-up",
@@ -3557,7 +3582,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/employee_ctc_break_up/employee_ctc_break_up.py:report_code:Employee Ctc Break Up",
@@ -3572,7 +3597,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/employee_ctc_break_up/test_employee_ctc_breakup.py:report_code:Test Employee Ctc Breakup",
@@ -3585,9 +3610,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/income_tax_computation/income_tax_computation.json:report:Income Tax Computation",
@@ -3602,7 +3627,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/income_tax_computation/income_tax_computation.py:report_code:Income Tax Computation",
@@ -3617,7 +3642,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/income_tax_computation/test_income_tax_computation.py:report_code:Test Income Tax Computation",
@@ -3630,9 +3655,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/income_tax_deductions/income_tax_deductions.json:report:Income Tax Deductions",
@@ -3647,7 +3672,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/income_tax_deductions/income_tax_deductions.py:report_code:Income Tax Deductions",
@@ -3662,7 +3687,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/income_tax_deductions/test_income_tax_deductions.py:report_code:Test Income Tax Deductions",
@@ -3675,9 +3700,9 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "NOT_APPLICABLE",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-NA-TEST] Upstream test fixture or test module, not a deployable user capability. BuilderX will provide independent local verification in the owning work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/professional_tax_deductions/professional_tax_deductions.json:report:Professional Tax Deductions",
@@ -3692,7 +3717,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/professional_tax_deductions/professional_tax_deductions.py:report_code:Professional Tax Deductions",
@@ -3707,7 +3732,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/provident_fund_deductions/provident_fund_deductions.json:report:Provident Fund Deductions",
@@ -3722,7 +3747,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/provident_fund_deductions/provident_fund_deductions.py:report_code:Provident Fund Deductions",
@@ -3737,7 +3762,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/salary_payments_based_on_payment_mode/salary_payments_based_on_payment_mode.json:report:Salary Payments Based On Payment Mode",
@@ -3752,7 +3777,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/salary_payments_based_on_payment_mode/salary_payments_based_on_payment_mode.py:report_code:Salary Payments Based On Payment Mode",
@@ -3767,7 +3792,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/salary_payments_via_ecs/salary_payments_via_ecs.json:report:Salary Payments via ECS",
@@ -3782,7 +3807,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/salary_payments_via_ecs/salary_payments_via_ecs.py:report_code:Salary Payments Via Ecs",
@@ -3797,7 +3822,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/salary_register/salary_register.json:report:Salary Register",
@@ -3812,7 +3837,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/report/salary_register/salary_register.py:report_code:Salary Register",
@@ -3827,7 +3852,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/workspace/payroll/payroll.json:workspace:Payroll",
@@ -3842,7 +3867,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         },
         {
             "source_id": "hrms:hrms/payroll/workspace/tax_&_benefits/tax_&_benefits.json:workspace:Tax & Benefits",
@@ -3857,7 +3882,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "[HR-WP-12] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
         }
     ]
 }

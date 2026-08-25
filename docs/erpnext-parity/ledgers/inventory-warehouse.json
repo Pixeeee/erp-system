@@ -3,6 +3,31 @@
     "baseline_captured_on": "2026-08-25",
     "owner": "inventory-warehouse",
     "thread_id": "01a037db-349d-7453-994f-583b757e2e1c",
+    "audit": {
+        "audited_on": "2026-08-25",
+        "source_identities": [
+            {
+                "repository": "erpnext",
+                "branch": "version-16",
+                "commit": "11e0ba0a1c45f217e2e73e885f699102d06da325",
+                "module": "Stock"
+            }
+        ],
+        "local_scope": [
+            "company/admin/modules/inventory-warehouse/",
+            "tests/inventory-warehouse-*"
+        ],
+        "local_implementation_files": [],
+        "passing_test_evidence": [],
+        "result": "The module directory and focused test files do not exist. Every applicable upstream row is MISSING and is assigned to exactly one gap package.",
+        "status_counts": {
+            "COMPLETE": 0,
+            "PARTIAL": 0,
+            "MISSING": 189,
+            "NOT_APPLICABLE": 0,
+            "DEFERRED": 0
+        }
+    },
     "rows": [
         {
             "source_id": "erpnext:erpnext/stock/doctype/batch/batch.json:doctype:Batch",
@@ -17,7 +42,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/bin/bin.json:doctype:Bin",
@@ -32,7 +58,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/customs_tariff_number/customs_tariff_number.json:doctype:Customs Tariff Number",
@@ -47,7 +74,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/delivery_note/delivery_note.json:doctype:Delivery Note",
@@ -62,7 +90,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/delivery_note_item/delivery_note_item.json:doctype:Delivery Note Item",
@@ -77,7 +106,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/delivery_settings/delivery_settings.json:doctype:Delivery Settings",
@@ -92,7 +122,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/delivery_stop/delivery_stop.json:doctype:Delivery Stop",
@@ -107,7 +138,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/delivery_trip/delivery_trip.json:doctype:Delivery Trip",
@@ -122,7 +154,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/inventory_dimension/inventory_dimension.json:doctype:Inventory Dimension",
@@ -137,7 +170,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item/item.json:doctype:Item",
@@ -152,7 +186,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_alternative/item_alternative.json:doctype:Item Alternative",
@@ -167,7 +202,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_attribute/item_attribute.json:doctype:Item Attribute",
@@ -182,7 +218,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_attribute_value/item_attribute_value.json:doctype:Item Attribute Value",
@@ -197,7 +234,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_barcode/item_barcode.json:doctype:Item Barcode",
@@ -212,7 +250,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_customer_detail/item_customer_detail.json:doctype:Item Customer Detail",
@@ -227,7 +266,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_default/item_default.json:doctype:Item Default",
@@ -242,7 +282,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_lead_time/item_lead_time.json:doctype:Item Lead Time",
@@ -257,7 +298,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_manufacturer/item_manufacturer.json:doctype:Item Manufacturer",
@@ -272,7 +314,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_price/item_price.json:doctype:Item Price",
@@ -287,7 +330,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_price/test_records.json:doctype:Test Records",
@@ -302,7 +346,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_quality_inspection_parameter/item_quality_inspection_parameter.json:doctype:Item Quality Inspection Parameter",
@@ -317,7 +362,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-10.",
+            "gap_package": "IW-10"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_reorder/item_reorder.json:doctype:Item Reorder",
@@ -332,7 +378,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_supplier/item_supplier.json:doctype:Item Supplier",
@@ -347,7 +394,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_tax/item_tax.json:doctype:Item Tax",
@@ -362,7 +410,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_variant/item_variant.json:doctype:Item Variant",
@@ -377,7 +426,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_variant_attribute/item_variant_attribute.json:doctype:Item Variant Attribute",
@@ -392,7 +442,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_variant_settings/item_variant_settings.json:doctype:Item Variant Settings",
@@ -407,7 +458,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/item_website_specification/item_website_specification.json:doctype:Item Website Specification",
@@ -422,7 +474,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/landed_cost_item/landed_cost_item.json:doctype:Landed Cost Item",
@@ -437,7 +490,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/landed_cost_purchase_receipt/landed_cost_purchase_receipt.json:doctype:Landed Cost Purchase Receipt",
@@ -452,7 +506,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/landed_cost_taxes_and_charges/landed_cost_taxes_and_charges.json:doctype:Landed Cost Taxes and Charges",
@@ -467,7 +522,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/landed_cost_vendor_invoice/landed_cost_vendor_invoice.json:doctype:Landed Cost Vendor Invoice",
@@ -482,7 +538,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/landed_cost_voucher/landed_cost_voucher.json:doctype:Landed Cost Voucher",
@@ -497,7 +554,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/manufacturer/manufacturer.json:doctype:Manufacturer",
@@ -512,7 +570,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/material_request/material_request.json:doctype:Material Request",
@@ -527,7 +586,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/material_request/test_records.json:doctype:Test Records",
@@ -542,7 +602,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/material_request_item/material_request_item.json:doctype:Material Request Item",
@@ -557,7 +618,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/packed_item/packed_item.json:doctype:Packed Item",
@@ -572,7 +634,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/packing_slip/packing_slip.json:doctype:Packing Slip",
@@ -587,7 +650,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/packing_slip_item/packing_slip_item.json:doctype:Packing Slip Item",
@@ -602,7 +666,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/pick_list/pick_list.json:doctype:Pick List",
@@ -617,7 +682,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/pick_list_item/pick_list_item.json:doctype:Pick List Item",
@@ -632,7 +698,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/price_list/price_list.json:doctype:Price List",
@@ -647,7 +714,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/price_list_country/price_list_country.json:doctype:Price List Country",
@@ -662,7 +730,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/purchase_receipt/purchase_receipt.json:doctype:Purchase Receipt",
@@ -677,7 +746,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/purchase_receipt/test_records.json:doctype:Test Records",
@@ -692,7 +762,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/purchase_receipt_item/purchase_receipt_item.json:doctype:Purchase Receipt Item",
@@ -707,7 +778,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/putaway_rule/putaway_rule.json:doctype:Putaway Rule",
@@ -722,7 +794,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/quality_inspection/quality_inspection.json:doctype:Quality Inspection",
@@ -737,7 +810,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-10.",
+            "gap_package": "IW-10"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/quality_inspection_parameter/quality_inspection_parameter.json:doctype:Quality Inspection Parameter",
@@ -752,7 +826,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-10.",
+            "gap_package": "IW-10"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/quality_inspection_parameter_group/quality_inspection_parameter_group.json:doctype:Quality Inspection Parameter Group",
@@ -767,7 +842,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-10.",
+            "gap_package": "IW-10"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/quality_inspection_reading/quality_inspection_reading.json:doctype:Quality Inspection Reading",
@@ -782,7 +858,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-10.",
+            "gap_package": "IW-10"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/quality_inspection_template/quality_inspection_template.json:doctype:Quality Inspection Template",
@@ -797,7 +874,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-10.",
+            "gap_package": "IW-10"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/quick_stock_balance/quick_stock_balance.json:doctype:Quick Stock Balance",
@@ -812,7 +890,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/repost_item_valuation/repost_item_valuation.json:doctype:Repost Item Valuation",
@@ -827,7 +906,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/serial_and_batch_bundle/serial_and_batch_bundle.json:doctype:Serial and Batch Bundle",
@@ -842,7 +922,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/serial_and_batch_entry/serial_and_batch_entry.json:doctype:Serial and Batch Entry",
@@ -857,7 +938,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/serial_no/serial_no.json:doctype:Serial No",
@@ -872,7 +954,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/shipment/shipment.json:doctype:Shipment",
@@ -887,7 +970,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/shipment_delivery_note/shipment_delivery_note.json:doctype:Shipment Delivery Note",
@@ -902,7 +986,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/shipment_parcel/shipment_parcel.json:doctype:Shipment Parcel",
@@ -917,7 +1002,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/shipment_parcel_template/shipment_parcel_template.json:doctype:Shipment Parcel Template",
@@ -932,7 +1018,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/stock_closing_balance/stock_closing_balance.json:doctype:Stock Closing Balance",
@@ -947,7 +1034,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/stock_closing_entry/stock_closing_entry.json:doctype:Stock Closing Entry",
@@ -962,7 +1050,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/stock_entry/stock_entry.json:doctype:Stock Entry",
@@ -977,7 +1066,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/stock_entry/test_records.json:doctype:Test Records",
@@ -992,7 +1082,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/stock_entry_detail/stock_entry_detail.json:doctype:Stock Entry Detail",
@@ -1007,7 +1098,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/stock_entry_type/stock_entry_type.json:doctype:Stock Entry Type",
@@ -1022,7 +1114,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/stock_ledger_entry/stock_ledger_entry.json:doctype:Stock Ledger Entry",
@@ -1037,7 +1130,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/stock_reconciliation/stock_reconciliation.json:doctype:Stock Reconciliation",
@@ -1052,7 +1146,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/stock_reconciliation_item/stock_reconciliation_item.json:doctype:Stock Reconciliation Item",
@@ -1067,7 +1162,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/stock_reposting_settings/stock_reposting_settings.json:doctype:Stock Reposting Settings",
@@ -1082,7 +1178,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/stock_reservation_entry/stock_reservation_entry.json:doctype:Stock Reservation Entry",
@@ -1097,7 +1194,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/stock_settings/stock_settings.json:doctype:Stock Settings",
@@ -1112,7 +1210,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/uom_category/uom_category.json:doctype:UOM Category",
@@ -1127,7 +1226,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/uom_conversion_detail/uom_conversion_detail.json:doctype:UOM Conversion Detail",
@@ -1142,7 +1242,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/variant_field/variant_field.json:doctype:Variant Field",
@@ -1157,7 +1258,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/warehouse/warehouse.json:doctype:Warehouse",
@@ -1172,7 +1274,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/doctype/warehouse_type/warehouse_type.json:doctype:Warehouse Type",
@@ -1187,7 +1290,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/page/stock_balance/stock_balance.json:page:stock-balance",
@@ -1202,7 +1306,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/page/warehouse_capacity_summary/warehouse_capacity_summary.json:page:warehouse-capacity-summary",
@@ -1217,7 +1322,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/print_format/delivery_note_standard/delivery_note_standard.json:print_format:Delivery Note Standard",
@@ -1232,7 +1338,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/print_format/delivery_note_with_item_image/delivery_note_with_item_image.json:print_format:Delivery Note with Item Image",
@@ -1247,7 +1354,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/print_format/pick_list/pick_list.json:print_format:Pick List",
@@ -1262,7 +1370,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/print_format/purchase_receipt_serial_and_batch_bundle_print/purchase_receipt_serial_and_batch_bundle_print.json:print_format:Purchase Receipt Serial and Batch Bundle Print",
@@ -1277,7 +1386,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-09.",
+            "gap_package": "IW-09"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/available_batch_report/available_batch_report.json:report:Available Batch Report",
@@ -1292,7 +1402,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/available_batch_report/available_batch_report.py:report_code:Available Batch Report",
@@ -1307,7 +1418,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/available_serial_no/available_serial_no.json:report:Available Serial No",
@@ -1322,7 +1434,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/available_serial_no/available_serial_no.py:report_code:Available Serial No",
@@ -1337,7 +1450,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/available_serial_no/test_available_serial_no.py:report_code:Test Available Serial No",
@@ -1352,7 +1466,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/batch_item_expiry_status/batch_item_expiry_status.json:report:Batch Item Expiry Status",
@@ -1367,7 +1482,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/batch_item_expiry_status/batch_item_expiry_status.py:report_code:Batch Item Expiry Status",
@@ -1382,7 +1498,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/batch_wise_balance_history/batch_wise_balance_history.json:report:Batch-Wise Balance History",
@@ -1397,7 +1514,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/batch_wise_balance_history/batch_wise_balance_history.py:report_code:Batch Wise Balance History",
@@ -1412,7 +1530,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/bom_search/bom_search.json:report:BOM Search",
@@ -1427,7 +1546,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-11.",
+            "gap_package": "IW-11"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/bom_search/bom_search.py:report_code:Bom Search",
@@ -1442,7 +1562,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-11.",
+            "gap_package": "IW-11"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/cogs_by_item_group/cogs_by_item_group.json:report:COGS By Item Group",
@@ -1457,7 +1578,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/cogs_by_item_group/cogs_by_item_group.py:report_code:Cogs By Item Group",
@@ -1472,7 +1594,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/delayed_item_report/delayed_item_report.json:report:Delayed Item Report",
@@ -1487,7 +1610,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-11.",
+            "gap_package": "IW-11"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/delayed_item_report/delayed_item_report.py:report_code:Delayed Item Report",
@@ -1502,7 +1626,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-11.",
+            "gap_package": "IW-11"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/delayed_order_report/delayed_order_report.json:report:Delayed Order Report",
@@ -1517,7 +1642,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-11.",
+            "gap_package": "IW-11"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/delayed_order_report/delayed_order_report.py:report_code:Delayed Order Report",
@@ -1532,7 +1658,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-11.",
+            "gap_package": "IW-11"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/delivery_note_trends/delivery_note_trends.json:report:Delivery Note Trends",
@@ -1547,7 +1674,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/delivery_note_trends/delivery_note_trends.py:report_code:Delivery Note Trends",
@@ -1562,7 +1690,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/fifo_queue_vs_qty_after_transaction_comparison/fifo_queue_vs_qty_after_transaction_comparison.json:report:FIFO Queue vs Qty After Transaction Comparison",
@@ -1577,7 +1706,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/fifo_queue_vs_qty_after_transaction_comparison/fifo_queue_vs_qty_after_transaction_comparison.py:report_code:Fifo Queue Vs Qty After Transaction Comparison",
@@ -1592,7 +1722,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/incorrect_balance_qty_after_transaction/incorrect_balance_qty_after_transaction.json:report:Incorrect Balance Qty After Transaction",
@@ -1607,7 +1738,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/incorrect_balance_qty_after_transaction/incorrect_balance_qty_after_transaction.py:report_code:Incorrect Balance Qty After Transaction",
@@ -1622,7 +1754,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/incorrect_serial_and_batch_bundle/incorrect_serial_and_batch_bundle.json:report:Incorrect Serial and Batch Bundle",
@@ -1637,7 +1770,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/incorrect_serial_and_batch_bundle/incorrect_serial_and_batch_bundle.py:report_code:Incorrect Serial And Batch Bundle",
@@ -1652,7 +1786,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/incorrect_serial_no_valuation/incorrect_serial_no_valuation.json:report:Incorrect Serial No Valuation",
@@ -1667,7 +1802,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/incorrect_serial_no_valuation/incorrect_serial_no_valuation.py:report_code:Incorrect Serial No Valuation",
@@ -1682,7 +1818,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/incorrect_stock_value_report/incorrect_stock_value_report.json:report:Incorrect Stock Value Report",
@@ -1697,7 +1834,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/incorrect_stock_value_report/incorrect_stock_value_report.py:report_code:Incorrect Stock Value Report",
@@ -1712,7 +1850,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_balance/item_balance.json:report:Item Balance (Simple)",
@@ -1727,7 +1866,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-11.",
+            "gap_package": "IW-11"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_price_stock/item_price_stock.json:report:Item Price Stock",
@@ -1742,7 +1882,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_price_stock/item_price_stock.py:report_code:Item Price Stock",
@@ -1757,7 +1898,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_prices/item_prices.json:report:Item Prices",
@@ -1772,7 +1914,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_prices/item_prices.py:report_code:Item Prices",
@@ -1787,7 +1930,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_shortage_report/item_shortage_report.json:report:Item Shortage Report",
@@ -1802,7 +1946,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_shortage_report/item_shortage_report.py:report_code:Item Shortage Report",
@@ -1817,7 +1962,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_shortage_report/test_item_shortage_report.py:report_code:Test Item Shortage Report",
@@ -1832,7 +1978,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_variant_details/item_variant_details.json:report:Item Variant Details",
@@ -1847,7 +1994,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_variant_details/item_variant_details.py:report_code:Item Variant Details",
@@ -1862,7 +2010,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_where_used/item_where_used.json:report:Item Where Used",
@@ -1877,7 +2026,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-11.",
+            "gap_package": "IW-11"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_where_used/item_where_used.py:report_code:Item Where Used",
@@ -1892,7 +2042,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-11.",
+            "gap_package": "IW-11"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_wise_consumption/item_wise_consumption.json:report:Item Wise Consumption",
@@ -1907,7 +2058,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-11.",
+            "gap_package": "IW-11"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_wise_consumption/item_wise_consumption.py:report_code:Item Wise Consumption",
@@ -1922,7 +2074,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-11.",
+            "gap_package": "IW-11"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/item_wise_price_list_rate/item_wise_price_list_rate.json:report:Item-wise Price List Rate",
@@ -1937,7 +2090,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-02.",
+            "gap_package": "IW-02"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/items_to_be_requested/items_to_be_requested.json:report:Items To Be Requested",
@@ -1952,7 +2106,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/itemwise_recommended_reorder_level/itemwise_recommended_reorder_level.json:report:Itemwise Recommended Reorder Level",
@@ -1967,7 +2122,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/itemwise_recommended_reorder_level/itemwise_recommended_reorder_level.py:report_code:Itemwise Recommended Reorder Level",
@@ -1982,7 +2138,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/landed_cost_report/landed_cost_report.json:report:Landed Cost Report",
@@ -1997,7 +2154,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/landed_cost_report/landed_cost_report.py:report_code:Landed Cost Report",
@@ -2012,7 +2170,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/material_requests_for_which_supplier_quotations_are_not_created/material_requests_for_which_supplier_quotations_are_not_created.json:report:Material Requests for which Supplier Quotations are not created",
@@ -2027,7 +2186,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/negative_batch_report/negative_batch_report.json:report:Negative Batch Report",
@@ -2042,7 +2202,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/negative_batch_report/negative_batch_report.py:report_code:Negative Batch Report",
@@ -2057,7 +2218,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/product_bundle_balance/product_bundle_balance.json:report:Product Bundle Balance",
@@ -2072,7 +2234,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/product_bundle_balance/product_bundle_balance.py:report_code:Product Bundle Balance",
@@ -2087,7 +2250,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/purchase_receipt_trends/purchase_receipt_trends.json:report:Purchase Receipt Trends",
@@ -2102,7 +2266,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/purchase_receipt_trends/purchase_receipt_trends.py:report_code:Purchase Receipt Trends",
@@ -2117,7 +2282,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-05.",
+            "gap_package": "IW-05"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/requested_items_to_be_transferred/requested_items_to_be_transferred.json:report:Requested Items To Be Transferred",
@@ -2132,7 +2298,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/reserved_stock/reserved_stock.json:report:Reserved Stock",
@@ -2147,7 +2314,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/reserved_stock/reserved_stock.py:report_code:Reserved Stock",
@@ -2162,7 +2330,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/reserved_stock/test_reserved_stock.py:report_code:Test Reserved Stock",
@@ -2177,7 +2346,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-06.",
+            "gap_package": "IW-06"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/serial_and_batch_summary/serial_and_batch_summary.json:report:Serial and Batch Summary",
@@ -2192,7 +2362,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/serial_and_batch_summary/serial_and_batch_summary.py:report_code:Serial And Batch Summary",
@@ -2207,7 +2378,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/serial_no_and_batch_traceability/serial_no_and_batch_traceability.json:report:Serial No and Batch Traceability",
@@ -2222,7 +2394,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/serial_no_and_batch_traceability/serial_no_and_batch_traceability.py:report_code:Serial No And Batch Traceability",
@@ -2237,7 +2410,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/serial_no_ledger/serial_no_ledger.json:report:Serial No Ledger",
@@ -2252,7 +2426,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/serial_no_ledger/serial_no_ledger.py:report_code:Serial No Ledger",
@@ -2267,7 +2442,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/serial_no_service_contract_expiry/serial_no_service_contract_expiry.json:report:Serial No Service Contract Expiry",
@@ -2282,7 +2458,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/serial_no_status/serial_no_status.json:report:Serial No Status",
@@ -2297,7 +2474,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/serial_no_warranty_expiry/serial_no_warranty_expiry.json:report:Serial No Warranty Expiry",
@@ -2312,7 +2490,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_ageing/stock_ageing.json:report:Stock Ageing",
@@ -2327,7 +2506,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_ageing/stock_ageing.py:report_code:Stock Ageing",
@@ -2342,7 +2522,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_ageing/test_stock_ageing.py:report_code:Test Stock Ageing",
@@ -2357,7 +2538,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_analytics/stock_analytics.json:report:Stock Analytics",
@@ -2372,7 +2554,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_analytics/stock_analytics.py:report_code:Stock Analytics",
@@ -2387,7 +2570,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_analytics/test_stock_analytics.py:report_code:Test Stock Analytics",
@@ -2402,7 +2586,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_and_account_value_comparison/stock_and_account_value_comparison.json:report:Stock and Account Value Comparison",
@@ -2417,7 +2602,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_and_account_value_comparison/stock_and_account_value_comparison.py:report_code:Stock And Account Value Comparison",
@@ -2432,7 +2618,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_and_account_value_comparison/test_stock_and_account_value_comparison.py:report_code:Test Stock And Account Value Comparison",
@@ -2447,7 +2634,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_balance/stock_balance.json:report:Stock Balance",
@@ -2462,7 +2650,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_balance/stock_balance.py:report_code:Stock Balance",
@@ -2477,7 +2666,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_balance/test_stock_balance.py:report_code:Test Stock Balance",
@@ -2492,7 +2682,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_ledger/stock_ledger.json:report:Stock Ledger",
@@ -2507,7 +2698,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_ledger/stock_ledger.py:report_code:Stock Ledger",
@@ -2522,7 +2714,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_ledger/test_stock_ledger_report.py:report_code:Test Stock Ledger Report",
@@ -2537,7 +2730,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_ledger_invariant_check/stock_ledger_invariant_check.json:report:Stock Ledger Invariant Check",
@@ -2552,7 +2746,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_ledger_invariant_check/stock_ledger_invariant_check.py:report_code:Stock Ledger Invariant Check",
@@ -2567,7 +2762,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_ledger_invariant_check/test_stock_ledger_invariant_check.py:report_code:Test Stock Ledger Invariant Check",
@@ -2582,7 +2778,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_ledger_variance/stock_ledger_variance.json:report:Stock Ledger Variance",
@@ -2597,7 +2794,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_ledger_variance/stock_ledger_variance.py:report_code:Stock Ledger Variance",
@@ -2612,7 +2810,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-08.",
+            "gap_package": "IW-08"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_projected_qty/stock_projected_qty.json:report:Stock Projected Qty",
@@ -2627,7 +2826,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_projected_qty/stock_projected_qty.py:report_code:Stock Projected Qty",
@@ -2642,7 +2842,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-03.",
+            "gap_package": "IW-03"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_qty_vs_batch_qty/stock_qty_vs_batch_qty.json:report:Stock Qty vs Batch Qty",
@@ -2657,7 +2858,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_qty_vs_batch_qty/stock_qty_vs_batch_qty.py:report_code:Stock Qty Vs Batch Qty",
@@ -2672,7 +2874,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_qty_vs_serial_no_count/stock_qty_vs_serial_no_count.json:report:Stock Qty vs Serial No Count",
@@ -2687,7 +2890,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_qty_vs_serial_no_count/stock_qty_vs_serial_no_count.py:report_code:Stock Qty Vs Serial No Count",
@@ -2702,7 +2906,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/stock_qty_vs_serial_no_count/test_stock_qty_vs_serial_no_count.py:report_code:Test Stock Qty Vs Serial No Count",
@@ -2717,7 +2922,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "gap_package": "IW-07"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/test_reports.py:report_code:Test Reports",
@@ -2732,7 +2938,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-11.",
+            "gap_package": "IW-11"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/total_stock_summary/total_stock_summary.json:report:Total Stock Summary",
@@ -2747,7 +2954,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/total_stock_summary/total_stock_summary.py:report_code:Total Stock Summary",
@@ -2762,7 +2970,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/warehouse_wise_item_balance_age_and_value/warehouse_wise_item_balance_age_and_value.json:report:Warehouse wise Item Balance Age and Value",
@@ -2777,7 +2986,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/warehouse_wise_item_balance_age_and_value/warehouse_wise_item_balance_age_and_value.py:report_code:Warehouse Wise Item Balance Age And Value",
@@ -2792,7 +3002,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/warehouse_wise_stock_balance/warehouse_wise_stock_balance.json:report:Warehouse Wise Stock Balance",
@@ -2807,7 +3018,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/report/warehouse_wise_stock_balance/warehouse_wise_stock_balance.py:report_code:Warehouse Wise Stock Balance",
@@ -2822,7 +3034,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "gap_package": "IW-04"
         },
         {
             "source_id": "erpnext:erpnext/stock/workspace/stock/stock.json:workspace:Stock",
@@ -2837,7 +3050,8 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-01.",
+            "gap_package": "IW-01"
         }
     ]
 }

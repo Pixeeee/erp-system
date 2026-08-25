@@ -3,6 +3,12 @@
     "baseline_captured_on": "2026-08-25",
     "owner": "assets-maintenance",
     "thread_id": "01a037dc-3800-7850-918b-615d933611ec",
+    "audit": {
+        "audited_on": "2026-08-25",
+        "local_scope": "company/admin/modules/assets-maintenance/",
+        "test_scope": "tests/assets-maintenance-*",
+        "result": "No module-local implementation directory or focused test files exist; all 37 applicable rows remain MISSING."
+    },
     "rows": [
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset/asset.json:doctype:Asset",
@@ -14,10 +20,16 @@
             "source_name": "Asset",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse:item-read-service",
+                "buying-procurement:purchase-receipt-read-service",
+                "accounting-finance:purchase-invoice-read-service",
+                "accounting-finance:posting-service",
+                "hr:employee-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_activity/asset_activity.json:doctype:Asset Activity",
@@ -29,10 +41,12 @@
             "source_name": "Asset Activity",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-lifecycle"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_capitalization/asset_capitalization.json:doctype:Asset Capitalization",
@@ -44,10 +58,15 @@
             "source_name": "Asset Capitalization",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-lifecycle",
+                "inventory-warehouse:item-warehouse-stock-service",
+                "accounting-finance:posting-service",
+                "projects:project-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_capitalization_asset_item/asset_capitalization_asset_item.json:doctype:Asset Capitalization Asset Item",
@@ -59,10 +78,13 @@
             "source_name": "Asset Capitalization Asset Item",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-lifecycle",
+                "accounting-finance:account-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_capitalization_service_item/asset_capitalization_service_item.json:doctype:Asset Capitalization Service Item",
@@ -74,10 +96,13 @@
             "source_name": "Asset Capitalization Service Item",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse:item-read-service",
+                "accounting-finance:account-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_capitalization_stock_item/asset_capitalization_stock_item.json:doctype:Asset Capitalization Stock Item",
@@ -89,10 +114,12 @@
             "source_name": "Asset Capitalization Stock Item",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse:item-warehouse-batch-serial-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_category/asset_category.json:doctype:Asset Category",
@@ -104,10 +131,12 @@
             "source_name": "Asset Category",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance:account-and-finance-book-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_category_account/asset_category_account.json:doctype:Asset Category Account",
@@ -119,10 +148,12 @@
             "source_name": "Asset Category Account",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance:account-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_depreciation_schedule/asset_depreciation_schedule.json:doctype:Asset Depreciation Schedule",
@@ -134,10 +165,13 @@
             "source_name": "Asset Depreciation Schedule",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-lifecycle",
+                "accounting-finance:depreciation-posting-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_finance_book/asset_finance_book.json:doctype:Asset Finance Book",
@@ -149,10 +183,12 @@
             "source_name": "Asset Finance Book",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance:finance-book-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_maintenance/asset_maintenance.json:doctype:Asset Maintenance",
@@ -164,10 +200,12 @@
             "source_name": "Asset Maintenance",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-and-maintenance-workflow"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_maintenance_log/asset_maintenance_log.json:doctype:Asset Maintenance Log",
@@ -179,10 +217,12 @@
             "source_name": "Asset Maintenance Log",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-maintenance-workflow"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_maintenance_task/asset_maintenance_task.json:doctype:Asset Maintenance Task",
@@ -194,10 +234,12 @@
             "source_name": "Asset Maintenance Task",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "operations:assignment-and-notification-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_maintenance_team/asset_maintenance_team.json:doctype:Asset Maintenance Team",
@@ -209,10 +251,12 @@
             "source_name": "Asset Maintenance Team",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "operations:user-and-role-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_movement/asset_movement.json:doctype:Asset Movement",
@@ -224,10 +268,13 @@
             "source_name": "Asset Movement",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-and-location-masters",
+                "hr:employee-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_movement_item/asset_movement_item.json:doctype:Asset Movement Item",
@@ -239,10 +286,13 @@
             "source_name": "Asset Movement Item",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-and-location-masters",
+                "hr:employee-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_repair/asset_repair.json:doctype:Asset Repair",
@@ -254,10 +304,16 @@
             "source_name": "Asset Repair",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-lifecycle",
+                "inventory-warehouse:item-warehouse-stock-service",
+                "accounting-finance:purchase-invoice-read-service",
+                "accounting-finance:posting-service",
+                "projects:project-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_repair_consumed_item/asset_repair_consumed_item.json:doctype:Asset Repair Consumed Item",
@@ -269,10 +325,12 @@
             "source_name": "Asset Repair Consumed Item",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "inventory-warehouse:item-warehouse-batch-serial-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_repair_purchase_invoice/asset_repair_purchase_invoice.json:doctype:Asset Repair Purchase Invoice",
@@ -284,10 +342,12 @@
             "source_name": "Asset Repair Purchase Invoice",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance:purchase-invoice-and-account-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_shift_allocation/asset_shift_allocation.json:doctype:Asset Shift Allocation",
@@ -299,10 +359,13 @@
             "source_name": "Asset Shift Allocation",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:depreciation-schedule",
+                "accounting-finance:depreciation-posting-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_shift_factor/asset_shift_factor.json:doctype:Asset Shift Factor",
@@ -317,7 +380,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_value_adjustment/asset_value_adjustment.json:doctype:Asset Value Adjustment",
@@ -329,10 +392,13 @@
             "source_name": "Asset Value Adjustment",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-lifecycle",
+                "accounting-finance:account-and-posting-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/depreciation_schedule/depreciation_schedule.json:doctype:Depreciation Schedule",
@@ -344,10 +410,12 @@
             "source_name": "Depreciation Schedule",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "accounting-finance:journal-entry-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/linked_location/linked_location.json:doctype:Linked Location",
@@ -359,10 +427,12 @@
             "source_name": "Linked Location",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:location-master"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/location/location.json:doctype:Location",
@@ -377,7 +447,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/maintenance_team_member/maintenance_team_member.json:doctype:Maintenance Team Member",
@@ -389,10 +459,12 @@
             "source_name": "Maintenance Team Member",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "operations:user-and-role-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/report/asset_activity/asset_activity.json:report:Asset Activity",
@@ -404,10 +476,12 @@
             "source_name": "Asset Activity",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-lifecycle"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/report/asset_maintenance/asset_maintenance.json:report:Asset Maintenance",
@@ -419,10 +493,12 @@
             "source_name": "Asset Maintenance",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-and-maintenance-workflow"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/report/fixed_asset_register/fixed_asset_register.json:report:Fixed Asset Register",
@@ -434,10 +510,13 @@
             "source_name": "Fixed Asset Register",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-and-depreciation-read-model",
+                "accounting-finance:posting-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/report/fixed_asset_register/fixed_asset_register.py:report_code:Fixed Asset Register",
@@ -449,10 +528,13 @@
             "source_name": "Fixed Asset Register",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:asset-and-depreciation-read-model",
+                "accounting-finance:posting-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/workspace/assets/assets.json:workspace:Assets",
@@ -464,10 +546,13 @@
             "source_name": "Assets",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "orchestration:shared-module-route-modal-and-form-builder-contracts",
+                "manufacturing:quality-inspection-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/maintenance/doctype/maintenance_schedule/maintenance_schedule.json:doctype:Maintenance Schedule",
@@ -479,10 +564,13 @@
             "source_name": "Maintenance Schedule",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm:customer-sales-order-and-salesperson-read-service",
+                "inventory-warehouse:item-serial-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/maintenance/doctype/maintenance_schedule_detail/maintenance_schedule_detail.json:doctype:Maintenance Schedule Detail",
@@ -494,10 +582,13 @@
             "source_name": "Maintenance Schedule Detail",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm:salesperson-read-service",
+                "inventory-warehouse:item-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/maintenance/doctype/maintenance_schedule_item/maintenance_schedule_item.json:doctype:Maintenance Schedule Item",
@@ -509,10 +600,13 @@
             "source_name": "Maintenance Schedule Item",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm:sales-order-and-salesperson-read-service",
+                "inventory-warehouse:item-serial-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/maintenance/doctype/maintenance_visit/maintenance_visit.json:doctype:Maintenance Visit",
@@ -524,10 +618,14 @@
             "source_name": "Maintenance Visit",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm:customer-and-salesperson-read-service",
+                "inventory-warehouse:item-serial-read-service",
+                "support-service:issue-update-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/maintenance/doctype/maintenance_visit_purpose/maintenance_visit_purpose.json:doctype:Maintenance Visit Purpose",
@@ -539,10 +637,13 @@
             "source_name": "Maintenance Visit Purpose",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "sales-crm:salesperson-read-service",
+                "inventory-warehouse:item-serial-read-service"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/maintenance/report/maintenance_schedules/maintenance_schedules.json:report:Maintenance Schedules",
@@ -554,10 +655,12 @@
             "source_name": "Maintenance Schedules",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
-            "dependencies": [],
+            "dependencies": [
+                "assets-maintenance:maintenance-schedule-and-visit-read-model"
+            ],
             "status": "MISSING",
             "evidence": [],
-            "reason": ""
+            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         }
     ]
 }
