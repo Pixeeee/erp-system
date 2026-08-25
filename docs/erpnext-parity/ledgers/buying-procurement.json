@@ -148,9 +148,15 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (project_company_buying_rfq with company identity, lifecycle, amendment, optimistic row-version, and actor fields).",
+                "Implementation: company/admin/modules/buying-procurement/sourcing.php (yovel_admin_buying_save_rfq, yovel_admin_buying_transition_rfq, yovel_admin_buying_rfq, and Inventory/Operations allow-listed owner-service gateway).",
+                "UI: company/admin/modules/buying-procurement/views/sourcing.php and views/workspace.php (12/8 sourcing workspace, body-owned create/edit/lifecycle modals, separate confirmation boundary, dependency states, and server rehydration).",
+                "PASS: php tests/buying-procurement-sourcing.php --group=rfq - draft/update optimistic concurrency, Draft to Submitted to Cancelled lifecycle, immutable submitted rows, amendment identity, authorization, company isolation, audit, exact read-back, and injected rollback checks passed.",
+                "PASS: php tests/buying-procurement-dashboard.php - live company-scoped RFQ count, draft queue, activity, shortcut, and available contract checks passed."
+            ],
+            "reason": "Buying now owns complete company-scoped RFQ header persistence and lifecycle behavior. Each mutation validates before one transaction, locks owned rows, verifies optimistic versions and exact read-back, audits actor/company/action, and rolls back on child or transport failure; dispatch remains behind the Operations owner-service contract."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/request_for_quotation_item/request_for_quotation_item.json:doctype:Request for Quotation Item",
@@ -163,9 +169,15 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (project_company_buying_rfq_item with stable item, UOM, warehouse, quantity, schedule, and material-request references).",
+                "Implementation: company/admin/modules/buying-procurement/sourcing.php (strict item normalization through yovel_admin_inventory_item, yovel_admin_resolve_item_uom, and verified material-request snapshots; no Inventory table access).",
+                "UI: company/admin/modules/buying-procurement/views/sourcing.php (rehydrated item-line editor preserving stable source references).",
+                "PASS: php tests/buying-procurement-sourcing.php --group=rfq - item/UOM/quantity/schedule validation, zero-quantity settings, stable material-request item mapping, exact child read-back, amendment preservation, company isolation, and child-write rollback checks passed.",
+                "PASS: php tests/inventory-warehouse-catalogue.php - verified Inventory item/UOM owner-callable contract checks passed."
+            ],
+            "reason": "RFQ item rows are persisted and read back inside their header transaction, validated exclusively through Inventory-owned callables, and retain stable material-request and item identities through updates and amendments without foreign table access."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/request_for_quotation_supplier/request_for_quotation_supplier.json:doctype:Request for Quotation Supplier",
@@ -178,9 +190,15 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (project_company_buying_rfq_supplier with company uniqueness, recipient channel/status, deterministic idempotency, dispatch job, checksum, and received timestamp fields).",
+                "Implementation: company/admin/modules/buying-procurement/sourcing.php (Buying-owned supplier validation/restrictions plus post-validation transaction-owned Operations delivery registration, retry, and receipt transitions).",
+                "UI: company/admin/modules/buying-procurement/views/sourcing.php (supplier invitation editor and modal-owned Submit, Cancel, Mark Received, and Retry Dispatch actions with sibling confirmation).",
+                "PASS: php tests/buying-procurement-sourcing.php --group=rfq - duplicate/inactive/held/prevented/missing-recipient checks, no pre-confirm dispatch, Pending to Received status, deterministic retry idempotency, exact supplier read-back, transport rollback, audit, and cross-company rejection passed.",
+                "PASS: php tests/company-admin-modal-confirmation.php - shared sibling confirmation and no-submit-before-confirm contract passed."
+            ],
+            "reason": "RFQ supplier rows use Buying-owned supplier governance and one allow-listed Operations delivery contract. Recipient state and deterministic handoff identities are transactionally read back, retries do not duplicate local rows, and unavailable Operations transport is exposed explicitly without foreign writes."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/supplier/supplier.json:doctype:Supplier",
@@ -215,9 +233,15 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (project_company_buying_supplier_quotation with company/supplier reference uniqueness, currency, Finance totals/snapshot, lifecycle, amendment, optimistic row version, and actor fields).",
+                "Implementation: company/admin/modules/buying-procurement/sourcing.php (yovel_admin_buying_save_supplier_quotation, yovel_admin_buying_transition_supplier_quotation, yovel_admin_buying_supplier_quotation, RFQ receipt projection, comparison inputs, and allow-listed Finance/Inventory gateway).",
+                "UI: company/admin/modules/buying-procurement/views/supplier-quotations.php via views/sourcing.php and views/workspace.php (12/8 workspace, RFQ mapping, comparison, body-owned create/edit/lifecycle modals, sibling confirmation, dependency states, and server rehydration).",
+                "PASS: php tests/buying-procurement-sourcing.php --group=supplier-quotation - currency/conversion, Finance tax totals, supplier reference uniqueness, RFQ mapping, Draft/Submitted/Stopped/Expired/Cancelled/amendment lifecycle, submitted immutability, concurrency, company isolation, audit, exact read-back, Finance failure, and atomic RFQ-projection rollback checks passed.",
+                "PASS: php tests/accounting-finance-dependency-contracts.php and php tests/accounting-finance-ph-vat.php - Accounting/Finance owner contract and Philippine VAT regressions passed."
+            ],
+            "reason": "Buying now owns complete company-scoped Supplier Quotation header persistence and lifecycle behavior while Finance remains authoritative for tax-sensitive calculations. Each accepted mutation locks owned rows, verifies optimistic versions and exact read-back, audits actor/company/action, preserves immutable submitted versions, and rolls back RFQ receipt projection with the quotation transition."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/supplier_quotation/test_records.json:doctype:Test Records",
@@ -230,9 +254,13 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Equivalent fixture implementation: tests/buying-procurement-sourcing.php (deterministic Inventory item/UOM, Finance purchase-calculation, supplier, submitted-RFQ, quotation response, expiry, comparison, and rollback fixtures without copying upstream records).",
+                "PASS: php tests/buying-procurement-sourcing.php --group=supplier-quotation - deterministic local quotation fixtures exercise create/update, duplicate reference rejection, calculated totals, RFQ quote-received projection, stop/resume/cancel/amend, explicit expiry, comparison, company isolation, and rollback scenarios.",
+                "PASS: php tests/buying-procurement-sourcing.php - combined RFQ and Supplier Quotation sourcing groups passed in one process sequence."
+            ],
+            "reason": "The pinned upstream test-record identity is covered by deterministic BuilderX-local Supplier Quotation fixtures and equivalent lifecycle/calculation/mapping scenarios; no GPL fixture data or ERPNext branding is copied."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/supplier_quotation_item/supplier_quotation_item.json:doctype:Supplier Quotation Item",
@@ -245,9 +273,15 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/schema.php (project_company_buying_supplier_quotation_item with stable line identity, Inventory item/UOM snapshots, quantity/rate/discount, Finance net/tax/gross amounts, delivery date, warehouse, and RFQ/material-request references).",
+                "Implementation: company/admin/modules/buying-procurement/sourcing.php (Inventory item/UOM validation, exact RFQ-item mapping, Finance line-result reconciliation, stable child updates, transactional replacement, amendment copying, comparison projection, and exact read-back).",
+                "UI: company/admin/modules/buying-procurement/views/supplier-quotations.php (rehydrated quotation-line editor and exact submitted comparison inputs).",
+                "PASS: php tests/buying-procurement-sourcing.php --group=supplier-quotation - quantity/UOM/rate/discount/delivery validation, zero-quantity setting, RFQ item identity and quantity bounds, exact Finance line totals, stable child identity, amendment traceability, injected child rollback, and comparison checks passed.",
+                "PASS: php tests/inventory-warehouse-catalogue.php and php tests/inventory-warehouse-ledger-valuation.php - Inventory IW-02 and IW-04 owner regressions passed."
+            ],
+            "reason": "Supplier Quotation item rows are validated only through Inventory-owned callables, calculated only through the Finance owner contract, persisted with stable RFQ/material-request references inside the header transaction, and reconciled line-by-line against the exact Finance snapshot before commit."
         },
         {
             "source_id": "erpnext:erpnext/buying/doctype/supplier_scorecard/supplier_scorecard.json:doctype:Supplier Scorecard",
@@ -833,9 +867,16 @@
             "module_owner": "buying-procurement",
             "builderx_target": "buying-procurement",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": ""
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/buying-procurement/dashboard.php (yovel_admin_buying_procurement_dashboard_data) provides company-scoped live supplier and scorecard metrics, bounded queues and activity, setup, alerts, directories, and explicit dependency states without foreign table reads or schema writes.",
+                "Integration: company/admin/modules/buying-procurement/functions.php exposes the stable dashboard envelope while preserving existing supplier, settings, scorecard, dependency, and Form Builder services.",
+                "UI: company/admin/modules/buying-procurement/views/dashboard.php and views/workspace.php render the approved 12/8 main-first workspace, live/empty/unavailable states, shortcuts, reports and masters, Form Builder modal access, and a seven-step keyboard-contained guided tour.",
+                "PASS: php tests/buying-procurement-dashboard.php - live metrics, score exceptions, bounded queue/activity, company isolation, explicit nonnumeric unavailable document states, ownership, rendering, and tour behavior passed.",
+                "PASS: all six Buying suites plus company-admin-erp-contract.php, company-admin-modal-confirmation.php, and company-admin-shared-form-builder.php passed.",
+                "PASS: authenticated desktop/mobile browser verification - rendered 1.500 desktop panel ratio, main-first mobile stack, no horizontal overflow, disabled unavailable destinations, tour focus trap/Escape restoration, Form Builder modal focus restoration, and zero console warnings or errors."
+            ],
+            "reason": "The Buying workspace is now a live company-scoped procurement dashboard over completed supplier and scorecard services, with bounded operational context and explicit unavailable states for unimplemented purchasing documents and owner dependencies."
         }
     ]
 }

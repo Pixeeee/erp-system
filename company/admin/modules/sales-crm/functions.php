@@ -4,12 +4,17 @@ declare(strict_types=1);
 require_once __DIR__ . '/schema.php';
 require_once __DIR__ . '/form-builder.php';
 require_once __DIR__ . '/crm-settings.php';
+require_once __DIR__ . '/leads.php';
 require_once __DIR__ . '/campaigns.php';
+require_once __DIR__ . '/dashboard.php';
 
 function yovel_admin_sales_crm_sections(): array
 {
     return [
+        'dashboard' => ['label' => 'Dashboard', 'record_type' => '', 'icon' => '▦', 'description' => 'Review live pipeline state, follow-up work, Campaign activity, setup, and Sales dependencies.'],
         'leads' => ['label' => 'Leads', 'record_type' => 'lead', 'icon' => '◇', 'description' => 'Capture and qualify prospects before they become opportunities or customers.'],
+        'prospects' => ['label' => 'Prospects', 'record_type' => 'prospect', 'icon' => '◉', 'description' => 'Group related Leads, engagement, market segment, and future Opportunity references.'],
+        'appointments' => ['label' => 'Appointments', 'record_type' => 'appointment', 'icon' => '◷', 'description' => 'Manage booking rules, available slots, and scheduled Lead or Prospect meetings.'],
         'opportunities' => ['label' => 'Opportunities', 'record_type' => 'opportunity', 'icon' => '◈', 'description' => 'Track qualified sales chances, expected value, stage, and close dates.'],
         'campaigns' => ['label' => 'Campaigns', 'record_type' => 'campaign', 'icon' => '◎', 'description' => 'Organize marketing and sales attribution for leads and deals.'],
         'customers' => ['label' => 'Customers', 'record_type' => 'customer', 'icon' => '▧', 'description' => 'Maintain reusable customer master data for selling documents and reporting.'],
@@ -24,13 +29,14 @@ function yovel_admin_sales_crm_sections(): array
 
 function yovel_admin_sales_crm_section(): string
 {
-    $section = yovel_admin_slug((string) ($_GET['section'] ?? 'leads'));
-    return array_key_exists($section, yovel_admin_sales_crm_sections()) ? $section : 'leads';
+    $section = yovel_admin_slug((string) ($_GET['section'] ?? 'dashboard'));
+    return array_key_exists($section, yovel_admin_sales_crm_sections()) ? $section : 'dashboard';
 }
 
 function yovel_admin_sales_crm_schema(): void
 {
     yovel_admin_sales_crm_ensure_schema();
+    yovel_admin_sales_crm_leads_schema();
 }
 
 function yovel_admin_sales_crm_default_form_schemas(): array
@@ -79,6 +85,46 @@ function yovel_admin_sales_crm_default_form_schemas(): array
                 $field('estimated_value', 'Estimated value', 'number', 'qualification', false, 140),
                 $field('next_contact_date', 'Next contact date', 'date', 'qualification', false, 150),
                 $field('notes', 'Notes', 'textarea', 'notes', false, 160, 'full'),
+                $field('address_line', 'Address', 'text', 'contact', false, 170, 'full'),
+                $field('city', 'City', 'text', 'contact', false, 180),
+                $field('country', 'Country', 'text', 'contact', false, 190),
+            ],
+        ],
+        'prospect' => [
+            'recordType' => 'prospect',
+            'version' => 1,
+            'sections' => [['key' => 'overview', 'label' => 'Overview', 'sortOrder' => 10], ['key' => 'classification', 'label' => 'Classification', 'sortOrder' => 20], ['key' => 'notes', 'label' => 'Notes', 'sortOrder' => 30]],
+            'requiredSystemFields' => ['prospect_code', 'prospect_name', 'prospect_status'],
+            'readonlySystemFields' => [],
+            'fields' => [
+                $field('prospect_code', 'Prospect code', 'text', 'overview', true, 10, 'third', [], true),
+                $field('prospect_name', 'Prospect name', 'text', 'overview', true, 20, 'third', [], true),
+                $field('prospect_status', 'Status', 'select', 'overview', true, 30, 'third', ['OPEN', 'QUALIFIED', 'CONVERTED', 'INACTIVE'], true),
+                $field('market_segment_key', 'Market segment', 'select', 'classification', false, 40),
+                $field('industry_type_key', 'Industry type', 'select', 'classification', false, 50),
+                $field('assigned_admin_key', 'Owner', 'select', 'classification', false, 60),
+                $field('website', 'Website', 'url', 'overview', false, 70),
+                $field('notes', 'Notes', 'textarea', 'notes', false, 80, 'full'),
+            ],
+        ],
+        'appointment' => [
+            'recordType' => 'appointment',
+            'version' => 1,
+            'sections' => [['key' => 'schedule', 'label' => 'Schedule', 'sortOrder' => 10], ['key' => 'contact', 'label' => 'Contact', 'sortOrder' => 20], ['key' => 'notes', 'label' => 'Notes', 'sortOrder' => 30]],
+            'requiredSystemFields' => ['appointment_code', 'appointment_status', 'starts_at', 'ends_at'],
+            'readonlySystemFields' => [],
+            'fields' => [
+                $field('appointment_code', 'Appointment code', 'text', 'schedule', true, 10, 'third', [], true),
+                $field('appointment_status', 'Status', 'select', 'schedule', true, 20, 'third', ['SCHEDULED', 'COMPLETED', 'CANCELLED', 'NO_SHOW'], true),
+                $field('starts_at', 'Starts at', 'datetime-local', 'schedule', true, 30, 'half', [], true),
+                $field('ends_at', 'Ends at', 'datetime-local', 'schedule', true, 40, 'half', [], true),
+                $field('lead_key', 'Lead', 'select', 'contact', false, 50),
+                $field('prospect_key', 'Prospect', 'select', 'contact', false, 60),
+                $field('assigned_admin_key', 'Owner', 'select', 'contact', false, 70),
+                $field('contact_name', 'Contact name', 'text', 'contact', false, 80),
+                $field('contact_email', 'Contact email', 'email', 'contact', false, 90),
+                $field('contact_phone', 'Contact phone', 'text', 'contact', false, 100),
+                $field('notes', 'Notes', 'textarea', 'notes', false, 110, 'full'),
             ],
         ],
         'opportunity' => [
@@ -369,7 +415,7 @@ function yovel_admin_write_sales_form_schema(array $company, ?array $admin, stri
 function yovel_admin_save_form_schema(array $company, array $admin): string
 {
     $recordType = yovel_admin_sales_crm_record_type((string) ($_POST['record_type'] ?? 'lead'));
-    yovel_admin_sales_crm_require_scope($company, $admin, in_array($recordType, ['lead', 'opportunity', 'campaign'], true) ? 'crm' : 'selling');
+    yovel_admin_sales_crm_require_scope($company, $admin, in_array($recordType, ['lead', 'prospect', 'appointment', 'opportunity', 'campaign'], true) ? 'crm' : 'selling');
     $schemaJson = (string) ($_POST['schema_json'] ?? '');
     $decoded = json_decode($schemaJson, true);
     if (!is_array($decoded)) {
@@ -382,7 +428,7 @@ function yovel_admin_save_form_schema(array $company, array $admin): string
 function yovel_admin_reset_form_schema(array $company, array $admin): string
 {
     $recordType = yovel_admin_sales_crm_record_type((string) ($_POST['record_type'] ?? 'lead'));
-    yovel_admin_sales_crm_require_scope($company, $admin, in_array($recordType, ['lead', 'opportunity', 'campaign'], true) ? 'crm' : 'selling');
+    yovel_admin_sales_crm_require_scope($company, $admin, in_array($recordType, ['lead', 'prospect', 'appointment', 'opportunity', 'campaign'], true) ? 'crm' : 'selling');
     yovel_admin_write_sales_form_schema($company, $admin, $recordType, yovel_admin_sales_crm_default_form_schemas()[$recordType], 'RESET');
     return 'Sales/CRM form layout restored to default.';
 }
@@ -426,10 +472,14 @@ function yovel_admin_sales_crm_data(array $company, ?array $admin = null): array
         WHERE l.company_key_hash = ? AND l.lead_status <> 'DELETED'
         ORDER BY l.updated_at DESC, l.lead_name ASC
     ", [$companyKeyHash]) : [];
+    $leadPackage = ($canCrm && $admin !== null) ? yovel_admin_sales_lead_package_data($company, $admin) : [
+        'prospects' => [], 'appointments' => [], 'appointment_settings' => [], 'appointment_slots' => [],
+        'market_segments' => [], 'industry_types' => [], 'admin_directory' => [], 'conversions' => [], 'conversion_services' => [], 'reports' => [],
+    ];
 
     $schemas = [];
     foreach (yovel_admin_sales_crm_default_form_schemas() as $recordType => $_schema) {
-        $scope = in_array($recordType, ['lead', 'opportunity', 'campaign'], true) ? 'crm' : 'selling';
+        $scope = in_array($recordType, ['lead', 'prospect', 'appointment', 'opportunity', 'campaign'], true) ? 'crm' : 'selling';
         if (!empty($access[$scope])) {
             $schemas[$recordType] = yovel_admin_sales_crm_active_schema($company, $recordType, $admin);
         }
@@ -444,12 +494,14 @@ function yovel_admin_sales_crm_data(array $company, ?array $admin = null): array
     }
 
     return [
+        'dashboard' => $admin !== null ? yovel_admin_sales_crm_dashboard_data($company, $admin) : [],
         'campaigns' => is_array($campaigns) ? $campaigns : [],
         'campaign_efficiencies' => $campaignEfficiencies,
         'territories' => is_array($territories) ? $territories : [],
         'salespersons' => is_array($salespersons) ? $salespersons : [],
         'customers' => is_array($customers) ? $customers : [],
         'leads' => is_array($leads) ? $leads : [],
+        'lead_package' => $leadPackage,
         'schemas' => $schemas,
         'rehydration' => ['lead' => $leadRehydration],
         'workspace' => $workspace,
@@ -482,7 +534,11 @@ function yovel_admin_save_sales_lead(array $company, array $admin): string
     $industry = trim((string) ($_POST['industry'] ?? ''));
     $estimatedValue = yovel_admin_optional_decimal((string) ($_POST['estimated_value'] ?? ''), 'Estimated value');
     $nextContactDate = yovel_admin_optional_date((string) ($_POST['next_contact_date'] ?? ''), 'Next contact date');
+    $addressLine = trim((string) ($_POST['address_line'] ?? ''));
+    $city = trim((string) ($_POST['city'] ?? ''));
+    $country = trim((string) ($_POST['country'] ?? ''));
     $notes = trim((string) ($_POST['notes'] ?? ''));
+    $expectedVersion = trim((string) ($_POST['expected_version'] ?? ''));
 
     if ($leadKey !== '' && !yovel_admin_is_uuid($leadKey)) {
         throw new InvalidArgumentException('Invalid lead key.');
@@ -502,6 +558,9 @@ function yovel_admin_save_sales_lead(array $company, array $admin): string
         'Mobile' => [$mobile, 80],
         'Website' => [$website, 220],
         'Industry' => [$industry, 120],
+        'Address' => [$addressLine, 255],
+        'City' => [$city, 120],
+        'Country' => [$country, 120],
     ] as $label => [$value, $max]) {
         if (strlen((string) $value) > $max) {
             throw new InvalidArgumentException($label . ' exceeds the allowed length.');
@@ -531,9 +590,13 @@ function yovel_admin_save_sales_lead(array $company, array $admin): string
                 $leadKey = (string) $existing['lead_key'];
             }
         }
+        if ($existing && $expectedVersion !== '' && (int) $existing['lead_version'] !== (int) $expectedVersion) {
+            throw new RuntimeException('Lead changed. Reload and try again.');
+        }
         if ($leadKey === '') {
             $leadKey = bx_uuid();
         }
+        $leadVersion = $existing ? (int) $existing['lead_version'] + 1 : 1;
         $duplicateCode = (int) $db->GetOne(
             'SELECT COUNT(*) FROM project_company_sales_lead WHERE company_key_hash = ? AND lead_code = ? AND lead_key <> ?',
             [$companyKeyHash, $leadCode, $leadKey]
@@ -546,10 +609,11 @@ function yovel_admin_save_sales_lead(array $company, array $admin): string
             $db,
             "INSERT INTO project_company_sales_lead (
                 lead_key, company_key, company_key_hash, lead_code, lead_name, organization_name,
-                lead_status, lead_source, campaign_key, territory_key, salesperson_key, email,
-                phone, mobile, website, industry, estimated_value, next_contact_date, notes,
+                lead_status, lead_version, lead_source, campaign_key, territory_key, salesperson_key, email,
+                phone, mobile, website, industry, estimated_value, next_contact_date, qualified_at, converted_at,
+                address_line, city, country, notes,
                 created_by_admin_key, updated_by_admin_key
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
                 company_key = VALUES(company_key),
                 company_key_hash = VALUES(company_key_hash),
@@ -557,6 +621,7 @@ function yovel_admin_save_sales_lead(array $company, array $admin): string
                 lead_name = VALUES(lead_name),
                 organization_name = VALUES(organization_name),
                 lead_status = VALUES(lead_status),
+                lead_version = VALUES(lead_version),
                 lead_source = VALUES(lead_source),
                 campaign_key = VALUES(campaign_key),
                 territory_key = VALUES(territory_key),
@@ -568,19 +633,25 @@ function yovel_admin_save_sales_lead(array $company, array $admin): string
                 industry = VALUES(industry),
                 estimated_value = VALUES(estimated_value),
                 next_contact_date = VALUES(next_contact_date),
+                qualified_at = CASE WHEN VALUES(lead_status) = 'QUALIFIED' THEN COALESCE(qualified_at, UTC_TIMESTAMP()) ELSE qualified_at END,
+                converted_at = CASE WHEN VALUES(lead_status) = 'CONVERTED' THEN COALESCE(converted_at, UTC_TIMESTAMP()) ELSE converted_at END,
+                address_line = VALUES(address_line),
+                city = VALUES(city),
+                country = VALUES(country),
                 notes = VALUES(notes),
                 updated_by_admin_key = VALUES(updated_by_admin_key)",
             [
-                $leadKey, $companyKey, $companyKeyHash, $leadCode, $leadName, $organizationName, $leadStatus, $leadSource,
+                $leadKey, $companyKey, $companyKeyHash, $leadCode, $leadName, $organizationName, $leadStatus, $leadVersion, $leadSource,
                 $campaignKey !== '' ? $campaignKey : null, $territoryKey !== '' ? $territoryKey : null, $salespersonKey !== '' ? $salespersonKey : null,
                 $email, $phone, $mobile, $website, $industry, $estimatedValue !== '' ? $estimatedValue : null,
-                $nextContactDate !== '' ? $nextContactDate : null, $notes, $adminKey, $adminKey,
+                $nextContactDate !== '' ? $nextContactDate : null, $leadStatus === 'QUALIFIED' ? gmdate('Y-m-d H:i:s') : null,
+                $leadStatus === 'CONVERTED' ? gmdate('Y-m-d H:i:s') : null, $addressLine, $city, $country, $notes, $adminKey, $adminKey,
             ],
             'Sales/CRM lead save'
         );
 
         $savedRow = $db->GetRow(
-            'SELECT lead_key, company_key, company_key_hash, lead_code, lead_name, organization_name, lead_status, lead_source, campaign_key, territory_key, salesperson_key, email, phone, mobile, website, industry, estimated_value, next_contact_date, notes FROM project_company_sales_lead WHERE lead_key = ? AND company_key_hash = ? LIMIT 1',
+            'SELECT lead_key, company_key, company_key_hash, lead_code, lead_name, organization_name, lead_status, lead_version, lead_source, campaign_key, territory_key, salesperson_key, email, phone, mobile, website, industry, estimated_value, next_contact_date, address_line, city, country, notes FROM project_company_sales_lead WHERE lead_key = ? AND company_key_hash = ? LIMIT 1',
             [$leadKey, $companyKeyHash]
         );
         foreach ([
@@ -591,6 +662,7 @@ function yovel_admin_save_sales_lead(array $company, array $admin): string
             'lead_name' => $leadName,
             'organization_name' => $organizationName,
             'lead_status' => $leadStatus,
+            'lead_version' => $leadVersion,
             'lead_source' => $leadSource,
             'campaign_key' => $campaignKey,
             'territory_key' => $territoryKey,
@@ -602,6 +674,9 @@ function yovel_admin_save_sales_lead(array $company, array $admin): string
             'industry' => $industry,
             'estimated_value' => $estimatedValue,
             'next_contact_date' => $nextContactDate,
+            'address_line' => $addressLine,
+            'city' => $city,
+            'country' => $country,
             'notes' => $notes,
         ] as $column => $expectedValue) {
             if (!is_array($savedRow) || (string) ($savedRow[$column] ?? '') !== (string) $expectedValue) {
@@ -643,18 +718,21 @@ function yovel_admin_set_sales_lead_status(array $company, array $admin): string
 
     $db->BeginTrans();
     try {
-        $existing = $db->GetRow('SELECT lead_key, company_key, lead_code, lead_name FROM project_company_sales_lead WHERE lead_key = ? AND company_key_hash = ? FOR UPDATE', [$leadKey, $companyKeyHash]);
+        $existing = $db->GetRow('SELECT lead_key, company_key, lead_code, lead_name, lead_version FROM project_company_sales_lead WHERE lead_key = ? AND company_key_hash = ? FOR UPDATE', [$leadKey, $companyKeyHash]);
         if (!$existing) {
             throw new InvalidArgumentException('Lead was not found for this company.');
         }
         yovel_admin_db_execute(
             $db,
-            'UPDATE project_company_sales_lead SET lead_status = ?, updated_by_admin_key = ? WHERE lead_key = ? AND company_key_hash = ?',
-            [$leadStatus, (string) $admin['admin_key'], $leadKey, $companyKeyHash],
+            "UPDATE project_company_sales_lead SET lead_status = ?, lead_version = lead_version + 1,
+                qualified_at = CASE WHEN ? = 'QUALIFIED' THEN COALESCE(qualified_at, UTC_TIMESTAMP()) ELSE qualified_at END,
+                converted_at = CASE WHEN ? = 'CONVERTED' THEN COALESCE(converted_at, UTC_TIMESTAMP()) ELSE converted_at END,
+                updated_by_admin_key = ? WHERE lead_key = ? AND company_key_hash = ?",
+            [$leadStatus, $leadStatus, $leadStatus, (string) $admin['admin_key'], $leadKey, $companyKeyHash],
             'Sales/CRM lead status update'
         );
-        $savedStatus = (string) $db->GetOne('SELECT lead_status FROM project_company_sales_lead WHERE lead_key = ? AND company_key_hash = ? LIMIT 1', [$leadKey, $companyKeyHash]);
-        if ($savedStatus !== $leadStatus) {
+        $savedStatus = $db->GetRow('SELECT lead_status, lead_version FROM project_company_sales_lead WHERE lead_key = ? AND company_key_hash = ? LIMIT 1', [$leadKey, $companyKeyHash]);
+        if ((string) ($savedStatus['lead_status'] ?? '') !== $leadStatus || (int) ($savedStatus['lead_version'] ?? 0) !== (int) $existing['lead_version'] + 1) {
             throw new RuntimeException('Sales/CRM lead status read-back verification failed.');
         }
         bx_audit($leadStatus === 'DELETED' ? 'DELETE' : 'STATUS', 'project_company_sales_lead', $leadKey, [
@@ -693,6 +771,21 @@ function yovel_admin_sales_field_options(string $fieldKey, array $salesCrmData):
     if ($fieldKey === 'customer_key') {
         return array_map(static fn (array $row): array => ['value' => (string) $row['customer_key'], 'label' => (string) $row['customer_name']], $salesCrmData['customers'] ?? []);
     }
+    if ($fieldKey === 'lead_key') {
+        return array_map(static fn (array $row): array => ['value' => (string) $row['lead_key'], 'label' => (string) $row['lead_name']], $salesCrmData['leads'] ?? []);
+    }
+    if ($fieldKey === 'prospect_key') {
+        return array_map(static fn (array $row): array => ['value' => (string) $row['prospect_key'], 'label' => (string) $row['prospect_name']], $salesCrmData['lead_package']['prospects'] ?? []);
+    }
+    if ($fieldKey === 'market_segment_key') {
+        return array_map(static fn (array $row): array => ['value' => (string) $row['market_segment_key'], 'label' => (string) $row['segment_name']], $salesCrmData['lead_package']['market_segments'] ?? []);
+    }
+    if ($fieldKey === 'industry_type_key') {
+        return array_map(static fn (array $row): array => ['value' => (string) $row['industry_type_key'], 'label' => (string) $row['industry_name']], $salesCrmData['lead_package']['industry_types'] ?? []);
+    }
+    if ($fieldKey === 'assigned_admin_key') {
+        return array_map(static fn (array $row): array => ['value' => (string) $row['admin_key'], 'label' => (string) ($row['admin_name'] ?: $row['admin_login'])], $salesCrmData['lead_package']['admin_directory'] ?? []);
+    }
 
     return [];
 }
@@ -707,6 +800,9 @@ function yovel_admin_render_sales_form_field(array $field, array $record, array 
     $type = (string) ($field['type'] ?? 'text');
     $required = filter_var($field['required'] ?? false, FILTER_VALIDATE_BOOLEAN) ? 'required' : '';
     $value = yovel_admin_sales_field_value($record, $key);
+    if ($type === 'datetime-local' && $value !== '') {
+        $value = str_replace(' ', 'T', substr($value, 0, 16));
+    }
     $width = (string) ($field['width'] ?? 'half');
     $class = $width === 'full' ? 'lg:col-span-3' : ($width === 'third' ? '' : 'lg:col-span-1');
     ?>
@@ -728,7 +824,7 @@ function yovel_admin_render_sales_form_field(array $field, array $record, array 
                 <?php endforeach; ?>
             </select>
         <?php else: ?>
-            <?php $inputType = in_array($type, ['email', 'date', 'number', 'url'], true) ? $type : 'text'; ?>
+            <?php $inputType = in_array($type, ['email', 'date', 'datetime-local', 'number', 'url'], true) ? $type : 'text'; ?>
             <input class="h-9 rounded-md border bg-background px-3 text-sm" id="sales_<?= bx_h($key) ?>" name="<?= bx_h($key) ?>" type="<?= bx_h($inputType) ?>" value="<?= bx_h($value) ?>" <?= $inputType === 'number' ? 'step="0.01" min="0"' : '' ?> <?= $required ?>>
         <?php endif; ?>
     </div>

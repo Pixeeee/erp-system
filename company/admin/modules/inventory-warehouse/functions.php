@@ -6,10 +6,14 @@ require_once __DIR__ . '/schema.php';
 require_once __DIR__ . '/forms.php';
 require_once __DIR__ . '/catalogue.php';
 require_once __DIR__ . '/warehouses.php';
+require_once __DIR__ . '/ledger.php';
+require_once __DIR__ . '/serial-batch.php';
+require_once __DIR__ . '/dashboard.php';
 
 function yovel_admin_inventory_warehouse_sections(): array
 {
     return [
+        'dashboard' => ['label' => 'Dashboard', 'icon' => 'dashboard', 'package' => 'DASHBOARD', 'record_type' => 'ITEM'],
         'items' => ['label' => 'Items', 'icon' => 'inventory_2', 'package' => 'IW-02', 'record_type' => 'ITEM'],
         'warehouses' => ['label' => 'Warehouses', 'icon' => 'warehouse', 'package' => 'IW-03', 'record_type' => 'WAREHOUSE'],
         'stock-entries' => ['label' => 'Stock entries', 'icon' => 'swap_horiz', 'package' => 'IW-05', 'record_type' => 'STOCK_ENTRY'],
@@ -32,11 +36,19 @@ function yovel_admin_inventory_warehouse_sections(): array
 function yovel_admin_inventory_warehouse_section(string $requested = ''): string
 {
     $requested = trim((string) preg_replace('/[^a-z0-9]+/', '-', strtolower($requested)), '-');
-    return array_key_exists($requested, yovel_admin_inventory_warehouse_sections()) ? $requested : 'items';
+    return array_key_exists($requested, yovel_admin_inventory_warehouse_sections()) ? $requested : 'dashboard';
 }
 
 function yovel_admin_inventory_state(string $section, array $metadata): array
 {
+    if ($section === 'dashboard') {
+        return [
+            'kind' => 'ready',
+            'title' => 'Inventory operations',
+            'message' => '',
+            'dependencies' => [],
+        ];
+    }
     if ($section === 'items') {
         return [
             'kind' => 'empty',
@@ -53,7 +65,7 @@ function yovel_admin_inventory_state(string $section, array $metadata): array
             'dependencies' => [],
         ];
     }
-    if (in_array($section, ['warehouses', 'reorder-levels', 'putaway'], true)) {
+    if (in_array($section, ['warehouses', 'reorder-levels', 'putaway', 'batch-numbers', 'serial-numbers'], true)) {
         return [
             'kind' => 'ready',
             'title' => (string) ($metadata['label'] ?? 'Warehouse controls'),
@@ -74,11 +86,13 @@ function yovel_admin_inventory_state(string $section, array $metadata): array
 function yovel_admin_inventory_warehouse_data(array $company, ?array $admin, string $section = ''): array
 {
     yovel_admin_inventory_scope($company, $admin);
-    yovel_admin_inventory_warehouse_schema();
     if (trim($section) === '') {
-        $section = (string) ($_GET['section'] ?? 'items');
+        $section = (string) ($_GET['section'] ?? 'dashboard');
     }
     $section = yovel_admin_inventory_warehouse_section($section);
+    if ($section !== 'dashboard') {
+        yovel_admin_inventory_warehouse_schema();
+    }
     $sections = yovel_admin_inventory_warehouse_sections();
     $metadata = $sections[$section];
     $requestedRecordType = (string) ($_GET['record_type'] ?? ($metadata['record_type'] ?? 'ITEM'));
@@ -95,10 +109,20 @@ function yovel_admin_inventory_warehouse_data(array $company, ?array $admin, str
         'state' => yovel_admin_inventory_state($section, $metadata),
         'form_adapter' => yovel_admin_inventory_form_adapter(),
         'record_type' => $recordType,
-        'active_form_schema' => yovel_admin_inventory_form_schema($company, $recordType),
+        'active_form_schema' => $section === 'dashboard' ? [] : yovel_admin_inventory_form_schema($company, $recordType),
         'form_state' => [],
         'company_name' => (string) ($company['company_name'] ?? 'Company'),
+        'company_key_hash' => (string) ($company['company_key_hash'] ?? ''),
     ];
+    if ($section === 'dashboard') {
+        $data['dashboard'] = yovel_admin_inventory_warehouse_dashboard_data($company, is_array($admin) ? $admin : []);
+        try {
+            $data['items'] = yovel_admin_inventory_items($company, ['status' => 'ACTIVE']);
+        } catch (Throwable) {
+            $data['items'] = [];
+        }
+        $data['item_prices'] = [];
+    }
     if ($section === 'items') {
         yovel_admin_inventory_catalogue_schema();
         $data['items'] = yovel_admin_inventory_items($company, ['search' => (string) ($_GET['search'] ?? '')]);
@@ -129,6 +153,35 @@ function yovel_admin_inventory_warehouse_data(array $company, ?array $admin, str
             ? ['kind' => 'empty', 'title' => 'No ' . strtolower((string) $metadata['label']) . ' yet', 'message' => 'Add the first company-owned record.', 'dependencies' => []]
             : ['kind' => 'ready', 'title' => (string) $metadata['label'], 'message' => '', 'dependencies' => []];
     }
+    if (in_array($section, ['batch-numbers', 'serial-numbers'], true)) {
+        yovel_admin_inventory_catalogue_schema();
+        yovel_admin_inventory_warehouse_control_schema();
+        yovel_admin_inventory_serial_batch_schema();
+        $data['items'] = array_values(array_filter(
+            yovel_admin_inventory_items($company, ['status' => 'ACTIVE']),
+            static fn (array $item): bool => (int) $item[$section === 'batch-numbers' ? 'has_batch_no' : 'has_serial_no'] === 1
+        ));
+        $data['batches'] = yovel_admin_inventory_batches($company);
+        $data['serials'] = yovel_admin_inventory_serials($company);
+        $data['warehouses'] = yovel_admin_inventory_warehouses($company, ['status' => 'ACTIVE', 'leaf_only' => true]);
+        $availabilityItem = trim((string) ($_GET['item'] ?? ''));
+        $availabilityWarehouse = trim((string) ($_GET['warehouse'] ?? ''));
+        $availabilityAsOf = str_replace('T', ' ', trim((string) ($_GET['as_of'] ?? '')));
+        if (strlen($availabilityAsOf) === 16) { $availabilityAsOf .= ':00'; }
+        if ($availabilityAsOf !== '' && !str_contains($availabilityAsOf, '.')) { $availabilityAsOf .= '.000000'; }
+        $data['availability_filters'] = ['item_key' => $availabilityItem, 'warehouse_key' => $availabilityWarehouse, 'as_of' => $availabilityAsOf];
+        $data['availability'] = yovel_admin_is_uuid($availabilityItem) && yovel_admin_is_uuid($availabilityWarehouse) && $availabilityAsOf !== ''
+            ? ($section === 'batch-numbers'
+                ? yovel_admin_inventory_available_batches($company, $availabilityItem, $availabilityWarehouse, $availabilityAsOf)
+                : yovel_admin_inventory_available_serials($company, $availabilityItem, $availabilityWarehouse, $availabilityAsOf))
+            : [];
+        $traceKey = trim((string) ($_GET['trace'] ?? ''));
+        $data['trace'] = yovel_admin_is_uuid($traceKey) ? yovel_admin_inventory_trace($company, $traceKey) : null;
+        $records = $section === 'batch-numbers' ? $data['batches'] : $data['serials'];
+        $data['state'] = $records === []
+            ? ['kind' => 'empty', 'title' => 'No ' . strtolower((string) $metadata['label']) . ' yet', 'message' => 'Add the first tracked identity for this company.', 'dependencies' => []]
+            : ['kind' => 'ready', 'title' => (string) $metadata['label'], 'message' => '', 'dependencies' => []];
+    }
     return $data;
 }
 
@@ -146,11 +199,13 @@ function yovel_admin_inventory_warehouse_handle_post(
     }
     if ($action === 'save_inventory_item') {
         $saved = yovel_admin_save_inventory_item($company, $admin, yovel_admin_inventory_item_input_from_post($input));
-        return ['message' => 'Inventory item saved.', 'section' => 'items', 'query' => ['item' => (string) $saved['item_key']]];
+        $section = (string) ($input['section'] ?? '') === 'dashboard' ? 'dashboard' : 'items';
+        return ['message' => 'Inventory item saved.', 'section' => $section, 'query' => ['item' => (string) $saved['item_key']]];
     }
     if ($action === 'save_inventory_item_price') {
         $saved = yovel_admin_save_item_price($company, $admin, $input);
-        return ['message' => 'Inventory item price saved.', 'section' => 'items', 'query' => ['item' => (string) $saved['item_key']]];
+        $section = (string) ($input['section'] ?? '') === 'dashboard' ? 'dashboard' : 'items';
+        return ['message' => 'Inventory item price saved.', 'section' => $section, 'query' => ['item' => (string) $saved['item_key']]];
     }
     if ($action === 'save_inventory_warehouse') {
         $saved = yovel_admin_save_warehouse($company, $admin, $input);
@@ -175,6 +230,14 @@ function yovel_admin_inventory_warehouse_handle_post(
     if ($action === 'save_inventory_reorder_rule') {
         $saved = yovel_admin_save_inventory_reorder_rule($company, $admin, $input);
         return ['message' => 'Reorder rule saved.', 'section' => 'reorder-levels', 'query' => ['reorder_rule' => (string) $saved['reorder_rule_key']]];
+    }
+    if ($action === 'save_inventory_batch') {
+        $saved = yovel_admin_save_inventory_batch($company, $admin, $input);
+        return ['message' => 'Inventory Batch saved.', 'section' => 'batch-numbers', 'query' => ['batch' => (string) $saved['batch_key']]];
+    }
+    if ($action === 'save_inventory_serial') {
+        $saved = yovel_admin_save_inventory_serial($company, $admin, $input);
+        return ['message' => 'Inventory Serial saved.', 'section' => 'serial-numbers', 'query' => ['serial' => (string) $saved['serial_key']]];
     }
     throw new InvalidArgumentException('Unknown Inventory/Warehouse action.');
 }

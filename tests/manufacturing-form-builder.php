@@ -9,6 +9,14 @@ $adapter = yovel_admin_manufacturing_form_adapter();
 manufacturing_test_assert(($adapter['module'] ?? '') === 'manufacturing', 'Manufacturing Form Builder adapter module is invalid.');
 manufacturing_test_assert(($adapter['row_column_layout']['stable_keys'] ?? false) === true, 'Manufacturing Form Builder must preserve stable field keys.');
 manufacturing_test_assert(($adapter['row_column_layout']['max_columns'] ?? 0) === 3, 'Manufacturing Form Builder must support up to three columns.');
+$fieldByKey = static function (array $schema, string $key): ?array {
+    foreach ($schema['fields'] ?? [] as $field) {
+        if (is_array($field) && (string) ($field['key'] ?? '') === $key) {
+            return $field;
+        }
+    }
+    return null;
+};
 
 $defaults = yovel_admin_manufacturing_default_form_schemas();
 foreach ($targets as $section => $recordType) {
@@ -27,7 +35,7 @@ $normalized = yovel_admin_manufacturing_normalize_form_schema('BOM', [
     ],
     'rows' => [['key' => 'row_custom', 'columns' => [['key' => 'column_custom', 'field_keys' => ['custom_batch_note']]]]],
 ], 2);
-manufacturing_test_assert(($normalized['fields'][5]['key'] ?? '') === 'custom_batch_note', 'Custom field stable key was not preserved.');
+manufacturing_test_assert(is_array($fieldByKey($normalized, 'custom_batch_note')), 'Custom field stable key was not preserved.');
 manufacturing_test_assert(($normalized['rows'][0]['columns'][0]['field_keys'][0] ?? '') === 'custom_batch_note', 'Form row/column placement was not preserved.');
 manufacturing_test_assert(yovel_admin_manufacturing_form_checksum($normalized) === yovel_admin_manufacturing_form_checksum($normalized), 'Form version identity is unstable.');
 
@@ -47,7 +55,7 @@ try {
     $_GET['form'] = (string) $draft['form_key'];
     $_GET['target'] = 'boms';
     $selectedData = yovel_admin_manufacturing_data($scope['company'], $scope['admin'], 'form-builder');
-    manufacturing_test_assert(($selectedData['form_schema']['fields'][5]['key'] ?? '') === 'custom_batch_note', 'Editing an existing draft did not load its exact current form version.');
+    manufacturing_test_assert(is_array($fieldByKey($selectedData['form_schema'], 'custom_batch_note')), 'Editing an existing draft did not load its exact current form version.');
     unset($_GET['form'], $_GET['target']);
 
     $published = yovel_admin_save_manufacturing_form($scope['company'], $scope['admin'], [
@@ -71,7 +79,8 @@ try {
         'new_field_section' => 'quality',
         'new_field_required' => '1',
     ]);
-    manufacturing_test_assert(($fieldInput['fields'][5]['key'] ?? '') === 'inspection_note' && !empty($fieldInput['fields'][5]['required']), 'Form Builder field controls did not produce structured schema input.');
+    $inspectionField = $fieldByKey($fieldInput, 'inspection_note');
+    manufacturing_test_assert(is_array($inspectionField) && !empty($inspectionField['required']), 'Form Builder field controls did not produce structured schema input.');
 
     $binding = yovel_admin_manufacturing_bind_form_version($scope['company'], $scope['admin'], 'test-record-key', 'BOM', (string) $published['current_form_version_key']);
     manufacturing_test_assert(($binding['form_version_key'] ?? '') === $published['current_form_version_key'], 'Submitted record did not bind to the published form version.');

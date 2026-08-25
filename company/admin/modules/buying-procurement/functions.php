@@ -7,6 +7,8 @@ require_once __DIR__ . '/forms.php';
 require_once __DIR__ . '/settings.php';
 require_once __DIR__ . '/suppliers.php';
 require_once __DIR__ . '/scorecards.php';
+require_once __DIR__ . '/sourcing.php';
+require_once __DIR__ . '/dashboard.php';
 
 function yovel_admin_buying_procurement_sections(): array
 {
@@ -118,16 +120,40 @@ function yovel_admin_buying_procurement_data(array $company, ?array $admin = nul
     ];
     $suppliers = yovel_admin_buying_suppliers($company);
     $scorecards = yovel_admin_buying_scorecards($company);
+    $rfqs = yovel_admin_buying_rfqs($company);
+    $supplierQuotations = yovel_admin_buying_supplier_quotations($company);
     foreach ($scorecards as &$scorecard) {
         $scorecard['restrictions'] = yovel_admin_buying_supplier_restrictions($company, (string) $scorecard['supplier_key']);
     }
     unset($scorecard);
     $settings = yovel_admin_buying_settings($company);
+    $sourcingDependencies = array_map(
+        static fn (array $contract): array => [
+            'owner' => (string) $contract['owner'],
+            'signature' => (string) $contract['signature'],
+            'available' => !empty($contract['available']),
+        ],
+        yovel_admin_buying_sourcing_gateway()
+    );
     $adapter = yovel_admin_buying_procurement_form_adapter();
     $schemas = yovel_admin_buying_procurement_default_form_schemas();
     $selectedTarget = trim((string) ($_GET['form_target'] ?? 'supplier'));
     if (!in_array($selectedTarget, $adapter['target_record_types'], true)) {
         $selectedTarget = 'supplier';
+    }
+    $quotationSeed = null;
+    $mapRfqKey = trim((string) ($_GET['map_rfq'] ?? ''));
+    $mapSupplierKey = trim((string) ($_GET['supplier'] ?? ''));
+    if ($mapRfqKey !== '' && $mapSupplierKey !== '') {
+        $sourceRfq = yovel_admin_buying_rfq($company, $mapRfqKey);
+        if (is_array($sourceRfq)) {
+            $quotationSeed = yovel_admin_buying_map_rfq_to_supplier_quotation($company, $sourceRfq, $mapSupplierKey);
+        }
+    }
+    $quotationComparison = null;
+    $comparisonRfqKey = trim((string) ($_GET['compare_rfq'] ?? ''));
+    if ($comparisonRfqKey !== '') {
+        $quotationComparison = yovel_admin_buying_supplier_quotation_comparison_inputs($company, $comparisonRfqKey);
     }
 
     return [
@@ -135,9 +161,15 @@ function yovel_admin_buying_procurement_data(array $company, ?array $admin = nul
         'company_key_hash' => $companyKeyHash,
         'counts' => $counts,
         'suppliers' => $suppliers,
+        'rfqs' => $rfqs,
+        'supplierQuotations' => $supplierQuotations,
+        'supplierQuotationSeed' => $quotationSeed,
+        'supplierQuotationComparison' => $quotationComparison,
         'scorecards' => $scorecards,
+        'dashboard' => yovel_admin_buying_procurement_dashboard_data($company, $admin),
         'settings' => $settings,
         'dependencies' => yovel_admin_buying_procurement_dependency_state(),
+        'sourcingDependencies' => $sourcingDependencies,
         'formAdapter' => $adapter,
         'formSchemas' => $schemas,
         'selectedFormTarget' => $selectedTarget,
@@ -171,6 +203,83 @@ function yovel_admin_buying_procurement_handle_post(
             'message' => 'Supplier saved.',
             'section' => 'suppliers',
             'query' => ['supplier' => (string) $saved['supplier_key']],
+        ];
+    }
+    if ($action === 'save_buying_rfq') {
+        $saved = yovel_admin_buying_save_rfq(bx_db(), $company, $admin, $input);
+        return [
+            'message' => 'Request for Quotation saved.',
+            'section' => 'request-for-quotation',
+            'query' => ['rfq' => (string) $saved['rfq_key']],
+        ];
+    }
+    if ($action === 'save_buying_supplier_quotation') {
+        $saved = yovel_admin_buying_save_supplier_quotation(bx_db(), $company, $admin, $input);
+        return [
+            'message' => 'Supplier Quotation saved.',
+            'section' => 'supplier-quotations',
+            'query' => ['quotation' => (string) $saved['supplier_quotation_key']],
+        ];
+    }
+    if ($action === 'map_buying_rfq_to_supplier_quotation') {
+        $rfqKey = trim((string) ($input['rfq_key'] ?? ''));
+        $supplierKey = trim((string) ($input['supplier_key'] ?? ''));
+        $rfq = yovel_admin_buying_rfq($company, $rfqKey);
+        if (!is_array($rfq)) {
+            throw new RuntimeException('The selected RFQ was not found.');
+        }
+        yovel_admin_buying_map_rfq_to_supplier_quotation($company, $rfq, $supplierKey);
+        return [
+            'message' => 'RFQ mapped to a new Supplier Quotation draft.',
+            'section' => 'supplier-quotations',
+            'query' => ['map_rfq' => $rfqKey, 'supplier' => $supplierKey],
+        ];
+    }
+    $supplierQuotationLifecycleActions = [
+        'submit_buying_supplier_quotation' => ['transition' => 'SUBMIT', 'message' => 'Supplier Quotation submitted.'],
+        'stop_buying_supplier_quotation' => ['transition' => 'STOP', 'message' => 'Supplier Quotation stopped.'],
+        'resume_buying_supplier_quotation' => ['transition' => 'RESUME', 'message' => 'Supplier Quotation resumed.'],
+        'expire_buying_supplier_quotation' => ['transition' => 'EXPIRE', 'message' => 'Supplier Quotation expired.'],
+        'cancel_buying_supplier_quotation' => ['transition' => 'CANCEL', 'message' => 'Supplier Quotation cancelled.'],
+        'amend_buying_supplier_quotation' => ['transition' => 'AMEND', 'message' => 'Supplier Quotation amendment created.'],
+    ];
+    if (isset($supplierQuotationLifecycleActions[$action])) {
+        $definition = $supplierQuotationLifecycleActions[$action];
+        $saved = yovel_admin_buying_transition_supplier_quotation(
+            bx_db(),
+            $company,
+            $admin,
+            trim((string) ($input['supplier_quotation_key'] ?? '')),
+            (string) $definition['transition'],
+            $input
+        );
+        return [
+            'message' => (string) $definition['message'],
+            'section' => 'supplier-quotations',
+            'query' => ['quotation' => (string) $saved['supplier_quotation_key']],
+        ];
+    }
+    $rfqLifecycleActions = [
+        'submit_buying_rfq' => ['transition' => 'SUBMIT', 'message' => 'Request for Quotation submitted.'],
+        'cancel_buying_rfq' => ['transition' => 'CANCEL', 'message' => 'Request for Quotation cancelled.'],
+        'amend_buying_rfq' => ['transition' => 'AMEND', 'message' => 'Request for Quotation amendment created.'],
+        'mark_buying_rfq_received' => ['transition' => 'MARK_RECEIVED', 'message' => 'Supplier response marked received.'],
+        'retry_buying_rfq_dispatch' => ['transition' => 'RETRY_DISPATCH', 'message' => 'Supplier dispatch retried.'],
+    ];
+    if (isset($rfqLifecycleActions[$action])) {
+        $definition = $rfqLifecycleActions[$action];
+        $saved = yovel_admin_buying_transition_rfq(
+            bx_db(),
+            $company,
+            $admin,
+            trim((string) ($input['rfq_key'] ?? '')),
+            (string) $definition['transition'],
+            $input
+        );
+        return [
+            'message' => (string) $definition['message'],
+            'section' => 'request-for-quotation',
+            'query' => ['rfq' => (string) $saved['rfq_key']],
         ];
     }
     if ($action === 'save_buying_scorecard') {

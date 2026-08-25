@@ -139,6 +139,9 @@ function compliance_test_cleanup_company(array $fixture): void
     foreach ([
         'project_company_compliance_retention_hold',
         'project_company_compliance_approval',
+        'project_company_compliance_einvoice_record',
+        'project_company_compliance_template_version',
+        'project_company_compliance_template',
         'project_company_compliance_tax_account_map',
         'project_company_compliance_evidence',
         'project_company_compliance_rule_set',

@@ -34,7 +34,7 @@ foreach ($manufacturingSelectedForm === null ? $manufacturingForms : [] as $cand
 }
 ?>
 <div data-manufacturing-workspace class="grid min-h-0 gap-4">
-    <style>@media (min-width:1024px){[data-manufacturing-panels]{grid-template-columns:minmax(0, 12fr) minmax(16rem, 8fr)}}</style>
+    <style>[data-manufacturing-workspace] .yovel-record-modal{z-index:90}@media (min-width:1024px){[data-manufacturing-panels]{grid-template-columns:minmax(0, 12fr) minmax(16rem, 8fr)}[data-manufacturing-panels]>[data-manufacturing-main],[data-manufacturing-panels]>[data-manufacturing-tools]{height:max(32rem,calc(100dvh - 16rem))}}</style>
     <header class="flex flex-wrap items-start justify-between gap-4 border-b pb-4">
         <div><p class="text-xs font-medium uppercase text-muted-foreground">Manufacturing</p><h1 class="mt-1 text-xl font-semibold"><?= $manufacturingEscape((string) $manufacturingMeta['label']) ?></h1></div>
         <a href="?view=manufacturing&section=form-builder&target=<?= $manufacturingEscape($manufacturingSection === 'form-builder' ? $manufacturingTarget : (array_key_exists($manufacturingSection, yovel_admin_manufacturing_form_targets()) ? $manufacturingSection : 'boms')) ?>" class="inline-flex h-9 items-center gap-2 rounded-md border px-3 text-sm font-medium"><span class="material-symbols-rounded text-base" aria-hidden="true">dynamic_form</span>Form Builder</a>
@@ -57,7 +57,13 @@ foreach ($manufacturingSelectedForm === null ? $manufacturingForms : [] as $cand
         <aside data-manufacturing-tools data-grid-span="8" class="flex min-h-[32rem] min-w-0 flex-col overflow-hidden rounded-lg border bg-card">
             <header class="border-b px-5 py-4"><h2 class="text-base font-semibold">Actions and tools</h2><p class="mt-1 text-sm text-muted-foreground"><?= $manufacturingEscape((string) ($manufacturingData['company_name'] ?? $companyName ?? 'Company')) ?></p></header>
             <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain p-5">
-                <?php if ($manufacturingSection === 'settings'): ?>
+                <?php if ($manufacturingSection === 'dashboard'): ?>
+                    <?php $manufacturingDashboardRegion = 'tools'; require __DIR__ . '/dashboard.php'; unset($manufacturingDashboardRegion); ?>
+                <?php elseif ($manufacturingSection === 'boms'): ?>
+                    <?php require __DIR__ . '/bom-tools.php'; ?>
+                <?php elseif (in_array($manufacturingSection, ['operations', 'workstations'], true)): ?>
+                    <div class="flex flex-wrap gap-2"><?php require __DIR__ . '/capacity-tools.php'; ?></div>
+                <?php elseif ($manufacturingSection === 'settings'): ?>
                     <?php
                     $settingsValues = array_merge($manufacturingSettings, $manufacturingInput);
                     $settingsError = (string) ($manufacturingState['error'] ?? '');
@@ -121,4 +127,6 @@ foreach ($manufacturingSelectedForm === null ? $manufacturingForms : [] as $cand
             </div>
         </aside>
     </div>
+    <span data-manufacturing-panels-end hidden></span>
+    <?php if ($manufacturingSection === 'dashboard'): $manufacturingDashboardRegion = 'tour'; require __DIR__ . '/dashboard.php'; unset($manufacturingDashboardRegion); endif; ?>
 </div>

@@ -4,6 +4,10 @@ declare(strict_types=1);
 $inventoryModuleData = is_array($inventoryData ?? null) ? $inventoryData : (is_array($activeModuleData ?? null) ? $activeModuleData : []);
 $inventoryFormState = is_array($inventoryModuleData['form_state'] ?? null) ? $inventoryModuleData['form_state'] : [];
 $inventoryViewSection = (string) ($inventoryModuleData['section'] ?? 'items');
+$inventoryModalOriginSection = $inventoryViewSection;
+if ($inventoryViewSection === 'dashboard') {
+    $inventoryViewSection = 'items';
+}
 
 if ($inventoryViewSection === 'form-builder') {
     $inventoryFormSchema = is_array($inventoryModuleData['active_form_schema'] ?? null) ? $inventoryModuleData['active_form_schema'] : [];
@@ -132,6 +136,46 @@ if (in_array($inventoryViewSection, ['warehouses', 'putaway', 'reorder-levels'],
     return;
 }
 
+if (in_array($inventoryViewSection, ['batch-numbers', 'serial-numbers'], true)) {
+    $isBatch = $inventoryViewSection === 'batch-numbers';
+    $records = is_array($inventoryModuleData[$isBatch ? 'batches' : 'serials'] ?? null) ? $inventoryModuleData[$isBatch ? 'batches' : 'serials'] : [];
+    $items = is_array($inventoryModuleData['items'] ?? null) ? $inventoryModuleData['items'] : [];
+    $action = $isBatch ? 'save_inventory_batch' : 'save_inventory_serial';
+    $keyField = $isBatch ? 'batch_key' : 'serial_key';
+    $numberField = $isBatch ? 'batch_number' : 'serial_number';
+    $label = $isBatch ? 'Batch' : 'Serial';
+    $prior = is_array($inventoryFormState['input'] ?? null) ? $inventoryFormState['input'] : [];
+    $stateAction = (string) ($inventoryFormState['action'] ?? '');
+    $error = (string) ($inventoryFormState['error'] ?? '');
+    $render = static function (array $modal, bool $open, bool $showOpener = true): void {
+        $recordModal = $modal;
+        ob_start(); require dirname(__DIR__, 3) . '/views/partials/record-modal.php'; $markup = (string) ob_get_clean();
+        if (!$showOpener) { $markup = preg_replace('/^<button\b.*?<\/button>\s*/s', '', $markup, 1) ?? $markup; }
+        if ($open) { $markup = preg_replace('/data-record-modal hidden/', 'data-record-modal data-record-modal-open-on-load hidden', $markup, 1) ?? $markup; }
+        echo $markup;
+    };
+    $body = static function (array $record, array $priorValues, string $formError) use ($items, $isBatch, $numberField, $label): string {
+        $value = static fn (string $key, string $fallback = ''): string => bx_h((string) ($priorValues[$key] ?? $record[$key] ?? $fallback));
+        $status = (string) ($priorValues[$isBatch ? 'batch_status' : 'serial_status'] ?? $record[$isBatch ? 'batch_status' : 'serial_status'] ?? 'ACTIVE');
+        ob_start(); ?>
+        <?php if ($formError !== ''): ?><div role="alert" class="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive"><?= bx_h($formError) ?></div><?php endif; ?>
+        <div class="grid gap-4 sm:grid-cols-2">
+            <label class="grid gap-1.5 text-sm font-medium sm:col-span-2">Item<select name="item_key" required class="h-9 rounded-md border bg-background px-3"><option value="">Select tracked item</option><?php foreach ($items as $item): ?><option value="<?= bx_h((string) $item['item_key']) ?>"<?= $value('item_key') === (string) $item['item_key'] ? ' selected' : '' ?>><?= bx_h((string) $item['item_code'] . ' - ' . (string) $item['item_name']) ?></option><?php endforeach; ?></select></label>
+            <label class="grid gap-1.5 text-sm font-medium sm:col-span-2"><?= bx_h($label) ?> number<input name="<?= bx_h($numberField) ?>" required maxlength="120" class="h-9 rounded-md border bg-background px-3" value="<?= $value($numberField) ?>"></label>
+            <?php if ($isBatch): ?><label class="grid gap-1.5 text-sm font-medium">Manufacturing date<input type="date" name="manufacturing_date" class="h-9 rounded-md border bg-background px-3" value="<?= $value('manufacturing_date') ?>"></label><label class="grid gap-1.5 text-sm font-medium">Expiry date<input type="date" name="expiry_date" class="h-9 rounded-md border bg-background px-3" value="<?= $value('expiry_date') ?>"></label><?php endif; ?>
+            <label class="grid gap-1.5 text-sm font-medium sm:col-span-2">Status<select name="<?= $isBatch ? 'batch_status' : 'serial_status' ?>" class="h-9 rounded-md border bg-background px-3"><option value="ACTIVE"<?= $status === 'ACTIVE' ? ' selected' : '' ?>>Active</option><option value="DISABLED"<?= $status === 'DISABLED' ? ' selected' : '' ?>>Disabled</option></select></label>
+        </div><?php return (string) ob_get_clean();
+    };
+    $hidden = static fn (array $record, array $priorValues): string => '<input type="hidden" name="csrf" value="' . bx_h(bx_csrf_token()) . '"><input type="hidden" name="module_view" value="inventory-warehouse"><input type="hidden" name="action" value="' . bx_h($action) . '"><input type="hidden" name="section" value="' . bx_h($inventoryViewSection) . '"><input type="hidden" name="' . bx_h($keyField) . '" value="' . bx_h((string) ($priorValues[$keyField] ?? $record[$keyField] ?? '')) . '">';
+    $newOpen = !empty($inventoryFormState['open']) && $stateAction === $action && trim((string) ($prior[$keyField] ?? '')) === '';
+    $render(['id' => 'inventory-' . strtolower($label) . '-modal-new', 'title' => 'Add ' . $label, 'description' => 'Create a company-owned ' . strtolower($label) . ' identity.', 'open_label' => 'Add ' . $label, 'submit_label' => 'Save ' . strtolower($label), 'confirm_message' => 'Confirm this Inventory ' . $label . ' before saving it.', 'body_html' => $body([], $newOpen ? $prior : [], $newOpen ? $error : ''), 'hidden_html' => $hidden([], $newOpen ? $prior : [])], $newOpen);
+    foreach ($records as $record) {
+        $open = !empty($inventoryFormState['open']) && $stateAction === $action && (string) ($prior[$keyField] ?? '') === (string) $record[$keyField];
+        $render(['id' => 'inventory-' . strtolower($label) . '-modal-' . (string) $record[$keyField], 'title' => 'Edit ' . $label, 'description' => 'Update status and lifecycle dates without changing movement history.', 'open_label' => 'Edit ' . $label, 'submit_label' => 'Save ' . strtolower($label), 'confirm_message' => 'Confirm these Inventory ' . $label . ' changes.', 'body_html' => $body($record, $open ? $prior : [], $open ? $error : ''), 'hidden_html' => $hidden($record, $open ? $prior : [])], $open, false);
+    }
+    return;
+}
+
 if ($inventoryViewSection !== 'items') {
     return;
 }
@@ -184,8 +228,9 @@ $inventoryItemBody = static function (array $record, array $prior, string $error
     <?php return (string) ob_get_clean();
 };
 
-$inventoryItemHidden = static function (array $record, array $prior) use ($inventoryEscape): string {
-    $hidden = '<input type="hidden" name="csrf" value="' . bx_h(bx_csrf_token()) . '"><input type="hidden" name="module_view" value="inventory-warehouse"><input type="hidden" name="action" value="save_inventory_item"><input type="hidden" name="section" value="items"><input type="hidden" name="item_key" value="' . $inventoryEscape((string) ($prior['item_key'] ?? $record['item_key'] ?? '')) . '">';
+$inventoryItemReturnSection = $inventoryModalOriginSection === 'dashboard' ? 'dashboard' : 'items';
+$inventoryItemHidden = static function (array $record, array $prior) use ($inventoryEscape, $inventoryItemReturnSection): string {
+    $hidden = '<input type="hidden" name="csrf" value="' . bx_h(bx_csrf_token()) . '"><input type="hidden" name="module_view" value="inventory-warehouse"><input type="hidden" name="action" value="save_inventory_item"><input type="hidden" name="section" value="' . $inventoryEscape($inventoryItemReturnSection) . '"><input type="hidden" name="item_key" value="' . $inventoryEscape((string) ($prior['item_key'] ?? $record['item_key'] ?? '')) . '">';
     foreach (['uoms','barcodes','variant_attributes','manufacturers','alternatives','party_details','taxes','defaults','lead_times','website_specs','reorder_rows'] as $collection) {
         $json = (string) ($prior[$collection . '_json'] ?? json_encode($record[$collection] ?? [], JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
         $hidden .= '<input type="hidden" name="' . $collection . '_json" value="' . $inventoryEscape($json) . '">';
@@ -199,17 +244,19 @@ $inventoryRenderModal([
     'open_label' => 'Add Item', 'submit_label' => 'Save item', 'confirm_message' => 'Confirm this Inventory item before saving it.',
     'body_html' => $inventoryItemBody([], $addItemOpen ? $inventoryPrior : [], $addItemOpen ? $inventoryStateError : ''),
     'hidden_html' => $inventoryItemHidden([], $addItemOpen ? $inventoryPrior : []),
-], $addItemOpen);
+], $addItemOpen, $inventoryModalOriginSection !== 'dashboard');
 
-foreach ($inventoryItems as $itemHeader) {
-    $item = yovel_admin_inventory_item(['company_key_hash' => (string) $itemHeader['company_key_hash']], (string) $itemHeader['item_key']) ?? $itemHeader;
-    $open = !empty($inventoryFormState['open']) && $inventoryStateAction === 'save_inventory_item' && (string) ($inventoryPrior['item_key'] ?? '') === (string) $item['item_key'];
-    $inventoryRenderModal([
-        'id' => 'inventory-item-modal-' . (string) $item['item_key'], 'title' => 'Edit Item', 'description' => 'Update this company catalogue record.',
-        'open_label' => 'Edit Item', 'submit_label' => 'Save item', 'confirm_message' => 'Confirm these Inventory item changes before saving them.',
-        'body_html' => $inventoryItemBody($item, $open ? $inventoryPrior : [], $open ? $inventoryStateError : ''),
-        'hidden_html' => $inventoryItemHidden($item, $open ? $inventoryPrior : []),
-    ], $open, false);
+if ($inventoryModalOriginSection !== 'dashboard') {
+    foreach ($inventoryItems as $itemHeader) {
+        $item = yovel_admin_inventory_item(['company_key_hash' => (string) $itemHeader['company_key_hash']], (string) $itemHeader['item_key']) ?? $itemHeader;
+        $open = !empty($inventoryFormState['open']) && $inventoryStateAction === 'save_inventory_item' && (string) ($inventoryPrior['item_key'] ?? '') === (string) $item['item_key'];
+        $inventoryRenderModal([
+            'id' => 'inventory-item-modal-' . (string) $item['item_key'], 'title' => 'Edit Item', 'description' => 'Update this company catalogue record.',
+            'open_label' => 'Edit Item', 'submit_label' => 'Save item', 'confirm_message' => 'Confirm these Inventory item changes before saving them.',
+            'body_html' => $inventoryItemBody($item, $open ? $inventoryPrior : [], $open ? $inventoryStateError : ''),
+            'hidden_html' => $inventoryItemHidden($item, $open ? $inventoryPrior : []),
+        ], $open, false);
+    }
 }
 
 $inventoryPriceBody = static function (array $record, array $prior, string $error, array $items) use ($inventoryEscape): string {
@@ -232,7 +279,7 @@ $inventoryPriceBody = static function (array $record, array $prior, string $erro
     </div>
     <?php return (string) ob_get_clean();
 };
-$inventoryPriceHidden = static fn (array $record, array $prior): string => '<input type="hidden" name="csrf" value="' . bx_h(bx_csrf_token()) . '"><input type="hidden" name="module_view" value="inventory-warehouse"><input type="hidden" name="action" value="save_inventory_item_price"><input type="hidden" name="section" value="items"><input type="hidden" name="item_price_key" value="' . bx_h((string) ($prior['item_price_key'] ?? $record['item_price_key'] ?? '')) . '"><input type="hidden" name="price_status" value="' . bx_h((string) ($prior['price_status'] ?? $record['price_status'] ?? 'ACTIVE')) . '">';
+$inventoryPriceHidden = static fn (array $record, array $prior): string => '<input type="hidden" name="csrf" value="' . bx_h(bx_csrf_token()) . '"><input type="hidden" name="module_view" value="inventory-warehouse"><input type="hidden" name="action" value="save_inventory_item_price"><input type="hidden" name="section" value="' . bx_h($inventoryItemReturnSection) . '"><input type="hidden" name="item_price_key" value="' . bx_h((string) ($prior['item_price_key'] ?? $record['item_price_key'] ?? '')) . '"><input type="hidden" name="price_status" value="' . bx_h((string) ($prior['price_status'] ?? $record['price_status'] ?? 'ACTIVE')) . '">';
 
 $addPriceOpen = !empty($inventoryFormState['open']) && $inventoryStateAction === 'save_inventory_item_price' && trim((string) ($inventoryPrior['item_price_key'] ?? '')) === '';
 $inventoryRenderModal([
@@ -240,14 +287,16 @@ $inventoryRenderModal([
     'open_label' => 'Add Item Price', 'submit_label' => 'Save price', 'confirm_message' => 'Confirm this Inventory item price before saving it.',
     'body_html' => $inventoryPriceBody([], $addPriceOpen ? $inventoryPrior : [], $addPriceOpen ? $inventoryStateError : '', $inventoryItems),
     'hidden_html' => $inventoryPriceHidden([], $addPriceOpen ? $inventoryPrior : []),
-], $addPriceOpen);
+], $addPriceOpen, $inventoryModalOriginSection !== 'dashboard');
 
-foreach ($inventoryPrices as $price) {
-    $open = !empty($inventoryFormState['open']) && $inventoryStateAction === 'save_inventory_item_price' && (string) ($inventoryPrior['item_price_key'] ?? '') === (string) $price['item_price_key'];
-    $inventoryRenderModal([
-        'id' => 'inventory-price-modal-' . (string) $price['item_price_key'], 'title' => 'Edit Item Price', 'description' => 'Update this dated company price-list rate.',
-        'open_label' => 'Edit Item Price', 'submit_label' => 'Save price', 'confirm_message' => 'Confirm these Inventory item price changes before saving them.',
-        'body_html' => $inventoryPriceBody($price, $open ? $inventoryPrior : [], $open ? $inventoryStateError : '', $inventoryItems),
-        'hidden_html' => $inventoryPriceHidden($price, $open ? $inventoryPrior : []),
-    ], $open, false);
+if ($inventoryModalOriginSection !== 'dashboard') {
+    foreach ($inventoryPrices as $price) {
+        $open = !empty($inventoryFormState['open']) && $inventoryStateAction === 'save_inventory_item_price' && (string) ($inventoryPrior['item_price_key'] ?? '') === (string) $price['item_price_key'];
+        $inventoryRenderModal([
+            'id' => 'inventory-price-modal-' . (string) $price['item_price_key'], 'title' => 'Edit Item Price', 'description' => 'Update this dated company price-list rate.',
+            'open_label' => 'Edit Item Price', 'submit_label' => 'Save price', 'confirm_message' => 'Confirm these Inventory item price changes before saving them.',
+            'body_html' => $inventoryPriceBody($price, $open ? $inventoryPrior : [], $open ? $inventoryStateError : '', $inventoryItems),
+            'hidden_html' => $inventoryPriceHidden($price, $open ? $inventoryPrior : []),
+        ], $open, false);
+    }
 }

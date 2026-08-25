@@ -4,12 +4,17 @@ declare(strict_types=1);
 require_once __DIR__ . '/schema.php';
 require_once __DIR__ . '/settings.php';
 require_once __DIR__ . '/forms.php';
+require_once __DIR__ . '/dashboard.php';
+require_once __DIR__ . '/projects.php';
+require_once __DIR__ . '/templates.php';
+require_once __DIR__ . '/tasks.php';
 
 function yovel_admin_projects_sections(): array
 {
     return [
+        'dashboard' => ['label' => 'Dashboard', 'icon' => 'dashboard', 'owner_state' => null],
         'projects' => ['label' => 'Projects', 'icon' => 'work', 'owner_state' => null],
-        'project-tasks' => ['label' => 'Project tasks', 'icon' => 'account_tree', 'owner_state' => 'assignments'],
+        'project-tasks' => ['label' => 'Project tasks', 'icon' => 'account_tree', 'owner_state' => null],
         'timesheets' => ['label' => 'Timesheets', 'icon' => 'schedule', 'owner_state' => 'timesheets'],
         'project-collaboration' => ['label' => 'Project collaboration', 'icon' => 'forum', 'owner_state' => 'notifications'],
         'project-summaries' => ['label' => 'Project summaries', 'icon' => 'assessment', 'owner_state' => null],
@@ -148,7 +153,7 @@ function yovel_admin_projects_owner_states(): array
 {
     $contracts = [
         'customer' => ['owner' => 'Sales / CRM', 'contract' => 'yovel_admin_sales_customer_snapshot'],
-        'employee' => ['owner' => 'HR', 'contract' => 'yovel_admin_hr_employee_snapshot'],
+        'employee' => ['owner' => 'HR', 'contract' => 'yovel_admin_hr_workforce_read_contract'],
         'timesheets' => ['owner' => 'HR', 'contract' => 'yovel_admin_hr_project_timesheets'],
         'assignments' => ['owner' => 'HR', 'contract' => 'yovel_admin_hr_assign_project_task'],
         'finance' => ['owner' => 'Finance', 'contract' => 'yovel_admin_finance_project_billing_snapshot'],
@@ -238,6 +243,45 @@ function yovel_admin_projects_data(array $company, array $admin, string $section
         $data['form_adapter'] = yovel_admin_projects_form_adapter();
         $data['form_history'] = yovel_admin_projects_schema_history($company, (string) $data['form_target']);
     }
+    if ($section === 'dashboard') {
+        $data['dashboard'] = yovel_admin_projects_dashboard_data($company, $admin);
+    }
+    if ($section === 'projects') {
+        $data['project_types'] = yovel_admin_projects_project_types($company, $admin);
+        $data['projects'] = yovel_admin_projects_records($company, $admin);
+        $data['project_templates'] = yovel_admin_projects_templates($company, $admin);
+        $data['workforce'] = [
+            'available' => false,
+            'contract' => 'hr.workforce.v1',
+            'employees' => [],
+        ];
+        if (function_exists('yovel_admin_hr_workforce_read_contract')) {
+            try {
+                $workforce = yovel_admin_hr_workforce_read_contract($company, ['status' => 'ACTIVE']);
+                if (($workforce['contract'] ?? '') === 'hr.workforce.v1'
+                    && (string) ($workforce['company_key_hash'] ?? '') === $companyKeyHash
+                    && is_array($workforce['employees'] ?? null)) {
+                    $data['workforce'] = [
+                        'available' => true,
+                        'contract' => 'hr.workforce.v1',
+                        'employees' => $workforce['employees'],
+                    ];
+                }
+            } catch (Throwable) {
+                $data['workforce']['error'] = 'HR workforce is temporarily unavailable.';
+            }
+        }
+    }
+    if ($section === 'project-tasks') {
+        $data['projects'] = yovel_admin_projects_records($company, $admin);
+        $data['task_types'] = yovel_admin_projects_task_types($company, $admin);
+        $data['tasks'] = yovel_admin_projects_tasks($company, $admin);
+        $data['assignment_dependency'] = [
+            'contract' => 'yovel_admin_hr_assign_project_task',
+            'available' => function_exists('yovel_admin_hr_assign_project_task'),
+            'state' => function_exists('yovel_admin_hr_assign_project_task') ? 'AVAILABLE' : 'UNAVAILABLE_DEPENDENCY',
+        ];
+    }
 
     return $data;
 }
@@ -285,6 +329,134 @@ function yovel_admin_projects_handle_post(
                 'target' => (string) ($saved['targetType'] ?? ''),
                 'version' => (string) ($saved['version'] ?? ''),
             ],
+        ];
+    }
+    if ($action === 'save_project_type') {
+        $saved = yovel_admin_project_type_upsert($company, $admin, $input);
+        return [
+            'message' => 'Project Type saved.',
+            'section' => 'projects',
+            'query' => ['project_type_key' => (string) $saved['project_type_key']],
+        ];
+    }
+    if ($action === 'save_project') {
+        $saved = yovel_admin_project_upsert($company, $admin, $input);
+        return [
+            'message' => 'Project saved.',
+            'section' => 'projects',
+            'query' => ['project_key' => (string) $saved['project_key']],
+        ];
+    }
+    if ($action === 'transition_project') {
+        $saved = yovel_admin_project_transition(
+            $company,
+            $admin,
+            (string) ($input['project_key'] ?? ''),
+            (string) ($input['transition'] ?? ''),
+            (string) ($input['csrf'] ?? '')
+        );
+        return [
+            'message' => 'Project status updated.',
+            'section' => 'projects',
+            'query' => ['project_key' => (string) $saved['project_key']],
+        ];
+    }
+    if ($action === 'save_project_template') {
+        $saved = yovel_admin_project_template_upsert($company, $admin, $input);
+        return [
+            'message' => 'Project Template saved.',
+            'section' => 'projects',
+            'query' => ['project_template_key' => (string) $saved['project_template_key']],
+        ];
+    }
+    if ($action === 'create_project_from_template') {
+        $saved = yovel_admin_project_create_from_template($company, $admin, $input);
+        return [
+            'message' => 'Project created from template.',
+            'section' => 'projects',
+            'query' => ['project_key' => (string) $saved['project_key']],
+        ];
+    }
+    if ($action === 'save_task_type') {
+        $saved = yovel_admin_task_type_upsert($company, $admin, $input);
+        return [
+            'message' => 'Task Type saved.',
+            'section' => 'project-tasks',
+            'query' => ['task_type_key' => (string) $saved['task_type_key']],
+        ];
+    }
+    if ($action === 'save_project_task') {
+        $saved = yovel_admin_project_task_upsert($company, $admin, $input);
+        $assignment = is_array($saved['assignment'] ?? null) ? $saved['assignment'] : [];
+        return [
+            'message' => !empty($assignment['retryable'])
+                ? 'Task saved. HR assignment is unavailable and can be retried.'
+                : 'Task saved.',
+            'section' => 'project-tasks',
+            'query' => ['task_key' => (string) $saved['task_key']],
+            'dependency_state' => (string) ($assignment['status'] ?? ''),
+            'retryable' => !empty($assignment['retryable']),
+        ];
+    }
+    if ($action === 'transition_project_task') {
+        $saved = yovel_admin_project_task_transition(
+            $company,
+            $admin,
+            (string) ($input['task_key'] ?? ''),
+            (string) ($input['transition'] ?? ''),
+            (string) ($input['csrf'] ?? '')
+        );
+        return [
+            'message' => 'Task status updated.',
+            'section' => 'project-tasks',
+            'query' => ['task_key' => (string) $saved['task_key']],
+        ];
+    }
+    if ($action === 'move_project_task') {
+        $parentTaskKey = trim((string) ($input['parent_task_key'] ?? ''));
+        $saved = yovel_admin_project_task_move(
+            $company,
+            $admin,
+            (string) ($input['task_key'] ?? ''),
+            $parentTaskKey === '' ? null : $parentTaskKey,
+            (string) ($input['csrf'] ?? '')
+        );
+        return [
+            'message' => 'Task moved.',
+            'section' => 'project-tasks',
+            'query' => ['task_key' => (string) $saved['task_key']],
+        ];
+    }
+    if ($action === 'reschedule_project_task') {
+        $saved = yovel_admin_project_task_reschedule(
+            $company,
+            $admin,
+            (string) ($input['task_key'] ?? ''),
+            (string) ($input['expected_start_date'] ?? ''),
+            (string) ($input['expected_end_date'] ?? ''),
+            (string) ($input['csrf'] ?? '')
+        );
+        return [
+            'message' => 'Task and dependent schedule updated.',
+            'section' => 'project-tasks',
+            'query' => ['task_key' => (string) $saved['task_key']],
+        ];
+    }
+    if ($action === 'retry_project_task_assignment') {
+        $saved = yovel_admin_project_task_retry_assignment(
+            $company,
+            $admin,
+            (string) ($input['task_key'] ?? ''),
+            (string) ($input['csrf'] ?? '')
+        );
+        return [
+            'message' => !empty($saved['assignment']['retryable'])
+                ? 'HR assignment remains unavailable and can be retried.'
+                : 'HR assignment synchronized.',
+            'section' => 'project-tasks',
+            'query' => ['task_key' => (string) $saved['task_key']],
+            'dependency_state' => (string) ($saved['assignment']['status'] ?? ''),
+            'retryable' => !empty($saved['assignment']['retryable']),
         ];
     }
 

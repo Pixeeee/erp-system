@@ -280,10 +280,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation and browser evidence: company/admin/modules/operations/catalog.php keeps Brand as an explicit non-blocking UNAVAILABLE_DEPENDENCY and does not reinterpret Inventory Manufacturer rows as Brand records; company/admin/modules/operations/views/sections/catalog.php renders the exact gap with Inventory owner actions. The authenticated catalog-units route displayed Brand unavailable in the 1440x1000 12/8 shell and 390x844 main-first mobile stack without page overflow.",
+                "2026-08-25 fresh passing evidence: php tests/operations-catalog-units.php and all Operations suites passed twice, asserting no fabricated Brand rows, owner secret redaction, source-failure isolation, read-only UI, and no Inventory-table access; php tests/inventory-warehouse-catalogue.php passed the consumed IW-02 owner services.",
+                "2026-08-25 unavailable owner fields: brand_key, brand_code, brand_name, description, and brand_status; no verified Brand directory callable currently exists."
             ],
-            "reason": "OP-05: Catalog and unit setup adapters are absent."
+            "reason": "OP-05 missing owner data: Inventory exposes Manufacturer context but no verified Brand directory, so Operations does not infer Brand parity."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/company/company.json:doctype:Company",
@@ -342,12 +343,13 @@
             "dependencies": [
                 "accounting-finance.currency-exchange.v1"
             ],
-            "status": "MISSING",
+            "status": "PARTIAL",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/commercial.php consumes yovel_admin_finance_foundation_records(array $company), validates and allow-lists stable exchange_rate_key/exchange_setting_key, currency pair, transaction date, exact rate, and setting status while excluding api_endpoint and credential fields; company/admin/modules/operations/views/sections/commercial.php renders the result read-only with a Finance owner route.",
+                "2026-08-25 passing evidence: php tests/operations-commercial-masters.php passed, covering stable Finance keys, exact 57.125000000 rate preservation, secret stripping, independent owner failure, company scope, and no foreign-table access; php tests/accounting-finance-foundation-parity.php passed the consumed Finance foundation service.",
+                "2026-08-25 unavailable owner fields: the Finance service does not expose for_buying or for_selling applicability flags, so Operations does not infer them."
             ],
-            "reason": "OP-04: Commercial and trading setup adapters are absent."
+            "reason": "OP-04 partial: dated company-scoped exchange rates are projected from Finance, but buying-versus-selling applicability is not available from the verified owner service."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/currency_exchange/test_records.json:doctype:Test Records",
@@ -387,10 +389,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/commercial.php consumes the verified Sales data service and retains customer identity/status only as context; it explicitly leaves Customer Group UNAVAILABLE_DEPENDENCY instead of deriving groups from customers, and company/admin/modules/operations/views/sections/commercial.php names the missing join and owner route.",
+                "2026-08-25 passing evidence: php tests/operations-commercial-masters.php passed, asserting customer context remains distinct from Customer Group records, unavailable data is not converted to zero or empty success, and raw Sales secrets are omitted.",
+                "2026-08-25 unavailable owner fields: customer_group_key, customer_group_name, parent_customer_group_key, is_group, customer_group_status, and customer-to-group relationships; verified customer/contact/address joins are also absent."
             ],
-            "reason": "OP-04: Commercial and trading setup adapters are absent."
+            "reason": "OP-04 missing owner data: Sales exposes customers but no stable Customer Group directory, hierarchy, lifecycle, or customer-group relationship service."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/department/department.json:doctype:Department",
@@ -406,12 +409,13 @@
                 "hr.workforce-directory.v1",
                 "platform.company-scope.v1"
             ],
-            "status": "MISSING",
+            "status": "PARTIAL",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/workforce.php consumes yovel_admin_hr_workforce_read_contract(array $company, array $options = []), validates hr.workforce.v1 and exact company scope, and derives unique stable department_key references only from verified employee assignments; company/admin/modules/operations/views/sections/workforce.php renders those references read-only with an HR departments owner link.",
+                "2026-08-25 passing evidence: php tests/operations-workforce-calendar.php passed twice, covering stable department references, cross-company envelope rejection, secret stripping, owner-only actions, explicit PARTIAL state, and absence of project_company_hr_ access from Operations.",
+                "2026-08-25 unavailable owner fields: the verified HR contract does not expose department_code, department_name, department_status, or parent_department_key, so labels and hierarchy are not fabricated."
             ],
-            "reason": "OP-03: Workforce and calendar setup adapters are absent."
+            "reason": "OP-03 partial: Operations projects stable HR department assignment keys, but the verified owner contract does not yet provide the Department directory fields required for complete parity."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/designation/designation.json:doctype:Designation",
@@ -427,12 +431,13 @@
                 "hr.workforce-directory.v1",
                 "platform.company-scope.v1"
             ],
-            "status": "MISSING",
+            "status": "PARTIAL",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/workforce.php validates the verified hr.workforce.v1 envelope and derives unique stable job_position_key references from employee assignments; company/admin/modules/operations/views/sections/workforce.php renders the reference-only designation state and routes authoritative work to HR job positions.",
+                "2026-08-25 passing evidence: php tests/operations-workforce-calendar.php passed twice, asserting stable job-position references, explicit PARTIAL state, owner-only routing, company-envelope rejection, secret stripping, and zero direct HR-table access.",
+                "2026-08-25 unavailable owner fields: the verified HR contract does not expose designation_code, designation_name, designation_status, or parent_designation_key; Operations therefore does not infer designation labels or hierarchy."
             ],
-            "reason": "OP-03: Workforce and calendar setup adapters are absent."
+            "reason": "OP-03 partial: Operations projects stable HR job-position assignment keys as designation references, but the owner contract does not provide a complete Designation directory."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/driver/driver.json:doctype:Driver",
@@ -533,12 +538,13 @@
                 "hr.workforce-directory.v1",
                 "platform.company-scope.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/workforce.php directly consumes only yovel_admin_hr_workforce_read_contract(array $company, array $options = []), validates contract identity and company hash, allow-lists ACTIVE/INACTIVE/ON_LEAVE/SEPARATED/DRAFT/ALL filters, and copies only employee_key, employee_code, employee_name, employee_status, department_key, and job_position_key; company/admin/modules/operations/views/sections/workforce.php renders the server-filtered read-only directory and HR owner actions.",
+                "2026-08-25 passing evidence: php tests/operations-workforce-calendar.php passed twice, covering the exact ten-row mapping, stable employee and assignment keys, status filtering, missing contract, provider-envelope mismatch, company isolation, secret removal, no fabricated records, 12/8 source composition, and no HR-table access; php tests/hr-attendance-shifts.php passed against the real HR workforce contract.",
+                "2026-08-25 browser evidence: the authenticated workforce-directory route rendered the real company employee projection at 1440x1000 in the 12/8 shell and at 390x844 with main-first stacking, readable statuses, stable-reference columns, HR owner links, and no overlapping content."
             ],
-            "reason": "OP-03: Workforce and calendar setup adapters are absent."
+            "reason": "OP-03 complete: Operations provides a company-scoped, status-filtered Employee directory through the verified HR read contract without storing, querying, or mutating authoritative HR records."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/employee_education/employee_education.json:doctype:Employee Education",
@@ -556,10 +562,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/workforce.php maps HR availability.education to an explicit non-blocking UNAVAILABLE_DEPENDENCY state; company/admin/modules/operations/views/sections/workforce.php displays the owner reason and never substitutes an empty-success directory.",
+                "2026-08-25 passing evidence: php tests/operations-workforce-calendar.php passed twice, asserting zero fabricated education records and preservation of the exact HR owner reason Deferred to HR-WP-10.",
+                "2026-08-25 unavailable owner fields: education_key, employee_key, school, qualification, level, and year are not supplied by yovel_admin_hr_workforce_read_contract."
             ],
-            "reason": "OP-03: Workforce and calendar setup adapters are absent."
+            "reason": "OP-03 missing owner data: Employee Education remains unavailable because the verified HR contract defers education to HR-WP-10."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/employee_external_work_history/employee_external_work_history.json:doctype:Employee External Work History",
@@ -577,10 +584,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/workforce.php maps HR availability.employment_history to a distinct external_work_history UNAVAILABLE_DEPENDENCY state; company/admin/modules/operations/views/sections/workforce.php renders the exact owner reason without inferred history rows.",
+                "2026-08-25 passing evidence: php tests/operations-workforce-calendar.php passed twice, asserting zero fabricated external-history records, non-blocking behavior, and the exact HR-WP-10 reason.",
+                "2026-08-25 unavailable owner fields: history_key, employee_key, company_name, designation, from_date, and to_date are not supplied by the verified HR contract."
             ],
-            "reason": "OP-03: Workforce and calendar setup adapters are absent."
+            "reason": "OP-03 missing owner data: Employee External Work History remains unavailable because the verified HR contract defers employment history to HR-WP-10."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/employee_group/employee_group.json:doctype:Employee Group",
@@ -598,10 +606,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/workforce.php maps HR availability.employee_group to an explicit non-blocking Employee Group unavailable state; company/admin/modules/operations/views/sections/workforce.php displays that state without an Operations-owned group record or HR mutation form.",
+                "2026-08-25 passing evidence: php tests/operations-workforce-calendar.php passed twice, asserting zero fabricated group records, owner-only links, and preservation of the exact Deferred to HR-WP-10 reason.",
+                "2026-08-25 unavailable owner fields: employee_group_key, group_name, and group_status are not supplied by the verified HR contract."
             ],
-            "reason": "OP-03: Workforce and calendar setup adapters are absent."
+            "reason": "OP-03 missing owner data: Employee Group remains unavailable because the verified HR contract defers employee groups to HR-WP-10."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/employee_group_table/employee_group_table.json:doctype:Employee Group Table",
@@ -619,10 +628,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/workforce.php maps HR availability.employee_group separately to the Employee Group Table UNAVAILABLE_DEPENDENCY state and keeps records empty; company/admin/modules/operations/views/sections/workforce.php reports the owner gap as non-blocking.",
+                "2026-08-25 passing evidence: php tests/operations-workforce-calendar.php passed twice, asserting zero fabricated membership rows and the exact Deferred to HR-WP-10 owner reason.",
+                "2026-08-25 unavailable owner fields: employee_group_member_key, employee_group_key, and employee_key membership records are not supplied by the verified HR contract."
             ],
-            "reason": "OP-03: Workforce and calendar setup adapters are absent."
+            "reason": "OP-03 missing owner data: Employee Group Table remains unavailable because the verified HR contract defers employee-group membership to HR-WP-10."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/employee_internal_work_history/employee_internal_work_history.json:doctype:Employee Internal Work History",
@@ -640,10 +650,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/workforce.php maps HR availability.employment_history to a distinct internal_work_history UNAVAILABLE_DEPENDENCY state; company/admin/modules/operations/views/sections/workforce.php renders it separately from external history without inferred rows.",
+                "2026-08-25 passing evidence: php tests/operations-workforce-calendar.php passed twice, asserting zero fabricated internal-history records, non-blocking behavior, and exact preservation of the HR-WP-10 reason.",
+                "2026-08-25 unavailable owner fields: history_key, employee_key, department_key, job_position_key, from_date, and to_date history records are not supplied by the verified HR contract."
             ],
-            "reason": "OP-03: Workforce and calendar setup adapters are absent."
+            "reason": "OP-03 missing owner data: Employee Internal Work History remains unavailable because the verified HR contract defers employment history to HR-WP-10."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/global_defaults/global_defaults.json:doctype:Global Defaults",
@@ -682,12 +693,13 @@
                 "hr.calendar-directory.v1",
                 "platform.company-scope.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/workforce.php consumes yovel_admin_hr_calendar_read_contract(array $company, array $options = []), verifies hr.calendar-directory.v1 identity, exact company/date scope, authoritative availability, stable UUID relationships, active status, bounded fields, duplicate keys, and payload limits, then allow-lists holiday_key, holiday_list_key, holiday_date, description, and holiday_status without querying HR tables.",
+                "2026-08-25 UI evidence: company/admin/modules/operations/views/sections/calendars.php renders exact read-only Holiday rows, explicit empty/unavailable states, the inherited 12/8 shell, and HR owner links; Operations does not persist or infer calendar data.",
+                "2026-08-25 fresh passing evidence: php tests/operations-workforce-calendar.php and all Operations suites passed, covering exact field projection, company isolation, date-option forwarding, owner secret redaction, cross-list reference validation, independent non-blocking calendar failure, and no HR-table access; php tests/hr-leave-management.php passed the consumed owner contract."
             ],
-            "reason": "OP-03: Workforce and calendar setup adapters are absent."
+            "reason": "OP-03 complete: Operations projects exact company-scoped Holiday records through the verified authoritative HR calendar read contract."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/holiday_list/holiday_list.json:doctype:Holiday List",
@@ -703,12 +715,13 @@
                 "hr.calendar-directory.v1",
                 "platform.company-scope.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/workforce.php consumes yovel_admin_hr_calendar_read_contract(array $company, array $options = []), verifies hr.calendar-directory.v1 identity, exact company/date scope and authoritative availability, then allow-lists holiday_list_key, holiday_list_code, holiday_list_name, from_date, to_date, timezone_name, and holiday_list_status without querying or copying HR tables.",
+                "2026-08-25 UI evidence: company/admin/modules/operations/views/sections/calendars.php renders exact read-only Holiday List rows with owner range, timezone and lifecycle status, explicit empty/unavailable states, the inherited 12/8 shell, and HR owner links.",
+                "2026-08-25 fresh passing evidence: php tests/operations-workforce-calendar.php and all Operations suites passed, covering exact stable fields, company isolation, date-option forwarding, owner secret redaction, duplicate/range validation, independent non-blocking failure, and no HR-table access; php tests/hr-leave-management.php passed the consumed owner contract."
             ],
-            "reason": "OP-03: Workforce and calendar setup adapters are absent."
+            "reason": "OP-03 complete: Operations projects exact company-scoped Holiday List records through the verified authoritative HR calendar read contract."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/incoterm/incoterm.json:doctype:Incoterm",
@@ -726,10 +739,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/commercial.php records Incoterm as a non-blocking UNAVAILABLE_DEPENDENCY because neither verified Sales nor Buying services expose trade-term masters; company/admin/modules/operations/views/sections/commercial.php renders the exact gap under Buying and trade terms without inferred rows.",
+                "2026-08-25 passing evidence: php tests/operations-commercial-masters.php passed, asserting Incoterm records remain empty, unavailable fields are explicit, owner actions route to Sales and Buying, and missing services do not block other commercial projections.",
+                "2026-08-25 unavailable owner fields: incoterm_key, incoterm_code, incoterm_name, description, incoterm_status, and Sales/Buying applicability."
             ],
-            "reason": "OP-04: Commercial and trading setup adapters are absent."
+            "reason": "OP-04 missing owner data: no verified Sales or Buying Incoterm directory currently exists."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/item_group/item_group.json:doctype:Item Group",
@@ -747,10 +761,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation and browser evidence: company/admin/modules/operations/catalog.php keeps Item Group as an explicit non-blocking UNAVAILABLE_DEPENDENCY; verified warehouse hierarchy is retained only as context and is never relabeled as an Item Group tree. company/admin/modules/operations/views/sections/catalog.php renders the missing directory and Inventory owner actions. The authenticated desktop/mobile route displayed the exact Item Group gap while Inventory warehouse source health remained independently available.",
+                "2026-08-25 fresh passing evidence: php tests/operations-catalog-units.php and all Operations suites passed twice, asserting no fabricated Item Group rows, exact company-scoped warehouse validation, malformed-source isolation, and no Inventory-table access; IW-02, IW-04, and IW-07 Inventory regressions passed.",
+                "2026-08-25 unavailable owner fields: item_group_key, item_group_code, item_group_name, parent_item_group_key, is_group, and item_group_status; no verified Item Group hierarchy callable currently exists."
             ],
-            "reason": "OP-05: Catalog and unit setup adapters are absent."
+            "reason": "OP-05 missing owner data: no verified Inventory Item Group directory or hierarchy callable is available."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/item_group/test_records.json:doctype:Test Records",
@@ -786,12 +801,13 @@
                 "shared.record-type-directory.v1",
                 "accounting-finance.party-account-directory.v1"
             ],
-            "status": "MISSING",
+            "status": "PARTIAL",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/commercial.php consumes only the injected allow-listed shared.record-type-directory.v1 envelope, validates exact company hash and stable record_type_key, and allow-lists code, label, and status; malformed or absent providers produce a non-blocking unavailable state without suppressing other owners.",
+                "2026-08-25 passing evidence: php tests/operations-commercial-masters.php passed, covering stable Party Type keys, cross-company envelope rejection, secret stripping, missing-provider behavior, and independent source failure; shared ERP, modular architecture, modal confirmation, and Form Builder tests passed.",
+                "2026-08-25 unavailable owner fields: Finance account_type and authoritative owner_module metadata are not exposed; the authenticated route also correctly reported the optional shared provider unavailable rather than showing zero Party Types."
             ],
-            "reason": "OP-04: Commercial and trading setup adapters are absent."
+            "reason": "OP-04 partial: the strict shared provider can project stable record-type identity and status, but Finance classification and owner metadata remain unavailable."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/quotation_lost_reason/quotation_lost_reason.json:doctype:Quotation Lost Reason",
@@ -811,10 +827,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/commercial.php consumes the current Sales owner service but keeps Quotation Lost Reason as UNAVAILABLE_DEPENDENCY because that service exposes no reason directory; the commercial view reports this separately from available territories and salespeople.",
+                "2026-08-25 passing evidence: php tests/operations-commercial-masters.php passed, asserting zero fabricated lost-reason records, exact unavailable fields, non-blocking owner failure, and Sales owner-only navigation.",
+                "2026-08-25 unavailable owner fields: lost_reason_key, lost_reason_name, and lost_reason_status; no verified quotation owner service is available."
             ],
-            "reason": "OP-04: Commercial and trading setup adapters are absent."
+            "reason": "OP-04 missing owner data: the verified Sales service exposes no Quotation Lost Reason directory."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/quotation_lost_reason_detail/quotation_lost_reason_detail.json:doctype:Quotation Lost Reason Detail",
@@ -834,10 +851,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/commercial.php represents Quotation Lost Reason Detail as a distinct non-blocking unavailable directory and does not derive child rows from Lead status or other Sales records; the commercial view names the missing quotation-detail dependency.",
+                "2026-08-25 passing evidence: php tests/operations-commercial-masters.php passed, asserting no fabricated detail records, explicit field-level gaps, no foreign Sales queries, and independent source behavior.",
+                "2026-08-25 unavailable owner fields: lost_reason_detail_key, quotation_key, lost_reason_key, and sequence; opportunity, quotation, and order projection services are absent."
             ],
-            "reason": "OP-04: Commercial and trading setup adapters are absent."
+            "reason": "OP-04 missing owner data: Sales exposes no quotation-to-lost-reason detail service or stable detail keys."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/sales_partner/sales_partner.json:doctype:Sales Partner",
@@ -857,10 +875,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/commercial.php distinguishes the available Sales Person directory from the unavailable Sales Partner owner record and renders Sales Partner as non-blocking UNAVAILABLE_DEPENDENCY; no partner rows are inferred from salespeople.",
+                "2026-08-25 passing evidence: php tests/operations-commercial-masters.php passed, asserting no fabricated Sales Partner records, exact unavailable fields, secret stripping, and Sales owner routing.",
+                "2026-08-25 unavailable owner fields: sales_partner_key, partner_name, commission_rate, territory_key, and partner_status."
             ],
-            "reason": "OP-04: Commercial and trading setup adapters are absent."
+            "reason": "OP-04 missing owner data: Sales exposes salespeople but no verified Sales Partner service or partner-specific commercial fields."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/sales_person/sales_person.json:doctype:Sales Person",
@@ -878,12 +897,13 @@
                 "inventory-warehouse.catalog-directory.v1",
                 "accounting-finance.planning-directory.v1"
             ],
-            "status": "MISSING",
+            "status": "PARTIAL",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/commercial.php consumes yovel_admin_sales_crm_data(array $company, ?array $admin), validates and allow-lists salesperson_key, code, name, and status, and excludes undocumented fields; company/admin/modules/operations/views/sections/commercial.php renders read-only records with Sales owner links.",
+                "2026-08-25 passing evidence: php tests/operations-commercial-masters.php passed, covering stable Sales Person keys, status, company-scoped service calls, secret stripping, owner failure isolation, and no Sales-table access; the authenticated commercial-masters route loaded the Sales service as AVAILABLE.",
+                "2026-08-25 unavailable owner fields: parent_salesperson_key, employee_key, is_group, and commission_rate are not exposed by the current Sales service."
             ],
-            "reason": "OP-04: Commercial and trading setup adapters are absent."
+            "reason": "OP-04 partial: Sales Person identity and lifecycle are projected from Sales, but hierarchy, HR linkage, group behavior, and commission fields are unavailable."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/supplier_group/supplier_group.json:doctype:Supplier Group",
@@ -899,12 +919,13 @@
                 "buying-procurement.supplier-masters.v1",
                 "accounting-finance.party-account-directory.v1"
             ],
-            "status": "MISSING",
+            "status": "PARTIAL",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/commercial.php consumes yovel_admin_buying_suppliers(array $company), extracts only unique stable supplier_group_key references, and never copies supplier secrets or treats supplier rows as group masters; company/admin/modules/operations/views/sections/commercial.php routes edits to Buying.",
+                "2026-08-25 passing evidence: php tests/operations-commercial-masters.php passed, asserting exact reference-only output, secret stripping, missing-service behavior, and no Buying-table access; php tests/buying-procurement-settings-suppliers.php passed the consumed supplier service path.",
+                "2026-08-25 unavailable owner fields: supplier_group_code, supplier_group_name, parent_supplier_group_key, is_group, and supplier_group_status."
             ],
-            "reason": "OP-04: Commercial and trading setup adapters are absent."
+            "reason": "OP-04 partial: Buying supplier records expose stable group references, but no Supplier Group directory, labels, hierarchy, or lifecycle service exists."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/target_detail/target_detail.json:doctype:Target Detail",
@@ -924,10 +945,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/commercial.php reads allow-listed Inventory item and HR employee identities only as future join context and explicitly keeps Target Detail UNAVAILABLE_DEPENDENCY; company/admin/modules/operations/views/sections/commercial.php states that contextual references are not target records.",
+                "2026-08-25 passing evidence: php tests/operations-commercial-masters.php passed, asserting stable item/employee context remains separate, Target Detail records remain empty, raw secrets are removed, and unavailable values are never presented as numeric zero.",
+                "2026-08-25 unavailable owner fields: target_detail_key, parent_record_key, item_group_key, fiscal_year_key, target_quantity, target_amount, and distribution_key; no opportunity, quotation, or order target-period service exists."
             ],
-            "reason": "OP-04: Commercial and trading setup adapters are absent."
+            "reason": "OP-04 missing owner data: Inventory and HR provide contextual identities, but no owner currently exposes Target Detail periods, quantities, amounts, item groups, or distributions."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/terms_and_conditions/terms_and_conditions.json:doctype:Terms and Conditions",
@@ -946,10 +968,11 @@
             ],
             "status": "MISSING",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/commercial.php records Terms and Conditions as non-blocking UNAVAILABLE_DEPENDENCY because current Sales, Buying, and Shared services expose no terms body, applicability, lifecycle, or attachment references; the commercial view reports the gap under trade terms.",
+                "2026-08-25 passing evidence: php tests/operations-commercial-masters.php passed, asserting zero fabricated terms records, exact unavailable fields, owner-only routes, missing shared-provider behavior, and no foreign-table access.",
+                "2026-08-25 unavailable owner fields: terms_key, terms_title, applies_to, terms_body, attachment_keys, and terms_status."
             ],
-            "reason": "OP-04: Commercial and trading setup adapters are absent."
+            "reason": "OP-04 missing owner data: no verified Sales/Buying trade-terms or Shared attachment-reference service currently exposes Terms and Conditions records."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/territory/territory.json:doctype:Territory",
@@ -967,12 +990,13 @@
                 "inventory-warehouse.catalog-directory.v1",
                 "accounting-finance.planning-directory.v1"
             ],
-            "status": "MISSING",
+            "status": "PARTIAL",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation: company/admin/modules/operations/commercial.php consumes the Sales service and validates/allow-lists territory_key, code, name, and status; company/admin/modules/operations/views/sections/commercial.php renders the read-only directory and links to the Sales territory owner route.",
+                "2026-08-25 passing evidence: php tests/operations-commercial-masters.php passed, covering stable Territory keys, active status, secret stripping, source-failure isolation, and no Sales-table access; authenticated desktop/mobile checks rendered the Territory PARTIAL state without overlap or inferred records.",
+                "2026-08-25 unavailable owner fields: parent_territory_key, is_group, and territory_manager_key are not exposed by the current Sales service."
             ],
-            "reason": "OP-04: Commercial and trading setup adapters are absent."
+            "reason": "OP-04 partial: Territory identity and lifecycle are projected from Sales, but hierarchy, group behavior, and manager linkage remain unavailable."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/transaction_deletion_record/transaction_deletion_record.json:doctype:Transaction Deletion Record",
@@ -1060,12 +1084,13 @@
                 "inventory-warehouse.catalog-directory.v1",
                 "accounting-finance.tax-directory.v1"
             ],
-            "status": "MISSING",
+            "status": "PARTIAL",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/catalog.php consumes yovel_admin_inventory_items(array $company, array $filters = []) plus yovel_admin_inventory_item(array $company, string $itemKey), validates exact company/item scope and consistent stable UOM definitions, and allow-lists uom_key, uom_code, uom_name, and uom_category without querying or copying Inventory tables.",
+                "2026-08-25 UI and browser evidence: company/admin/modules/operations/views/sections/catalog.php renders exact read-only UOM rows in the inherited 12/8 workspace with explicit empty/unavailable states and Inventory owner links; no local create command exists. Authenticated checks measured 652.2px/434.8px desktop columns and a 325px mobile main-first stack with no page overflow.",
+                "2026-08-25 fresh passing evidence: php tests/operations-catalog-units.php and all Operations suites passed twice, covering stable keys, conflicting-definition rejection, company isolation, secret redaction, malformed-service isolation, and no foreign SQL; php tests/inventory-warehouse-catalogue.php passed the consumed IW-02 UOM/item services. Unavailable fields are uom_status and must_be_whole_number."
             ],
-            "reason": "OP-05: Catalog and unit setup adapters are absent."
+            "reason": "OP-05 partial: Inventory item details expose stable UOM identity, code, name, and category, but not UOM lifecycle or whole-number constraints."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/uom_conversion_factor/uom_conversion_factor.json:doctype:UOM Conversion Factor",
@@ -1081,12 +1106,13 @@
                 "inventory-warehouse.catalog-directory.v1",
                 "accounting-finance.tax-directory.v1"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "2026-08-25 local audit: company/admin/modules/operations/ does not exist.",
-                "2026-08-25 local audit: no tests/operations-* files exist, so no passing Operations verification evidence is available."
+                "2026-08-25 implementation evidence: company/admin/modules/operations/catalog.php consumes verified Inventory item/detail callables and projects exact item_uom_key, item_key, uom_key, from_uom_code, to_uom_code, uom_category, conversion_factor, and is_stock_uom fields. It validates positive exact decimal factors, one stock UOM per item, factor/direction invariants, stable references, and unique item conversion pairs without foreign SQL or copied persistence.",
+                "2026-08-25 UI and browser evidence: company/admin/modules/operations/views/sections/catalog.php renders read-only conversion direction, category, exact factor, and stable item reference rows in the inherited 12/8 shell with explicit unavailable states and Inventory owner routing. Authenticated desktop/mobile checks confirmed the live conversion source available, no local create command, main-before-tools stacking, and no page overflow.",
+                "2026-08-25 fresh passing evidence: php tests/operations-catalog-units.php and all Operations suites passed twice, covering exact read-through fields, duplicate pair/key rejection, cross-company isolation, malformed-service rollback to unavailable state, secret redaction, and no local create command; php tests/inventory-warehouse-catalogue.php passed exact BCMath UOM conversion behavior."
             ],
-            "reason": "OP-05: Catalog and unit setup adapters are absent."
+            "reason": "OP-05 complete: Operations projects exact company-scoped item UOM conversion direction and factors through verified Inventory owner callables."
         },
         {
             "source_id": "erpnext:erpnext/setup/doctype/vehicle/vehicle.json:doctype:Vehicle",

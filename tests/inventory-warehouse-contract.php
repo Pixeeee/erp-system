@@ -17,9 +17,10 @@ function inventory_contract_assert(bool $condition, string $message): void
 
 $route = yovel_admin_module_route('inventory-warehouse');
 inventory_contract_assert(is_array($route), 'Inventory/Warehouse is not registered.');
-inventory_contract_assert(($route['default_section'] ?? '') === 'items', 'Inventory/Warehouse default section changed.');
+inventory_contract_assert(($route['default_section'] ?? '') === 'dashboard', 'Inventory/Warehouse default section changed.');
 
 $expectedSections = [
+    'dashboard',
     'items',
     'warehouses',
     'stock-entries',
@@ -40,7 +41,8 @@ $expectedSections = [
 $sections = yovel_admin_inventory_warehouse_sections();
 inventory_contract_assert(array_keys($sections) === $expectedSections, 'Inventory/Warehouse section registry is incomplete or unstable.');
 inventory_contract_assert(yovel_admin_inventory_warehouse_section('Stock Ledger') === 'stock-ledger', 'Section normalization failed.');
-inventory_contract_assert(yovel_admin_inventory_warehouse_section('not-a-section') === 'items', 'Unknown sections must resolve to Items.');
+inventory_contract_assert(yovel_admin_inventory_warehouse_section('not-a-section') === 'dashboard', 'Unknown sections must resolve to Dashboard.');
+inventory_contract_assert(yovel_admin_inventory_warehouse_section('items') === 'items', 'Explicit Items section must remain stable.');
 
 $reflection = new ReflectionFunction('yovel_admin_inventory_warehouse_data');
 inventory_contract_assert($reflection->getNumberOfRequiredParameters() === 2, 'The shared registry must be able to call Inventory data with two arguments.');
@@ -78,9 +80,11 @@ inventory_contract_assert(in_array('IW-08', $registryData['state']['dependencies
 
 $_GET['section'] = 'unknown';
 $defaultData = yovel_admin_inventory_warehouse_data($company, $admin);
-inventory_contract_assert(($defaultData['section'] ?? '') === 'items', 'Invalid request section did not resolve to Items.');
-inventory_contract_assert(($defaultData['state']['kind'] ?? '') === 'empty', 'Items must render a real empty state during IW-01.');
-inventory_contract_assert(trim((string) ($defaultData['state']['title'] ?? '')) !== '', 'Items empty state needs a title.');
+inventory_contract_assert(($defaultData['section'] ?? '') === 'dashboard', 'Invalid request section did not resolve to Dashboard.');
+inventory_contract_assert(($defaultData['state']['kind'] ?? '') === 'ready', 'Dashboard fallback must render a ready state.');
+unset($_GET['section']);
+$defaultData = yovel_admin_inventory_warehouse_data($company, $admin);
+inventory_contract_assert(($defaultData['section'] ?? '') === 'dashboard', 'Absent request section did not resolve to Dashboard.');
 
 inventory_contract_assert(yovel_admin_inventory_decimal('12.3456789014') === '12.345678901', 'Inventory quantity normalization must use nine decimal places.');
 inventory_contract_assert(yovel_admin_inventory_decimal('-0.0000000004') === '0.000000000', 'Inventory decimal normalization must canonicalize negative zero.');
@@ -104,7 +108,11 @@ inventory_contract_assert(str_contains($itemsMarkup, 'minmax(0, 12fr) minmax(16r
 inventory_contract_assert(str_contains($itemsMarkup, 'data-inventory-main') && str_contains($itemsMarkup, 'data-grid-span="12"'), 'Inventory main panel is not 12/20.');
 inventory_contract_assert(str_contains($itemsMarkup, 'data-inventory-tools') && str_contains($itemsMarkup, 'data-grid-span="8"'), 'Inventory tools panel is not 8/20.');
 inventory_contract_assert(strpos($itemsMarkup, 'data-inventory-main') < strpos($itemsMarkup, 'data-inventory-tools'), 'Responsive source order must keep the main panel first.');
-inventory_contract_assert(str_contains($itemsMarkup, 'No item records'), 'Items empty state is not rendered.');
+if (($activeModuleData['items'] ?? []) === []) {
+    inventory_contract_assert(str_contains($itemsMarkup, 'No item records'), 'Items empty state is not rendered.');
+} else {
+    inventory_contract_assert(str_contains($itemsMarkup, (string) $activeModuleData['items'][0]['item_code']), 'Live Items catalogue state is not rendered.');
+}
 
 $activeModuleSection = 'form-builder';
 $activeModuleData = yovel_admin_inventory_warehouse_data($company, $admin, 'form-builder');

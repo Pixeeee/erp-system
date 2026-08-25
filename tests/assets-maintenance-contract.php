@@ -70,7 +70,7 @@ $admin = ['admin_key' => $adminKey, 'admin_status' => 'ACTIVE'];
 
 $route = yovel_admin_module_route('assets-maintenance');
 assets_contract_assert(is_array($route), 'Assets / Maintenance is not registered.');
-assets_contract_assert(($route['default_section'] ?? '') === 'asset-records', 'Assets default section changed.');
+assets_contract_assert(($route['default_section'] ?? '') === 'dashboard', 'Assets default section must remain the accepted live dashboard.');
 assets_contract_assert(($route['action_provider'] ?? '') === 'yovel_admin_assets_maintenance_handle_post', 'Assets registry action provider changed.');
 
 $expectedSections = [
@@ -86,7 +86,7 @@ $expectedSections = [
 $sections = yovel_admin_assets_maintenance_sections();
 assets_contract_assert(array_keys($sections) === $expectedSections, 'Assets section registry is incomplete or unstable.');
 assets_contract_assert(yovel_admin_assets_maintenance_section('Fixed Asset Register') === 'fixed-asset-register', 'Assets section normalization failed.');
-assets_contract_assert(yovel_admin_assets_maintenance_section('unknown') === 'asset-records', 'Unknown Assets sections must resolve to Asset records.');
+assets_contract_assert(yovel_admin_assets_maintenance_section('unknown') === 'dashboard', 'Unknown Assets sections must resolve to the live dashboard.');
 
 $dataReflection = new ReflectionFunction('yovel_admin_assets_maintenance_data');
 assets_contract_assert($dataReflection->getNumberOfRequiredParameters() === 2, 'Assets data provider must require company and administrator scope.');
@@ -140,12 +140,13 @@ assets_contract_assert(($registryData['state']['dependencies'] ?? []) !== [], 'D
 
 $_GET['section'] = 'unknown';
 $defaultData = yovel_admin_assets_maintenance_data($company, $admin);
-assets_contract_assert(($defaultData['section'] ?? '') === 'asset-records', 'Invalid Assets section did not resolve to Asset records.');
-assets_contract_assert(($defaultData['state']['kind'] ?? '') === 'empty', 'Asset records must expose a real empty state during Task 1.');
+assets_contract_assert(($defaultData['section'] ?? '') === 'dashboard', 'Invalid Assets section did not resolve to the live dashboard.');
+assets_contract_assert(($defaultData['state']['kind'] ?? '') === 'ready', 'The live Assets dashboard must expose a ready state.');
 
 $activeModuleSections = $sections;
 $activeModuleSection = 'asset-records';
 $activeModuleData = yovel_admin_assets_maintenance_data($company, $admin, 'asset-records');
+assets_contract_assert(($activeModuleData['state']['kind'] ?? '') === 'ready', 'Asset records must expose their implemented lifecycle state.');
 $activeModuleFormState = [];
 $companyName = $company['company_name'];
 ob_start();
@@ -159,6 +160,7 @@ assets_contract_assert(str_contains($assetMarkup, 'data-assets-tools') && str_co
 assets_contract_assert(strpos($assetMarkup, 'data-assets-main') < strpos($assetMarkup, 'data-assets-tools'), 'Responsive source order must keep the Assets main panel first.');
 assets_contract_assert(substr_count($assetMarkup, 'view=assets-maintenance') >= 8, 'Assets workspace does not expose all eight sections.');
 assets_contract_assert(str_contains($assetMarkup, 'No asset records yet'), 'Asset records empty state is not rendered.');
+assets_contract_assert(str_contains($assetMarkup, 'data-assets-record-list'), 'Asset records lifecycle list is not rendered.');
 
 $activeModuleSection = 'form-builder';
 $activeModuleData = yovel_admin_assets_maintenance_data($company, $admin, 'form-builder');

@@ -23,12 +23,14 @@ $handlerReflection = new ReflectionFunction('yovel_admin_support_service_handle_
 support_service_assert($handlerReflection->getNumberOfParameters() === 4, 'Support POST handler must expose exactly four arguments.');
 
 $expectedSections = [
+    'dashboard',
     'issues-tickets',
     'sla-rules',
     'warranty-claims',
     'first-response-tracking',
     'issue-summaries',
     'customer-support-portal',
+    'form-builder',
 ];
 support_service_assert(array_keys(yovel_admin_support_service_sections()) === $expectedSections, 'Support section registry is incomplete or unstable.');
 $supportRoute = yovel_admin_module_route('support-service');
@@ -308,6 +310,7 @@ $afterSearchRollback = yovel_admin_support_search_source($company, $admin, $apiS
 support_service_assert((int) $afterSearchRollback['source_version'] === 1 && (string) $afterSearchRollback['query_route'] === 'api/search', 'Support search source survived rollback.');
 
 $handlerResult = yovel_admin_support_service_handle_post($company, $admin, 'support_save_settings', [
+    'csrf' => bx_csrf_token(),
     'section' => 'customer-support-portal',
     'expected_version' => '2',
     'close_issue_after_days' => '21',

@@ -5,7 +5,7 @@ require __DIR__ . '/projects-test-helper.php';
 
 $route = yovel_admin_module_route('projects');
 projects_assert(is_array($route), 'Projects is not registered.');
-projects_assert(($route['default_section'] ?? '') === 'projects', 'Projects default section changed.');
+projects_assert(($route['default_section'] ?? '') === 'dashboard', 'Projects default section changed.');
 projects_assert(($route['action_provider'] ?? '') === 'yovel_admin_projects_handle_post', 'Projects action provider changed.');
 
 foreach ([
@@ -130,4 +130,3 @@ foreach ([
 }
 
 echo "Projects Task 1 schema and foundation checks passed.\n";
-

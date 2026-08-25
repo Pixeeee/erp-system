@@ -14,7 +14,7 @@ yovel_admin_operations_schema();
 
 $adapter = yovel_admin_operations_form_adapter();
 operations_test_assert(($adapter['module'] ?? '') === 'operations', 'Operations Form Builder adapter has the wrong module.');
-operations_test_assert(count($adapter['target_record_types'] ?? []) === 11, 'Operations Form Builder does not expose all registered features.');
+operations_test_assert(count($adapter['target_record_types'] ?? []) === 16, 'Operations Form Builder does not expose all registered features.');
 operations_test_assert(($adapter['row_column_layout']['version'] ?? 0) === 2, 'Operations Form Builder layout is not version 2.');
 operations_test_assert(($adapter['row_column_layout']['max_columns'] ?? 0) === 3, 'Operations Form Builder must support up to three columns.');
 

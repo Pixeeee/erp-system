@@ -10,6 +10,9 @@ if (is_file(__DIR__ . '/jobs.php')) {
 if (is_file(__DIR__ . '/notifications.php')) {
     require_once __DIR__ . '/notifications.php';
 }
+if (is_file(__DIR__ . '/dashboard.php')) {
+    require_once __DIR__ . '/dashboard.php';
+}
 if (is_file(__DIR__ . '/bulk.php')) {
     require_once __DIR__ . '/bulk.php';
 }
@@ -19,10 +22,20 @@ if (is_file(__DIR__ . '/deletion.php')) {
 if (is_file(__DIR__ . '/setup.php')) {
     require_once __DIR__ . '/setup.php';
 }
+if (is_file(__DIR__ . '/workforce.php')) {
+    require_once __DIR__ . '/workforce.php';
+}
+if (is_file(__DIR__ . '/commercial.php')) {
+    require_once __DIR__ . '/commercial.php';
+}
+if (is_file(__DIR__ . '/catalog.php')) {
+    require_once __DIR__ . '/catalog.php';
+}
 
 function yovel_admin_operations_sections(): array
 {
     return [
+        'dashboard' => ['label' => 'Dashboard', 'icon' => 'space_dashboard', 'record_type' => 'Operations Dashboard'],
         'scheduled-jobs' => ['label' => 'Scheduled Jobs', 'icon' => 'schedule', 'record_type' => 'Scheduled Job'],
         'notifications' => ['label' => 'Notifications', 'icon' => 'notifications', 'record_type' => 'Notification Handoff'],
         'background-workers' => ['label' => 'Background Workers', 'icon' => 'memory', 'record_type' => 'Background Worker'],
@@ -34,6 +47,10 @@ function yovel_admin_operations_sections(): array
         'governed-deletion' => ['label' => 'Governed Deletion', 'icon' => 'delete_sweep', 'record_type' => 'Governed Deletion Request'],
         'authorization-setup' => ['label' => 'Authorization', 'icon' => 'policy', 'record_type' => 'Authorization Policy'],
         'company-defaults' => ['label' => 'Company & Defaults', 'icon' => 'domain', 'record_type' => 'Company Default Projection'],
+        'workforce-directory' => ['label' => 'Workforce Directory', 'icon' => 'groups', 'record_type' => 'Workforce Projection'],
+        'workforce-calendars' => ['label' => 'Workforce Calendars', 'icon' => 'calendar_month', 'record_type' => 'Workforce Calendar Projection'],
+        'commercial-masters' => ['label' => 'Commercial Masters', 'icon' => 'storefront', 'record_type' => 'Commercial Master Projection'],
+        'catalog-units' => ['label' => 'Catalog & Units', 'icon' => 'category', 'record_type' => 'Catalog and Unit Projection'],
     ];
 }
 
@@ -41,7 +58,7 @@ function yovel_admin_operations_section(string $requested = ''): string
 {
     $requested = $requested !== '' ? $requested : (string) ($_GET['section'] ?? '');
     $requested = function_exists('yovel_admin_slug') ? yovel_admin_slug($requested) : strtolower(trim($requested));
-    return isset(yovel_admin_operations_sections()[$requested]) ? $requested : 'scheduled-jobs';
+    return isset(yovel_admin_operations_sections()[$requested]) ? $requested : 'dashboard';
 }
 
 function yovel_admin_operations_data(array $company, array $admin, array $providers = []): array
@@ -69,6 +86,7 @@ function yovel_admin_operations_data(array $company, array $admin, array $provid
         : [];
     return [
         'company_key_hash' => $companyKeyHash,
+        'dashboard' => function_exists('yovel_admin_operations_dashboard_data') ? yovel_admin_operations_dashboard_data($company, $admin) : [],
         'formBuilder' => ['adapter' => yovel_admin_operations_form_adapter(), 'forms' => $forms],
         'workspace' => $workspace,
         'metrics' => [
@@ -89,6 +107,19 @@ function yovel_admin_operations_data(array $company, array $admin, array $provid
         'authorization_projection' => function_exists('yovel_admin_operations_authorization_projection') ? yovel_admin_operations_authorization_projection($company, $providers) : [],
         'authorization_policies' => function_exists('yovel_admin_operations_authorization_policies') ? yovel_admin_operations_authorization_policies($company) : [],
         'company_defaults_projection' => function_exists('yovel_admin_operations_company_defaults_projection') ? yovel_admin_operations_company_defaults_projection($company, $providers) : [],
+        'workforce_calendar_projection' => function_exists('yovel_admin_operations_workforce_calendar_projection')
+            ? yovel_admin_operations_workforce_calendar_projection($company, [
+                'status' => yovel_admin_operations_workforce_status((string) ($_GET['workforce_status'] ?? 'ALL')),
+                'from_date' => (string) ($_GET['calendar_from'] ?? ''),
+                'to_date' => (string) ($_GET['calendar_to'] ?? ''),
+            ])
+            : [],
+        'commercial_projection' => yovel_admin_operations_section() === 'commercial-masters' && function_exists('yovel_admin_operations_commercial_projection')
+            ? yovel_admin_operations_commercial_projection($company, $admin, $providers)
+            : [],
+        'catalog_projection' => yovel_admin_operations_section() === 'catalog-units' && function_exists('yovel_admin_operations_catalog_projection')
+            ? yovel_admin_operations_catalog_projection($company)
+            : [],
         'owner_contracts_available' => [
             'bulk' => is_callable($providers['owners.bulk-command.v1'] ?? null),
             'record_directory' => is_callable($providers['shared.record-type-directory.v1'] ?? null),

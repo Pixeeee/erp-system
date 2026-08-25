@@ -588,6 +588,12 @@ function yovel_admin_hr_schema(): void
 
     yovel_admin_hr_ensure_setup_foundation_schema($db);
     yovel_admin_hr_ensure_typed_custom_value_schema($db);
+    if (function_exists('yovel_admin_hr_ensure_leave_schema')) {
+        yovel_admin_hr_ensure_leave_schema($db);
+    }
+    if (function_exists('yovel_admin_hr_ensure_recruitment_schema')) {
+        yovel_admin_hr_ensure_recruitment_schema($db);
+    }
     yovel_admin_migrate_hr_database_model($db);
 }
 
@@ -1144,6 +1150,13 @@ function yovel_admin_hr_default_form_fields(): array
                 ['record_notes', 'Notes', 'TEXTAREA', 'details', 40, 0, 0, ''],
             ];
         }
+    }
+
+    if (function_exists('yovel_admin_hr_leave_default_form_fields')) {
+        $forms = array_merge($forms, yovel_admin_hr_leave_default_form_fields());
+    }
+    if (function_exists('yovel_admin_hr_recruitment_default_form_fields')) {
+        $forms = array_merge($forms, yovel_admin_hr_recruitment_default_form_fields());
     }
 
     return $forms;

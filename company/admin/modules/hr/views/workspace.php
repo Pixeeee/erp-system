@@ -44,6 +44,10 @@
                                         <?php require __DIR__ . '/employee-profiles.php'; ?>
                                     <?php elseif ($activeHrSection === 'attendance'): ?>
                                         <?php require __DIR__ . '/attendance.php'; ?>
+                                    <?php elseif (in_array($activeHrSection, ['leave-requests', 'leave-approvals'], true)): ?>
+                                        <?php require __DIR__ . '/leave.php'; ?>
+                                    <?php elseif ($activeHrSection === 'recruitment'): ?>
+                                        <?php require __DIR__ . '/recruitment.php'; ?>
                                     <?php else: ?>
                                         <?php require __DIR__ . '/queued.php'; ?>
                                     <?php endif; ?>

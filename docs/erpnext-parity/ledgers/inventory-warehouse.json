@@ -40,9 +40,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php and serial-batch.php (company-global Batch identity, item ownership, manufacturing/expiry lifecycle, immutable stock identity after movement, audit, and exact read-back).",
+                "UI/dispatch: company/admin/modules/inventory-warehouse/functions.php, views/record-modal.php, and views/workspace.php (shared POST, accessible Batch modal, sibling confirmation, rehydration, availability, and trace view).",
+                "PASS twice: php tests/inventory-warehouse-serial-batch.php - ownership, expiry override, availability, valuation lineage, reversal, rollback, isolation, and concurrency passed."
+            ],
+            "reason": "[IW-07] Company-owned Batch masters and immutable movements provide expiry-safe warehouse availability and valuation traceability.",
             "gap_package": "IW-07"
         },
         {
@@ -1043,9 +1047,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (append-only stock ledger entry/state and repost-run tables with company partition and idempotency uniqueness).",
+                "Implementation: company/admin/modules/inventory-warehouse/ledger.php (yovel_admin_inventory_replay_partition performs closing-bounded deterministic replay, exact queue equations, current-bin rehydration, repost audit, and exact run/state read-back).",
+                "PASS twice: php tests/inventory-warehouse-ledger-valuation.php - backdated FIFO replay, retained prior versions, same-timestamp ordering, audit, rollback, and partition locking passed."
+            ],
+            "reason": "[IW-04] Deterministic, closing-bounded valuation replay appends versioned states and audited repost runs without rewriting source effects.",
             "gap_package": "IW-04"
         },
         {
@@ -1059,9 +1067,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (immutable bundle identity, ledger lineage, reversal/return references, and database idempotency uniqueness).",
+                "Implementation: company/admin/modules/inventory-warehouse/serial-batch.php (transaction-owned validation and IW-04 posting, exact retry, combined tracking, additive reversal, audit, and read-back).",
+                "PASS twice: php tests/inventory-warehouse-serial-batch.php - direction/sign, total quantity, expiry, valuation, rollback, cancellation, and append-only history passed."
+            ],
+            "reason": "[IW-07] Serial/Batch Bundles post atomically with one authoritative IW-04 ledger effect and preserve immutable return/reversal lineage.",
             "gap_package": "IW-07"
         },
         {
@@ -1075,9 +1087,12 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php and serial-batch.php (immutable serial/batch entry rows with signed quantity, exact allocated value, ledger key, and trace event).",
+                "PASS twice: php tests/inventory-warehouse-serial-batch.php - serial count, positive Batch lines, combined tracking, parent quantity/value equality, and incorrect valuation rollback passed."
+            ],
+            "reason": "[IW-07] Bundle entries preserve one-to-one ledger valuation lineage without double-counting combined serial and Batch tracking.",
             "gap_package": "IW-07"
         },
         {
@@ -1091,9 +1106,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-07.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php and serial-batch.php (company-global Serial identity, item ownership, exact unit movements, warehouse availability, row locking, audit, and read-back).",
+                "UI/dispatch: company/admin/modules/inventory-warehouse/functions.php, views/record-modal.php, and views/workspace.php (shared POST, accessible Serial modal, sibling confirmation, rehydration, availability, and trace view).",
+                "PASS twice: php tests/inventory-warehouse-serial-batch.php - uniqueness, exact-one quantity, duplicate prevention, availability, reservation exclusion, trace, rollback, company isolation, and competing-process serialization passed."
+            ],
+            "reason": "[IW-07] Company-global serial identities have immutable item ownership and exact append-only warehouse movement chronology.",
             "gap_package": "IW-07"
         },
         {
@@ -1171,9 +1190,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (project_company_inventory_stock_closing immutable partition snapshots with database uniqueness and checksums).",
+                "Implementation: company/admin/modules/inventory-warehouse/ledger.php (yovel_admin_inventory_close_partition and yovel_admin_inventory_stock_snapshot preserve exact quantity, value, rate, queue, method, currency, and source timestamp as of closing).",
+                "PASS twice: php tests/inventory-warehouse-ledger-valuation.php - current and historical closing balances, queue totals, idempotency, and closed-period rejection passed."
+            ],
+            "reason": "[IW-04] Company/item/warehouse/dimension closing balances are immutable, checksum-verified, and derived from one exact historical valuation state.",
             "gap_package": "IW-04"
         },
         {
@@ -1187,9 +1210,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (immutable stock-closing records, forward-only partition closing pointer, and unique closing timestamp per partition).",
+                "Implementation: company/admin/modules/inventory-warehouse/ledger.php (authorized transaction-owned closing mutation with partition lock, audit, exact read-back, and no historical-row updates).",
+                "PASS twice: php tests/inventory-warehouse-ledger-valuation.php - closing creation, historical as-of queue integrity, duplicate idempotency, and posting-after-closing rules passed."
+            ],
+            "reason": "[IW-04] Authorized stock closing entries lock their valuation partition, append an exact audited snapshot, and prevent later writes into the closed period.",
             "gap_package": "IW-04"
         },
         {
@@ -1267,9 +1294,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "status": "COMPLETE",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/schema.php (immutable effect, replay state, partition, closing, and repost tables with natural-key and replay-version uniqueness).",
+                "Implementation: company/admin/modules/inventory-warehouse/ledger.php (authorized caller-owned posting/reversal transactions, FIFO/Moving Average/LIFO, exact decimal invariants, idempotency, additive cancellation, closing rules, bin locks, authoritative valuation read service, and Finance handoff only).",
+                "PASS twice: php tests/inventory-warehouse-ledger-valuation.php - receipts, issues, transfer, value-only adjustment, three valuation methods, negative policy, reversal, concurrency isolation, exact read-back, audit, and injected rollback passed."
+            ],
+            "reason": "[IW-04] Append-only company-scoped stock effects and versioned valuation states preserve exact quantity/value equations and additive reversal history without foreign-owner writes.",
             "gap_package": "IW-04"
         },
         {
@@ -1315,9 +1346,13 @@
             "module_owner": "inventory-warehouse",
             "builderx_target": "inventory-warehouse",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No local Inventory/Warehouse implementation or passing focused test evidence; scheduled in gap package IW-04.",
+            "status": "PARTIAL",
+            "evidence": [
+                "Implementation: company/admin/modules/inventory-warehouse/ledger.php (deterministic replay order, closing boundary, partition locking, append-only repost runs, checksums, audit, and exact read-back).",
+                "PASS twice: php tests/inventory-warehouse-ledger-valuation.php - replay behavior, rollback, concurrency, and audit passed.",
+                "Gap: no company-configurable repost settings record or administrative settings surface is implemented in IW-04."
+            ],
+            "reason": "[IW-04] Reposting integrity is implemented, but configurable Stock Reposting Settings remain outstanding.",
             "gap_package": "IW-04"
         },
         {

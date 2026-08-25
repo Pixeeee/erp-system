@@ -2305,9 +2305,13 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "company/admin/modules/accounting-finance/views/invoices.php",
+                "tests/accounting-finance-invoices.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] Invoice Discounting now persists one immutable, company-scoped Submitted Sales Invoice reference with bounded proceeds/charges, locking, audit, exact read-back, rollback, and confirmed modal input. The pinned multi-invoice child collection remains incomplete."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/dunning/dunning.json:doctype:Dunning",
@@ -2320,9 +2324,14 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "company/admin/modules/accounting-finance/views/invoices.php",
+                "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] COMPLETE: company-scoped Dunning notices lock eligible overdue Submitted Sales Invoices and active Dunning Types, snapshot principal/interest/fee/letter values, persist atomically with audit and exact read-back, and are created only through confirmed modal actions."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/dunning_letter_text/dunning_letter_text.json:doctype:Dunning Letter Text",
@@ -2335,9 +2344,13 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "company/admin/modules/accounting-finance/views/invoices.php",
+                "tests/accounting-finance-invoices.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] COMPLETE: editable Dunning letter text is company-scoped on Dunning Type, transactionally saved with audit/read-back, and immutably copied into each issued Dunning notice."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/dunning_type/dunning_type.json:doctype:Dunning Type",
@@ -2350,9 +2363,14 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "company/admin/modules/accounting-finance/views/invoices.php",
+                "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] COMPLETE: authorized company-scoped Dunning Types persist overdue thresholds, interest, fees, and letter text through a confirmed modal with row locks, parameterized SQL, audit, exact read-back, and rollback."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/exchange_rate_revaluation/exchange_rate_revaluation.json:doctype:Exchange Rate Revaluation",
@@ -2504,9 +2522,14 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "company/admin/modules/accounting-finance/views/invoices.php",
+                "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] COMPLETE: Invoice Discounting validates an open Submitted Sales Invoice and bounded amount/charge, prevents duplicate lender references under lock, persists immutable proceeds atomically, audits and reads back exact state, and uses sibling confirmation."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/item_tax_template/item_tax_template.json:doctype:Item Tax Template",
@@ -2868,9 +2891,14 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "company/admin/modules/accounting-finance/views/invoices.php",
+                "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] COMPLETE: the Opening Invoice tool validates a bounded company-scoped batch, creates Finance Invoice drafts and immutable batch links in one authorized transaction, verifies every result, audits the batch, rolls back fully on failure, and is confirmation-gated."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/opening_invoice_creation_tool_item/opening_invoice_creation_tool_item.json:doctype:Opening Invoice Creation Tool Item",
@@ -2883,9 +2911,13 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "company/admin/modules/accounting-finance/views/invoices.php",
+                "tests/accounting-finance-invoices.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] COMPLETE: each structured opening-invoice item retains its source row number, requested type/number, exact created invoice key, company ownership, and CREATED result through atomic batch read-back."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/overdue_payment/overdue_payment.json:doctype:Overdue Payment",
@@ -3431,9 +3463,14 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "company/admin/modules/accounting-finance/views/invoices.php",
+                "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] COMPLETE: Statement of Accounts processing validates dates and owner-service Customers, snapshots company-scoped invoice balances, persists process/customer/CC rows atomically, audits totals, verifies exact read-back, and is confirmation-gated."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/process_statement_of_accounts_cc/process_statement_of_accounts_cc.json:doctype:Process Statement Of Accounts CC",
@@ -3446,9 +3483,13 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "company/admin/modules/accounting-finance/views/invoices.php",
+                "tests/accounting-finance-invoices.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] COMPLETE: normalized, validated, unique CC recipients are persisted as company/process-owned child rows and included in exact Statement process read-back."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/process_statement_of_accounts_customer/process_statement_of_accounts_customer.json:doctype:Process Statement Of Accounts Customer",
@@ -3461,9 +3502,12 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "tests/accounting-finance-invoices.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] COMPLETE: each Customer is resolved through the Sales/CRM owner service and stored with company-scoped opening, invoiced, outstanding, and immutable statement snapshot values, all verified before commit."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/process_subscription/process_subscription.json:doctype:Process Subscription",
@@ -3572,9 +3616,11 @@
                 "company/admin/modules/accounting-finance/tax.php",
                 "company/admin/modules/accounting-finance/views/invoices.php",
                 "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
-                "tests/accounting-finance-ph-vat.php (PASS 2026-08-25)"
+                "tests/accounting-finance-ph-vat.php (PASS 2026-08-25)",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)",
+                "tests/buying-procurement-sourcing.php (PASS 2026-08-25)"
             ],
-            "reason": "[AF-WP03] Company-scoped sales/purchase drafts, line calculations, Philippine VAT snapshots, submit/post, cancel/reversal, returns, outstanding balances, and aging are implemented and tested. Advances, schedules, multi-currency, assets/stock links, pricing, deferred accounting, and full pinned child-record behavior remain incomplete."
+            "reason": "[AF-WP03] Company-scoped Purchase Invoices now add schedules/templates, advances, base/foreign totals, pre-tax discounts, immutable submit snapshots, amendments, returns, opening batches, owner-service supplier/item/stock/asset boundaries, and a deterministic Buying calculation contract with lifecycle, rollback, audit, read-back, and modal tests. It remains PARTIAL for unavailable Inventory/Assets owner providers, deferred accounting, and the full pinned document surface."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/purchase_invoice/test_records.json:doctype:Test Records",
@@ -3587,15 +3633,16 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance/purchase-invoices",
             "dependencies": [],
-            "status": "PARTIAL",
+            "status": "COMPLETE",
             "evidence": [
                 "company/admin/modules/accounting-finance/invoices.php",
                 "company/admin/modules/accounting-finance/tax.php",
                 "company/admin/modules/accounting-finance/views/invoices.php",
                 "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
-                "tests/accounting-finance-ph-vat.php (PASS 2026-08-25)"
+                "tests/accounting-finance-ph-vat.php (PASS 2026-08-25)",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)"
             ],
-            "reason": "[AF-WP03] Company-scoped sales/purchase drafts, line calculations, Philippine VAT snapshots, submit/post, cancel/reversal, returns, outstanding balances, and aging are implemented and tested. Advances, schedules, multi-currency, assets/stock links, pricing, deferred accounting, and full pinned child-record behavior remain incomplete."
+            "reason": "[AF-WP03] COMPLETE: focused Purchase Invoice fixtures cover draft/update, supplier ownership, schedules, advances, Philippine VAT, multi-currency totals, immutable submit/cancel/amend/return, opening batches, duplicate supplier references, authorization, isolation, read-back, audit, and injected rollback."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/purchase_invoice_advance/purchase_invoice_advance.json:doctype:Purchase Invoice Advance",
@@ -3608,9 +3655,14 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "company/admin/modules/accounting-finance/views/invoices.php",
+                "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] COMPLETE: Purchase Invoice advances accept unique Payment Entry or Journal Entry references, enforce positive bounded allocations, persist company-owned child rows atomically, and are verified through draft read-back and focused tests."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/purchase_invoice_item/purchase_invoice_item.json:doctype:Purchase Invoice Item",
@@ -3631,7 +3683,7 @@
                 "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
                 "tests/accounting-finance-ph-vat.php (PASS 2026-08-25)"
             ],
-            "reason": "[AF-WP03] Company-scoped sales/purchase drafts, line calculations, Philippine VAT snapshots, submit/post, cancel/reversal, returns, outstanding balances, and aging are implemented and tested. Advances, schedules, multi-currency, assets/stock links, pricing, deferred accounting, and full pinned child-record behavior remain incomplete."
+            "reason": "[AF-WP03] Purchase Invoice Items preserve quantities, rates, discounts, posting accounts, dimensions, immutable tax snapshots, and allow-listed item/stock/asset/pricing reference fields with exact company-scoped read-back. It remains PARTIAL because the required Inventory and Assets owner providers are not yet available for end-to-end reference/posting tests."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/purchase_taxes_and_charges/purchase_taxes_and_charges.json:doctype:Purchase Taxes and Charges",
@@ -3652,7 +3704,7 @@
                 "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
                 "tests/accounting-finance-ph-vat.php (PASS 2026-08-25)"
             ],
-            "reason": "[AF-WP03] Company-scoped sales/purchase drafts, line calculations, Philippine VAT snapshots, submit/post, cancel/reversal, returns, outstanding balances, and aging are implemented and tested. Advances, schedules, multi-currency, assets/stock links, pricing, deferred accounting, and full pinned child-record behavior remain incomplete."
+            "reason": "[AF-WP03] Purchase tax rows now preserve effective-dated Philippine VAT metadata, input-VAT classifications, inclusive/exclusive behavior, pre-tax line/document discounts, returns, base-currency totals, and immutable snapshots with focused tests. It remains PARTIAL because arbitrary multi-charge templates and the full pinned charge-type surface belong to later tax parity work."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/purchase_taxes_and_charges_template/purchase_taxes_and_charges_template.json:doctype:Purchase Taxes and Charges Template",
@@ -3761,9 +3813,11 @@
                 "company/admin/modules/accounting-finance/tax.php",
                 "company/admin/modules/accounting-finance/views/invoices.php",
                 "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
-                "tests/accounting-finance-ph-vat.php (PASS 2026-08-25)"
+                "tests/accounting-finance-ph-vat.php (PASS 2026-08-25)",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)",
+                "tests/compliance-localization-templates-einvoice.php (PASS 2026-08-25)"
             ],
-            "reason": "[AF-WP03] Company-scoped sales/purchase drafts, line calculations, Philippine VAT snapshots, submit/post, cancel/reversal, returns, outstanding balances, and aging are implemented and tested. Advances, schedules, multi-currency, assets/stock links, pricing, deferred accounting, and full pinned child-record behavior remain incomplete."
+            "reason": "[AF-WP03] Company-scoped Sales Invoices now add schedules/templates, advances, base/foreign totals, pre-tax discounts, immutable Compliance snapshots, amendments, returns, dunning, statements, discounting, opening batches, and owner-service Customer/reference boundaries with lifecycle, rollback, audit, read-back, and modal tests. It remains PARTIAL for unavailable Inventory/Assets/Pricing/HR owner providers, subscriptions, deferred accounting, and the full pinned document surface."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/sales_invoice/test_records.json:doctype:Test Records",
@@ -3776,15 +3830,16 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance/sales-invoices",
             "dependencies": [],
-            "status": "PARTIAL",
+            "status": "COMPLETE",
             "evidence": [
                 "company/admin/modules/accounting-finance/invoices.php",
                 "company/admin/modules/accounting-finance/tax.php",
                 "company/admin/modules/accounting-finance/views/invoices.php",
                 "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
-                "tests/accounting-finance-ph-vat.php (PASS 2026-08-25)"
+                "tests/accounting-finance-ph-vat.php (PASS 2026-08-25)",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)"
             ],
-            "reason": "[AF-WP03] Company-scoped sales/purchase drafts, line calculations, Philippine VAT snapshots, submit/post, cancel/reversal, returns, outstanding balances, and aging are implemented and tested. Advances, schedules, multi-currency, assets/stock links, pricing, deferred accounting, and full pinned child-record behavior remain incomplete."
+            "reason": "[AF-WP03] COMPLETE: focused Sales Invoice fixtures cover draft/update, Customer ownership, schedules, advances, Philippine VAT, multi-currency totals, immutable snapshot/submit/cancel/amend/return, dunning, statements, discounting, authorization, isolation, read-back, audit, and injected rollback."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/sales_invoice_advance/sales_invoice_advance.json:doctype:Sales Invoice Advance",
@@ -3797,9 +3852,14 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "company/admin/modules/accounting-finance/views/invoices.php",
+                "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] COMPLETE: Sales Invoice advances accept unique Payment Entry or Journal Entry references, enforce positive bounded allocations, persist company-owned child rows atomically, and are verified through draft read-back and focused tests."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/sales_invoice_item/sales_invoice_item.json:doctype:Sales Invoice Item",
@@ -3820,7 +3880,7 @@
                 "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
                 "tests/accounting-finance-ph-vat.php (PASS 2026-08-25)"
             ],
-            "reason": "[AF-WP03] Company-scoped sales/purchase drafts, line calculations, Philippine VAT snapshots, submit/post, cancel/reversal, returns, outstanding balances, and aging are implemented and tested. Advances, schedules, multi-currency, assets/stock links, pricing, deferred accounting, and full pinned child-record behavior remain incomplete."
+            "reason": "[AF-WP03] Sales Invoice Items preserve quantities, rates, discounts, posting accounts, dimensions, immutable tax snapshots, and allow-listed item/stock/asset/pricing/timesheet reference fields with exact company-scoped read-back. It remains PARTIAL because the Inventory, Assets, Pricing, and HR owner providers are not yet available for end-to-end reference/posting tests."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/sales_invoice_payment/sales_invoice_payment.json:doctype:Sales Invoice Payment",
@@ -3848,9 +3908,12 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] Sales Invoice Reference rows are allow-listed, company-owned, immutable-snapshot child records for Sales Invoice, Subscription, Item, Asset, Pricing, and Timesheet owner contracts. It remains PARTIAL because those owner providers are unavailable for exact end-to-end persistence evidence."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/sales_invoice_timesheet/sales_invoice_timesheet.json:doctype:Sales Invoice Timesheet",
@@ -3863,9 +3926,12 @@
             "module_owner": "accounting-finance",
             "builderx_target": "accounting-finance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "status": "PARTIAL",
+            "evidence": [
+                "company/admin/modules/accounting-finance/invoices.php",
+                "tests/accounting-finance-invoice-parity.php (PASS 2026-08-25)"
+            ],
+            "reason": "[AF-WP03] Sales Invoice lines and references expose an allow-listed hr.timesheet-reference.v1 boundary and immutable snapshot fields. It remains PARTIAL because HR does not yet publish the owner provider needed for end-to-end Timesheet billing evidence."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/sales_partner_item/sales_partner_item.json:doctype:Sales Partner Item",
@@ -3901,7 +3967,7 @@
                 "tests/accounting-finance-invoices.php (PASS 2026-08-25)",
                 "tests/accounting-finance-ph-vat.php (PASS 2026-08-25)"
             ],
-            "reason": "[AF-WP03] Company-scoped sales/purchase drafts, line calculations, Philippine VAT snapshots, submit/post, cancel/reversal, returns, outstanding balances, and aging are implemented and tested. Advances, schedules, multi-currency, assets/stock links, pricing, deferred accounting, and full pinned child-record behavior remain incomplete."
+            "reason": "[AF-WP03] Sales tax rows now preserve effective-dated Philippine VAT metadata, output-VAT classifications, inclusive/exclusive behavior, pre-tax line/document discounts, returns, base-currency totals, and immutable snapshots with focused tests. It remains PARTIAL because arbitrary multi-charge templates and the full pinned charge-type surface belong to later tax parity work."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/sales_taxes_and_charges_template/sales_taxes_and_charges_template.json:doctype:Sales Taxes and Charges Template",
@@ -4081,7 +4147,7 @@
             "dependencies": [],
             "status": "MISSING",
             "evidence": [],
-            "reason": "[AF-WP03] Local invoice and aging foundations exist, but no exact implementation and focused passing test were found for this pinned receivable/payable artifact."
+            "reason": "[AF-WP03] MISSING: Finance has an allow-listed read-only Subscription reference boundary, but the Subscription owner and scheduler service needed to generate and lifecycle Subscription Invoices is not available."
         },
         {
             "source_id": "erpnext:erpnext/accounts/doctype/subscription_plan/subscription_plan.json:doctype:Subscription Plan",

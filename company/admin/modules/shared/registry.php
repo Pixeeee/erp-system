@@ -17,7 +17,7 @@ function yovel_admin_module_registry(): array
             'sections_provider' => 'yovel_admin_hr_sections',
             'data_provider' => 'yovel_admin_hr_data',
             'action_provider' => 'yovel_admin_hr_handle_post',
-            'default_section' => 'employee-profiles',
+            'default_section' => 'dashboard',
             'owner' => 'hr',
         ],
         'accounting-finance' => [
@@ -39,7 +39,7 @@ function yovel_admin_module_registry(): array
             'sections_provider' => 'yovel_admin_sales_crm_sections',
             'data_provider' => 'yovel_admin_sales_crm_data',
             'action_provider' => 'yovel_admin_sales_crm_handle_post',
-            'default_section' => 'leads',
+            'default_section' => 'dashboard',
             'owner' => 'sales-crm',
         ],
         'buying-procurement' => [
@@ -50,7 +50,7 @@ function yovel_admin_module_registry(): array
             'sections_provider' => 'yovel_admin_buying_procurement_sections',
             'data_provider' => 'yovel_admin_buying_procurement_data',
             'action_provider' => 'yovel_admin_buying_procurement_handle_post',
-            'default_section' => 'suppliers',
+            'default_section' => 'dashboard',
             'owner' => 'buying-procurement',
         ],
         'inventory-warehouse' => [
@@ -61,7 +61,7 @@ function yovel_admin_module_registry(): array
             'sections_provider' => 'yovel_admin_inventory_warehouse_sections',
             'data_provider' => 'yovel_admin_inventory_warehouse_data',
             'action_provider' => 'yovel_admin_inventory_warehouse_handle_post',
-            'default_section' => 'items',
+            'default_section' => 'dashboard',
             'owner' => 'inventory-warehouse',
         ],
         'manufacturing' => [
@@ -83,7 +83,7 @@ function yovel_admin_module_registry(): array
             'sections_provider' => 'yovel_admin_projects_sections',
             'data_provider' => 'yovel_admin_projects_data',
             'action_provider' => 'yovel_admin_projects_handle_post',
-            'default_section' => 'projects',
+            'default_section' => 'dashboard',
             'owner' => 'projects',
         ],
         'support-service' => [
@@ -94,7 +94,7 @@ function yovel_admin_module_registry(): array
             'sections_provider' => 'yovel_admin_support_service_sections',
             'data_provider' => 'yovel_admin_support_service_data',
             'action_provider' => 'yovel_admin_support_service_handle_post',
-            'default_section' => 'issues-tickets',
+            'default_section' => 'dashboard',
             'owner' => 'support-service',
         ],
         'assets-maintenance' => [
@@ -105,7 +105,7 @@ function yovel_admin_module_registry(): array
             'sections_provider' => 'yovel_admin_assets_maintenance_sections',
             'data_provider' => 'yovel_admin_assets_maintenance_data',
             'action_provider' => 'yovel_admin_assets_maintenance_handle_post',
-            'default_section' => 'asset-records',
+            'default_section' => 'dashboard',
             'owner' => 'assets-maintenance',
         ],
         'operations' => [
@@ -116,7 +116,7 @@ function yovel_admin_module_registry(): array
             'sections_provider' => 'yovel_admin_operations_sections',
             'data_provider' => 'yovel_admin_operations_data',
             'action_provider' => 'yovel_admin_operations_handle_post',
-            'default_section' => 'scheduled-jobs',
+            'default_section' => 'dashboard',
             'owner' => 'operations',
         ],
         'compliance-localization' => [

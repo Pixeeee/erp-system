@@ -35,7 +35,7 @@ function yovel_admin_manufacturing_workspace_data(string $section): array
 {
     $section = yovel_admin_manufacturing_section($section);
     $metadata = yovel_admin_manufacturing_sections()[$section];
-    $implemented = in_array($section, ['dashboard', 'settings', 'form-builder'], true);
+    $implemented = in_array($section, ['dashboard', 'boms', 'operations', 'workstations', 'reports', 'settings', 'form-builder'], true);
     return [
         'section' => $section,
         'records' => [],

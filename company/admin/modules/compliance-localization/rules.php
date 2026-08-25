@@ -43,7 +43,7 @@ function yovel_admin_compliance_date(mixed $value, string $label, bool $optional
 
 function yovel_admin_compliance_dependency_provider(string $contractId, array $providers = []): callable
 {
-    $allowed = ['accounting-finance.account-reference.v1'];
+    $allowed = ['accounting-finance.account-reference.v1', 'accounting-finance.invoice-snapshot.v1'];
     if (!in_array($contractId, $allowed, true)) {
         throw new InvalidArgumentException('Compliance dependency contract is not allow-listed.');
     }

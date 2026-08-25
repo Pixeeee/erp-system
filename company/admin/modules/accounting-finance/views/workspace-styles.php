@@ -18,6 +18,10 @@
         z-index: 10;
     }
 
+    .yovel-finance-workspace .yovel-finance-operation-modal {
+        z-index: 70;
+    }
+
     @media (min-width: 1280px) {
         .yovel-finance-workspace .yovel-hr-two-panel {
             grid-template-columns: minmax(0, 12fr) minmax(16rem, 8fr);

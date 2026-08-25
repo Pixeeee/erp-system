@@ -6,7 +6,14 @@ require_once $manufacturingTestRoot . '/app/foundation.php';
 require_once $manufacturingTestRoot . '/company/admin/core/functions.php';
 require_once $manufacturingTestRoot . '/company/admin/modules/shared/registry.php';
 require_once $manufacturingTestRoot . '/company/admin/modules/shared/forms.php';
-require_once $manufacturingTestRoot . '/company/admin/modules/inventory-warehouse/functions.php';
+$manufacturingInventoryRoot = $manufacturingTestRoot . '/company/admin/modules/inventory-warehouse';
+if (is_file($manufacturingInventoryRoot . '/ledger.php')) {
+    require_once $manufacturingInventoryRoot . '/functions.php';
+} else {
+    foreach (['persistence.php', 'schema.php', 'forms.php', 'catalogue.php', 'warehouses.php'] as $manufacturingInventoryFile) {
+        require_once $manufacturingInventoryRoot . '/' . $manufacturingInventoryFile;
+    }
+}
 require_once $manufacturingTestRoot . '/company/admin/modules/buying-procurement/functions.php';
 require_once $manufacturingTestRoot . '/company/admin/modules/accounting-finance/functions.php';
 require_once $manufacturingTestRoot . '/company/admin/modules/accounting-finance/core.php';
@@ -88,6 +95,26 @@ function manufacturing_test_cleanup_scope(array $scope): void
 {
     $hash = (string) ($scope['company']['company_key_hash'] ?? '');
     foreach ([
+        'project_company_manufacturing_bom_update_log',
+        'project_company_manufacturing_bom_update_batch',
+        'project_company_manufacturing_bom_version',
+        'project_company_manufacturing_bom_secondary_item',
+        'project_company_manufacturing_bom_operation',
+        'project_company_manufacturing_bom_component',
+        'project_company_manufacturing_bom',
+        'project_company_manufacturing_downtime',
+        'project_company_manufacturing_workstation_component',
+        'project_company_manufacturing_workstation_cost',
+        'project_company_manufacturing_workstation',
+        'project_company_manufacturing_plant_floor',
+        'project_company_manufacturing_workstation_type_component',
+        'project_company_manufacturing_working_hour',
+        'project_company_manufacturing_workstation_type_operation',
+        'project_company_manufacturing_workstation_type',
+        'project_company_manufacturing_routing_operation',
+        'project_company_manufacturing_routing',
+        'project_company_manufacturing_sub_operation',
+        'project_company_manufacturing_operation',
         'project_company_manufacturing_record_form_version',
         'project_company_manufacturing_form_audit',
         'project_company_manufacturing_form_version',

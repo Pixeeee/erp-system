@@ -122,7 +122,11 @@ function support_service_cleanup_company(ADOConnection $db, array $fixture): voi
     }
     $db->Execute(
         "DELETE FROM builder_audit_log
-         WHERE module IN ('project_company_support_setting', 'project_company_support_search_source')
+         WHERE module IN (
+             'project_company_support_setting', 'project_company_support_search_source',
+             'project_company_support_issue_priority', 'project_company_support_issue_type',
+             'project_company_support_issue', 'project_company_support_sla'
+         )
            AND new_values LIKE ?",
         ['%' . $companyHash . '%']
     );
@@ -147,7 +151,6 @@ function support_service_expect_exception(callable $callback, string $class, str
     support_service_assert($caught instanceof $class, 'Expected ' . $class . ' but received ' . ($caught ? $caught::class : 'no exception') . '.');
     support_service_assert(
         $messageFragment === '' || str_contains($caught->getMessage(), $messageFragment),
-        'Exception message did not contain: ' . $messageFragment
+        'Exception message did not contain: ' . $messageFragment . '; received: ' . $caught->getMessage()
     );
 }
-

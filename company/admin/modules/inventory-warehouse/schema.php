@@ -325,3 +325,214 @@ function yovel_admin_inventory_warehouse_control_schema(): void
         yovel_admin_inventory_execute($db, $statement, [], 'Inventory warehouse-control schema update');
     }
 }
+
+function yovel_admin_inventory_ledger_schema(): void
+{
+    $db = bx_db();
+    $statements = [
+        "CREATE TABLE IF NOT EXISTS project_company_inventory_ledger_partition (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            partition_key CHAR(36) NOT NULL UNIQUE,
+            company_key CHAR(36) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            bin_key CHAR(36) NOT NULL,
+            item_key CHAR(36) NOT NULL,
+            warehouse_key CHAR(36) NOT NULL,
+            dimensions_json TEXT NOT NULL,
+            dimensions_checksum CHAR(64) NOT NULL,
+            valuation_method ENUM('FIFO','MOVING_AVERAGE','LIFO') NOT NULL,
+            currency_code CHAR(3) NOT NULL,
+            state_version BIGINT UNSIGNED NOT NULL DEFAULT 0,
+            qty_after DECIMAL(24,9) NOT NULL DEFAULT 0,
+            stock_value DECIMAL(24,9) NOT NULL DEFAULT 0,
+            valuation_rate DECIMAL(24,9) NOT NULL DEFAULT 0,
+            queue_json LONGTEXT NOT NULL,
+            queue_checksum CHAR(64) NOT NULL,
+            latest_posting_datetime DATETIME(6) NULL,
+            closing_datetime DATETIME(6) NULL,
+            updated_by_admin_key CHAR(36) NULL,
+            created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+            updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+            UNIQUE KEY uq_inventory_ledger_partition (company_key_hash,item_key,warehouse_key,dimensions_checksum),
+            UNIQUE KEY uq_inventory_ledger_partition_bin (company_key_hash,bin_key),
+            INDEX idx_inventory_ledger_partition_item (company_key_hash,item_key,warehouse_key)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "CREATE TABLE IF NOT EXISTS project_company_inventory_stock_ledger_entry (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            ledger_entry_key CHAR(36) NOT NULL UNIQUE,
+            company_key CHAR(36) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            partition_key CHAR(36) NOT NULL,
+            bin_key CHAR(36) NOT NULL,
+            item_key CHAR(36) NOT NULL,
+            warehouse_key CHAR(36) NOT NULL,
+            dimensions_json TEXT NOT NULL,
+            dimensions_checksum CHAR(64) NOT NULL,
+            voucher_type VARCHAR(80) NOT NULL,
+            voucher_key VARCHAR(120) NOT NULL,
+            voucher_line_key VARCHAR(120) NOT NULL,
+            effect_index INT UNSIGNED NOT NULL,
+            posting_datetime DATETIME(6) NOT NULL,
+            actual_qty DECIMAL(24,9) NOT NULL,
+            incoming_rate DECIMAL(24,9) NULL,
+            fallback_valuation_rate DECIMAL(24,9) NULL,
+            value_adjustment DECIMAL(24,9) NULL,
+            forced_value_difference DECIMAL(24,9) NULL,
+            allow_negative_stock TINYINT(1) NOT NULL DEFAULT 0,
+            valuation_method ENUM('FIFO','MOVING_AVERAGE','LIFO') NOT NULL,
+            currency_code CHAR(3) NOT NULL,
+            finance_dimensions_json TEXT NOT NULL,
+            entry_kind ENUM('ORIGINAL','REVERSAL') NOT NULL DEFAULT 'ORIGINAL',
+            reversal_of_entry_key CHAR(36) NULL,
+            reversal_reason VARCHAR(500) NOT NULL DEFAULT '',
+            idempotency_key CHAR(64) NOT NULL,
+            created_by_admin_key CHAR(36) NOT NULL,
+            created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+            UNIQUE KEY uq_inventory_ledger_idempotency (company_key_hash,idempotency_key),
+            INDEX idx_inventory_ledger_partition_order (company_key_hash,partition_key,posting_datetime,x_id,effect_index),
+            INDEX idx_inventory_ledger_voucher (company_key_hash,voucher_type,voucher_key,entry_kind),
+            INDEX idx_inventory_ledger_reversal (company_key_hash,reversal_of_entry_key)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "CREATE TABLE IF NOT EXISTS project_company_inventory_ledger_state (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            ledger_state_key CHAR(36) NOT NULL UNIQUE,
+            company_key CHAR(36) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            partition_key CHAR(36) NOT NULL,
+            ledger_entry_key CHAR(36) NOT NULL,
+            item_key CHAR(36) NOT NULL,
+            warehouse_key CHAR(36) NOT NULL,
+            replay_version BIGINT UNSIGNED NOT NULL,
+            actual_qty DECIMAL(24,9) NOT NULL,
+            qty_before DECIMAL(24,9) NOT NULL,
+            qty_after DECIMAL(24,9) NOT NULL,
+            stock_value_before DECIMAL(24,9) NOT NULL,
+            stock_value DECIMAL(24,9) NOT NULL,
+            stock_value_difference DECIMAL(24,9) NOT NULL,
+            incoming_rate DECIMAL(24,9) NOT NULL,
+            outgoing_rate DECIMAL(24,9) NOT NULL,
+            valuation_rate DECIMAL(24,9) NOT NULL,
+            valuation_method ENUM('FIFO','MOVING_AVERAGE','LIFO') NOT NULL,
+            currency_code CHAR(3) NOT NULL,
+            queue_json LONGTEXT NOT NULL,
+            queue_checksum CHAR(64) NOT NULL,
+            source_timestamp DATETIME(6) NOT NULL,
+            repost_run_key CHAR(36) NOT NULL,
+            created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+            UNIQUE KEY uq_inventory_ledger_state_version (company_key_hash,ledger_entry_key,replay_version),
+            INDEX idx_inventory_ledger_state_partition (company_key_hash,partition_key,replay_version,x_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "CREATE TABLE IF NOT EXISTS project_company_inventory_stock_closing (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            stock_closing_key CHAR(36) NOT NULL UNIQUE,
+            company_key CHAR(36) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            partition_key CHAR(36) NOT NULL,
+            item_key CHAR(36) NOT NULL,
+            warehouse_key CHAR(36) NOT NULL,
+            dimensions_json TEXT NOT NULL,
+            dimensions_checksum CHAR(64) NOT NULL,
+            closing_datetime DATETIME(6) NOT NULL,
+            qty_after DECIMAL(24,9) NOT NULL,
+            stock_value DECIMAL(24,9) NOT NULL,
+            valuation_rate DECIMAL(24,9) NOT NULL,
+            valuation_method ENUM('FIFO','MOVING_AVERAGE','LIFO') NOT NULL,
+            currency_code CHAR(3) NOT NULL,
+            queue_json LONGTEXT NOT NULL,
+            queue_checksum CHAR(64) NOT NULL,
+            snapshot_checksum CHAR(64) NOT NULL,
+            created_by_admin_key CHAR(36) NOT NULL,
+            created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+            UNIQUE KEY uq_inventory_stock_closing_partition (company_key_hash,partition_key,closing_datetime),
+            INDEX idx_inventory_stock_closing_lookup (company_key_hash,partition_key,closing_datetime)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "CREATE TABLE IF NOT EXISTS project_company_inventory_repost_run (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            repost_run_key CHAR(36) NOT NULL UNIQUE,
+            company_key CHAR(36) NOT NULL,
+            company_key_hash CHAR(64) NOT NULL,
+            partition_key CHAR(36) NOT NULL,
+            item_key CHAR(36) NOT NULL,
+            warehouse_key CHAR(36) NOT NULL,
+            from_posting_datetime DATETIME(6) NOT NULL,
+            replay_version BIGINT UNSIGNED NOT NULL,
+            entry_count INT UNSIGNED NOT NULL,
+            result_checksum CHAR(64) NOT NULL,
+            created_by_admin_key CHAR(36) NULL,
+            created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+            INDEX idx_inventory_repost_partition (company_key_hash,partition_key,replay_version)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+    ];
+    foreach ($statements as $statement) {
+        yovel_admin_inventory_execute($db, $statement, [], 'Inventory ledger schema update');
+    }
+}
+
+function yovel_admin_inventory_serial_batch_schema(): void
+{
+    $db = bx_db();
+    $statements = [
+        "CREATE TABLE IF NOT EXISTS project_company_inventory_batch (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            batch_key CHAR(36) NOT NULL UNIQUE, company_key CHAR(36) NOT NULL, company_key_hash CHAR(64) NOT NULL,
+            item_key CHAR(36) NOT NULL, batch_number VARCHAR(120) NOT NULL, manufacturing_date DATE NULL, expiry_date DATE NULL,
+            batch_status ENUM('ACTIVE','DISABLED') NOT NULL DEFAULT 'ACTIVE', stock_activity_count BIGINT UNSIGNED NOT NULL DEFAULT 0,
+            created_by_admin_key CHAR(36) NOT NULL, updated_by_admin_key CHAR(36) NOT NULL,
+            created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+            UNIQUE KEY uq_inventory_batch_number (company_key_hash,batch_number),
+            INDEX idx_inventory_batch_item_expiry (company_key_hash,item_key,batch_status,expiry_date)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "CREATE TABLE IF NOT EXISTS project_company_inventory_serial (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            serial_key CHAR(36) NOT NULL UNIQUE, company_key CHAR(36) NOT NULL, company_key_hash CHAR(64) NOT NULL,
+            item_key CHAR(36) NOT NULL, serial_number VARCHAR(120) NOT NULL,
+            serial_status ENUM('ACTIVE','DISABLED') NOT NULL DEFAULT 'ACTIVE', stock_activity_count BIGINT UNSIGNED NOT NULL DEFAULT 0,
+            created_by_admin_key CHAR(36) NOT NULL, updated_by_admin_key CHAR(36) NOT NULL,
+            created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+            UNIQUE KEY uq_inventory_serial_number (company_key_hash,serial_number),
+            INDEX idx_inventory_serial_item (company_key_hash,item_key,serial_status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "CREATE TABLE IF NOT EXISTS project_company_inventory_serial_batch_bundle (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            bundle_key CHAR(36) NOT NULL UNIQUE, company_key CHAR(36) NOT NULL, company_key_hash CHAR(64) NOT NULL,
+            item_key CHAR(36) NOT NULL, warehouse_key CHAR(36) NOT NULL, dimensions_json TEXT NOT NULL, dimensions_checksum CHAR(64) NOT NULL,
+            voucher_type VARCHAR(80) NOT NULL, voucher_key VARCHAR(120) NOT NULL, voucher_line_key VARCHAR(120) NOT NULL, effect_index INT UNSIGNED NOT NULL,
+            posting_datetime DATETIME(6) NOT NULL, direction ENUM('IN','OUT') NOT NULL, actual_qty DECIMAL(24,9) NOT NULL,
+            ledger_entry_key CHAR(36) NOT NULL, stock_value_difference DECIMAL(24,9) NOT NULL,
+            entry_kind ENUM('ORIGINAL','REVERSAL') NOT NULL DEFAULT 'ORIGINAL', reversal_of_bundle_key CHAR(36) NULL,
+            returned_against_bundle_key CHAR(36) NULL, expiry_override_authorized TINYINT(1) NOT NULL DEFAULT 0,
+            expiry_override_reason VARCHAR(500) NOT NULL DEFAULT '', idempotency_key CHAR(64) NOT NULL,
+            created_by_admin_key CHAR(36) NOT NULL, created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+            UNIQUE KEY uq_inventory_tracking_bundle_effect (company_key_hash,idempotency_key),
+            INDEX idx_inventory_tracking_bundle_voucher (company_key_hash,voucher_type,voucher_key,voucher_line_key,effect_index),
+            INDEX idx_inventory_tracking_bundle_reversal (company_key_hash,reversal_of_bundle_key)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "CREATE TABLE IF NOT EXISTS project_company_inventory_serial_batch_entry (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            bundle_entry_key CHAR(36) NOT NULL UNIQUE, company_key CHAR(36) NOT NULL, company_key_hash CHAR(64) NOT NULL,
+            bundle_key CHAR(36) NOT NULL, item_key CHAR(36) NOT NULL, warehouse_key CHAR(36) NOT NULL,
+            serial_key CHAR(36) NULL, batch_key CHAR(36) NULL, quantity DECIMAL(24,9) NOT NULL,
+            stock_value_difference DECIMAL(24,9) NOT NULL, ledger_entry_key CHAR(36) NOT NULL,
+            created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+            UNIQUE KEY uq_inventory_tracking_bundle_serial (company_key_hash,bundle_key,serial_key),
+            UNIQUE KEY uq_inventory_tracking_bundle_batch (company_key_hash,bundle_key,batch_key,serial_key),
+            INDEX idx_inventory_tracking_serial_history (company_key_hash,serial_key,x_id),
+            INDEX idx_inventory_tracking_batch_history (company_key_hash,batch_key,x_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "CREATE TABLE IF NOT EXISTS project_company_inventory_trace_event (
+            x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            trace_event_key CHAR(36) NOT NULL UNIQUE, company_key CHAR(36) NOT NULL, company_key_hash CHAR(64) NOT NULL,
+            bundle_key CHAR(36) NOT NULL, bundle_entry_key CHAR(36) NOT NULL, ledger_entry_key CHAR(36) NOT NULL,
+            item_key CHAR(36) NOT NULL, warehouse_key CHAR(36) NOT NULL, serial_key CHAR(36) NULL, batch_key CHAR(36) NULL,
+            posting_datetime DATETIME(6) NOT NULL, event_kind ENUM('ORIGINAL','REVERSAL') NOT NULL,
+            quantity DECIMAL(24,9) NOT NULL, stock_value_difference DECIMAL(24,9) NOT NULL,
+            created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+            UNIQUE KEY uq_inventory_trace_bundle_entry (company_key_hash,bundle_entry_key),
+            INDEX idx_inventory_trace_serial (company_key_hash,serial_key,posting_datetime,x_id),
+            INDEX idx_inventory_trace_batch (company_key_hash,batch_key,posting_datetime,x_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+    ];
+    foreach ($statements as $statement) {
+        yovel_admin_inventory_execute($db, $statement, [], 'Inventory serial and batch schema update');
+    }
+}

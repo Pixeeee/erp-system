@@ -27,9 +27,13 @@
                 "accounting-finance:posting-service",
                 "hr:employee-read-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+      "status": "COMPLETE",
+      "evidence": [
+        "company/admin/modules/assets-maintenance/assets.php and schema.php (company-scoped Asset draft/update/submit/cancel/amend lifecycle, immutable owner references, Inventory Item and HR employee validation, Finance posting-readiness guard for sold/scrapped submission, transactional audit/activity, exact read-back, and rollback)",
+        "company/admin/modules/assets-maintenance/functions.php, views/record-list.php, views/workspace.php, and views/record-modal.php (server-rehydrated Asset register in the responsive 12/8 workspace with body-owned accessible modal and sibling confirmation actions)",
+        "tests/assets-maintenance-assets.php (PASS twice 2026-08-25; company isolation, duplicates, immutable submission, sale readiness, cancellation/amendment, dependency injection, rollback, audit, rehydration, and UI contracts); Inventory IW-02/IW-03, HR attendance, accounting-finance dependency, and shared regression suites PASS"
+      ],
+      "reason": "[AM-02] COMPLETE: Assets now owns the tested company-scoped Asset lifecycle and immutable historical snapshots while consuming Inventory, HR, and Finance only through verified owner callables."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_activity/asset_activity.json:doctype:Asset Activity",
@@ -44,9 +48,13 @@
             "dependencies": [
                 "assets-maintenance:asset-lifecycle"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+      "status": "COMPLETE",
+      "evidence": [
+        "company/admin/modules/assets-maintenance/assets.php and schema.php (company-scoped append-only Asset Activity events for create, update, submit, movement, movement cancellation, cancel, and amend with exact read-back)",
+        "company/admin/modules/assets-maintenance/views/record-list.php (company Asset activity timeline)",
+        "tests/assets-maintenance-assets.php (PASS twice 2026-08-25; required activity actions, company isolation, and transactional rollback verified)"
+      ],
+      "reason": "[AM-02] COMPLETE: Asset Activity is persisted and rendered as a company-scoped lifecycle timeline backed by focused passing evidence."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_capitalization/asset_capitalization.json:doctype:Asset Capitalization",
@@ -55,7 +63,7 @@
             "source_path": "erpnext/assets/doctype/asset_capitalization/asset_capitalization.json",
             "source_kind": "doctype",
             "source_module": "Assets",
-            "source_name": "Asset Capitalization",
+      "source_name": "Asset Capitalization",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
             "dependencies": [
@@ -64,9 +72,9 @@
                 "accounting-finance:posting-service",
                 "projects:project-read-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+      "status": "MISSING",
+      "evidence": [],
+      "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_capitalization_asset_item/asset_capitalization_asset_item.json:doctype:Asset Capitalization Asset Item",
@@ -75,16 +83,16 @@
             "source_path": "erpnext/assets/doctype/asset_capitalization_asset_item/asset_capitalization_asset_item.json",
             "source_kind": "doctype",
             "source_module": "Assets",
-            "source_name": "Asset Capitalization Asset Item",
+      "source_name": "Asset Capitalization Asset Item",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
             "dependencies": [
                 "assets-maintenance:asset-lifecycle",
                 "accounting-finance:account-read-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+      "status": "MISSING",
+      "evidence": [],
+      "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_capitalization_service_item/asset_capitalization_service_item.json:doctype:Asset Capitalization Service Item",
@@ -93,16 +101,16 @@
             "source_path": "erpnext/assets/doctype/asset_capitalization_service_item/asset_capitalization_service_item.json",
             "source_kind": "doctype",
             "source_module": "Assets",
-            "source_name": "Asset Capitalization Service Item",
+      "source_name": "Asset Capitalization Service Item",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
             "dependencies": [
                 "inventory-warehouse:item-read-service",
                 "accounting-finance:account-read-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+      "status": "MISSING",
+      "evidence": [],
+      "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_capitalization_stock_item/asset_capitalization_stock_item.json:doctype:Asset Capitalization Stock Item",
@@ -111,15 +119,15 @@
             "source_path": "erpnext/assets/doctype/asset_capitalization_stock_item/asset_capitalization_stock_item.json",
             "source_kind": "doctype",
             "source_module": "Assets",
-            "source_name": "Asset Capitalization Stock Item",
+      "source_name": "Asset Capitalization Stock Item",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
             "dependencies": [
                 "inventory-warehouse:item-warehouse-batch-serial-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+      "status": "MISSING",
+      "evidence": [],
+      "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_category/asset_category.json:doctype:Asset Category",
@@ -128,15 +136,19 @@
             "source_path": "erpnext/assets/doctype/asset_category/asset_category.json",
             "source_kind": "doctype",
             "source_module": "Assets",
-            "source_name": "Asset Category",
+      "source_name": "Asset Category",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
             "dependencies": [
                 "accounting-finance:account-and-finance-book-read-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+      "status": "COMPLETE",
+      "evidence": [
+        "company/admin/modules/assets-maintenance/assets.php and schema.php (company-scoped Asset Category lifecycle with stable codes, active status, owner-account validation, parameterized transaction, audit, and exact parent/child read-back)",
+        "company/admin/modules/assets-maintenance/views/record-modal.php and views/workspace.php (accessible category creation and server rehydration)",
+        "tests/assets-maintenance-assets.php (PASS twice 2026-08-25; category persistence, company isolation, Finance owner-call injection, and account child read-back verified)"
+      ],
+      "reason": "[AM-02] COMPLETE: Asset Category masters are company-scoped, transaction-owned, audited, and validated through Finance owner references."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_category_account/asset_category_account.json:doctype:Asset Category Account",
@@ -145,15 +157,19 @@
             "source_path": "erpnext/assets/doctype/asset_category_account/asset_category_account.json",
             "source_kind": "doctype",
             "source_module": "Assets",
-            "source_name": "Asset Category Account",
+      "source_name": "Asset Category Account",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
             "dependencies": [
                 "accounting-finance:account-read-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+      "status": "COMPLETE",
+      "evidence": [
+        "company/admin/modules/assets-maintenance/assets.php and schema.php (role-allow-listed Asset Category Account children with stable Finance account keys/snapshots, root-type validation, replacement inside the category transaction, and exact read-back)",
+        "company/admin/modules/assets-maintenance/views/record-modal.php (rehydrated category account rows behind sibling confirmation)",
+        "tests/assets-maintenance-assets.php (PASS twice 2026-08-25; injected Finance account service called exactly for persisted children and child count/read-back verified)"
+      ],
+      "reason": "[AM-02] COMPLETE: Asset Category Account children preserve Finance ownership while providing tested local category configuration and historical labels."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_depreciation_schedule/asset_depreciation_schedule.json:doctype:Asset Depreciation Schedule",
@@ -169,9 +185,13 @@
                 "assets-maintenance:asset-lifecycle",
                 "accounting-finance:depreciation-posting-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/assets-maintenance/depreciation.php and schema.php (company-scoped versioned Asset Depreciation Schedules with exact minor-unit straight-line, double-declining, written-down-value, manual, daily-proration, salvage-floor, opening-depreciation, catch-up, immutable posted lines, cancellation/reversal, and amendment behavior)",
+                "company/admin/modules/assets-maintenance/functions.php, views/depreciation-list.php, views/workspace.php, and views/record-modal.php (server-rehydrated schedule register and accessible body-owned schedule modal with sibling confirmation for persistence and posting actions)",
+                "tests/assets-maintenance-depreciation.php (PASS twice 2026-08-25; exact calculations, posting, catch-up, idempotency, immutable submission, reversal/amendment, rollback, concurrency locks, company isolation, audit, rehydration, and UI contracts); accounting-finance dependency/journal regressions PASS"
+            ],
+            "reason": "[AM-03] COMPLETE: Asset Depreciation Schedule now has tested exact calculations, versioned immutable posting lifecycles, caller-transaction Finance posting, additive reversal, and replacement amendment behavior."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_finance_book/asset_finance_book.json:doctype:Asset Finance Book",
@@ -186,9 +206,13 @@
             "dependencies": [
                 "accounting-finance:finance-book-read-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/assets-maintenance/depreciation.php and schema.php (company-scoped Finance Book terms, exact integer-minor cost/salvage/opening values, method/frequency validation, active-schedule immutability, parameterized transactions, audit, and exact read-back)",
+                "company/admin/modules/assets-maintenance/views/depreciation-list.php and views/record-modal.php (rehydrated Finance Book directory and accessible body-owned creation/edit modal with sibling confirmation)",
+                "tests/assets-maintenance-depreciation.php (PASS twice 2026-08-25; book persistence, exact read-back, active-schedule uniqueness/immutability, company isolation, and modal confirmation verified)"
+            ],
+            "reason": "[AM-03] COMPLETE: Asset Finance Book configuration is company-scoped, exact, audited, immutable after schedule activation, and covered by focused passing tests."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_maintenance/asset_maintenance.json:doctype:Asset Maintenance",
@@ -265,16 +289,20 @@
             "source_path": "erpnext/assets/doctype/asset_movement/asset_movement.json",
             "source_kind": "doctype",
             "source_module": "Assets",
-            "source_name": "Asset Movement",
+      "source_name": "Asset Movement",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
             "dependencies": [
                 "assets-maintenance:asset-and-location-masters",
                 "hr:employee-read-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+      "status": "COMPLETE",
+      "evidence": [
+        "company/admin/modules/assets-maintenance/assets.php and schema.php (company-scoped Asset Movement draft/submit/cancel lifecycle, chronological guards, row locks, custody/location updates and restoration, audit/activity, exact read-back, and rollback)",
+        "company/admin/modules/assets-maintenance/views/record-list.php and views/record-modal.php (movement register and accessible confirmed movement actions with server rehydration)",
+        "tests/assets-maintenance-assets.php (PASS twice 2026-08-25; chronology, company ownership, custody mutation/restoration, injected mid-transaction failure, and cancellation verified)"
+      ],
+      "reason": "[AM-02] COMPLETE: Asset Movement provides a tested immutable submitted custody/location transition with additive cancellation evidence and transaction rollback."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_movement_item/asset_movement_item.json:doctype:Asset Movement Item",
@@ -283,16 +311,20 @@
             "source_path": "erpnext/assets/doctype/asset_movement_item/asset_movement_item.json",
             "source_kind": "doctype",
             "source_module": "Assets",
-            "source_name": "Asset Movement Item",
+      "source_name": "Asset Movement Item",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
             "dependencies": [
                 "assets-maintenance:asset-and-location-masters",
                 "hr:employee-read-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+      "status": "COMPLETE",
+      "evidence": [
+        "company/admin/modules/assets-maintenance/assets.php and schema.php (company-scoped ordered Asset Movement Item children with immutable before-state location/custodian snapshots and direct child read-back)",
+        "company/admin/modules/assets-maintenance/views/record-modal.php (rehydrated multi-Asset movement selection)",
+        "tests/assets-maintenance-assets.php (PASS twice 2026-08-25; child persistence, submitted Asset validation, state restoration, and rollback verified)"
+      ],
+      "reason": "[AM-02] COMPLETE: Movement Item rows bind submitted company Assets to a movement and preserve the exact pre-movement state required for safe cancellation."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_repair/asset_repair.json:doctype:Asset Repair",
@@ -363,9 +395,13 @@
                 "assets-maintenance:depreciation-schedule",
                 "accounting-finance:depreciation-posting-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/assets-maintenance/depreciation.php and schema.php (company-scoped Shift Allocation draft/submit lifecycle with source row locks, chronological guards, remaining-value calculation, accelerated replacement schedule, immutable source lines, linkage, audit, and exact read-back)",
+                "company/admin/modules/assets-maintenance/views/depreciation-list.php and views/record-modal.php (rehydrated allocation register and accessible body-owned allocation modal with sibling confirmation)",
+                "tests/assets-maintenance-depreciation.php (PASS twice 2026-08-25; effective-date guard, exact accelerated replacement, immutable/link-preserved source, transaction rollback, idempotency, and company isolation verified)"
+            ],
+            "reason": "[AM-03] COMPLETE: Asset Shift Allocation safely supersedes an eligible schedule with an exact accelerated replacement while retaining immutable posted history."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_shift_factor/asset_shift_factor.json:doctype:Asset Shift Factor",
@@ -378,9 +414,13 @@
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/assets-maintenance/depreciation.php and schema.php (company-scoped Shift Factor master with stable code, bounded fixed-precision multiplier, active status, parameterized transaction, audit, and exact read-back)",
+                "company/admin/modules/assets-maintenance/views/record-modal.php and views/depreciation-list.php (accessible confirmed Shift Factor persistence and server rehydration)",
+                "tests/assets-maintenance-depreciation.php (PASS twice 2026-08-25; valid factor persistence, multiplier constraints, company isolation, rehydration, and sibling-confirmation behavior verified)"
+            ],
+            "reason": "[AM-03] COMPLETE: Asset Shift Factor is a tested company-scoped fixed-precision master used by the immutable schedule-replacement workflow."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/asset_value_adjustment/asset_value_adjustment.json:doctype:Asset Value Adjustment",
@@ -396,9 +436,14 @@
                 "assets-maintenance:asset-lifecycle",
                 "accounting-finance:account-and-posting-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/assets-maintenance/depreciation.php and schema.php (company-scoped increase/decrease Value Adjustment draft/submit/cancel lifecycle, exact minor amounts, row locks, deterministic idempotency, audit, and exact read-back)",
+                "company/admin/modules/assets-maintenance/depreciation.php (balanced DRAFT/POST/REVERSE requests through yovel_admin_finance_asset_posting_request inside the Assets-owned transaction, verified hashes/read-back, additive reversals, and no Finance-table SQL)",
+                "company/admin/modules/assets-maintenance/views/depreciation-list.php and views/record-modal.php (rehydrated adjustment register and accessible body-owned modal with sibling posting confirmation)",
+                "tests/assets-maintenance-depreciation.php (PASS twice 2026-08-25; increase/decrease account directions, balance, posting, retry idempotency, reversal, injected Finance failure rollback, concurrency locking, and company isolation verified)"
+            ],
+            "reason": "[AM-03] COMPLETE: Asset Value Adjustment provides tested exact increase/decrease posting and additive reversal through the verified Finance owner contract with Assets-owned transactions."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/depreciation_schedule/depreciation_schedule.json:doctype:Depreciation Schedule",
@@ -413,9 +458,13 @@
             "dependencies": [
                 "accounting-finance:journal-entry-read-service"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/assets-maintenance/depreciation.php and schema.php (ordered company-scoped Depreciation Schedule line children with exact amount/accumulated/book-value minors, due dates, posting state, immutable Finance transaction/hash references, and direct parent/child read-back)",
+                "company/admin/modules/assets-maintenance/views/depreciation-list.php (schedule line totals and posting progress rendered from server-rehydrated state)",
+                "tests/assets-maintenance-depreciation.php (PASS twice 2026-08-25; exact remainder allocation, chronological/manual lines, catch-up posting, immutable originals, additive reversal, no duplicates on retry, and read-back verified); accounting-finance journal regressions PASS"
+            ],
+            "reason": "[AM-03] COMPLETE: Depreciation Schedule lines preserve exact calculations and immutable posting references across catch-up, reversal, and amendment lifecycles."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/linked_location/linked_location.json:doctype:Linked Location",
@@ -424,15 +473,19 @@
             "source_path": "erpnext/assets/doctype/linked_location/linked_location.json",
             "source_kind": "doctype",
             "source_module": "Assets",
-            "source_name": "Linked Location",
+      "source_name": "Linked Location",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
             "dependencies": [
                 "assets-maintenance:location-master"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+      "status": "COMPLETE",
+      "evidence": [
+        "company/admin/modules/assets-maintenance/assets.php and schema.php (company-scoped Linked Location child replacement with UUID validation, self-link rejection, parent-company verification, transaction ownership, and exact read-back)",
+        "company/admin/modules/assets-maintenance/views/record-modal.php (server-rehydrated linked-location selection)",
+        "tests/assets-maintenance-assets.php (PASS twice 2026-08-25; linked child persistence and tree cycle safety verified)"
+      ],
+      "reason": "[AM-02] COMPLETE: Linked Location children are company-isolated, tree-safe, transactionally replaced, and read back with their Location master."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/location/location.json:doctype:Location",
@@ -441,13 +494,17 @@
             "source_path": "erpnext/assets/doctype/location/location.json",
             "source_kind": "doctype",
             "source_module": "Assets",
-            "source_name": "Location",
+      "source_name": "Location",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "Audit 2026-08-25: company/admin/modules/assets-maintenance/ is absent and no tests/assets-maintenance-* files exist, so no local behavior or passing focused-test evidence supports this source row."
+      "status": "COMPLETE",
+      "evidence": [
+        "company/admin/modules/assets-maintenance/assets.php and schema.php (company-scoped Location master, stable code/status, parent and linked tree validation, cycle prevention, parameterized transaction, audit, and exact read-back)",
+        "company/admin/modules/assets-maintenance/views/workspace.php and views/record-modal.php (Location directory counts and accessible confirmed creation with server rehydration)",
+        "tests/assets-maintenance-assets.php (PASS twice 2026-08-25; root/child creation, linked rows, cycle rejection, company isolation, and read-back verified)"
+      ],
+      "reason": "[AM-02] COMPLETE: Location is a tested company-scoped hierarchical master with cycle-safe parent and linked-location relationships."
         },
         {
             "source_id": "erpnext:erpnext/assets/doctype/maintenance_team_member/maintenance_team_member.json:doctype:Maintenance Team Member",
@@ -543,7 +600,7 @@
             "source_path": "erpnext/assets/workspace/assets/assets.json",
             "source_kind": "workspace",
             "source_module": "Assets",
-            "source_name": "Assets",
+      "source_name": "Assets",
             "module_owner": "assets-maintenance",
             "builderx_target": "assets-maintenance",
             "dependencies": [
@@ -554,11 +611,12 @@
             "evidence": [
                 "company/admin/modules/assets-maintenance/functions.php and schema.php (exact registry contract, eight-section workspace data, opaque company-key authorization, idempotent company-scoped schema)",
                 "company/admin/modules/assets-maintenance/forms.php and core.php (versioned module-local Form Builder, parameterized transaction-owned writes, audit, exact read-back, rollback, and server rehydration)",
-                "company/admin/modules/assets-maintenance/views/workspace.php, dashboard.php, form-builder.php, and record-modal.php (12/8 main-first workspace, body-sibling modal, separate confirmation hooks, responsive accessible controls)",
-                "tests/assets-maintenance-contract.php and tests/assets-maintenance-form-builder.php (PASS twice 2026-08-25; shared registry/modal/Form Builder regressions PASS)",
-                "Authenticated browser checks at 1440x900 and 390x844 (PASS 2026-08-25: eight sections, 12/8 desktop split, main-first mobile stack, no page overflow, modal/confirmation layering, Cancel rehydration, zero console warnings/errors)"
+                "company/admin/modules/assets-maintenance/dashboard.php (read-only company-scoped foundation/Form Builder/audit metrics, live Finance Book/depreciation queue metrics, bounded activity, allow-listed Inventory/HR owner-contract health, verified accounting-finance.asset-posting.v1 readiness, and explicit remaining maintenance-package unavailability)",
+                "company/admin/modules/assets-maintenance/views/workspace.php, views/dashboard.php, and views/depreciation-list.php (live setup, queue, activity, alerts, shortcuts/directories, dependency health, depreciation registers/actions, six-step accessible tour, and responsive 12/8 main-first workspace)",
+                "tests/assets-maintenance-contract.php, tests/assets-maintenance-form-builder.php, tests/assets-maintenance-dashboard.php, tests/assets-maintenance-assets.php, and tests/assets-maintenance-depreciation.php (PASS twice 2026-08-25; shared registry/modal/Form Builder/architecture regressions PASS; Inventory IW-02/IW-03, HR attendance, and Finance dependency/journal owner suites PASS)",
+                "Authenticated browser checks at 1440x900 and 390x844 (PASS 2026-08-25: exact 12/8 desktop ratio, main-first mobile stack, five accessible depreciation modals, no horizontal overflow, confirmation-before-persistence with Cancel retention, dashboard depreciation availability, explicit remaining maintenance unavailability, and zero console warnings/errors)"
             ],
-            "reason": "[AM-01] COMPLETE: the company-scoped Assets workspace, universal immutable Form Builder, body-sibling record modal, separate confirmation boundary, authorized transaction-owned persistence, audit, exact read-back, rollback, server rehydration, responsive 12/8 shell, and explicit later-package dependency states are implemented and tested."
+      "reason": "[AM-01/AM-03] COMPLETE: the company-scoped Assets workspace preserves its tested foundation, Form Builder, live dashboard, dependency health, guided tour, and 12/8 shell while exposing the completed depreciation, shift, and value-adjustment lifecycles and retaining explicit unavailable states for later maintenance packages."
         },
         {
             "source_id": "erpnext:erpnext/maintenance/doctype/maintenance_schedule/maintenance_schedule.json:doctype:Maintenance Schedule",

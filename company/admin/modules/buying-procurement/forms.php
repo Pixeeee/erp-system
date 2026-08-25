@@ -265,7 +265,13 @@ function yovel_admin_buying_procurement_form_reorder(
         throw new InvalidArgumentException('The Buying Form Builder target is not registered.');
     }
 
-    return yovel_admin_shared_form_reorder('buying-procurement', 'suppliers', $fields, $requestedKeys);
+    $route = function_exists('yovel_admin_module_route') ? yovel_admin_module_route('buying-procurement') : null;
+    $sharedTarget = is_array($route) ? (string) ($route['default_section'] ?? '') : '';
+    if ($sharedTarget === '') {
+        throw new RuntimeException('The Buying Form Builder shared route is unavailable.');
+    }
+
+    return yovel_admin_shared_form_reorder('buying-procurement', $sharedTarget, $fields, $requestedKeys);
 }
 
 function yovel_admin_buying_procurement_form_version_identity(string $recordType, array $fields): string

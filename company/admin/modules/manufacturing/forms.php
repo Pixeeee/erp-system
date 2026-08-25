@@ -49,6 +49,20 @@ function yovel_admin_manufacturing_default_form_schemas(): array
             yovel_admin_manufacturing_system_field('created_by_admin_key', 'Created by', 'SHORT_TEXT', false),
         ];
         $fields[2]['options'] = ['DRAFT', 'ACTIVE', 'INACTIVE', 'ARCHIVED'];
+        if ($recordType === 'BOM') {
+            $bomFields = [
+                yovel_admin_manufacturing_system_field('bom_key', 'BOM key', 'SHORT_TEXT', false),
+                yovel_admin_manufacturing_system_field('item_key', 'Finished item', 'LINK', true),
+                yovel_admin_manufacturing_system_field('revision', 'Revision', 'NUMBER', true),
+                yovel_admin_manufacturing_system_field('lifecycle_status', 'Lifecycle status', 'DROPDOWN', true),
+                yovel_admin_manufacturing_system_field('quantity', 'Output quantity', 'NUMBER', true),
+                yovel_admin_manufacturing_system_field('uom_key', 'Output UOM', 'LINK', true),
+                yovel_admin_manufacturing_system_field('currency', 'Currency', 'SHORT_TEXT', true),
+                yovel_admin_manufacturing_system_field('submitted_version_key', 'Submitted version', 'SHORT_TEXT', false),
+            ];
+            $bomFields[3]['options'] = ['DRAFT', 'SUBMITTED', 'CANCELLED'];
+            $fields = array_merge($fields, $bomFields);
+        }
         $schemas[$recordType] = [
             'version' => 1,
             'recordType' => $recordType,

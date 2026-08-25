@@ -351,6 +351,138 @@ function yovel_admin_finance_account_key(ADOConnection $db, string $companyKeyHa
     return $key;
 }
 
+function yovel_admin_finance_dependency_read_scope(array $company): array
+{
+    $companyKey = trim((string) ($company['company_key'] ?? ''));
+    $companyKeyHash = strtolower(trim((string) ($company['company_key_hash'] ?? '')));
+    if ($companyKey === '' || strlen($companyKey) > 1500 || preg_match('/^[a-f0-9]{64}$/', $companyKeyHash) !== 1) {
+        throw new InvalidArgumentException('Finance dependency company scope is invalid.');
+    }
+    $active = (int) bx_db()->GetOne(
+        "SELECT COUNT(*) FROM project_company WHERE company_key=? AND company_key_hash=? AND company_status='ACTIVE'",
+        [$companyKey, $companyKeyHash]
+    );
+    if ($active !== 1) {
+        throw new InvalidArgumentException('Finance dependency company scope is unavailable.');
+    }
+    return [$companyKey, $companyKeyHash];
+}
+
+function yovel_admin_finance_account_reference(array $company, string $accountKey): array
+{
+    [$companyKey, $companyKeyHash] = yovel_admin_finance_dependency_read_scope($company);
+    $accountKey = trim($accountKey);
+    if (!yovel_admin_is_uuid($accountKey)) {
+        throw new InvalidArgumentException('Finance account reference is invalid.');
+    }
+    $row = bx_db()->GetRow(
+        "SELECT account_key,account_code,account_name,root_type,report_type,account_type,account_currency,
+                is_group,freeze_account,account_status
+           FROM project_company_accounting_account
+          WHERE company_key=? AND company_key_hash=? AND account_key=?
+            AND account_status='ACTIVE' AND is_group=0
+          LIMIT 1",
+        [$companyKey, $companyKeyHash, $accountKey]
+    );
+    if (!is_array($row) || $row === []) {
+        return [
+            'ok' => false,
+            'company_key_hash' => $companyKeyHash,
+            'record' => null,
+            'errors' => ['ACCOUNT_NOT_AVAILABLE'],
+        ];
+    }
+    return [
+        'ok' => true,
+        'company_key_hash' => $companyKeyHash,
+        'record' => [
+            'account_key' => (string) $row['account_key'],
+            'account_code' => (string) $row['account_code'],
+            'account_name' => (string) $row['account_name'],
+            'root_type' => (string) $row['root_type'],
+            'report_type' => (string) $row['report_type'],
+            'account_type' => (string) ($row['account_type'] ?? ''),
+            'account_currency' => (string) ($row['account_currency'] ?? ''),
+            'account_status' => 'ACTIVE',
+            'is_group' => false,
+            'freeze_account' => (bool) ($row['freeze_account'] ?? false),
+        ],
+        'errors' => [],
+    ];
+}
+
+function yovel_admin_finance_cost_non_negative(mixed $value, string $label): string
+{
+    $amount = yovel_admin_finance_money($value);
+    if (bccomp($amount, '0', 6) === -1) {
+        throw new InvalidArgumentException($label . ' must be non-negative.');
+    }
+    return $amount;
+}
+
+function yovel_admin_finance_cost_rows(array $request, string $key, string $label, string $quantityKey = 'quantity', string $rateKey = 'rate'): array
+{
+    $rows = $request[$key] ?? [];
+    if (!is_array($rows) || count($rows) > 1000) {
+        throw new InvalidArgumentException($label . ' rows must be a bounded list.');
+    }
+    $amounts = [];
+    $total = '0.000000';
+    foreach (array_values($rows) as $index => $row) {
+        if (!is_array($row)) {
+            throw new InvalidArgumentException($label . ' row ' . ($index + 1) . ' must be structured.');
+        }
+        if (array_key_exists('amount', $row) && trim((string) $row['amount']) !== '') {
+            $amount = yovel_admin_finance_cost_non_negative($row['amount'], $label . ' amount');
+        } else {
+            $quantity = yovel_admin_finance_cost_non_negative($row[$quantityKey] ?? '', $label . ' quantity');
+            $rate = yovel_admin_finance_cost_non_negative($row[$rateKey] ?? '', $label . ' rate');
+            $amount = yovel_admin_finance_money(bcmul($quantity, $rate, 6));
+        }
+        $amounts[] = $amount;
+        $total = bcadd($total, $amount, 6);
+    }
+    sort($amounts, SORT_STRING);
+    return ['amounts' => $amounts, 'total' => yovel_admin_finance_money($total)];
+}
+
+function yovel_admin_finance_manufacturing_cost_preview(array $company, array $request): array
+{
+    [, $companyKeyHash] = yovel_admin_finance_dependency_read_scope($company);
+    $currency = strtoupper(trim((string) ($request['currency'] ?? 'PHP')));
+    if (preg_match('/^[A-Z]{3,20}$/', $currency) !== 1) {
+        throw new InvalidArgumentException('Manufacturing cost currency is invalid.');
+    }
+    $materials = yovel_admin_finance_cost_rows($request, 'materials', 'Material');
+    $operations = yovel_admin_finance_cost_rows($request, 'operations', 'Operation', 'hours', 'hourly_rate');
+    $additional = yovel_admin_finance_cost_rows($request, 'additional_costs', 'Additional cost');
+    $scrap = yovel_admin_finance_cost_rows($request, 'scrap', 'Scrap credit');
+    $gross = bcadd(bcadd($materials['total'], $operations['total'], 6), $additional['total'], 6);
+    if (bccomp($scrap['total'], $gross, 6) === 1) {
+        throw new InvalidArgumentException('Scrap credit cannot exceed gross manufacturing cost.');
+    }
+    $total = yovel_admin_finance_money(bcsub($gross, $scrap['total'], 6));
+    $hashPayload = [
+        'company_key_hash' => $companyKeyHash,
+        'currency' => $currency,
+        'materials' => $materials['amounts'],
+        'operations' => $operations['amounts'],
+        'additional_costs' => $additional['amounts'],
+        'scrap' => $scrap['amounts'],
+        'total_cost' => $total,
+    ];
+    return [
+        'company_key_hash' => $companyKeyHash,
+        'currency' => $currency,
+        'material_cost' => $materials['total'],
+        'operation_cost' => $operations['total'],
+        'additional_cost' => $additional['total'],
+        'scrap_credit' => $scrap['total'],
+        'total_cost' => $total,
+        'calculation_hash' => hash('sha256', json_encode($hashPayload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES)),
+    ];
+}
+
 function yovel_admin_persist_finance_settings(ADOConnection $db, array $company, array $admin, array $input): array
 {
     yovel_admin_finance_core_schema();

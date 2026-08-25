@@ -54,7 +54,7 @@ function yovel_admin_finance_form_modal_id(string $action, array $input = []): s
             'ledger_repost' => 'finance-ledger-repost-modal',
             default => 'finance-journal-modal',
         },
-        'save_finance_invoice' => 'finance-invoice-modal',
+        'save_finance_invoice' => in_array((string) ($input['invoice_operation'] ?? 'invoice'), ['invoice', ''], true) ? 'finance-invoice-modal' : 'finance-invoice-tools-modal',
         'save_finance_supplier' => 'finance-supplier-modal',
         'save_finance_payment' => 'finance-payment-modal',
         'import_finance_bank_statement' => 'finance-bank-import-modal',

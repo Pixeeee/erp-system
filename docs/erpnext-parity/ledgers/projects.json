@@ -15,9 +15,9 @@
             "commit": "11e0ba0a1c45f217e2e73e885f699102d06da325"
         },
         "status_counts": {
-            "COMPLETE": 2,
+            "COMPLETE": 10,
             "PARTIAL": 0,
-            "MISSING": 25,
+            "MISSING": 17,
             "NOT_APPLICABLE": 0,
             "DEFERRED": 0
         },
@@ -81,12 +81,12 @@
             "module_owner": "projects",
             "builderx_target": "company/admin/modules/projects/tasks.php::dependent-task",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
-                "Audit 2026-08-25: no tests/projects-* files exist."
+                "Implementation: company/admin/modules/projects/tasks.php projects downstream dependents from the Projects-owned dependency graph, locks them in stable key order, shifts transitive dependent schedules, validates Project date bounds, audits every rescheduled Task, recalculates the Project, and verifies exact read-back before commit.",
+                "PASS: php tests/projects-tasks.php - transitive dependent discovery, deterministic rescheduling, exact shifted start/end read-back, Project-bound enforcement, audit, and transaction rollback verified."
             ],
-            "reason": "No task dependency projection, scheduling behavior, persistence workflow, or focused test exists."
+            "reason": "Dependent Task projection and rescheduling are implemented from the module-local dependency graph with deterministic locks, Project-bound validation, transactional audit/read-back, rollback, and focused tests."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/project/project.json:doctype:Project",
@@ -104,12 +104,14 @@
                 "accounting-finance",
                 "operations"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
-                "Audit 2026-08-25: no tests/projects-* files exist."
+                "Implementation: company/admin/modules/projects/projects.php provides company-scoped project create/update, lifecycle transitions, progress recalculation, HR workforce-contract validation, fail-closed nonblank customer validation, transaction-owned parameterized writes, audit logging, exact read-back, and rollback-safe server rehydration; company/admin/modules/projects/views/projects.php provides accessible record and sibling confirmation dialogs.",
+                "Schema and dispatch: company/admin/modules/projects/schema.php persists the project master in the Projects-owned 13-table schema; company/admin/modules/projects/functions.php dispatches save_project and transition_project through the exact four-argument module handler.",
+                "PASS: php tests/projects-projects.php - Project create/update, blank customer acceptance, nonblank UNAVAILABLE_DEPENDENCY retention, HR workforce contract validation, lifecycle, progress methods, authorization/CSRF, company isolation, audit, exact read-back, rollback protection, and modal rehydration verified.",
+                "PASS: authenticated desktop Projects browser check - Add Project opened an accessible record modal, Submit opened a separate confirmation dialog, persistence remained unchanged before Confirm, Cancel retained entered values, the workspace held the 12/8 split, and no duplicate IDs or console errors were present."
             ],
-            "reason": "No company-scoped Project master, lifecycle, progress/cost rollup, customer/employee links, portal access, modal workflow, or focused test exists. Customer, employee, Finance, and notification identities remain owner-service dependencies."
+            "reason": "The Projects-owned master, lifecycle, progress calculation, employee contract boundary, customer fail-closed boundary, modal-confirmed persistence, audit, exact read-back, rollback, and rehydration workflow are implemented and focused-tested. Finance billing and other owner projections remain explicit dependencies outside this row."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/project_template/project_template.json:doctype:Project Template",
@@ -122,12 +124,13 @@
             "module_owner": "projects",
             "builderx_target": "company/admin/modules/projects/templates.php::project-template",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
-                "Audit 2026-08-25: no tests/projects-* files exist."
+                "Implementation: company/admin/modules/projects/templates.php provides company-scoped Project Template upsert and transaction-owned project instantiation; company/admin/modules/projects/views/projects.php provides accessible template and create-from-template record modals with sibling confirmation dialogs and server rehydration.",
+                "PASS: php tests/projects-templates.php - template create/update, stable identity, company isolation, graph validation, project instantiation, exact dates, task/dependency remapping, audit, exact read-back, and injected rollback after dependency writes verified.",
+                "PASS: authenticated 390x844 Projects browser check - Add Project Template opened without horizontal overflow, Submit opened the separate confirmation dialog, Cancel retained entered values, and no write or console error occurred before Confirm."
             ],
-            "reason": "No Project Template master, versioned task graph, project-instantiation workflow, or focused test exists."
+            "reason": "The Project Template master and transactional project-instantiation workflow are implemented with stable keys, company isolation, modal confirmation, audit, exact read-back, rollback, and focused tests."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/project_template_task/project_template_task.json:doctype:Project Template Task",
@@ -140,12 +143,12 @@
             "module_owner": "projects",
             "builderx_target": "company/admin/modules/projects/templates.php::project-template-task",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
-                "Audit 2026-08-25: no tests/projects-* files exist."
+                "Implementation: company/admin/modules/projects/templates.php validates and persists ordered Project Template Task children, stable parent links, dependency keys, cycle rejection, and graph remapping during instantiation; company/admin/modules/projects/views/projects.php rehydrates the structured task graph in the template modal.",
+                "PASS: php tests/projects-templates.php - ordered child create/update, stable task keys, same-template parent/dependency validation, cross-company task-key rejection, cycle rejection, exact child read-back, dependency remapping, audit, and full transaction rollback verified."
             ],
-            "reason": "No ordered template-task child records, dependency preservation, transactional read-back, or focused test exists."
+            "reason": "Ordered template-task child records and dependency preservation are implemented with stable identity, graph validation, transaction-owned persistence, exact read-back, rollback, and focused tests."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/project_type/project_type.json:doctype:Project Type",
@@ -158,12 +161,12 @@
             "module_owner": "projects",
             "builderx_target": "company/admin/modules/projects/projects.php::project-type",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
-                "Audit 2026-08-25: no tests/projects-* files exist."
+                "Implementation: company/admin/modules/projects/projects.php provides company-scoped Project Type create/update with stable keys, business-code uniqueness, authorization/CSRF, parameterized transaction-owned writes, audit, and exact read-back; company/admin/modules/projects/views/projects.php provides the accessible modal-confirmed form.",
+                "PASS: php tests/projects-projects.php - Project Type create/update, stable identity, duplicate mismatch, cross-company protection, authorization/CSRF, audit, exact read-back, and modal/confirmation markup verified."
             ],
-            "reason": "No Project Type master, modal CRUD workflow, or focused test exists."
+            "reason": "The Project Type master and modal-confirmed CRUD workflow are implemented with strict company scope, stable identity, audit, exact read-back, and focused tests."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/project_update/project_update.json:doctype:Project Update",
@@ -243,12 +246,13 @@
                 "support-service",
                 "operations"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
-                "Audit 2026-08-25: no tests/projects-* files exist."
+                "Implementation: company/admin/modules/projects/tasks.php provides company-scoped Task upsert, tree movement, lifecycle transitions, progress/date/status validation, overdue calculation, project recalculation, versioned TASK Form Builder binding, and post-commit HR assignment handoff with audited retryable unavailable/failure states and exact assignment-key verification; company/admin/modules/projects/views/tasks.php provides accessible Task, status, schedule, and retry record modals with sibling confirmation and server rehydration.",
+                "PASS: php tests/projects-tasks.php - Task create/update, stable key, company isolation, group-parent rules, tree cycles, status/progress/completed-date rules, overdue calculation, Project date bounds, automatic Project recalculation, exact read-back, rollback injection, unavailable HR state, modal confirmation, and retained failure values verified.",
+                "PASS: php tests/projects-assignments.php - HR is called only after the Task transaction commits, receives the exact company/Task/employee/due-date/priority/actor/idempotency payload, failed handoff remains saved and unassigned, retry preserves idempotency, success is recorded in a second audited Projects transaction, and repeated success does not call HR again."
             ],
-            "reason": "No Task tree, lifecycle, progress/date/dependency validation, HR assignment handoff, issue link, kanban/calendar/list surfaces, or focused test exists."
+            "reason": "The Projects-owned Task tree, lifecycle, progress/schedule validation, list workspace, Form Builder binding, modal-confirmed persistence, Project recalculation, and post-commit HR assignment boundary are implemented and focused-tested. Cross-owner issue data remains outside Projects ownership."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/task_depends_on/task_depends_on.json:doctype:Task Depends On",
@@ -261,12 +265,12 @@
             "module_owner": "projects",
             "builderx_target": "company/admin/modules/projects/tasks.php::task-depends-on",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
-                "Audit 2026-08-25: no tests/projects-* files exist."
+                "Implementation: company/admin/modules/projects/tasks.php persists stable dependency child identities in project_company_project_task_dependency, validates same-Project references, rejects self/circular graphs before writes, preserves active/removed history, blocks completion on unresolved prerequisites, audits graph changes, and exactly reads back ordered active keys inside the Task transaction.",
+                "PASS: php tests/projects-tasks.php - dependency create/read-back, same-Project enforcement, circular-reference rejection, blocked completion, completed/cancelled prerequisite release, dependent rescheduling, audit, and injected post-dependency rollback verified."
             ],
-            "reason": "No task dependency child table, circular-reference guard, dependent-task rescheduling, transactional verification, or focused test exists."
+            "reason": "Task dependency child persistence and graph behavior are implemented with stable identity, cycle and ownership guards, lifecycle gating, dependent rescheduling, transactional audit/read-back, rollback, and focused tests."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/task_type/task_type.json:doctype:Task Type",
@@ -279,12 +283,12 @@
             "module_owner": "projects",
             "builderx_target": "company/admin/modules/projects/tasks.php::task-type",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/projects/ is absent.",
-                "Audit 2026-08-25: no tests/projects-* files exist."
+                "Implementation: company/admin/modules/projects/tasks.php provides company-scoped Task Type create/update with stable keys, business-code uniqueness, authorization/CSRF, parameterized transaction-owned writes, audit, and exact read-back; company/admin/modules/projects/views/tasks.php provides the accessible modal-confirmed form and server rehydration.",
+                "PASS: php tests/projects-tasks.php - Task Type create/update, stable identity, duplicate mismatch, authorization/CSRF, company isolation, audit, exact read-back, and modal/confirmation markup verified."
             ],
-            "reason": "No Task Type master, modal CRUD workflow, or focused test exists."
+            "reason": "The Task Type master and modal-confirmed CRUD workflow are implemented with strict company scope, stable identity, audit, exact read-back, and focused tests."
         },
         {
             "source_id": "erpnext:erpnext/projects/doctype/timesheet/timesheet.json:doctype:Timesheet",
@@ -567,7 +571,9 @@
                 "Interaction: company/admin/modules/projects/views/record-modal.php consumes the shared record-modal contract with accessible description association, auto-reopen state, and sibling confirmation hooks.",
                 "PASS 2026-08-25: php tests/projects-form-builder.php and php tests/projects-workspace.php (two consecutive runs each) verify versioning, idempotency, immutable publication, responsive 12/8 source order, modal-only creation, confirmation hooks, owner states, and rehydration.",
                 "PASS 2026-08-25: php tests/company-admin-erp-contract.php, php tests/company-admin-modal-confirmation.php, php tests/company-admin-shared-form-builder.php, and php tests/project-module-hierarchy.php verify shared registration and interaction regressions.",
-                "PASS 2026-08-25 authenticated browser: Yovel East desktop computed a 12:8 grid; 390x844 mobile stacked main before tools without overflow; the accessible record modal opened; Submit showed the sibling confirmation dialog; Cancel restored the populated modal; browser console reported no warnings or errors."
+                "PASS 2026-08-25 authenticated browser: Yovel East desktop computed a 12:8 grid; 390x844 mobile stacked main before tools without overflow; the accessible record modal opened; Submit showed the sibling confirmation dialog; Cancel restored the populated modal; browser console reported no warnings or errors.",
+                "Implementation Task 6: company/admin/modules/projects/dashboard.php and company/admin/modules/projects/views/dashboard.php provide the live shared-envelope dashboard from Projects-owned foundation, settings, Form Builder, and company-scoped audit data, with setup, queue, activity, alerts, shortcuts, reports/masters, dependency health, and guided tour surfaces.",
+                "PASS 2026-08-25 Task 6: php tests/projects-dashboard.php verifies company isolation, bounded audit activity, live settings and published-form state, valid destinations, and eight nonnumeric unavailable owner/package KPIs; authenticated Yovel East browser checks verify desktop 12:8, 390x844 main-first stacking, tour navigation/focus restoration, no overflow, zero pre-confirm writes, retained modal state, and no console warnings or errors."
             ],
             "reason": "The registered Projects workspace and versioned module-local Form Builder are operational; later work packages add project, task, report, collaboration, billing, and portal records without changing this completed shell."
         }

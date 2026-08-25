@@ -89,6 +89,18 @@ function yovel_admin_compliance_lifecycle_contracts(): array
                 'CANCELLED' => [],
             ],
         ],
+        'einvoice' => [
+            'statuses' => ['DRAFT', 'VALIDATED', 'QUEUED', 'PROCESSING', 'ACKNOWLEDGED', 'REJECTED', 'CANCELLED'],
+            'transitions' => [
+                'DRAFT' => ['VALIDATED', 'CANCELLED'],
+                'VALIDATED' => ['QUEUED', 'REJECTED', 'CANCELLED'],
+                'QUEUED' => ['PROCESSING', 'REJECTED', 'CANCELLED'],
+                'PROCESSING' => ['ACKNOWLEDGED', 'REJECTED', 'CANCELLED'],
+                'ACKNOWLEDGED' => [],
+                'REJECTED' => ['QUEUED', 'CANCELLED'],
+                'CANCELLED' => [],
+            ],
+        ],
     ];
 }
 

@@ -176,9 +176,11 @@ function yovel_admin_save_inventory_settings(array $company, ?array $admin, arra
 
 function yovel_admin_inventory_settings(array $company): array
 {
-    yovel_admin_inventory_warehouse_control_schema();
     $hash = strtolower(trim((string) ($company['company_key_hash'] ?? '')));
     $row = preg_match('/^[a-f0-9]{64}$/', $hash) === 1 ? bx_db()->GetRow('SELECT * FROM project_company_inventory_stock_setting WHERE company_key_hash=?', [$hash]) : [];
+    if ($row === false) {
+        throw new RuntimeException('Inventory Stock Settings are unavailable.');
+    }
     return is_array($row) && $row !== [] ? $row : ['stock_setting_key' => '', 'allow_negative_stock' => '0', 'capacity_enforcement' => '1', 'default_putaway_strategy' => 'PRIORITY'];
 }
 
@@ -329,7 +331,6 @@ function yovel_admin_save_warehouse(array $company, ?array $admin, array $input)
 
 function yovel_admin_inventory_warehouses(array $company, array $filters = []): array
 {
-    yovel_admin_inventory_warehouse_control_schema();
     $hash = strtolower(trim((string) ($company['company_key_hash'] ?? '')));
     $sql = "SELECT w.*,p.warehouse_name parent_warehouse_name,t.warehouse_type_name,
                    COALESCE((SELECT SUM(b.actual_qty) FROM project_company_inventory_bin b WHERE b.company_key_hash=w.company_key_hash AND b.warehouse_key=w.warehouse_key),0) capacity_used
@@ -630,7 +631,6 @@ function yovel_admin_save_putaway_rule(array $company, ?array $admin, array $inp
 
 function yovel_admin_inventory_putaway_rules(array $company): array
 {
-    yovel_admin_inventory_warehouse_control_schema();
     return bx_db()->GetAll("SELECT r.*,i.item_code,i.item_name,w.warehouse_code,w.warehouse_name FROM project_company_inventory_putaway_rule r LEFT JOIN project_company_inventory_item i ON i.company_key_hash=r.company_key_hash AND i.item_key=r.item_key JOIN project_company_inventory_warehouse w ON w.company_key_hash=r.company_key_hash AND w.warehouse_key=r.warehouse_key WHERE r.company_key_hash=? ORDER BY r.priority,r.x_id", [strtolower(trim((string) ($company['company_key_hash'] ?? '')))]);
 }
 
@@ -718,7 +718,6 @@ function yovel_admin_save_inventory_reorder_rule(array $company, ?array $admin, 
 
 function yovel_admin_inventory_reorder_rules(array $company): array
 {
-    yovel_admin_inventory_warehouse_control_schema();
     return bx_db()->GetAll("SELECT r.*,i.item_code,i.item_name,w.warehouse_code,w.warehouse_name FROM project_company_inventory_reorder_rule r JOIN project_company_inventory_item i ON i.company_key_hash=r.company_key_hash AND i.item_key=r.item_key JOIN project_company_inventory_warehouse w ON w.company_key_hash=r.company_key_hash AND w.warehouse_key=r.warehouse_key WHERE r.company_key_hash=? ORDER BY i.item_code,w.warehouse_code", [strtolower(trim((string) ($company['company_key_hash'] ?? '')))]);
 }
 
@@ -740,7 +739,6 @@ function yovel_admin_inventory_projection_for_warehouse_item(array $company, str
 
 function yovel_admin_reorder_recommendations(array $company, ?string $warehouseKey = null): array
 {
-    yovel_admin_inventory_warehouse_control_schema();
     $hash = strtolower(trim((string) ($company['company_key_hash'] ?? '')));
     $sql = "SELECT r.*,i.item_code,i.item_name,w.warehouse_code,w.warehouse_name
             FROM project_company_inventory_reorder_rule r
@@ -763,9 +761,91 @@ function yovel_admin_reorder_recommendations(array $company, ?string $warehouseK
     return $recommendations;
 }
 
+function yovel_admin_inventory_projected_shortages(array $company, int $limit = 20): array
+{
+    $hash = strtolower(trim((string) ($company['company_key_hash'] ?? '')));
+    if (preg_match('/^[a-f0-9]{64}$/', $hash) !== 1) {
+        return [];
+    }
+    $limit = max(1, min(100, $limit));
+    $projectedExpression = "SUM(CASE WHEN s.source_type='ACTUAL' THEN s.quantity ELSE 0 END)
+        + SUM(CASE WHEN s.source_type='ORDERED' THEN s.quantity ELSE 0 END)
+        + SUM(CASE WHEN s.source_type='REQUESTED' THEN s.quantity ELSE 0 END)
+        + SUM(CASE WHEN s.source_type='PLANNED' THEN s.quantity ELSE 0 END)
+        - SUM(CASE WHEN s.source_type='RESERVED' THEN s.quantity ELSE 0 END)";
+    $rows = bx_db()->GetAll(
+        "SELECT i.item_key,i.item_code,i.item_name,i.stock_uom_code,
+                w.warehouse_key,w.warehouse_code,w.warehouse_name,
+                COALESCE(SUM(CASE WHEN s.source_type='ACTUAL' THEN s.quantity ELSE 0 END),0) actual,
+                COALESCE(SUM(CASE WHEN s.source_type='RESERVED' THEN s.quantity ELSE 0 END),0) reserved,
+                COALESCE(SUM(CASE WHEN s.source_type='ORDERED' THEN s.quantity ELSE 0 END),0) ordered,
+                COALESCE(SUM(CASE WHEN s.source_type='REQUESTED' THEN s.quantity ELSE 0 END),0) requested,
+                COALESCE(SUM(CASE WHEN s.source_type='PLANNED' THEN s.quantity ELSE 0 END),0) planned
+         FROM project_company_inventory_bin_source s
+         JOIN project_company_inventory_item i
+           ON i.company_key_hash=s.company_key_hash AND i.item_key=s.item_key
+          AND i.item_status='ACTIVE' AND i.item_kind='STOCK'
+         JOIN project_company_inventory_warehouse w
+           ON w.company_key_hash=s.company_key_hash AND w.warehouse_key=s.warehouse_key
+          AND w.warehouse_status='ACTIVE' AND w.is_group=0
+         WHERE s.company_key_hash=? AND s.source_status='ACTIVE'
+         GROUP BY i.item_key,i.item_code,i.item_name,i.stock_uom_code,
+                  w.warehouse_key,w.warehouse_code,w.warehouse_name
+         HAVING ({$projectedExpression}) < 0
+         ORDER BY ({$projectedExpression}),i.item_code,w.warehouse_code
+         LIMIT {$limit}",
+        [$hash]
+    );
+    if (!is_array($rows)) {
+        throw new RuntimeException('Inventory projected shortages are unavailable.');
+    }
+    $shortages = [];
+    foreach ($rows as $row) {
+        $projection = yovel_admin_inventory_projection_from_totals($row, [
+            'item_key' => (string) $row['item_key'],
+            'warehouse_key' => (string) $row['warehouse_key'],
+        ]);
+        $shortages[] = $row + $projection;
+    }
+    return $shortages;
+}
+
+function yovel_admin_inventory_projected_shortage_count(array $company): int
+{
+    $hash = strtolower(trim((string) ($company['company_key_hash'] ?? '')));
+    if (preg_match('/^[a-f0-9]{64}$/', $hash) !== 1) {
+        throw new InvalidArgumentException('Inventory projected shortage scope is invalid.');
+    }
+    $count = bx_db()->GetOne(
+        "SELECT COUNT(*) FROM (
+             SELECT s.item_key,s.warehouse_key
+             FROM project_company_inventory_bin_source s
+             JOIN project_company_inventory_item i
+               ON i.company_key_hash=s.company_key_hash AND i.item_key=s.item_key
+              AND i.item_status='ACTIVE' AND i.item_kind='STOCK'
+             JOIN project_company_inventory_warehouse w
+               ON w.company_key_hash=s.company_key_hash AND w.warehouse_key=s.warehouse_key
+              AND w.warehouse_status='ACTIVE' AND w.is_group=0
+             WHERE s.company_key_hash=? AND s.source_status='ACTIVE'
+             GROUP BY s.item_key,s.warehouse_key
+             HAVING (
+                 SUM(CASE WHEN s.source_type='ACTUAL' THEN s.quantity ELSE 0 END)
+                 + SUM(CASE WHEN s.source_type='ORDERED' THEN s.quantity ELSE 0 END)
+                 + SUM(CASE WHEN s.source_type='REQUESTED' THEN s.quantity ELSE 0 END)
+                 + SUM(CASE WHEN s.source_type='PLANNED' THEN s.quantity ELSE 0 END)
+                 - SUM(CASE WHEN s.source_type='RESERVED' THEN s.quantity ELSE 0 END)
+             ) < 0
+         ) projected_shortages",
+        [$hash]
+    );
+    if ($count === false) {
+        throw new RuntimeException('Inventory projected shortage count is unavailable.');
+    }
+    return (int) $count;
+}
+
 function yovel_admin_inventory_warehouse_capacity_summary(array $company): array
 {
-    yovel_admin_inventory_warehouse_control_schema();
     $rows = yovel_admin_inventory_warehouses($company, ['leaf_only' => true]);
     foreach ($rows as &$row) {
         $capacity = yovel_admin_inventory_decimal((string) $row['capacity_qty']);

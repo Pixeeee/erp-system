@@ -295,16 +295,20 @@
             "source_path": "erpnext/manufacturing/doctype/downtime_entry/downtime_entry.json",
             "source_kind": "doctype",
             "source_module": "Manufacturing",
-            "source_name": "Downtime Entry",
+      "source_name": "Downtime Entry",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Implementation: company/admin/modules/manufacturing/schema.php and capacity.php provide the owned Downtime Entry schema, overlap-safe interval validation, stable updates, transaction/audit/exact read-back/rollback, and company isolation.",
+        "Dispatch/UI: company/admin/modules/manufacturing/submissions.php, views/capacity-tools.php, and views/records.php provide the exact POST action, accessible Add Downtime modal, sibling confirmation, rehydration, and persisted downtime directory.",
+        "PASS twice: php tests/manufacturing-capacity.php and php tests/manufacturing-modal-confirmation.php - duration, overlap rejection, authorization, CSRF, isolation, rollback, modal, and rehydration assertions passed on 2026-08-25."
+      ],
+      "reason": "BuilderX now provides company-scoped Downtime Entries that drive capacity, Plant Floor state, and utilization without foreign-table access.",
             "work_package": "WP-03"
         },
         {
@@ -513,16 +517,20 @@
             "source_path": "erpnext/manufacturing/doctype/operation/operation.json",
             "source_kind": "doctype",
             "source_module": "Manufacturing",
-            "source_name": "Operation",
+      "source_name": "Operation",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Implementation: company/admin/modules/manufacturing/schema.php and capacity.php provide Operation create/update/lifecycle, costs, Finance owner-reference validation, ordered child persistence, routing immutability, audit, exact read-back, rollback, and isolation.",
+        "Dispatch/UI: company/admin/modules/manufacturing/submissions.php, views/capacity-tools.php, and views/records.php provide modal-confirmed Operation writes and server-backed lists/edit rehydration.",
+        "PASS twice: php tests/manufacturing-capacity.php, php tests/manufacturing-modal-confirmation.php, and php tests/manufacturing-dependency-contracts.php passed on 2026-08-25; authenticated desktop/mobile Add Operation confirmation Cancel produced no navigation or persistence."
+      ],
+      "reason": "BuilderX now provides company-owned Operations with ordered sub-operations, validated operating cost references, lifecycle controls, and verified persistence.",
             "work_package": "WP-03"
         },
         {
@@ -532,16 +540,20 @@
             "source_path": "erpnext/manufacturing/doctype/plant_floor/plant_floor.json",
             "source_kind": "doctype",
             "source_module": "Manufacturing",
-            "source_name": "Plant Floor",
+      "source_name": "Plant Floor",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Implementation: company/admin/modules/manufacturing/schema.php and capacity.php provide the company-owned Plant Floor master, active-reference lifecycle guard, workstation placement, and read-only state projection.",
+        "Dispatch/UI: company/admin/modules/manufacturing/submissions.php, views/capacity-tools.php, and views/records.php provide modal-confirmed Plant Floor writes and a persisted-state floor directory.",
+        "PASS twice: php tests/manufacturing-capacity.php and php tests/manufacturing-modal-confirmation.php passed on 2026-08-25; authenticated desktop/mobile Workstations views exposed Plant Floor and Add Floor with no overflow."
+      ],
+      "reason": "BuilderX now provides persisted Plant Floor masters and derives each visible station state from owned workstation and downtime records.",
             "work_package": "WP-03"
         },
         {
@@ -691,16 +703,20 @@
             "source_path": "erpnext/manufacturing/doctype/routing/routing.json",
             "source_kind": "doctype",
             "source_module": "Manufacturing",
-            "source_name": "Routing",
+      "source_name": "Routing",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Implementation: company/admin/modules/manufacturing/schema.php and capacity.php provide reusable Routing masters with stable-key updates, ordered active Operation references, transaction audit, exact child checksum read-back, rollback, and isolation.",
+        "Dispatch/UI: company/admin/modules/manufacturing/submissions.php, views/capacity-tools.php, and views/records.php provide modal-confirmed Routing writes and server rehydration.",
+        "PASS twice: php tests/manufacturing-capacity.php and php tests/manufacturing-modal-confirmation.php - route reuse, ordering, reference immutability, persistence, and confirmation assertions passed on 2026-08-25."
+      ],
+      "reason": "BuilderX now provides reusable company-scoped Routings with deterministic operation order and immutable active references.",
             "work_package": "WP-03"
         },
         {
@@ -750,16 +766,20 @@
             "source_path": "erpnext/manufacturing/doctype/sub_operation/sub_operation.json",
             "source_kind": "doctype",
             "source_module": "Manufacturing",
-            "source_name": "Sub Operation",
+      "source_name": "Sub Operation",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Implementation: company/admin/modules/manufacturing/schema.php and capacity.php provide owned Sub Operation rows with unique sequence/reference constraints, active-operation validation, transactional replacement, and exact ordered checksum read-back.",
+        "UI: company/admin/modules/manufacturing/views/capacity-tools.php rehydrates the ordered sub_operations payload inside the Operation modal and uses shared confirmation.",
+        "PASS twice: php tests/manufacturing-capacity.php and php tests/manufacturing-modal-confirmation.php - deterministic ordering, duplicate/self-reference rejection contract, rollback, and rehydration assertions passed on 2026-08-25."
+      ],
+      "reason": "BuilderX now persists ordered, company-owned Sub Operations as transaction-bound Operation children.",
             "work_package": "WP-03"
         },
         {
@@ -845,16 +865,20 @@
             "source_path": "erpnext/manufacturing/doctype/workstation/workstation.json",
             "source_kind": "doctype",
             "source_module": "Manufacturing",
-            "source_name": "Workstation",
+      "source_name": "Workstation",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Implementation: company/admin/modules/manufacturing/schema.php and capacity.php provide Workstation masters, active type/floor references, capacity, holidays, costs/components, deterministic scheduling eligibility, lifecycle, audit, exact read-back, rollback, and isolation.",
+        "Dispatch/UI: company/admin/modules/manufacturing/submissions.php, views/capacity-tools.php, and views/records.php provide modal-confirmed Workstation writes and persisted tables/floor state.",
+        "PASS twice: php tests/manufacturing-capacity.php and php tests/manufacturing-modal-confirmation.php passed on 2026-08-25; authenticated desktop/mobile Workstations checks confirmed 12/8 stacking, scroll-contained modal, and no horizontal overflow."
+      ],
+      "reason": "BuilderX now provides company-owned Workstations with calendars, capacity, floor placement, operating costs, holidays, and deterministic availability.",
             "work_package": "WP-03"
         },
         {
@@ -864,16 +888,20 @@
             "source_path": "erpnext/manufacturing/doctype/workstation_cost/workstation_cost.json",
             "source_kind": "doctype",
             "source_module": "Manufacturing",
-            "source_name": "Workstation Cost",
+      "source_name": "Workstation Cost",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Implementation: company/admin/modules/manufacturing/schema.php and capacity.php provide unique typed Workstation Cost children, normalized six-decimal amounts, optional verified Finance account references, transaction audit, child checksum read-back, and rollback.",
+        "UI: company/admin/modules/manufacturing/views/capacity-tools.php exposes rehydrated costs only inside the shared Workstation record modal and sibling confirmation flow.",
+        "PASS twice: php tests/manufacturing-capacity.php, php tests/manufacturing-dependency-contracts.php, and php tests/accounting-finance-dependency-contracts.php passed cost, fail-closed owner validation, deterministic preview, and no-write assertions on 2026-08-25."
+      ],
+      "reason": "BuilderX now persists exact Workstation Cost rows while Finance remains the sole owner of account references and cost-preview semantics.",
             "work_package": "WP-03"
         },
         {
@@ -883,16 +911,20 @@
             "source_path": "erpnext/manufacturing/doctype/workstation_operating_component/workstation_operating_component.json",
             "source_kind": "doctype",
             "source_module": "Manufacturing",
-            "source_name": "Workstation Operating Component",
+      "source_name": "Workstation Operating Component",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Implementation: company/admin/modules/manufacturing/schema.php and capacity.php provide unique type/station Operating Component children with normalized hourly cost, transaction-owned replacement, audit checksum, exact read-back, and rollback.",
+        "UI: company/admin/modules/manufacturing/views/capacity-tools.php exposes operating components in shared Workstation Type and Workstation modals with server rehydration.",
+        "PASS twice: php tests/manufacturing-capacity.php and php tests/manufacturing-modal-confirmation.php passed component persistence, ordered read-back, rollback, and modal-confirmation assertions on 2026-08-25."
+      ],
+      "reason": "BuilderX now provides company-owned operating components at workstation-type and workstation scope with exact hourly cost persistence.",
             "work_package": "WP-03"
         },
         {
@@ -902,16 +934,20 @@
             "source_path": "erpnext/manufacturing/doctype/workstation_operating_component_account/workstation_operating_component_account.json",
             "source_kind": "doctype",
             "source_module": "Manufacturing",
-            "source_name": "Workstation Operating Component Account",
+      "source_name": "Workstation Operating Component Account",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Gateway: company/admin/modules/manufacturing/dependencies.php and capacity.php allow-list yovel_admin_finance_account_reference and reject unavailable, foreign, grouped, frozen, inactive, or non-expense account results without Finance-table SQL.",
+        "Persistence/UI: company/admin/modules/manufacturing/schema.php and views/capacity-tools.php store only the verified opaque account key and rehydrate it inside modal-confirmed component forms.",
+        "PASS twice: php tests/manufacturing-capacity.php, php tests/manufacturing-dependency-contracts.php, and php tests/accounting-finance-dependency-contracts.php passed owner availability, fail-closed validation, company scope, and no-write preview assertions on 2026-08-25."
+      ],
+      "reason": "BuilderX now links operating components to Finance-owned active expense posting accounts exclusively through the verified owner gateway.",
             "work_package": "WP-03"
         },
         {
@@ -921,16 +957,20 @@
             "source_path": "erpnext/manufacturing/doctype/workstation_type/workstation_type.json",
             "source_kind": "doctype",
             "source_module": "Manufacturing",
-            "source_name": "Workstation Type",
+      "source_name": "Workstation Type",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Implementation: company/admin/modules/manufacturing/schema.php and capacity.php provide Workstation Type masters, active Operation capabilities, calendars, components, lifecycle guards, transaction audit, exact child checksum read-back, rollback, and isolation.",
+        "Dispatch/UI: company/admin/modules/manufacturing/submissions.php, views/capacity-tools.php, and views/records.php provide modal-confirmed Type writes and server-backed directories.",
+        "PASS twice: php tests/manufacturing-capacity.php and php tests/manufacturing-modal-confirmation.php passed type capability, working-hour, component, lifecycle, rehydration, and confirmation assertions on 2026-08-25."
+      ],
+      "reason": "BuilderX now provides reusable company-scoped Workstation Types with operation eligibility, weekly calendars, and operating components.",
             "work_package": "WP-03"
         },
         {
@@ -940,16 +980,20 @@
             "source_path": "erpnext/manufacturing/doctype/workstation_working_hour/workstation_working_hour.json",
             "source_kind": "doctype",
             "source_module": "Manufacturing",
-            "source_name": "Workstation Working Hour",
+      "source_name": "Workstation Working Hour",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Implementation: company/admin/modules/manufacturing/schema.php and capacity.php provide weekly Working Hour rows with weekday/time bounds, overlap rejection, deterministic ordering, transactional replacement, and exact read-back.",
+        "Scheduling: company/admin/modules/manufacturing/capacity.php excludes non-working intervals, calendar breaks, workstation holidays, active downtime, and prior allocations minute-deterministically.",
+        "PASS twice: php tests/manufacturing-capacity.php - weekly hours, lunch break, holiday rejection, downtime exclusion, and no-overlap scheduling assertions passed on 2026-08-25."
+      ],
+      "reason": "BuilderX now provides validated Workstation Working Hours as the deterministic calendar source for scheduling and utilization.",
             "work_package": "WP-03"
         },
         {
@@ -998,16 +1042,20 @@
             "source_path": "erpnext/manufacturing/page/visual_plant_floor/visual_plant_floor.json",
             "source_kind": "page",
             "source_module": "Manufacturing",
-            "source_name": "visual-plant-floor",
+      "source_name": "visual-plant-floor",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Projection: company/admin/modules/manufacturing/capacity.php returns read-only AVAILABLE or DOWN station state derived only from persisted active workstations and active downtime at the requested instant.",
+        "UI: company/admin/modules/manufacturing/views/records.php renders the responsive data-manufacturing-plant-floor region without decorative or fabricated production state.",
+        "PASS twice: php tests/manufacturing-capacity.php and php tests/manufacturing-modal-confirmation.php passed persisted-state transition and UI hook assertions on 2026-08-25; authenticated desktop/mobile browser checks showed the Plant Floor region with no overflow."
+      ],
+      "reason": "BuilderX now provides a read-only visual Plant Floor whose station states are traceable to persisted company-owned records.",
             "work_package": "WP-03"
         },
         {
@@ -1260,16 +1308,20 @@
             "source_path": "erpnext/manufacturing/report/downtime_analysis/downtime_analysis.json",
             "source_kind": "report",
             "source_module": "Manufacturing",
-            "source_name": "Downtime Analysis",
+      "source_name": "Downtime Analysis",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Report definition: company/admin/modules/manufacturing/reports.php registers downtime-analysis as a read-only company-owned report with bounded date filters.",
+        "UI: company/admin/modules/manufacturing/views/reports.php renders working, downtime, available minutes, and utilization with a confirmation-guarded date filter.",
+        "PASS twice: php tests/manufacturing-capacity.php - report registration, date bounds, calendar intersection, 60-minute downtime, 87.5000% utilization, company isolation, and server-backed report UI assertions passed on 2026-08-25."
+      ],
+      "reason": "BuilderX now provides the Downtime Analysis report definition and responsive company-scoped report surface.",
             "work_package": "WP-03"
         },
         {
@@ -1279,16 +1331,20 @@
             "source_path": "erpnext/manufacturing/report/downtime_analysis/downtime_analysis.py",
             "source_kind": "report_code",
             "source_module": "Manufacturing",
-            "source_name": "Downtime Analysis",
+      "source_name": "Downtime Analysis",
             "module_owner": "manufacturing",
             "builderx_target": "manufacturing",
             "dependencies": [
                 "inventory-warehouse",
                 "accounting-finance"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "No module-local implementation file or focused passing Manufacturing test evidence exists in the authorized audit scope as of 2026-08-25.",
+      "status": "COMPLETE",
+      "evidence": [
+        "Executable report: company/admin/modules/manufacturing/reports.php intersects active downtime with workstation weekly hours and holidays, computes bounded row/aggregate minutes and utilization, and reads only Manufacturing-owned tables.",
+        "Integration: company/admin/modules/manufacturing/functions.php and views/reports.php load and render the exact downtime-analysis result through the company-scoped workspace.",
+        "PASS twice: php tests/manufacturing-capacity.php - deterministic report totals, working-calendar utilization, exact UI read-back, invalid range rejection contract, and isolation assertions passed on 2026-08-25."
+      ],
+      "reason": "BuilderX now executes deterministic, company-scoped Downtime Analysis from persisted working calendars and downtime intervals.",
             "work_package": "WP-03"
         },
         {
@@ -1816,9 +1872,12 @@
                 "Implementation: company/admin/modules/manufacturing/navigation.php, functions.php, dependencies.php, and views/dashboard.php (stable 14-section registry, scoped workspace payload, setup checklist, shortcuts, reports/masters directory, and explicit owner-service availability).",
                 "Layout/Form Builder: company/admin/modules/manufacturing/views/workspace.php, views/form-builder.php, and forms.php (responsive main-first 12/20 plus 8/20 workspace, shared modal/confirmation adoption, twelve configurable targets, protected stable fields, structured rows/columns, preview, draft/publish/archive history, immutable versions, and submitted-record version binding).",
                 "PASS twice: php tests/manufacturing-workspace.php, php tests/manufacturing-modal-confirmation.php, php tests/manufacturing-form-builder.php, and php tests/manufacturing-dependency-contracts.php - exact section order, responsive shell hooks, setup hub, shared interaction contract, universal adapter, immutable form versions, exact selected-version loading, owner-callable allow-listing, foreign-table rejection, and server rehydration assertions passed on 2026-08-25.",
-                "PASS authenticated browser 2026-08-25: at 1440x1000 the panels measured 661.19px and 440.80px (12:8), at 390x844 they resolved to one 325px column with main before tools, no horizontal overflow or clipped text was detected, and the Form Builder modal fit and exposed the shared confirmation hook."
+                "PASS authenticated browser 2026-08-25: at 1440x1000 the panels measured 661.19px and 440.80px (12:8), at 390x844 they resolved to one 325px column with main before tools, no horizontal overflow or clipped text was detected, and the Form Builder modal fit and exposed the shared confirmation hook.",
+                "Live dashboard: company/admin/modules/manufacturing/dashboard.php, functions.php, views/dashboard.php, and views/workspace.php provide bounded company-scoped foundation, setup, audit activity, alerts, owner-callable health, shortcuts/directories, six explicit nonnumeric production availability states, independent desktop panel scrolling, and a per-company accessible guided tour.",
+                "PASS twice: php tests/manufacturing-dashboard.php plus every tests/manufacturing-*.php executable suite - live settings/form/audit readiness, company isolation, bounded activity, dependency health, unavailable BOM/plan/work-order/job-card/shortage/capacity/valuation/costing states, tour hooks, 12/8 layout, and all foundation regressions passed on 2026-08-25.",
+                "PASS authenticated live-dashboard browser 2026-08-25: desktop ratio was exactly 1.5 with 744px independently scrolling panels; mobile resolved to one 325px main-first column with no clipping or horizontal overflow; the sibling tour preserved page/panel scroll, trapped focus, closed on Escape, and restored Show Tour focus; Settings Submit opened confirmation without navigation and Cancel retained input."
             ],
-            "reason": "BuilderX now provides the verified 14-section Manufacturing foundation, responsive 12/8 workspace, setup hub, owner-service state, and universal module-local Form Builder.",
+            "reason": "BuilderX now provides the verified 14-section Manufacturing foundation, live company-scoped operational dashboard, responsive 12/8 workspace, explicit dependency blockers, guided tour, and universal module-local Form Builder.",
             "work_package": "WP-01"
         },
         {

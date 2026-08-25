@@ -4,6 +4,7 @@ declare(strict_types=1);
 require __DIR__ . '/operations-test-helper.php';
 
 $expectedSections = [
+    'dashboard',
     'scheduled-jobs',
     'notifications',
     'background-workers',
@@ -15,6 +16,10 @@ $expectedSections = [
     'governed-deletion',
     'authorization-setup',
     'company-defaults',
+    'workforce-directory',
+    'workforce-calendars',
+    'commercial-masters',
+    'catalog-units',
 ];
 $sections = yovel_admin_operations_sections();
 operations_test_assert(array_keys($sections) === $expectedSections, 'Operations sections do not match the registered feature order.');

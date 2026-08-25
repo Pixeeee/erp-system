@@ -15,9 +15,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:552-579",
+                "company/admin/modules/hr/recruitment.php:113-175",
+                "tests/hr-recruitment.php (PASS 2026-08-25: Appointment Letter payload, governed template content, no embedded HTML renderer)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/appointment_letter_content/appointment_letter_content.json:doctype:Appointment Letter content",
@@ -30,9 +34,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:62-87",
+                "company/admin/modules/hr/recruitment.php:158-169",
+                "tests/hr-recruitment.php (PASS 2026-08-25: ordered Appointment Letter content persistence and print projection)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/appointment_letter_template/appointment_letter_template.json:doctype:Appointment Letter Template",
@@ -45,9 +53,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:113-175",
+                "company/admin/modules/hr/recruitment.php:552-579",
+                "tests/hr-recruitment.php (PASS 2026-08-25: company-scoped Appointment Letter Template and content read-back)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/appraisal/appraisal.json:doctype:Appraisal",
@@ -207,9 +219,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:862",
+                "company/admin/modules/hr/leave.php:886",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Company-scoped compensatory requests, locked review transitions, immutable credits, audit, notification intent, rollback, and confirmation UI are implemented and tested."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/daily_work_summary/daily_work_summary.json:doctype:Daily Work Summary",
@@ -301,9 +317,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:171",
+                "company/admin/modules/hr/leave.php:536",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Earned Leave Schedule schema, validated leave-type linkage, transactional persistence, read-back verification, audit, and protected Form Builder fields are implemented and tested."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_advance/employee_advance.json:doctype:Employee Advance",
@@ -554,9 +574,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:362-380",
+                "company/admin/modules/hr/views/recruitment.php:63-76",
+                "tests/hr-recruitment.php (PASS 2026-08-25: employee/applicant scope locks, immutable referral, rollback)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/employee_separation/employee_separation.json:doctype:Employee Separation",
@@ -905,12 +929,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "PARTIAL",
+            "status": "COMPLETE",
             "evidence": [
-                "company/admin/modules/hr/schema.php:523",
-                "company/admin/modules/hr/forms.php:880-963"
+                "company/admin/modules/hr/leave.php:148",
+                "company/admin/modules/hr/leave.php:664",
+                "company/admin/modules/hr/leave.php:947",
+                "tests/hr-leave-management.php"
             ],
-            "reason": "[HR-WP-03] Employee profiles expose a holiday_list text field, but no Holiday List Assignment master, effective dates, assignment workflow, or source validation exists."
+            "reason": "[HR-WP-03] Governed Holiday List Assignment records now validate ownership and effective ranges, reject overlaps, feed authoritative calendar reads, and preserve the legacy compatibility field."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/hr_settings/hr_settings.json:doctype:HR Settings",
@@ -976,9 +1002,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:382-475",
+                "company/admin/modules/hr/views/recruitment.php:54-55,91-92,107-108,117",
+                "tests/hr-recruitment.php (PASS 2026-08-25: scheduling, feedback-gated completion, notifications, immutable decision)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/interview_detail/interview_detail.json:doctype:Interview Detail",
@@ -991,9 +1021,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:382-430",
+                "company/admin/modules/hr/views/recruitment.php:91-92",
+                "tests/hr-recruitment.php (PASS 2026-08-25: transaction-owned interviewer detail replacement and exact child count)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/interview_feedback/interview_feedback.json:doctype:Interview Feedback",
@@ -1006,9 +1040,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:431-455",
+                "company/admin/modules/hr/views/recruitment.php:107-108",
+                "tests/hr-recruitment.php (PASS 2026-08-25: assigned-interviewer validation and immutable feedback read-back)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/interview_type/interview_type.json:doctype:Interview Type",
@@ -1021,9 +1059,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:113-175",
+                "company/admin/modules/hr/views/recruitment.php:111-112",
+                "tests/hr-recruitment.php (PASS 2026-08-25: company-scoped Interview Type master persistence)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/interviewer/interviewer.json:doctype:Interviewer",
@@ -1036,9 +1078,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:382-430",
+                "company/admin/modules/hr/views/recruitment.php:91-92",
+                "tests/hr-recruitment.php (PASS 2026-08-25: scoped employee validation and normalized interviewer child row)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_applicant/job_applicant.json:doctype:Job Applicant",
@@ -1051,9 +1097,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:328-360",
+                "company/admin/modules/hr/views/recruitment.php:52-53,87-88",
+                "tests/hr-recruitment.php (PASS 2026-08-25: opening scope, case-insensitive duplicate policy, exact read-back)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_applicant_source/job_applicant_source.json:doctype:Job Applicant Source",
@@ -1066,9 +1116,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:113-175",
+                "company/admin/modules/hr/views/recruitment.php:111-112",
+                "tests/hr-recruitment.php (PASS 2026-08-25: company-scoped Applicant Source master persistence)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_offer/job_offer.json:doctype:Job Offer",
@@ -1081,9 +1135,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:477-579",
+                "company/admin/modules/hr/views/recruitment.php:56-57,95-96,118",
+                "tests/hr-recruitment.php (PASS 2026-08-25: terms, accepted/rejected/withdrawn decisions, immutability, print contract)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_offer_term/job_offer_term.json:doctype:Job Offer Term",
@@ -1096,9 +1154,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:477-526",
+                "company/admin/modules/hr/views/recruitment.php:95-96",
+                "tests/hr-recruitment.php (PASS 2026-08-25: transaction-owned immutable Offer Term child and exact child count)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_offer_term_template/job_offer_term_template.json:doctype:Job Offer Term Template",
@@ -1111,9 +1173,12 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:113-175",
+                "tests/hr-recruitment.php (PASS 2026-08-25: versioned company-scoped term template and normalized detail persistence)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_opening/job_opening.json:doctype:Job Opening",
@@ -1126,9 +1191,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:288-326",
+                "company/admin/modules/hr/views/recruitment.php:49-51,83-84",
+                "tests/hr-recruitment.php (PASS 2026-08-25: approved-requisition linkage, Staffing Plan vacancy limit, read-back)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_opening_template/job_opening_template.json:doctype:Job Opening Template",
@@ -1141,9 +1210,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:113-175",
+                "company/admin/modules/hr/views/recruitment.php:83-84",
+                "tests/hr-recruitment.php (PASS 2026-08-25: company-scoped opening template persistence and opening linkage)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/job_requisition/job_requisition.json:doctype:Job Requisition",
@@ -1156,9 +1229,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:232-286",
+                "company/admin/modules/hr/views/recruitment.php:79-80,116",
+                "tests/hr-recruitment.php (PASS 2026-08-25: Staffing Plan linkage, locked approval, notification, read-back)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/kra/kra.json:doctype:KRA",
@@ -1186,9 +1263,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:214",
+                "company/admin/modules/hr/leave.php:835",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Signed Leave Adjustments persist transactionally with employee/type locks, an immutable ledger entry, audit, exact read-back, rollback injection, and confirmation UI."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_allocation/leave_allocation.json:doctype:Leave Allocation",
@@ -1201,9 +1282,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:201",
+                "company/admin/modules/hr/leave.php:668",
+                "company/admin/modules/hr/leave.php:713",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Leave Allocation supports effective periods, carry-forward, idempotent source references, immutable submitted credits, locks, audit, exact read-back, and rollback."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_application/leave_application.json:doctype:Leave Application",
@@ -1216,9 +1302,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:222",
+                "company/admin/modules/hr/leave.php:750",
+                "company/admin/modules/hr/leave.php:800",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Leave Application calculates holidays and half days, rejects overlaps/blocks, enforces balances, locks approval, writes immutable ledger effects and notification intents, and supports audited terminal transitions."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_application/test_records.json:doctype:Test Records",
@@ -1246,9 +1337,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:261",
+                "company/admin/modules/hr/leave.php:549",
+                "company/admin/modules/hr/leave.php:741",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Leave Block Lists and their date/allow children are transaction-owned, company-scoped, replaced atomically, enforced during application validation, and tested."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_block_list/test_records.json:doctype:Test Records",
@@ -1276,9 +1372,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:275",
+                "company/admin/modules/hr/leave.php:563",
+                "company/admin/modules/hr/leave.php:743",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Leave Block List Allow children validate employee ownership, persist atomically, and exempt only verified company employees from matching blocked dates."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_block_list_date/leave_block_list_date.json:doctype:Leave Block List Date",
@@ -1291,9 +1392,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:269",
+                "company/admin/modules/hr/leave.php:552",
+                "company/admin/modules/hr/leave.php:741",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Leave Block List Date children are date-validated, company-scoped, replaced in the owner transaction, and enforced against leave application ranges."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_control_panel/leave_control_panel.json:doctype:Leave Control Panel",
@@ -1306,9 +1412,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:723",
+                "company/admin/modules/hr/views/leave.php:70",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] The Leave Control Panel performs bounded multi-employee allocation in one owner transaction with stable per-employee sources, confirmation, audit, and rollback."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_encashment/leave_encashment.json:doctype:Leave Encashment",
@@ -1321,9 +1431,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:239",
+                "company/admin/modules/hr/leave.php:913",
+                "company/admin/modules/hr/views/leave.php:137",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Leave Encashment validates balance, posts an immutable leave-side debit, audits and verifies the transaction, and deliberately performs no Payroll table write."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_ledger_entry/leave_ledger_entry.json:doctype:Leave Ledger Entry",
@@ -1336,9 +1451,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:231",
+                "company/admin/modules/hr/leave.php:373",
+                "company/admin/modules/hr/leave.php:421",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] The append-only Leave Ledger uses signed entries, immutable checksums, unique source identities, deterministic balance reads, owner-transaction writes, and rollback tests."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_period/leave_period.json:doctype:Leave Period",
@@ -1351,9 +1471,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:136",
+                "company/admin/modules/hr/leave.php:509",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Leave Period masters validate bounded ranges, preserve stable keys, upsert transactionally, audit, read back exactly, and expose protected/versioned form fields."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_policy/leave_policy.json:doctype:Leave Policy",
@@ -1366,9 +1490,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:179",
+                "company/admin/modules/hr/leave.php:574",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Leave Policy parent and child rules are company-scoped, validated, replaced atomically under lock, verified by exact child count/read-back, audited, and versioned."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_policy_assignment/leave_policy_assignment.json:doctype:Leave Policy Assignment",
@@ -1381,9 +1509,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:195",
+                "company/admin/modules/hr/leave.php:614",
+                "company/admin/modules/hr/leave.php:659",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Leave Policy Assignment validates employee/policy/period ownership and effective ranges, rejects active overlaps, persists under lock, audits, and rehydrates."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_policy_detail/leave_policy_detail.json:doctype:Leave Policy Detail",
@@ -1396,9 +1529,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:188",
+                "company/admin/modules/hr/leave.php:594",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Leave Policy Detail validates unique leave types, allocation quantities, and optional earned schedules, then replaces and verifies children in the policy owner transaction."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_type/leave_type.json:doctype:Leave Type",
@@ -1411,9 +1548,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/leave.php:125",
+                "company/admin/modules/hr/leave.php:497",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] Leave Type masters govern carry-forward, negative balance, holiday inclusion and paid status through transactional persistence, exact read-back, audit, and protected forms."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/leave_type/test_records.json:doctype:Test Records",
@@ -1441,9 +1582,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:113-175",
+                "company/admin/modules/hr/views/recruitment.php:95-96,111-112",
+                "tests/hr-recruitment.php (PASS 2026-08-25: governed Offer Term master and Job Offer linkage)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/overtime_details/overtime_details.json:doctype:Overtime Details",
@@ -1741,9 +1886,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:178-213",
+                "company/admin/modules/hr/views/recruitment.php:63-70,99-100",
+                "tests/hr-recruitment.php (PASS 2026-08-25: dated Staffing Plan, immutable closure rule, position limits, rollback)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/staffing_plan_detail/staffing_plan_detail.json:doctype:Staffing Plan Detail",
@@ -1756,9 +1905,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:178-213",
+                "company/admin/modules/hr/views/recruitment.php:99-100",
+                "tests/hr-recruitment.php (PASS 2026-08-25: normalized position details and exact child-count verification)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/doctype/training_event/training_event.json:doctype:Training Event",
@@ -2030,9 +2183,12 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:552-579",
+                "tests/hr-recruitment.php (PASS 2026-08-25: structured Job Offer print payload and unavailable shared-renderer metadata)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/print_format/standard_appointment_letter/standard_appointment_letter.json:print_format:Standard Appointment Letter",
@@ -2045,9 +2201,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/recruitment.php:552-579",
+                "company/admin/modules/hr/recruitment.php:113-175",
+                "tests/hr-recruitment.php (PASS 2026-08-25: Appointment Letter structured payload requests shared renderer without copied branding/HTML)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/report/appraisal_overview/appraisal_overview.json:report:Appraisal Overview",
@@ -2831,9 +2991,14 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-03] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/views/leave.php:41",
+                "company/admin/modules/hr/leave.php:947",
+                "company/admin/modules/hr/leave.php:971",
+                "tests/hr-leave-management.php"
+            ],
+            "reason": "[HR-WP-03] The authenticated Leaves workspace provides 12/8 applications, approvals, ledger and calendar modes, right-side tools, modal-only writes with sibling confirmation, rehydration, and responsive verification."
         },
         {
             "source_id": "hrms:hrms/hr/workspace/performance/performance.json:workspace:Performance",
@@ -2861,9 +3026,13 @@
             "module_owner": "hr",
             "builderx_target": "hr",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[HR-WP-04] No exact module-local implementation and passing HR test evidence exists for this pinned capability; implement and verify it in the referenced work package."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/hr/views/recruitment.php:37-118",
+                "company/admin/modules/hr/recruitment.php:594-652",
+                "tests/hr-recruitment.php (PASS 2026-08-25: 12/8 pipeline/list/detail modes, modal confirmation, rehydration markers, Form Builder targets)"
+            ],
+            "reason": "[HR-WP-04] Functional parity is implemented through company-scoped Recruitment services and workspace contracts with authorization, modal confirmation, transaction ownership, audit, exact read-back, rollback, immutable decisions, and owner-directed notification/print handoffs."
         },
         {
             "source_id": "hrms:hrms/hr/workspace/shift_&_attendance/shift_&_attendance.json:workspace:Shift & Attendance",

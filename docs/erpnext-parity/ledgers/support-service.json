@@ -19,12 +19,15 @@
                 "projects:service-work-reference",
                 "operations:communication-and-portal-contracts"
             ],
-            "status": "MISSING",
+            "status": "PARTIAL",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
-                "Audit 2026-08-25: no tests/support-service-* files exist."
+                "company/admin/modules/support-service/schema.php: project_company_support_issue and project_company_support_issue_event provide company-scoped stable identities, optimistic versions, Form Builder checksum binding, local lifecycle timestamps, soft archive, and ordered event persistence.",
+                "company/admin/modules/support-service/issues.php and functions.php: yovel_admin_save_support_issue and yovel_admin_transition_support_issue authorize scope, reject nonblank owner references before transactions, lock and use parameterized SQL in one transaction, audit, verify exact read-back, support rollback injection, expose the planned communication/split/portal interfaces as typed UNAVAILABLE_DEPENDENCY boundaries, and publish the exact Sales, Projects, and Operations dependency descriptors.",
+                "company/admin/modules/support-service/actions.php and company/admin/modules/support-service/views/issues.php: the exact four-argument module handler enforces CSRF and returns server rehydration metadata; Add/Edit and lifecycle actions use accessible record modals with a separate sibling confirmation dialog in the existing 12/8 workspace.",
+                "tests/support-service-issues.php: 2026-08-25 fresh create/update, generated code, Form Builder identity, status/archive/restore events, stale/cross-company guards, rollback, audit, exact read-back, isolation, typed owner dependency failures, handler rehydration, and modal confirmation assertions passed in two consecutive runs.",
+                "tests/support-service-issues-browser.mjs: 2026-08-25 authenticated browser run passed with desktop ratio 1.500, zero POSTs before Confirm, exactly one POST after Confirm, Cancel focus/value retention, dependency-error rehydration, and main-first mobile stacking; in-app authenticated inspection independently confirmed the same modal and server-rehydration state."
             ],
-            "reason": "WP-ISSUE: no company-scoped issue lifecycle, customer/project linkage, communication timeline, portal service, or focused verification exists."
+            "reason": "WP-ISSUE dependency-safe slice complete: blank-owner-reference Issues have a governed local lifecycle. Full parity remains PARTIAL until reviewed Sales customer/contact/portal-owner, Projects service-work, and Operations assignment/communication contracts are available; nonblank references fail closed without foreign-table access."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/issue_priority/issue_priority.json:doctype:Issue Priority",
@@ -37,12 +40,14 @@
             "module_owner": "support-service",
             "builderx_target": "support-service",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
-                "Audit 2026-08-25: no tests/support-service-* files exist."
+                "company/admin/modules/support-service/schema.php: project_company_support_issue_priority provides a company-scoped stable UUID, optimistic priority_version, case-insensitive unique name, ACTIVE/INACTIVE/ARCHIVED lifecycle, and actor/timestamp fields.",
+                "company/admin/modules/support-service/issues.php: yovel_admin_save_support_issue_priority performs authorized company isolation, validation before transaction, company/record locks, parameterized transactional upsert, audit, exact read-back, stale-version rejection, and rollback injection.",
+                "company/admin/modules/support-service/views/issues.php: Add/Edit Issue Priority uses the shared accessible record modal and separate sibling confirmation dialog with server-safe failure rehydration.",
+                "tests/support-service-issues.php: 2026-08-25 fresh create/update, case-insensitive duplicate rejection, stable identity, cross-company rejection, rollback, exact read-back, handler metadata, and modal assertions passed in two consecutive runs; shared registry, Form Builder, modal, and Operations contract regressions also passed."
             ],
-            "reason": "WP-ISSUE: no Issue Priority master, persistence service, modal flow, or focused verification exists."
+            "reason": "WP-ISSUE dependency-safe slice complete: Issue Priority is a fully governed Support-owned master with no unresolved owner dependency."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/issue_type/issue_type.json:doctype:Issue Type",
@@ -55,12 +60,14 @@
             "module_owner": "support-service",
             "builderx_target": "support-service",
             "dependencies": [],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
-                "Audit 2026-08-25: no tests/support-service-* files exist."
+                "company/admin/modules/support-service/schema.php: project_company_support_issue_type provides a company-scoped stable UUID, optimistic issue_type_version, case-insensitive unique name, ACTIVE/INACTIVE/ARCHIVED lifecycle, and actor/timestamp fields.",
+                "company/admin/modules/support-service/issues.php: yovel_admin_save_support_issue_type performs authorized company isolation, validation before transaction, company/record locks, parameterized transactional upsert, audit, exact read-back, stale-version rejection, and rollback injection.",
+                "company/admin/modules/support-service/views/issues.php: Add/Edit Issue Type uses the shared accessible record modal and separate sibling confirmation dialog with server-safe failure rehydration.",
+                "tests/support-service-issues.php: 2026-08-25 fresh create/update, stable identity, cross-company reference rejection, exact read-back, handler metadata, and modal assertions passed in two consecutive runs; shared registry, Form Builder, modal, and Operations contract regressions also passed."
             ],
-            "reason": "WP-ISSUE: no Issue Type master, persistence service, modal flow, or focused verification exists."
+            "reason": "WP-ISSUE dependency-safe slice complete: Issue Type is a fully governed Support-owned master with no unresolved owner dependency."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/pause_sla_on_status/pause_sla_on_status.json:doctype:Pause SLA On Status",
@@ -75,12 +82,14 @@
             "dependencies": [
                 "support-service:service-level-agreement"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
-                "Audit 2026-08-25: no tests/support-service-* files exist."
+                "company/admin/modules/support-service/schema.php: project_company_support_sla_pause_status provides company-scoped stable child identities beneath a versioned SLA aggregate.",
+                "company/admin/modules/support-service/sla.php: aggregate validation rejects duplicate/invalid pause statuses before the transaction; save locks and replaces children with stable-key preservation, and status callbacks deterministically enter, accumulate, and leave hold state inside the Issue transaction.",
+                "company/admin/modules/support-service/views/sla.php: pause statuses are maintained in the accessible SLA record modal with a separate sibling confirmation dialog and server rehydration.",
+                "tests/support-service-sla.php: 2026-08-25 fresh pause-row validation, fixed-clock hold/resume extension, exact read-back, callback rollback, audit, company isolation, and modal assertions passed in two consecutive full Support runs."
             ],
-            "reason": "WP-SLA: no company-scoped pause-status child model, validation, or focused verification exists."
+            "reason": "WP-SLA complete: pause statuses are governed Support-owned SLA children and the Issue lifecycle freezes and resumes tracked resolution time deterministically."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/service_day/service_day.json:doctype:Service Day",
@@ -96,12 +105,14 @@
                 "support-service:service-level-agreement",
                 "operations:calendar-contract"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
-                "Audit 2026-08-25: no tests/support-service-* files exist."
+                "company/admin/modules/support-service/schema.php: project_company_support_sla_service_day stores company-scoped stable weekday windows with deterministic ordering.",
+                "company/admin/modules/support-service/sla.php: service-day normalization enforces unique weekdays and valid windows; fixed-clock expected-at and elapsed-business-time services handle before/during/after hours, multi-day schedules, weekends, timezones, and holiday dates without reading wall time implicitly.",
+                "company/admin/modules/support-service/functions.php: operations.calendar-holiday-dates.v1 is an explicit owner dependency; unavailable or invalid owner responses are surfaced as UNAVAILABLE_DEPENDENCY while Support-owned service-day behavior remains functional.",
+                "tests/support-service-sla.php and tests/operations-workforce-calendar.php: 2026-08-25 fresh deterministic business-time, holiday/weekend, owner-response validation/fallback, read-back, rollback, and isolation assertions passed; all Support suites passed twice."
             ],
-            "reason": "WP-SLA: no working-day schedule model, overlap validation, calendar integration, or focused verification exists."
+            "reason": "WP-SLA complete: Support owns validated service windows and deterministic business-time math; optional Operations holidays are consumed only through the published dependency boundary with an explicit unavailable state."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/service_level_agreement/service_level_agreement.json:doctype:Service Level Agreement",
@@ -117,12 +128,15 @@
                 "sales-crm:customer-segmentation-reference",
                 "operations:calendar-and-communication-contracts"
             ],
-            "status": "MISSING",
+            "status": "PARTIAL",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
-                "Audit 2026-08-25: no tests/support-service-* files exist."
+                "company/admin/modules/support-service/schema.php and forms.php: project_company_support_sla is a company-scoped stable/versioned aggregate with Form Builder checksum binding, timezone, applicability, date bounds, default, resolution policy, lifecycle, actor, and child collections; persisted controls are immutable protected fields.",
+                "company/admin/modules/support-service/sla.php: yovel_admin_save_support_sla, yovel_admin_support_sla_resolve, yovel_admin_support_sla_expected_at, Issue-created/communication/status callbacks, and reset perform pre-transaction authorization/validation, parameterized transaction-owned writes, locks, aggregate audit, exact read-back, rollback injection, fixed-clock calculations, and server rehydration.",
+                "company/admin/modules/support-service/issues.php, functions.php, and views/sla.php: Issue create/status transactions invoke the SLA callbacks without nested writes; dispatch exposes SLA rules and first-response tracking in the approved 12/8 shell with Add/Edit and Reset record modals plus separate sibling confirmation dialogs.",
+                "tests/support-service-sla.php: 2026-08-25 fresh aggregate validation/persistence, default/condition/customer/group/territory selection, Sales/Operations owner fallback, fixed-clock deadlines, idempotent created/communication callbacks, first response, hold/resume, resolution/reopen/reset, rollback, audit, exact read-back, isolation, Form Builder, rehydration, and modal assertions passed in two consecutive full Support runs; shared Form Builder, ERP contract, Operations contract/calendar, Sales foundation, and ledger validations passed.",
+                "tests/support-service-sla-browser.mjs: 2026-08-25 authenticated browser run passed with desktop ratio 1.500, zero POSTs before Confirm, exactly one POST after Confirm, Cancel focus/value retention, server-error rehydration, and main-first mobile stacking; in-app authenticated inspection independently confirmed the 12/8 ratio, non-nested confirmation, mobile no-overflow layout, full-width modal, and zero console errors."
             ],
-            "reason": "WP-SLA: no SLA master, applicability resolver, business-hours clock, status lifecycle, persistence, or focused verification exists."
+            "reason": "WP-SLA dependency-safe slice complete: default and Support-local condition SLAs are fully functional. Full parity remains PARTIAL until reviewed sales-crm.customer-segmentation.v1 and Operations calendar/communication owner services are installed for specialized applicability and owner-triggered communication callbacks; missing dependencies are explicit and no foreign tables are queried."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/service_level_priority/service_level_priority.json:doctype:Service Level Priority",
@@ -138,12 +152,14 @@
                 "support-service:service-level-agreement",
                 "support-service:issue-priority"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
-                "Audit 2026-08-25: no tests/support-service-* files exist."
+                "company/admin/modules/support-service/schema.php: project_company_support_sla_priority provides stable company-scoped child identities and links each rule to a Support-owned Issue Priority.",
+                "company/admin/modules/support-service/sla.php: aggregate validation rejects duplicate/foreign priorities, requires exactly one default rule, bounds response/resolution durations, enforces response not later than resolution, preserves stable child keys, and reads the aggregate back deterministically.",
+                "company/admin/modules/support-service/views/sla.php: priority clocks are maintained in the accessible SLA record modal with a separate sibling confirmation dialog and retained JSON on validation failure.",
+                "tests/support-service-sla.php: 2026-08-25 fresh duration/default/duplicate/foreign-scope validation, high/default priority selection, transaction rollback, exact read-back, isolation, rehydration, and modal assertions passed in two consecutive full Support runs."
             ],
-            "reason": "WP-SLA: no per-priority response/resolution target model or focused verification exists."
+            "reason": "WP-SLA complete: per-priority response and resolution clocks are validated, company-isolated children of the governed SLA aggregate."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/sla_fulfilled_on_status/sla_fulfilled_on_status.json:doctype:SLA Fulfilled On Status",
@@ -158,12 +174,14 @@
             "dependencies": [
                 "support-service:service-level-agreement"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
-                "Audit 2026-08-25: no tests/support-service-* files exist."
+                "company/admin/modules/support-service/schema.php: project_company_support_sla_fulfilled_status provides company-scoped stable child identities beneath the SLA aggregate.",
+                "company/admin/modules/support-service/sla.php: fulfilled-status validation and persistence are deterministic; Issue status callbacks capture resolution, calculate retained business seconds, mark fulfillment/failure, and restart the retained clock on reopen inside the existing Issue transaction.",
+                "company/admin/modules/support-service/views/sla.php: fulfilled statuses and tracked Issue agreement states are rendered in SLA rules and first-response tracking views with modal confirmation for writes.",
+                "tests/support-service-sla.php: 2026-08-25 fresh fulfilled-row persistence, fixed-clock resolution/reopen state, retained-time calculation, reset/transition rollback, audit, exact read-back, and isolation assertions passed in two consecutive full Support runs."
             ],
-            "reason": "WP-SLA: no fulfilled-status child model, transition validation, or focused verification exists."
+            "reason": "WP-SLA complete: configured fulfilled statuses deterministically close and reopen the Support-owned SLA resolution clock."
         },
         {
             "source_id": "erpnext:erpnext/support/doctype/support_search_source/support_search_source.json:doctype:Support Search Source",
@@ -442,12 +460,16 @@
                 "sales-crm:customer-reference",
                 "projects:service-work-reference"
             ],
-            "status": "MISSING",
+            "status": "COMPLETE",
             "evidence": [
-                "Audit 2026-08-25: company/admin/modules/support-service/ is absent.",
-                "Audit 2026-08-25: no tests/support-service-* files exist."
+                "company/admin/modules/support-service/dashboard.php: yovel_admin_support_service_dashboard_data returns the stable dashboard envelope from company-scoped Support settings, search-source, Form Builder adapter, and Support audit reads while preserving six explicit owner-contract availability states.",
+                "company/admin/modules/support-service/functions.php: dashboard and form-builder are registered module-local sections; dashboard data is dispatched without read-time schema writes and the orchestrator-compatible four-argument action handler is preserved.",
+                "company/admin/modules/support-service/views/workspace.php and views/dashboard.php: routed Support workspace provides main-first 12/8 panels, setup progress, action queue, recent activity, alerts, dependency health, shortcuts, reports/masters directory, Form Builder access, empty/unavailable states, and a six-step keyboard-trapped company-scoped tour.",
+                "tests/support-service-dashboard.php: 2026-08-25 fresh provider, no-write read, company isolation, foundation readiness, nonnumeric unavailable metrics, activity, setup, dependencies, destination, 12/8 dispatch, and tour assertions passed; tests/support-service-foundation.php also passed.",
+                "2026-08-25 authenticated browser evidence at /company/yovel-east/admin/?view=support-service&section=dashboard: desktop panel ratio 1.49998, main-first DOM, six unavailable metrics, no horizontal overflow, tour Next/Back/Escape/Tab trap and focus restoration passed; 390x844 panels stacked main-first with no overflow; Form Builder dispatched eight targets with no PHP or console errors.",
+                "2026-08-25 dependency/shared regressions passed: php tests/operations-contracts.php; php tests/company-admin-erp-contract.php; php tests/company-admin-shared-form-builder.php; php tests/company-admin-modal-confirmation.php."
             ],
-            "reason": "WP-WORKSPACE: no routed Support/Service workspace, 12/8 page shell, modal actions, Form Builder adapter, or focused verification exists."
+            "reason": "WP-WORKSPACE Task 7 complete: Support / Service now has a routed live dashboard and module workspace using only Support-owned foundation data plus scoped audit evidence; unavailable ticket, SLA, customer, assignment, communication, and project-service capabilities remain explicit contract states rather than fabricated totals."
         },
         {
             "source_id": "erpnext:erpnext/telephony/doctype/call_log/call_log.json:doctype:Call Log",

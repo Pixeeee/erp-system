@@ -5,6 +5,8 @@ require_once __DIR__ . '/core.php';
 require_once __DIR__ . '/schema.php';
 require_once __DIR__ . '/rules.php';
 require_once __DIR__ . '/evidence.php';
+require_once __DIR__ . '/templates.php';
+require_once __DIR__ . '/dashboard.php';
 
 function yovel_admin_compliance_sections(): array
 {
@@ -98,8 +100,10 @@ function yovel_admin_compliance_state(string $section, array $metadata): array
 function yovel_admin_compliance_data(array $company, array $admin, string $section = ''): array
 {
     [, $companyKeyHash] = yovel_admin_compliance_scope($company, $admin);
-    yovel_admin_compliance_schema();
     $section = yovel_admin_compliance_section($section);
+    if ($section !== 'dashboard') {
+        yovel_admin_compliance_schema();
+    }
     $sections = yovel_admin_compliance_sections();
     $metadata = $sections[$section];
     $db = bx_db();
@@ -114,6 +118,17 @@ function yovel_admin_compliance_data(array $company, array $admin, string $secti
         : [];
     $rules = in_array($section, ['tax-rules', 'vat-settings', 'audit-evidence'], true) ? yovel_admin_compliance_rule_sets($company) : [];
     $evidence = $section === 'audit-evidence' ? yovel_admin_compliance_evidence_rows($company) : [];
+    $templates = $section === 'tax-document-templates' ? yovel_admin_compliance_templates($company) : [];
+    $invoiceProvider = is_callable($providers['accounting-finance.invoice-snapshot.v1'] ?? null)
+        ? $providers['accounting-finance.invoice-snapshot.v1']
+        : null;
+    $register = $section === 'einvoice-register'
+        ? yovel_admin_compliance_einvoice_register($company, [
+            'date_from' => (string) ($_GET['date_from'] ?? ''),
+            'date_to' => (string) ($_GET['date_to'] ?? ''),
+            'status' => (string) ($_GET['status'] ?? ''),
+        ], $invoiceProvider)
+        : null;
     $selectedRuleKey = trim((string) ($_GET['rule'] ?? ''));
     if ($selectedRuleKey === '' && $rules !== []) {
         $selectedRuleKey = (string) $rules[0]['rule_set_key'];
@@ -122,6 +137,9 @@ function yovel_admin_compliance_data(array $company, array $admin, string $secti
     if ($selectedEvidenceKey === '' && $evidence !== []) {
         $selectedEvidenceKey = (string) $evidence[0]['evidence_key'];
     }
+    $dashboard = $section === 'dashboard'
+        ? yovel_admin_compliance_localization_dashboard_data($company, $admin)
+        : null;
 
     return [
         'section' => $section,
@@ -137,9 +155,13 @@ function yovel_admin_compliance_data(array $company, array $admin, string $secti
         'lifecycle_contracts' => yovel_admin_compliance_lifecycle_contracts(),
         'rules' => $rules,
         'evidence' => $evidence,
+        'templates' => $templates,
+        'einvoice_register' => $register,
         'selected_rule' => $selectedRuleKey !== '' ? yovel_admin_compliance_rule_set($company, $selectedRuleKey) : null,
         'selected_evidence' => $selectedEvidenceKey !== '' ? yovel_admin_compliance_evidence($company, $selectedEvidenceKey) : null,
         'finance_account_reference_available' => is_callable($providers['accounting-finance.account-reference.v1'] ?? null),
+        'finance_invoice_snapshot_available' => is_callable($invoiceProvider),
+        'dashboard' => $dashboard,
     ];
 }
 
@@ -172,6 +194,29 @@ function yovel_admin_compliance_localization_handle_post(
         ? $GLOBALS['yovel_admin_compliance_dependency_providers']
         : [];
     $financeProvider = $providers['accounting-finance.account-reference.v1'] ?? null;
+    $invoiceProvider = $providers['accounting-finance.invoice-snapshot.v1'] ?? null;
+    if ($action === 'save_compliance_template') {
+        $saved = yovel_admin_compliance_save_template(bx_db(), $company, $admin, $input);
+        return ['message' => 'Compliance invoice profile Draft saved.', 'section' => 'tax-document-templates', 'query' => ['template_version' => (string) $saved['template_version_key']]];
+    }
+    if ($action === 'publish_compliance_template') {
+        $saved = yovel_admin_compliance_publish_template(bx_db(), $company, $admin, (string) ($input['template_version_key'] ?? ''), (string) ($input['comments'] ?? ''));
+        return ['message' => 'Compliance invoice profile published.', 'section' => 'tax-document-templates', 'query' => ['template_version' => (string) $saved['template_version_key']]];
+    }
+    if ($action === 'archive_compliance_template') {
+        $saved = yovel_admin_compliance_archive_template(bx_db(), $company, $admin, (string) ($input['template_version_key'] ?? ''), (string) ($input['comments'] ?? ''));
+        return ['message' => 'Compliance invoice profile archived.', 'section' => 'tax-document-templates', 'query' => ['template_version' => (string) $saved['template_version_key']]];
+    }
+    if (in_array($action, ['register_compliance_einvoice', 'correct_compliance_einvoice'], true)) {
+        $provider = yovel_admin_compliance_dependency_provider('accounting-finance.invoice-snapshot.v1', $providers);
+        $saved = yovel_admin_compliance_register_einvoice(bx_db(), $company, $admin, (string) ($input['finance_document_key'] ?? ''), $provider, $action === 'correct_compliance_einvoice' ? (string) ($input['correction_of_record_key'] ?? '') : null);
+        return ['message' => $action === 'correct_compliance_einvoice' ? 'E-invoice correction registered.' : 'E-invoice snapshot registered.', 'section' => 'einvoice-register', 'query' => ['einvoice' => (string) $saved['einvoice_record_key']]];
+    }
+    if (in_array($action, ['queue_compliance_einvoice', 'retry_compliance_einvoice', 'cancel_compliance_einvoice'], true)) {
+        $toStatus = $action === 'cancel_compliance_einvoice' ? 'CANCELLED' : 'QUEUED';
+        $saved = yovel_admin_compliance_update_transmission(bx_db(), $company, $admin, (string) ($input['einvoice_record_key'] ?? ''), $toStatus);
+        return ['message' => $toStatus === 'QUEUED' ? 'E-invoice queued for transmission.' : 'E-invoice transmission cancelled.', 'section' => 'einvoice-register', 'query' => ['einvoice' => (string) $saved['einvoice_record_key']]];
+    }
     if ($action === 'save_compliance_rule') {
         $saved = yovel_admin_compliance_save_rule_set(bx_db(), $company, $admin, $input, is_callable($financeProvider) ? $financeProvider : null);
         return ['message' => 'Compliance rule Draft saved.', 'section' => $section, 'query' => ['rule' => (string) $saved['rule_set_key']]];
@@ -210,5 +255,5 @@ function yovel_admin_compliance_localization_handle_post(
         $saved = yovel_admin_compliance_archive_evidence(bx_db(), $company, $admin, (string) ($input['evidence_key'] ?? ''), (string) ($input['archive_reason'] ?? ''));
         return ['message' => 'Compliance evidence archived.', 'section' => 'audit-evidence', 'query' => ['evidence' => (string) $saved['evidence_key']]];
     }
-    throw new InvalidArgumentException('This Compliance / Localization action is not available in WP-02.');
+    throw new InvalidArgumentException('This Compliance / Localization action is not available in WP-02 or WP-03.');
 }

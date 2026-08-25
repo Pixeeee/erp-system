@@ -39,6 +39,12 @@ erp_contract_assert(
     ($registry['manufacturing']['default_section'] ?? '') === 'dashboard',
     'Manufacturing must open its implemented dashboard section.'
 );
+foreach ($expectedModuleViews as $dashboardView) {
+    erp_contract_assert(
+        ($registry[$dashboardView]['default_section'] ?? '') === 'dashboard',
+        'Every web ERP module must open its dashboard: ' . $dashboardView
+    );
+}
 foreach ($expectedModuleViews as $expectedView) {
     $route = yovel_admin_module_route($expectedView);
     erp_contract_assert(is_array($route), 'Registered ERP route does not resolve: ' . $expectedView);

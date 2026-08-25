@@ -187,3 +187,37 @@ function sales_crm_cleanup_campaigns(ADOConnection $db, string $companyKeyHash, 
         $db->Execute('DELETE FROM project_company_sales_campaign WHERE company_key_hash = ? AND campaign_key = ?', [$companyKeyHash, $key]);
     }
 }
+
+function sales_crm_cleanup_sc03(ADOConnection $db, string $companyKeyHash): void
+{
+    $ownedTables = [
+        'project_company_sales_integration_outbox',
+        'project_company_sales_lead_conversion',
+        'project_company_sales_lead_communication',
+        'project_company_sales_crm_note',
+        'project_company_sales_appointment',
+        'project_company_sales_appointment_availability',
+        'project_company_sales_appointment_booking_slot',
+        'project_company_sales_appointment_booking_settings',
+        'project_company_sales_prospect_opportunity',
+        'project_company_sales_prospect_lead',
+        'project_company_sales_prospect',
+        'project_company_sales_market_segment',
+        'project_company_sales_industry_type',
+    ];
+    foreach ($ownedTables as $table) {
+        if ((int) $db->GetOne('SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?', [BUILDERX_DB_NAME, $table]) === 1) {
+            $keys = $db->GetCol('SELECT DISTINCT record_key FROM builder_audit_log WHERE JSON_VALID(new_values) = 1 AND JSON_UNQUOTE(JSON_EXTRACT(new_values, \'$.company_key_hash\')) = ?', [$companyKeyHash]);
+            foreach (is_array($keys) ? $keys : [] as $key) {
+                $db->Execute('DELETE FROM builder_audit_log WHERE record_key = ?', [(string) $key]);
+            }
+            $db->Execute("DELETE FROM {$table} WHERE company_key_hash = ?", [$companyKeyHash]);
+        }
+    }
+    $leadKeys = $db->GetCol('SELECT lead_key FROM project_company_sales_lead WHERE company_key_hash = ?', [$companyKeyHash]);
+    foreach (is_array($leadKeys) ? $leadKeys : [] as $leadKey) {
+        $db->Execute("DELETE FROM builder_audit_log WHERE module = 'project_company_sales_lead' AND record_key = ?", [(string) $leadKey]);
+    }
+    $db->Execute('DELETE FROM project_company_sales_lead WHERE company_key_hash = ?', [$companyKeyHash]);
+    sales_crm_cleanup_sc02($db, $companyKeyHash, [], '');
+}

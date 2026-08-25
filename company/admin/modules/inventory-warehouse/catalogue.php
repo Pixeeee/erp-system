@@ -479,7 +479,6 @@ function yovel_admin_save_inventory_item(array $company, ?array $admin, array $i
 
 function yovel_admin_inventory_item(array $company, string $itemKey): ?array
 {
-    yovel_admin_inventory_catalogue_schema();
     $hash = strtolower(trim((string) ($company['company_key_hash'] ?? '')));
     if (preg_match('/^[a-f0-9]{64}$/', $hash) !== 1 || !yovel_admin_is_uuid($itemKey)) {
         return null;
@@ -502,7 +501,6 @@ function yovel_admin_inventory_item(array $company, string $itemKey): ?array
 
 function yovel_admin_inventory_items(array $company, array $filters = []): array
 {
-    yovel_admin_inventory_catalogue_schema();
     $hash = strtolower(trim((string) ($company['company_key_hash'] ?? '')));
     if (preg_match('/^[a-f0-9]{64}$/', $hash) !== 1) {
         return [];
@@ -522,6 +520,23 @@ function yovel_admin_inventory_items(array $company, array $filters = []): array
     }
     $rows = bx_db()->GetAll($sql . ' ORDER BY item_code LIMIT 200', $params);
     return is_array($rows) ? $rows : [];
+}
+
+function yovel_admin_inventory_item_count(array $company, string $status = 'ACTIVE'): int
+{
+    $hash = strtolower(trim((string) ($company['company_key_hash'] ?? '')));
+    $status = strtoupper(trim($status));
+    if (preg_match('/^[a-f0-9]{64}$/', $hash) !== 1 || !in_array($status, ['ACTIVE', 'DISABLED'], true)) {
+        throw new InvalidArgumentException('Inventory item count scope is invalid.');
+    }
+    $count = bx_db()->GetOne(
+        'SELECT COUNT(*) FROM project_company_inventory_item WHERE company_key_hash=? AND item_status=?',
+        [$hash, $status]
+    );
+    if ($count === false) {
+        throw new RuntimeException('Inventory item count is unavailable.');
+    }
+    return (int) $count;
 }
 
 function yovel_admin_resolve_item_uom(array $company, string $itemKey, string $uomKey, string $qty): array

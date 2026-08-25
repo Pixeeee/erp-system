@@ -74,3 +74,6 @@ try {
 } finally {
     await browser.close();
 }
+
+await import('./sales-crm-dashboard-browser.mjs');
+await import('./sales-crm-leads-browser.mjs');

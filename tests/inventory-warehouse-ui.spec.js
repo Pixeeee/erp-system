@@ -98,6 +98,10 @@ function renderWarehouseWorkspace(section = 'warehouses', formState = null) {
   return execFileSync('php', ['-r', php], { cwd: root, encoding: 'utf8', env: { ...process.env, INVENTORY_SECTION: section, INVENTORY_FORM_STATE: encodedState } });
 }
 
+function renderDashboardWorkspace(formState = null) {
+  return renderWarehouseWorkspace('dashboard', formState);
+}
+
 test('Inventory Form Builder uses shared modal and confirmation behavior', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.setContent(renderWorkspace());
@@ -264,7 +268,7 @@ test('Inventory warehouse mutation waits for sibling confirmation and cancel ret
   await expect.poll(() => page.evaluate(() => window.__warehouseSubmitCount)).toBe(1);
 });
 
-test('Inventory warehouse tools expose modal-backed create actions across IW-03 sections', async ({ page }) => {
+test('Inventory tools expose modal-backed create actions across warehouse and tracking sections', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.setContent(renderWarehouseWorkspace('warehouses'));
   for (const name of ['Add Warehouse', 'Add Warehouse Type', 'Add Inventory Dimension', 'Configure Stock Settings']) {
@@ -280,6 +284,15 @@ test('Inventory warehouse tools expose modal-backed create actions across IW-03 
   await expect(page.getByRole('button', { name: 'Add Putaway Rule', exact: true })).toBeVisible();
   await page.setContent(renderWarehouseWorkspace('reorder-levels'));
   await expect(page.getByRole('button', { name: 'Add Reorder Rule', exact: true })).toBeVisible();
+  for (const [section, name] of [['batch-numbers', 'Add Batch'], ['serial-numbers', 'Add Serial']]) {
+    await page.setContent(renderWarehouseWorkspace(section));
+    const opener = page.getByRole('button', { name, exact: true });
+    await expect(opener).toBeVisible();
+    await opener.click();
+    const modal = page.locator('[data-record-modal]:visible');
+    await expect(modal.locator('input[name="module_view"]')).toHaveValue('inventory-warehouse');
+    await modal.getByRole('button', { name: 'Cancel', exact: true }).click();
+  }
 });
 
 test('Inventory warehouse server errors reopen and rehydrate on mobile', async ({ page }) => {
@@ -292,5 +305,80 @@ test('Inventory warehouse server errors reopen and rehydrate on mobile', async (
   await expect(modal.locator('[role="alert"]')).toContainText('capacity');
   await expect(modal.locator('input[name="warehouse_code"]')).toHaveValue('RETAINED-WH');
   await expect(modal.locator('input[name="warehouse_name"]')).toHaveValue('Retained mobile warehouse');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+
+  await page.setContent(renderWarehouseWorkspace('batch-numbers', {
+    section: 'batch-numbers', action: 'save_inventory_batch', error: 'Inventory Batch expiry date cannot precede manufacturing date.',
+    input: { batch_key: '', item_key: '', batch_number: 'RETAINED-BATCH', manufacturing_date: '2026-12-31', expiry_date: '2026-01-01' },
+  }));
+  const batchModal = page.locator('[data-record-modal]:visible');
+  await expect(batchModal.locator('[role="alert"]')).toContainText('expiry');
+  await expect(batchModal.locator('input[name="batch_number"]')).toHaveValue('RETAINED-BATCH');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+});
+
+test('Inventory dashboard renders live operations and preserves modal confirmation', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.setContent(renderDashboardWorkspace());
+  const dashboard = page.locator('[data-inventory-dashboard]');
+  await expect(dashboard).toBeVisible();
+  await expect(dashboard.locator('[data-inventory-dashboard-summary]')).toBeVisible();
+  await expect(page.getByText('Stock value', { exact: true })).toBeVisible();
+  await expect(dashboard.locator('[data-inventory-dashboard-summary]').getByText('Unavailable', { exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Form Builder/i }).first()).toBeVisible();
+  await expect(page.locator('[data-record-modal]')).toHaveCount(2);
+
+  const opener = page.getByRole('button', { name: 'Add Item', exact: true }).first();
+  await opener.click();
+  const modal = page.locator('[data-record-modal]:visible');
+  await modal.locator('input[name="item_code"]').fill('DASH-RETAINED');
+  await modal.locator('input[name="item_name"]').fill('Dashboard retained item');
+  await page.evaluate(() => {
+    window.__dashboardSubmitCount = 0;
+    document.querySelector('[data-record-modal]:not([hidden]) form').addEventListener('submit', (event) => {
+      if (event.currentTarget.dataset.confirmed === 'true') {
+        window.__dashboardSubmitCount += 1;
+        event.preventDefault();
+      }
+    }, true);
+  });
+  const submit = modal.locator('[data-confirm-submit-action]');
+  await submit.click();
+  await expect(page.locator('[data-confirm-dialog]')).toBeVisible();
+  await expect.poll(() => page.evaluate(() => window.__dashboardSubmitCount)).toBe(0);
+  await page.locator('[data-confirm-dialog] [data-confirm-cancel]').click();
+  await expect(modal.locator('input[name="item_code"]')).toHaveValue('DASH-RETAINED');
+  await expect(submit).toBeFocused();
+});
+
+test('Inventory dashboard guided tour traps focus, advances, and restores the opener', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.setContent(renderDashboardWorkspace());
+  const opener = page.locator('[data-inventory-dashboard-tour-open]');
+  await opener.click();
+  const tour = page.locator('[data-inventory-dashboard-tour]');
+  await expect(tour).toBeVisible();
+  const firstTitle = await tour.locator('[data-inventory-dashboard-tour-title]').textContent();
+  await tour.locator('[data-inventory-dashboard-tour-next]').click();
+  await expect(tour.locator('[data-inventory-dashboard-tour-title]')).not.toHaveText(firstTitle);
+  await page.keyboard.press('Tab');
+  expect(await tour.evaluate((element) => element.contains(document.activeElement))).toBe(true);
+  await page.keyboard.press('Escape');
+  await expect(tour).toBeHidden();
+  await expect(opener).toBeFocused();
+});
+
+test('Inventory dashboard stacks main-first without mobile overflow', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.setContent(renderDashboardWorkspace());
+  const workspace = page.locator('[data-inventory-workspace]');
+  const geometry = await workspace.evaluate((element) => {
+    const main = element.querySelector('[data-inventory-main]').getBoundingClientRect();
+    const tools = element.querySelector('[data-inventory-tools]').getBoundingClientRect();
+    return { mainFirst: main.top < tools.top, mainWidth: main.width, toolsWidth: tools.width };
+  });
+  expect(geometry.mainFirst).toBe(true);
+  expect(geometry.mainWidth).toBeLessThanOrEqual(390);
+  expect(geometry.toolsWidth).toBeLessThanOrEqual(390);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });

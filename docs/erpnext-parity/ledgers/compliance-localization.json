@@ -63,7 +63,8 @@
             "evidence": [
                 "company/admin/modules/compliance-localization/rules.php (company-scoped effective dates, Philippine legal-source policy, approval state, immutable canonical snapshot, audit, and exact read-back)",
                 "company/admin/modules/compliance-localization/views/rules.php (12/8 workspace with body-owned rule, approval, supersede, and archive modals plus sibling confirmations and rehydration)",
-                "tests/compliance-localization-rules.php (PASS 2026-08-25: authorization, stable updates, separation of duties, overlap prevention, immutable snapshot, historical resolution, rollback, modal contracts, and four-argument handler)"
+                "tests/compliance-localization-rules.php (PASS 2026-08-25: authorization, stable updates, separation of duties, overlap prevention, immutable snapshot, historical resolution, rollback, modal contracts, and four-argument handler)",
+                "tests/compliance-localization-dashboard.php (PASS twice 2026-08-25: live active Philippine rule-set and pending maker-checker approval KPIs, company isolation, bounded audit activity, setup queue, 12/8 workspace, guided tour, and authenticated desktop/mobile evidence)"
             ],
             "reason": "[CL-WP02] COMPLETE: the module-local Philippine VAT settings aggregate owns company scope, effective dates, authority metadata, draft/approved state, account-map membership, deterministic immutable snapshots, transaction-owned writes, audit, exact read-back, and server rehydration while Finance remains authoritative for account references and tax posting.",
             "audit_id": "CL-003",
@@ -86,7 +87,8 @@
             "evidence": [
                 "company/admin/modules/compliance-localization/rules.php (allow-listed VAT/withholding roles, injected accounting-finance.account-reference.v1 validation, immutable approved mapping snapshots, company isolation, audit, and exact read-back)",
                 "company/admin/modules/compliance-localization/views/rules.php (body-owned Add Mapping modal, action-specific sibling confirmation, cancellation retention, focus return, and failed-submit rehydration)",
-                "tests/compliance-localization-rules.php (PASS 2026-08-25: active posting-account envelope, wrong-company and malformed-provider rejection before persistence, stable mapping keys, approved immutability, and rollback)"
+                "tests/compliance-localization-rules.php (PASS 2026-08-25: active posting-account envelope, wrong-company and malformed-provider rejection before persistence, stable mapping keys, approved immutability, and rollback)",
+                "tests/compliance-localization-dashboard.php (PASS twice 2026-08-25: live OUTPUT_VAT/INPUT_VAT mapping-gap detection, explicit accounting-finance.account-reference.v1 availability, zero provider invocation during reads, and no Finance-table access)"
             ],
             "reason": "[CL-WP02] COMPLETE: Philippine output VAT, input VAT, withholding, adjustment, and settlement mappings reference stable Finance account keys only through the injected allow-listed provider; wrong-company, inactive, group, malformed, and duplicate mappings are rejected and approved versions freeze the validated Finance reference snapshot without querying or writing Finance tables.",
             "audit_id": "CL-004",
@@ -109,7 +111,8 @@
             "evidence": [
                 "company/admin/modules/compliance-localization/rules.php (DRAFT/APPROVED/SUPERSEDED/ARCHIVED lifecycle, maker-checker approval, effective-date overlap guard, canonical checksum, immutable approved snapshot, and historical resolver)",
                 "company/admin/modules/compliance-localization/evidence.php (checksum-verified evidence, generated allow-listed storage, duplicate detection, approved retention calculation, holds/releases, archive controls, rollback cleanup, and company isolation)",
-                "tests/compliance-localization-rules.php and tests/compliance-localization-evidence.php (PASS 2026-08-25: lifecycle, historical non-mutation, SHA-256 verification, retention, holds, duplicate and MIME rejection, cross-company denial, and rollback cleanup)"
+                "tests/compliance-localization-rules.php and tests/compliance-localization-evidence.php (PASS 2026-08-25: lifecycle, historical non-mutation, SHA-256 verification, retention, holds, duplicate and MIME rejection, cross-company denial, and rollback cleanup)",
+                "tests/compliance-localization-dashboard.php (PASS twice 2026-08-25: invalid-evidence verification, retention-horizon and active-hold KPIs, legal-hold queue, alerts, zero-write dashboard reads, Form Builder confirmation, Escape/focus restoration, and authenticated responsive checks)"
             ],
             "reason": "[CL-WP02] COMPLETE: company-scoped Philippine rule versions support effective-dated draft, maker-checker approval, supersede, and archive transitions with overlap prevention, immutable canonical approved snapshots, direct read-back, historical resolution, checksum-verified evidence retention, legal holds, audit logging, and rollback-safe generated storage.",
             "audit_id": "CL-005",
@@ -129,9 +132,14 @@
                 "accounting-finance",
                 "sales-crm"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "MISSING: no module-local detailed tax-document template or focused passing test exists. Build a versioned Philippine invoice output profile with protected registration, serial, party, line, tax-breakdown, total, and source-snapshot fields.",
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/compliance-localization/templates.php (PH_DETAILED_TAX_INVOICE protected field schema, stable Draft identity, maker-checker publication, immutable effective version, canonical SHA-256, and rule-bound render service)",
+                "company/admin/modules/compliance-localization/views/templates.php (12/8 operational profile list and protected-schema preview with body-owned New Profile, Publish, and Archive modals plus action-specific sibling confirmations and failed-submit rehydration)",
+                "tests/compliance-localization-templates-einvoice.php (PASS twice 2026-08-25: all four profile identities, protected-key removal/rename rejection, stable Draft key, separation of duties, immutable publication, deterministic checksum, historical-version stability, rollback, handler, modal, and company-isolation contracts)",
+                "Authenticated browser PASS 2026-08-25 at 1440x900 and 390x844: profile output workspace rendered without PHP warnings or horizontal overflow; 12/8 desktop and main-first mobile layout, modal focus, Submit-to-Confirm, and Cancel value retention verified"
+            ],
+            "reason": "[CL-WP03] COMPLETE: the detailed Philippine output profile is a protected, effective-dated, immutable Compliance schema selected only through an approved rule and bound to exact Finance source, rule, and template checksums; presentation remains BuilderX-owned data rendering without copied upstream markup.",
             "audit_id": "CL-006",
             "work_package": "WP-03"
         },
@@ -170,9 +178,14 @@
                 "buying-procurement",
                 "operations"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "MISSING: no module-local purchase e-invoice representation or focused passing test exists. Build a versioned Philippine supplier e-invoice rendering/export profile over immutable Finance purchase-invoice snapshots and retain source payload, checksum, validation result, and transmission evidence.",
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/compliance-localization/templates.php (PH_PURCHASE_EINVOICE immutable schema and server-only purchase-profile selection; strict accounting-finance.invoice-snapshot.v1 company/status/key/checksum envelope with UNAVAILABLE_DEPENDENCY failure when absent)",
+                "company/admin/modules/compliance-localization/views/templates.php and views/einvoice-register.php (purchase-capable profile/version surface and explicit read-only Finance dependency state without fabricated source rows)",
+                "tests/compliance-localization-templates-einvoice.php (PASS twice 2026-08-25: purchase profile Draft/publish lifecycle, protected fields, maker-checker, deterministic snapshot boundary, source/schema idempotency, and no cross-company access)",
+                "All Accounting/Finance PHP regressions PASS 2026-08-25; ownership scan confirms no direct Finance table query/write in company/admin/modules/compliance-localization"
+            ],
+            "reason": "[CL-WP03] COMPLETE: Compliance owns the versioned purchase e-invoice representation and immutable register payload, while Finance remains authoritative through the registered read-only snapshot provider; because no live provider is currently registered, purchase source rendering and register data fail closed with UNAVAILABLE_DEPENDENCY.",
             "audit_id": "CL-008",
             "work_package": "WP-03"
         },
@@ -190,9 +203,14 @@
                 "accounting-finance",
                 "sales-crm"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "MISSING: no module-local simplified invoice output profile or focused passing test exists. Build a Philippine profile selected only by approved rule conditions, preserving protected invoice identity and tax fields and binding every render to an immutable template version.",
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/compliance-localization/templates.php (PH_SIMPLIFIED_TAX_INVOICE protected schema, effective immutable versions, canonical checksum, and approved-rule-only profile selection)",
+                "company/admin/modules/compliance-localization/views/templates.php (version directory and protected-schema preview with accessible New Profile, Publish, and Archive modal workflows)",
+                "tests/compliance-localization-templates-einvoice.php (PASS twice 2026-08-25: simplified profile identity, protected keys, stable Draft update, maker-checker publication, immutable schema/checksum, and historical-version preservation)",
+                "Authenticated desktop/mobile browser PASS 2026-08-25: profile workspace, responsive shell, modal confirmation, cancellation retention, and focus restoration"
+            ],
+            "reason": "[CL-WP03] COMPLETE: the simplified Philippine profile preserves all protected source, registration, invoice identity, line, VAT, discount, total, currency, and amendment fields and can be selected only by an approved effective Compliance rule.",
             "audit_id": "CL-009",
             "work_package": "WP-03"
         },
@@ -210,9 +228,14 @@
                 "accounting-finance",
                 "sales-crm"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "MISSING: no module-local standard tax-invoice output profile or focused passing test exists. Build a Philippine electronic/print invoice profile with effective-dated required fields, serial controls, tax classifications, amendment references, and evidence-ready immutable output snapshots.",
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/compliance-localization/templates.php (PH_STANDARD_TAX_INVOICE protected schema, effective versions, maker-checker publish, deterministic source/rule/template binding, correction references, and immutable historical snapshots)",
+                "company/admin/modules/compliance-localization/views/templates.php (12/8 version list and schema preview; body-owned create/publish/archive modals with sibling confirmation and rehydration)",
+                "tests/compliance-localization-templates-einvoice.php (PASS twice 2026-08-25: standard profile end-to-end render/register path, exact source/rule/template checksums, deterministic payload, successor publication without historical mutation, and rollback)",
+                "Authenticated browser PASS 2026-08-25 at desktop/mobile breakpoints with no warning/fatal output or horizontal overflow"
+            ],
+            "reason": "[CL-WP03] COMPLETE: the standard Philippine invoice profile is an immutable effective-dated data schema with protected serial, party, line, VAT, discount, totals, source-checksum, and amendment identities; output snapshots are deterministic and never rewrite Finance source documents.",
             "audit_id": "CL-010",
             "work_package": "WP-03"
         },
@@ -230,9 +253,14 @@
                 "accounting-finance",
                 "operations"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "MISSING: no module-local e-invoice register surface or focused passing test exists. Build company/date/status filters, immutable Finance source keys, payload checksums, validation and transmission states, acknowledgement references, correction links, export controls, and row-level evidence.",
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/compliance-localization/views/einvoice-register.php (12/8 register surface with company-owned rows, source/schema/state/correction columns, date/status tools, explicit dependency health, and body-owned register/correction/queue/retry/cancel confirmation workflows)",
+                "company/admin/modules/compliance-localization/views/workspace.php and functions.php (WP-03 section dispatch, right-side actions/filters, exact four-argument handlers, rehydration, and registered provider availability)",
+                "tests/compliance-localization-templates-einvoice.php (PASS twice 2026-08-25: fail-closed absence, date/status filtering, submitted source enforcement, idempotency, correction lineage, transitions, acknowledgement read-back, rollback, and company isolation)",
+                "Authenticated browser PASS 2026-08-25 at 1440x900 and 390x844: zero fabricated rows under UNAVAILABLE_DEPENDENCY, disabled register persistence, responsive main-first layout, bounded correction modal, and no overflow/warnings"
+            ],
+            "reason": "[CL-WP03] COMPLETE: the operational register exposes immutable Compliance records, filters, correction lineage, validation/transmission states, and acknowledgement evidence, and visibly withholds all register data when the exact Finance read-only provider is unavailable.",
             "audit_id": "CL-011",
             "work_package": "WP-03"
         },
@@ -250,9 +278,14 @@
                 "accounting-finance",
                 "operations"
             ],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "MISSING: no module-local e-invoice register service or focused passing test exists. Build parameterized company-scoped queries and deterministic register rows over Finance snapshots plus Compliance-owned validation/transmission evidence, without direct Finance table writes.",
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/compliance-localization/templates.php (parameterized company/date/status register query; strict read-only Finance provider validation; deterministic render/register idempotency; correction lineage; allow-listed transitions; audit, exact read-back, rollback, and retention)",
+                "company/admin/modules/compliance-localization/functions.php (registered accounting-finance.invoice-snapshot.v1 consumption and exact four-argument mutation dispatch without foreign SQL)",
+                "tests/compliance-localization-templates-einvoice.php (PASS twice 2026-08-25: UNAVAILABLE_DEPENDENCY, malformed/non-Submitted/wrong-company source rejection, canonical source checksum, deterministic payload, duplicate prevention, correction lineage, status machine, acknowledgement, rollback, and isolation)",
+                "All Accounting/Finance and shared contract regressions plus tests/erpnext-parity-ledger.php PASS 2026-08-25; foreign-table and diff checks clean for WP-03-owned changes"
+            ],
+            "reason": "[CL-WP03] COMPLETE: the register service owns only Compliance rows and parameterized queries, consumes submitted invoices solely through accounting-finance.invoice-snapshot.v1, and returns UNAVAILABLE_DEPENDENCY with no rows when that live owner provider is absent; it never reads or writes Finance tables directly.",
             "audit_id": "CL-012",
             "work_package": "WP-03"
         },

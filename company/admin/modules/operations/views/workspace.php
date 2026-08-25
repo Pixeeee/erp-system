@@ -48,6 +48,7 @@ require __DIR__ . '/record-modal.php';
 $operationsBuilderModal = (string) ob_get_clean();
 $operationsSectionTools = '';
 $operationsSectionView = match ($operationsSection) {
+    'dashboard' => 'dashboard.php',
     'scheduled-jobs', 'notifications', 'background-workers' => 'jobs.php',
     'sync-conflict-dashboard' => 'sync.php',
     'import-export-jobs' => 'import-export.php',
@@ -57,10 +58,16 @@ $operationsSectionView = match ($operationsSection) {
     'governed-deletion' => 'deletion.php',
     'authorization-setup' => 'authorization.php',
     'company-defaults' => 'company-defaults.php',
+    'workforce-directory' => 'workforce.php',
+    'workforce-calendars' => 'calendars.php',
+    'commercial-masters' => 'commercial.php',
+    'catalog-units' => 'catalog.php',
     default => 'dashboard.php',
 };
 ob_start();
-require __DIR__ . '/sections/' . $operationsSectionView;
+require $operationsSection === 'dashboard'
+    ? __DIR__ . '/dashboard.php'
+    : __DIR__ . '/sections/' . $operationsSectionView;
 $operationsSectionMain = (string) ob_get_clean();
 ?>
 <div data-operations-workspace class="grid min-h-0 gap-4">
@@ -79,9 +86,9 @@ $operationsSectionMain = (string) ob_get_clean();
         <aside data-operations-tools-panel class="min-w-0 rounded-md border bg-card p-5">
             <div class="grid gap-5">
                 <div><h2 class="text-base font-semibold">Actions and tools</h2><p class="mt-1 text-sm text-muted-foreground">Commands remain scoped to <?= bx_h((string) ($companyName ?? 'this company')) ?>.</p></div>
-                <div class="grid grid-cols-2 gap-2"><?php foreach (($operationsData['metrics'] ?? []) as $label => $value): ?><div class="rounded-md bg-muted/50 p-3"><div class="text-lg font-semibold"><?= (int) $value ?></div><div class="text-xs text-muted-foreground"><?= bx_h(ucwords(str_replace('_', ' ', (string) $label))) ?></div></div><?php endforeach; ?></div>
-                <?php if ($operationsSectionTools !== ''): ?><div class="grid gap-2"><h3 class="text-sm font-semibold">Commands</h3><?= $operationsSectionTools ?></div><?php endif; ?>
-                <div class="grid gap-2"><h3 class="text-sm font-semibold">Form Builder</h3><p class="text-sm text-muted-foreground">Published layouts are immutable versions and submissions retain their original version.</p><?= $operationsBuilderModal ?></div>
+                <?php if ($operationsSection !== 'dashboard'): ?><div class="grid grid-cols-2 gap-2"><?php foreach (($operationsData['metrics'] ?? []) as $label => $value): ?><div class="rounded-md bg-muted/50 p-3"><div class="text-lg font-semibold"><?= (int) $value ?></div><div class="text-xs text-muted-foreground"><?= bx_h(ucwords(str_replace('_', ' ', (string) $label))) ?></div></div><?php endforeach; ?></div><?php endif; ?>
+                <?php if ($operationsSectionTools !== ''): ?><div class="grid gap-4"><h3 class="text-sm font-semibold"><?= $operationsSection === 'dashboard' ? 'Dashboard tools' : 'Commands' ?></h3><?= $operationsSectionTools ?></div><?php endif; ?>
+                <div id="operations-dashboard-form-builder" class="grid gap-2"><h3 class="text-sm font-semibold">Form Builder</h3><p class="text-sm text-muted-foreground">Published layouts are immutable versions and submissions retain their original version.</p><?= $operationsBuilderModal ?></div>
             </div>
         </aside>
     </div>
@@ -95,6 +102,72 @@ $operationsSectionMain = (string) ob_get_clean();
 (() => {
   const button = document.querySelector('[data-operations-tour-start]');
   const tour = document.querySelector('[data-operations-tour]');
+  const dashboard = document.querySelector('[data-operations-dashboard]');
+  const dashboardTour = document.querySelector('[data-operations-dashboard-tour]');
+  if (button && dashboard && dashboardTour) {
+    const triggers = [button, ...document.querySelectorAll('[data-operations-dashboard-tour-start]')];
+    const panel = dashboardTour.querySelector('[data-operations-dashboard-tour-panel]');
+    const title = dashboardTour.querySelector('[data-operations-dashboard-tour-title]');
+    const description = dashboardTour.querySelector('[data-operations-dashboard-tour-description]');
+    const progress = dashboardTour.querySelector('[data-operations-dashboard-tour-progress]');
+    const back = dashboardTour.querySelector('[data-operations-dashboard-tour-back]');
+    const next = dashboardTour.querySelector('[data-operations-dashboard-tour-next]');
+    const skip = dashboardTour.querySelector('[data-operations-dashboard-tour-skip]');
+    const steps = [
+      { target: '[data-dashboard-summary]', title: 'Live summary', body: 'Review queued, running, failed, alert, conflict, and release state.' },
+      { target: '[data-dashboard-queue]', title: 'Action queue', body: 'Start with failed jobs, alerts, conflicts, and queued deletion reviews.' },
+      { target: '[data-dashboard-activity]', title: 'Recent activity', body: 'Trace confirmed actions to their actor, record, status, and time.' },
+      { target: '[data-dashboard-setup]', title: 'Setup progress', body: 'Complete schedules, worker checks, release evidence, and Form Builder setup.' },
+      { target: '[data-dashboard-shortcuts]', title: 'Shortcuts', body: 'Move directly to implemented Operations destinations.' },
+      { target: '[data-dashboard-directories]', title: 'Directories', body: 'Browse execution, assurance, and setup destinations by purpose.' },
+    ];
+    let index = 0;
+    let opener = button;
+    let highlighted = null;
+    const clearHighlight = () => {
+      highlighted?.classList.remove('ring-2', 'ring-primary');
+      highlighted = null;
+    };
+    const render = () => {
+      clearHighlight();
+      const step = steps[index];
+      highlighted = document.querySelector(step.target);
+      highlighted?.classList.add('ring-2', 'ring-primary');
+      title.textContent = step.title;
+      description.textContent = step.body;
+      progress.textContent = `Step ${index + 1} of ${steps.length}`;
+      back.disabled = index === 0;
+      next.textContent = index === steps.length - 1 ? 'Finish' : 'Next';
+    };
+    const close = (completed) => {
+      clearHighlight();
+      dashboardTour.hidden = true;
+      if (completed) localStorage.setItem(dashboard.dataset.tourStorage || 'operations-dashboard-tour', 'complete');
+      opener?.focus();
+    };
+    const open = (trigger) => {
+      opener = trigger;
+      index = 0;
+      dashboardTour.hidden = false;
+      render();
+      panel?.focus();
+    };
+    triggers.forEach((trigger) => trigger.addEventListener('click', () => open(trigger)));
+    back?.addEventListener('click', () => { if (index > 0) { index--; render(); } });
+    next?.addEventListener('click', () => { if (index === steps.length - 1) close(true); else { index++; render(); } });
+    skip?.addEventListener('click', () => close(false));
+    dashboardTour.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') { event.preventDefault(); close(false); return; }
+      if (event.key !== 'Tab') return;
+      const focusable = [...dashboardTour.querySelectorAll('button:not([disabled])')];
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    });
+    return;
+  }
   if (!button || !tour) return;
   button.addEventListener('click', () => {
     const active = tour.getAttribute('data-active') === '1';

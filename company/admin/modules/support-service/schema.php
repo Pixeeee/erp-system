@@ -66,6 +66,7 @@ function yovel_admin_support_service_schema(): void
             issue_priority_key CHAR(36) NOT NULL UNIQUE,
             company_key VARCHAR(1500) NOT NULL,
             company_key_hash CHAR(64) NOT NULL,
+            priority_version INT UNSIGNED NOT NULL DEFAULT 1,
             priority_name VARCHAR(120) NOT NULL,
             priority_description VARCHAR(500) NULL,
             priority_status ENUM('ACTIVE','INACTIVE','ARCHIVED') NOT NULL DEFAULT 'ACTIVE',
@@ -81,6 +82,7 @@ function yovel_admin_support_service_schema(): void
             issue_type_key CHAR(36) NOT NULL UNIQUE,
             company_key VARCHAR(1500) NOT NULL,
             company_key_hash CHAR(64) NOT NULL,
+            issue_type_version INT UNSIGNED NOT NULL DEFAULT 1,
             issue_type_name VARCHAR(120) NOT NULL,
             issue_type_description VARCHAR(500) NULL,
             issue_type_status ENUM('ACTIVE','INACTIVE','ARCHIVED') NOT NULL DEFAULT 'ACTIVE',
@@ -98,6 +100,7 @@ function yovel_admin_support_service_schema(): void
             company_key_hash CHAR(64) NOT NULL,
             issue_code VARCHAR(80) NOT NULL,
             issue_version INT UNSIGNED NOT NULL DEFAULT 1,
+            form_schema_checksum CHAR(64) NOT NULL,
             subject VARCHAR(255) NOT NULL,
             description LONGTEXT NULL,
             issue_status ENUM('OPEN','REPLIED','ON_HOLD','RESOLVED','CLOSED') NOT NULL DEFAULT 'OPEN',
@@ -121,6 +124,7 @@ function yovel_admin_support_service_schema(): void
             resolution_date DATETIME NULL,
             on_hold_since DATETIME NULL,
             total_hold_seconds BIGINT UNSIGNED NOT NULL DEFAULT 0,
+            sla_resolution_remaining_seconds BIGINT UNSIGNED NULL,
             agreement_status ENUM('FIRST_RESPONSE_DUE','RESOLUTION_DUE','FULFILLED','FAILED') NULL,
             via_customer_portal TINYINT(1) NOT NULL DEFAULT 0,
             opened_at DATETIME NOT NULL,
@@ -162,14 +166,16 @@ function yovel_admin_support_service_schema(): void
             sla_code VARCHAR(120) NOT NULL,
             service_level_name VARCHAR(160) NOT NULL,
             sla_version INT UNSIGNED NOT NULL DEFAULT 1,
+            form_schema_checksum CHAR(64) NOT NULL,
             document_type VARCHAR(120) NOT NULL DEFAULT 'ISSUE',
+            timezone_name VARCHAR(64) NOT NULL DEFAULT 'UTC',
             entity_type ENUM('NONE','CUSTOMER','CUSTOMER_GROUP','TERRITORY') NOT NULL DEFAULT 'NONE',
             entity_key TEXT NULL,
             entity_key_hash CHAR(64) NULL,
             entity_name_snapshot VARCHAR(255) NULL,
             start_date DATE NULL,
             end_date DATE NULL,
-            calendar_contract VARCHAR(120) NOT NULL DEFAULT 'operations.calendar.v1',
+            calendar_contract VARCHAR(120) NOT NULL DEFAULT 'operations.calendar-holiday-dates.v1',
             calendar_key TEXT NULL,
             is_default TINYINT(1) NOT NULL DEFAULT 0,
             enabled TINYINT(1) NOT NULL DEFAULT 1,
@@ -396,6 +402,29 @@ function yovel_admin_support_service_schema(): void
 
     foreach ($statements as $statement) {
         yovel_admin_db_execute($db, $statement, [], 'Support / Service schema update');
+    }
+
+    $columns = [
+        ['project_company_support_issue_priority', 'priority_version', 'INT UNSIGNED NOT NULL DEFAULT 1 AFTER company_key_hash'],
+        ['project_company_support_issue_type', 'issue_type_version', 'INT UNSIGNED NOT NULL DEFAULT 1 AFTER company_key_hash'],
+        ['project_company_support_issue', 'form_schema_checksum', "CHAR(64) NOT NULL DEFAULT '' AFTER issue_version"],
+        ['project_company_support_issue', 'sla_resolution_remaining_seconds', 'BIGINT UNSIGNED NULL AFTER total_hold_seconds'],
+        ['project_company_support_sla', 'form_schema_checksum', "CHAR(64) NOT NULL DEFAULT '' AFTER sla_version"],
+        ['project_company_support_sla', 'timezone_name', "VARCHAR(64) NOT NULL DEFAULT 'UTC' AFTER document_type"],
+    ];
+    foreach ($columns as [$table, $column, $definition]) {
+        $exists = (int) $db->GetOne(
+            'SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?',
+            [BUILDERX_DB_NAME, $table, $column]
+        );
+        if ($exists === 0) {
+            yovel_admin_db_execute(
+                $db,
+                "ALTER TABLE {$table} ADD COLUMN {$column} {$definition}",
+                [],
+                'Support / Service schema migration'
+            );
+        }
     }
     $ready = true;
 }

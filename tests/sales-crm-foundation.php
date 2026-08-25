@@ -5,7 +5,10 @@ require_once __DIR__ . '/sales-crm-test-helper.php';
 
 $root = dirname(__DIR__);
 $expectedSections = [
+    'dashboard',
     'leads',
+    'prospects',
+    'appointments',
     'opportunities',
     'campaigns',
     'customers',
@@ -19,7 +22,7 @@ $expectedSections = [
 
 sales_crm_assert(array_keys(yovel_admin_sales_crm_sections()) === $expectedSections, 'Sales / CRM route contract changed.');
 $_GET['section'] = 'not-a-sales-section';
-sales_crm_assert(yovel_admin_sales_crm_section() === 'leads', 'Unknown Sales / CRM sections must fall back to Leads.');
+sales_crm_assert(yovel_admin_sales_crm_section() === 'dashboard', 'Unknown Sales / CRM sections must fall back to Dashboard.');
 unset($_GET['section']);
 
 sales_crm_assert(is_file($root . '/company/admin/modules/sales-crm/schema.php'), 'Sales / CRM schema responsibility was not split.');
@@ -31,10 +34,12 @@ sales_crm_assert(function_exists('yovel_admin_sales_crm_shared_schema_state'), '
 sales_crm_assert(function_exists('yovel_admin_sales_crm_reorder_fields'), 'Sales / CRM shared reorder adapter is missing.');
 
 $route = yovel_admin_module_route('sales-crm');
-sales_crm_assert(is_array($route) && ($route['default_section'] ?? '') === 'leads', 'Shared registry does not expose Sales / CRM.');
+sales_crm_assert(is_array($route) && ($route['default_section'] ?? '') === 'dashboard', 'Shared registry does not expose the accepted Sales / CRM dashboard default.');
 $targets = yovel_admin_sales_crm_form_targets();
 sales_crm_assert($targets === [
     'leads' => 'lead',
+    'prospects' => 'prospect',
+    'appointments' => 'appointment',
     'opportunities' => 'opportunity',
     'campaigns' => 'campaign',
     'customers' => 'customer',
@@ -61,6 +66,7 @@ sales_crm_assert($leadFieldKeys === [
     'lead_code', 'lead_status', 'lead_name', 'organization_name', 'lead_source',
     'campaign_key', 'territory_key', 'salesperson_key', 'email', 'phone', 'mobile',
     'website', 'industry', 'estimated_value', 'next_contact_date', 'notes',
+    'address_line', 'city', 'country',
 ], 'The preserved Lead schema field contract changed.');
 $leadStatusField = array_values(array_filter($leadSchema['fields'], static fn (array $field): bool => ($field['key'] ?? '') === 'lead_status'))[0] ?? [];
 sales_crm_assert(($leadStatusField['options'] ?? []) === ['DRAFT', 'OPEN', 'QUALIFIED', 'CONVERTED', 'LOST', 'INACTIVE'], 'The preserved Lead form statuses changed.');

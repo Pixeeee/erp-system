@@ -411,9 +411,16 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:141",
+                "company/admin/modules/sales-crm/leads.php:781",
+                "company/admin/modules/sales-crm/views/appointments.php:28",
+                "tests/sales-crm-leads.php:196",
+                "GET /erpsystem/tests/sales-crm-leads.php (PASS 2026-08-25)",
+                "node tests/sales-crm-workspace-browser.mjs (SC-03 PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: Appointment has company-scoped versioned CRUD, Lead/Prospect ownership validation, overlap locking, idempotent replay, audit, exact read-back, rollback, configurable modal editing, confirmation gating, and authenticated responsive browser evidence."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/appointment_booking_settings/appointment_booking_settings.json:doctype:Appointment Booking Settings",
@@ -426,9 +433,16 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:90",
+                "company/admin/modules/sales-crm/leads.php:607",
+                "company/admin/modules/sales-crm/views/appointments.php:30",
+                "tests/sales-crm-leads.php:183",
+                "GET /erpsystem/tests/sales-crm-leads.php (PASS 2026-08-25)",
+                "node tests/sales-crm-workspace-browser.mjs (SC-03 PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: Appointment booking settings use a company-owned optimistic version, validated timezone and bounds, one authorized transaction, audit, exact read-back, rollback, rehydrated modal values, and a sibling confirmation boundary."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/appointment_booking_slots/appointment_booking_slots.json:doctype:Appointment Booking Slots",
@@ -441,9 +455,16 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:106",
+                "company/admin/modules/sales-crm/leads.php:664",
+                "company/admin/modules/sales-crm/views/appointments.php:32",
+                "tests/sales-crm-leads.php:188",
+                "tests/sales-crm-leads.php:191",
+                "GET /erpsystem/tests/sales-crm-leads.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: weekly booking slots have stable company keys, validated time ranges, row locking, true idempotent replay, parameterized transactional writes, audit, exact read-back, and confirmation-gated modal creation."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/availability_of_slots/availability_of_slots.json:doctype:Availability Of Slots",
@@ -456,9 +477,16 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:124",
+                "company/admin/modules/sales-crm/leads.php:718",
+                "company/admin/modules/sales-crm/views/appointments.php:16",
+                "tests/sales-crm-leads.php:193",
+                "tests/sales-crm-leads.php:194",
+                "GET /erpsystem/tests/sales-crm-leads.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: availability deterministically expands active weekly slots by company settings, excludes scheduled and blocked intervals, validates dates, and renders the next seven days without leaking another company."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/campaign/campaign.json:doctype:Campaign",
@@ -612,9 +640,17 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:169",
+                "company/admin/modules/sales-crm/leads.php:451",
+                "company/admin/modules/sales-crm/views/leads.php:28",
+                "tests/sales-crm-leads.php:176",
+                "tests/sales-crm-leads.php:264",
+                "GET /erpsystem/tests/sales-crm-leads.php (PASS 2026-08-25)",
+                "node tests/sales-crm-workspace-browser.mjs (SC-03 PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: CRM Notes authorize and validate company-owned Lead/Prospect subjects, persist idempotently in one audited transaction with exact read-back and forced audit rollback evidence, and rehydrate behind modal plus confirmation interactions."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/crm_settings/crm_settings.json:doctype:CRM Settings",
@@ -698,17 +734,20 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "PARTIAL",
+            "status": "COMPLETE",
             "evidence": [
-                "company/admin/modules/sales-crm/functions.php:115",
-                "company/admin/modules/sales-crm/functions.php:535",
-                "company/admin/modules/sales-crm/functions.php:704",
-                "company/admin/modules/sales-crm/views/workspace.php:30",
-                "company/admin/modules/sales-crm/views/workspace.php:197",
-                "php -l company/admin/modules/sales-crm/functions.php (PASS 2026-08-25)",
-                "php -l company/admin/modules/sales-crm/views/workspace.php (PASS 2026-08-25)"
+                "company/admin/modules/sales-crm/functions.php:511",
+                "company/admin/modules/sales-crm/leads.php:382",
+                "company/admin/modules/sales-crm/leads.php:908",
+                "company/admin/modules/sales-crm/views/leads.php:28",
+                "tests/sales-crm-leads.php:90",
+                "tests/sales-crm-leads.php:101",
+                "tests/sales-crm-leads.php:223",
+                "tests/sales-crm-leads.php:242",
+                "GET /erpsystem/tests/sales-crm-leads.php (PASS 2026-08-25)",
+                "node tests/sales-crm-workspace-browser.mjs (SC-03 PASS 2026-08-25)"
             ],
-            "reason": "[SC-03] PARTIAL: Lead has company-scoped CRUD, validation, status changes, audit calls, direct read-back, a modal, and schema-driven fields; it still lacks focused passing Sales/CRM tests and substantial pinned Lead lifecycle, assignment, communication, conversion, import/export, and timeline behavior."
+            "reason": "[SC-03] COMPLETE: Lead preserves CRUD/status behavior and now adds optimistic assignment and follow-up, timeline, Notes, deterministic import/export, idempotent owner-service conversion with outbox and unavailable states, schema-driven modal editing, company isolation, audit/read-back/rollback, and desktop/mobile evidence."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/lost_reason_detail/lost_reason_detail.json:doctype:Lost Reason Detail",
@@ -736,9 +775,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:12",
+                "company/admin/modules/sales-crm/leads.php:327",
+                "company/admin/modules/sales-crm/views/prospects.php:18",
+                "tests/sales-crm-leads.php:125",
+                "GET /erpsystem/tests/sales-crm-leads.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: Market Segment is a company-owned lifecycle reference with stable keys, code locking, validated parameterized upsert, audit, exact read-back, rollback, and confirmation-gated creation from the Prospect workspace."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/opportunity/opportunity.json:doctype:Opportunity",
@@ -830,9 +875,17 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:42",
+                "company/admin/modules/sales-crm/leads.php:501",
+                "company/admin/modules/sales-crm/views/prospects.php:22",
+                "tests/sales-crm-leads.php:147",
+                "tests/sales-crm-leads.php:160",
+                "GET /erpsystem/tests/sales-crm-leads.php (PASS 2026-08-25)",
+                "node tests/sales-crm-workspace-browser.mjs (SC-03 PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: Prospect has company-scoped versioned CRUD, taxonomy and owner validation, exact Lead-child replacement/read-back, true idempotent replay, audit and rollback, a published Form Builder target, and accessible create/edit confirmation flows."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/prospect_lead/prospect_lead.json:doctype:Prospect Lead",
@@ -845,9 +898,16 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:66",
+                "company/admin/modules/sales-crm/leads.php:543",
+                "company/admin/modules/sales-crm/views/prospects.php:22",
+                "tests/sales-crm-leads.php:147",
+                "tests/sales-crm-leads.php:171",
+                "GET /erpsystem/tests/sales-crm-leads.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: Prospect Lead children use stable company-scoped keys, reject foreign Leads, deduplicate input, replace atomically with their Prospect header, and receive exact ordered read-back and rollback coverage."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/prospect_opportunity/prospect_opportunity.json:doctype:Prospect Opportunity",
@@ -860,9 +920,17 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:78",
+                "company/admin/modules/sales-crm/leads.php:973",
+                "company/admin/modules/sales-crm/leads.php:1040",
+                "tests/sales-crm-leads.php:223",
+                "tests/sales-crm-leads.php:248",
+                "tests/sales-crm-leads.php:260",
+                "GET /erpsystem/tests/sales-crm-leads.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: Prospect Opportunity links are created only from a registered Opportunity owner-service result, fail closed while that service is absent, preserve source/conversion/target stable keys in the Sales transaction, and are idempotently read back without duplicating Opportunity records."
         },
         {
             "source_id": "erpnext:erpnext/crm/doctype/sales_stage/sales_stage.json:doctype:Sales Stage",
@@ -965,9 +1033,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:1219",
+                "company/admin/modules/sales-crm/crm-settings.php:405",
+                "tests/sales-crm-lead-reports.php:47",
+                "tests/sales-crm-lead-reports.php:51",
+                "GET /erpsystem/tests/sales-crm-lead-reports.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: Lead Conversion Time is an authorized company/date/owner-filtered report with deterministic columns, chronological ordering, and exact two-decimal conversion-hour output."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lead_conversion_time/lead_conversion_time.py:report_code:Lead Conversion Time",
@@ -980,9 +1054,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:1172",
+                "company/admin/modules/sales-crm/leads.php:1219",
+                "tests/sales-crm-lead-reports.php:51",
+                "tests/sales-crm-lead-reports.php:52",
+                "GET /erpsystem/tests/sales-crm-lead-reports.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: the local Lead Conversion Time provider validates filters, uses parameterized company-scoped SQL, computes elapsed hours deterministically, and returns a stable export projection with focused calculation evidence."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lead_details/lead_details.json:report:Lead Details",
@@ -995,9 +1075,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:1204",
+                "company/admin/modules/sales-crm/views/leads.php:36",
+                "tests/sales-crm-lead-reports.php:47",
+                "tests/sales-crm-lead-reports.php:48",
+                "GET /erpsystem/tests/sales-crm-lead-reports.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: Lead Details is linked from the workspace and renders deterministic Lead, organization, owner, contact, follow-up, and created-date columns under authorized company/date/owner filters."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lead_details/lead_details.py:report_code:Lead Details",
@@ -1010,9 +1096,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:1172",
+                "company/admin/modules/sales-crm/leads.php:1204",
+                "tests/sales-crm-lead-reports.php:48",
+                "tests/sales-crm-lead-reports.php:63",
+                "GET /erpsystem/tests/sales-crm-lead-reports.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: the local Lead Details provider uses validated parameterized filters, company-safe owner joins, stable ordering and columns, and focused foreign-company exclusion evidence."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lead_owner_efficiency/lead_owner_efficiency.json:report:Lead Owner Efficiency",
@@ -1025,9 +1117,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:1237",
+                "company/admin/modules/sales-crm/crm-settings.php:405",
+                "tests/sales-crm-lead-reports.php:47",
+                "tests/sales-crm-lead-reports.php:53",
+                "GET /erpsystem/tests/sales-crm-lead-reports.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: Lead Owner Efficiency is a workspace report with company/date/owner filters and deterministic owner, lead count, converted count, conversion rate, and response-time columns."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lead_owner_efficiency/lead_owner_efficiency.py:report_code:Lead Owner Efficiency",
@@ -1040,9 +1138,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:1237",
+                "tests/sales-crm-lead-reports.php:31",
+                "tests/sales-crm-lead-reports.php:53",
+                "tests/sales-crm-lead-reports.php:54",
+                "GET /erpsystem/tests/sales-crm-lead-reports.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: the local owner-efficiency provider performs parameterized company-scoped aggregation and deterministic decimal formatting, with exact 50.00 percent conversion and response-time fixture evidence."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/lost_opportunity/lost_opportunity.json:report:Lost Opportunity",
@@ -1130,9 +1234,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:1261",
+                "company/admin/modules/sales-crm/views/prospects.php:20",
+                "tests/sales-crm-lead-reports.php:37",
+                "tests/sales-crm-lead-reports.php:55",
+                "GET /erpsystem/tests/sales-crm-lead-reports.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: the Prospect workspace exposes engaged active Prospects with Lead/Note counts and last engagement while excluding converted status and any Prospect Opportunity link under company/date/owner filters."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/prospects_engaged_but_not_converted/prospects_engaged_but_not_converted.py:report_code:Prospects Engaged But Not Converted",
@@ -1145,9 +1255,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:1261",
+                "company/admin/modules/sales-crm/leads.php:1284",
+                "tests/sales-crm-lead-reports.php:42",
+                "tests/sales-crm-lead-reports.php:55",
+                "GET /erpsystem/tests/sales-crm-lead-reports.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: the local engaged-Prospect provider uses exact owner and parameterized company/date filters, stable grouping and ordering, and a negative Prospect Opportunity join without reading or duplicating an Opportunity owner table."
         },
         {
             "source_id": "erpnext:erpnext/crm/report/sales_pipeline_analytics/sales_pipeline_analytics.json:report:Sales Pipeline Analytics",
@@ -1213,9 +1329,16 @@
                 "company/admin/modules/sales-crm/views/workspace.php:299",
                 "tests/sales-crm-workspaces.php:39",
                 "php tests/sales-crm-workspaces.php (PASS 2026-08-25)",
-                "node tests/sales-crm-workspace-browser.mjs (PASS 2026-08-25)"
+                "node tests/sales-crm-workspace-browser.mjs (PASS 2026-08-25)",
+                "company/admin/modules/sales-crm/dashboard.php:36",
+                "company/admin/modules/sales-crm/views/dashboard.php:67",
+                "company/admin/modules/sales-crm/views/dashboard.php:208",
+                "tests/sales-crm-dashboard.php:152",
+                "http://localhost/erpsystem/tests/sales-crm-dashboard.php (PASS 2026-08-25)",
+                "tests/sales-crm-dashboard-browser.mjs:18",
+                "node tests/sales-crm-workspace-browser.mjs (DASHBOARD PASS 2026-08-25)"
             ],
-            "reason": "[SC-02] COMPLETE: the CRM workspace now has a company/admin-aware setup checklist, selected-step detail, keyboard tour, operational shortcuts, grouped masters/reports, explicit unavailable dependency states, and authenticated desktop/mobile evidence while preserving the 12/8 shell."
+            "reason": "[SC-02] COMPLETE: the CRM workspace now has a company/admin-aware live dashboard, Lead and Campaign metrics, bounded follow-up and activity feeds, setup and alerts, keyboard tour, operational shortcuts, grouped masters/reports, Form Builder access, explicit unavailable dependency states, and authenticated desktop/mobile evidence while preserving the 12/8 shell."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/customer/customer.json:doctype:Customer",
@@ -1285,9 +1408,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:27",
+                "company/admin/modules/sales-crm/leads.php:327",
+                "company/admin/modules/sales-crm/views/prospects.php:18",
+                "tests/sales-crm-leads.php:128",
+                "GET /erpsystem/tests/sales-crm-leads.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: Industry Type is a Sales-owned company-scoped lifecycle reference with stable keys, code locking, validated parameterized upsert, audit, exact read-back, rollback, and confirmation-gated Prospect classification controls."
         },
         {
             "source_id": "erpnext:erpnext/selling/doctype/installation_note/installation_note.json:doctype:Installation Note",
@@ -1721,9 +1850,16 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/functions.php:511",
+                "company/admin/modules/sales-crm/leads.php:1298",
+                "company/admin/modules/sales-crm/crm-settings.php:405",
+                "tests/sales-crm-lead-reports.php:27",
+                "tests/sales-crm-lead-reports.php:57",
+                "GET /erpsystem/tests/sales-crm-lead-reports.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: Address And Contacts is linked from the Sales workspace and returns deterministic Lead contact/address columns under authorized company/date/owner filtering."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/address_and_contacts/address_and_contacts.py:report_code:Address And Contacts",
@@ -1736,9 +1872,15 @@
             "module_owner": "sales-crm",
             "builderx_target": "sales-crm",
             "dependencies": [],
-            "status": "MISSING",
-            "evidence": [],
-            "reason": "[SC-03] MISSING: no matching module-local functional implementation and no focused passing tests/sales-crm-* evidence were found in the audited scope."
+            "status": "COMPLETE",
+            "evidence": [
+                "company/admin/modules/sales-crm/leads.php:1172",
+                "company/admin/modules/sales-crm/leads.php:1298",
+                "tests/sales-crm-lead-reports.php:57",
+                "tests/sales-crm-lead-reports.php:63",
+                "GET /erpsystem/tests/sales-crm-lead-reports.php (PASS 2026-08-25)"
+            ],
+            "reason": "[SC-03] COMPLETE: the local Address And Contacts provider validates filters, uses parameterized company-scoped Lead queries, preserves stable export columns and ordering, and has focused foreign-company exclusion evidence."
         },
         {
             "source_id": "erpnext:erpnext/selling/report/available_stock_for_packing_items/available_stock_for_packing_items.json:report:Available Stock for Packing Items",

@@ -135,6 +135,7 @@ function yovel_admin_buying_schema(): void
             amended_from_key CHAR(36) NULL,
             document_status ENUM('DRAFT','SUBMITTED','CANCELLED','ARCHIVED') NOT NULL DEFAULT 'DRAFT',
             revision_no INT UNSIGNED NOT NULL DEFAULT 1,
+            row_version INT UNSIGNED NOT NULL DEFAULT 1,
             created_by_admin_key CHAR(36) NULL,
             updated_by_admin_key CHAR(36) NULL,
             submitted_by_admin_key CHAR(36) NULL,
@@ -157,13 +158,19 @@ function yovel_admin_buying_schema(): void
             contact_key CHAR(36) NULL,
             email VARCHAR(190) NULL,
             send_email TINYINT(1) NOT NULL DEFAULT 0,
+            delivery_channel ENUM('EMAIL','PORTAL','EDI') NOT NULL DEFAULT 'EMAIL',
             delivery_status ENUM('NOT_REQUESTED','PENDING','SENT','FAILED','RECEIVED') NOT NULL DEFAULT 'NOT_REQUESTED',
+            dispatch_idempotency_key VARCHAR(160) NULL,
+            dispatch_job_key CHAR(36) NULL,
+            dispatch_checksum CHAR(64) NULL,
+            received_at TIMESTAMP NULL,
             row_status ENUM('ACTIVE','INACTIVE','ARCHIVED','DELETED') NOT NULL DEFAULT 'ACTIVE',
             created_by_admin_key CHAR(36) NULL,
             updated_by_admin_key CHAR(36) NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             UNIQUE KEY uq_project_company_buying_rfq_supplier (company_key_hash, rfq_key, supplier_key),
+            UNIQUE KEY uq_project_company_buying_rfq_dispatch (company_key_hash, dispatch_idempotency_key),
             INDEX idx_project_company_buying_rfq_supplier_status (company_key_hash, row_status),
             INDEX idx_project_company_buying_rfq_supplier_delivery (company_key_hash, delivery_status)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
@@ -214,6 +221,7 @@ function yovel_admin_buying_schema(): void
             amended_from_key CHAR(36) NULL,
             document_status ENUM('DRAFT','SUBMITTED','STOPPED','EXPIRED','CANCELLED','ARCHIVED') NOT NULL DEFAULT 'DRAFT',
             revision_no INT UNSIGNED NOT NULL DEFAULT 1,
+            row_version INT UNSIGNED NOT NULL DEFAULT 1,
             created_by_admin_key CHAR(36) NULL,
             updated_by_admin_key CHAR(36) NULL,
             submitted_by_admin_key CHAR(36) NULL,
@@ -243,6 +251,8 @@ function yovel_admin_buying_schema(): void
             rate DECIMAL(18,6) NOT NULL DEFAULT 0,
             discount_percentage DECIMAL(9,4) NOT NULL DEFAULT 0,
             net_amount DECIMAL(18,6) NOT NULL DEFAULT 0,
+            tax_amount DECIMAL(18,6) NOT NULL DEFAULT 0,
+            gross_amount DECIMAL(18,6) NOT NULL DEFAULT 0,
             expected_delivery_date DATE NULL,
             warehouse_key CHAR(36) NULL,
             rfq_item_key CHAR(36) NULL,
@@ -492,5 +502,54 @@ function yovel_admin_buying_schema(): void
 
     foreach ($statements as $statement) {
         yovel_admin_db_execute($db, $statement, [], 'Buying / Procurement schema update');
+    }
+
+    $columns = [
+        ['project_company_buying_rfq', 'row_version', "ALTER TABLE project_company_buying_rfq ADD COLUMN row_version INT UNSIGNED NOT NULL DEFAULT 1 AFTER revision_no"],
+        ['project_company_buying_rfq_supplier', 'delivery_channel', "ALTER TABLE project_company_buying_rfq_supplier ADD COLUMN delivery_channel ENUM('EMAIL','PORTAL','EDI') NOT NULL DEFAULT 'EMAIL' AFTER send_email"],
+        ['project_company_buying_rfq_supplier', 'dispatch_idempotency_key', 'ALTER TABLE project_company_buying_rfq_supplier ADD COLUMN dispatch_idempotency_key VARCHAR(160) NULL AFTER delivery_status'],
+        ['project_company_buying_rfq_supplier', 'dispatch_job_key', 'ALTER TABLE project_company_buying_rfq_supplier ADD COLUMN dispatch_job_key CHAR(36) NULL AFTER dispatch_idempotency_key'],
+        ['project_company_buying_rfq_supplier', 'dispatch_checksum', 'ALTER TABLE project_company_buying_rfq_supplier ADD COLUMN dispatch_checksum CHAR(64) NULL AFTER dispatch_job_key'],
+        ['project_company_buying_rfq_supplier', 'received_at', 'ALTER TABLE project_company_buying_rfq_supplier ADD COLUMN received_at TIMESTAMP NULL AFTER dispatch_checksum'],
+        ['project_company_buying_supplier_quotation', 'row_version', 'ALTER TABLE project_company_buying_supplier_quotation ADD COLUMN row_version INT UNSIGNED NOT NULL DEFAULT 1 AFTER revision_no'],
+        ['project_company_buying_supplier_quotation_item', 'tax_amount', 'ALTER TABLE project_company_buying_supplier_quotation_item ADD COLUMN tax_amount DECIMAL(18,6) NOT NULL DEFAULT 0 AFTER net_amount'],
+        ['project_company_buying_supplier_quotation_item', 'gross_amount', 'ALTER TABLE project_company_buying_supplier_quotation_item ADD COLUMN gross_amount DECIMAL(18,6) NOT NULL DEFAULT 0 AFTER tax_amount'],
+    ];
+    foreach ($columns as [$table, $column, $statement]) {
+        $exists = (int) $db->GetOne(
+            'SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = ? AND column_name = ?',
+            [$table, $column]
+        );
+        if ($exists === 0) {
+            yovel_admin_db_execute($db, $statement, [], 'Buying / Procurement schema column update');
+        }
+    }
+
+    $dispatchIndex = (int) $db->GetOne(
+        "SELECT COUNT(*) FROM information_schema.statistics
+        WHERE table_schema = DATABASE() AND table_name = 'project_company_buying_rfq_supplier'
+          AND index_name = 'uq_project_company_buying_rfq_dispatch'"
+    );
+    if ($dispatchIndex === 0) {
+        yovel_admin_db_execute(
+            $db,
+            'ALTER TABLE project_company_buying_rfq_supplier ADD UNIQUE KEY uq_project_company_buying_rfq_dispatch (company_key_hash, dispatch_idempotency_key)',
+            [],
+            'Buying / Procurement schema RFQ dispatch index update'
+        );
+    }
+
+    $supplierReferenceIndex = (int) $db->GetOne(
+        "SELECT COUNT(*) FROM information_schema.statistics
+        WHERE table_schema = DATABASE() AND table_name = 'project_company_buying_supplier_quotation'
+          AND index_name = 'uq_project_company_buying_supplier_reference'"
+    );
+    if ($supplierReferenceIndex === 0) {
+        yovel_admin_db_execute(
+            $db,
+            'ALTER TABLE project_company_buying_supplier_quotation ADD UNIQUE KEY uq_project_company_buying_supplier_reference (company_key_hash, supplier_key, supplier_reference)',
+            [],
+            'Buying / Procurement schema Supplier Quotation reference index update'
+        );
     }
 }

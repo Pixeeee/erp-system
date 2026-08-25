@@ -56,6 +56,8 @@ function yovel_admin_sales_crm_form_adapter(): array
         'renderer' => 'company/admin/modules/sales-crm/views/workspace.php',
         'persistence_mappings' => [
             'lead' => ['table' => 'project_company_sales_lead', 'key' => 'lead_key', 'business_key' => 'lead_code', 'status' => 'lead_status'],
+            'prospect' => ['table' => 'project_company_sales_prospect', 'key' => 'prospect_key', 'business_key' => 'prospect_code', 'status' => 'prospect_status'],
+            'appointment' => ['table' => 'project_company_sales_appointment', 'key' => 'appointment_key', 'business_key' => 'appointment_code', 'status' => 'appointment_status'],
             'campaign' => ['table' => 'project_company_sales_campaign', 'key' => 'campaign_key', 'business_key' => 'campaign_code', 'status' => 'campaign_status'],
             'customer' => ['table' => 'project_company_sales_customer', 'key' => 'customer_key', 'business_key' => 'customer_code', 'status' => 'customer_status'],
             'opportunity' => ['table' => null, 'state' => 'SC-04'],
@@ -80,9 +82,14 @@ function yovel_admin_sales_crm_reorder_fields(string $recordType, array $fields,
         throw new InvalidArgumentException('The Sales / CRM Form Builder target is not registered.');
     }
 
-    // The shared generic adapter registers the module's default section; local
-    // validation above expands that stable reorder contract to every Sales target.
-    return yovel_admin_shared_form_reorder('sales-crm', 'leads', $fields, $requestedKeys);
+    // The shared generic adapter registers the orchestrator-owned default route;
+    // local validation above expands that stable reorder contract to Sales targets.
+    $shared = yovel_admin_shared_form_adapter('sales-crm');
+    $sharedTarget = (string) array_key_first($shared['target_record_types'] ?? []);
+    if ($sharedTarget === '') {
+        throw new RuntimeException('The shared Sales / CRM Form Builder target is unavailable.');
+    }
+    return yovel_admin_shared_form_reorder('sales-crm', $sharedTarget, $fields, $requestedKeys);
 }
 
 function yovel_admin_sales_crm_schema_checksum(array $schema): string

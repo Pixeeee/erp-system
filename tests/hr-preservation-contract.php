@@ -46,7 +46,7 @@ $registry = yovel_admin_module_registry();
 $hrRegistry = $registry['hr'] ?? null;
 hr_contract_assert(is_array($hrRegistry), 'HR is not registered with the shared module registry.');
 hr_contract_assert(($hrRegistry['view'] ?? null) === 'hr', 'The registered HR view route changed.');
-hr_contract_assert(($hrRegistry['default_section'] ?? null) === 'employee-profiles', 'The registered HR default section changed.');
+hr_contract_assert(($hrRegistry['default_section'] ?? null) === 'dashboard', 'The registered HR default section must use the existing HR Dashboard.');
 
 foreach ($expectedSections as $section) {
     hr_contract_assert(isset(yovel_admin_hr_sections()[$section]), 'HR section does not resolve: ' . $section);

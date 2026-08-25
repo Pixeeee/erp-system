@@ -39,7 +39,7 @@ buying_test_assert(array_keys($sections) === $expectedSections, 'Buying / Procur
 $originalGet = $_GET;
 try {
     $_GET['section'] = 'not-a-buying-section';
-    buying_test_assert(yovel_admin_buying_procurement_section() === 'suppliers', 'Buying route does not use the registered suppliers default.');
+    buying_test_assert(yovel_admin_buying_procurement_section() === 'dashboard', 'Buying route does not use the registered dashboard default.');
     $_GET['section'] = 'purchase-orders';
     buying_test_assert(yovel_admin_buying_procurement_section() === 'purchase-orders', 'Buying route rejected a registered section.');
 } finally {

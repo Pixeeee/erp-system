@@ -16,7 +16,7 @@ $projectsState = is_array($projectsData['state'] ?? null) ? $projectsData['state
 $projectsMetrics = is_array($projectsData['metrics'] ?? null) ? $projectsData['metrics'] : [];
 ?>
 <style>@media (min-width:1024px){[data-projects-workspace]{grid-template-columns:minmax(0, 12fr) minmax(16rem, 8fr)}}</style>
-<div data-projects-workspace class="grid min-h-0 gap-5">
+<div data-projects-workspace data-projects-company="<?= $projectsEscape($company['company_key_hash'] ?? '') ?>" class="grid min-h-0 gap-5">
     <main data-projects-main-panel data-grid-span="12" class="min-w-0 space-y-5">
         <header class="border-b pb-4">
             <p class="text-sm text-muted-foreground"><?= $projectsEscape($projectsData['company_name'] ?? $companyName ?? 'Company') ?></p>
@@ -32,7 +32,13 @@ $projectsMetrics = is_array($projectsData['metrics'] ?? null) ? $projectsData['m
             <?php endforeach; ?>
         </nav>
 
-        <?php if ($projectsSection === 'form-builder'): ?>
+        <?php if ($projectsSection === 'dashboard'): ?>
+            <?php require __DIR__ . '/dashboard.php'; ?>
+        <?php elseif ($projectsSection === 'projects'): ?>
+            <?php require __DIR__ . '/projects.php'; ?>
+        <?php elseif ($projectsSection === 'project-tasks'): ?>
+            <?php require __DIR__ . '/tasks.php'; ?>
+        <?php elseif ($projectsSection === 'form-builder'): ?>
             <?php
             $projectsTarget = yovel_admin_projects_target((string) ($projectsPrior['target_type'] ?? $projectsData['form_target'] ?? 'PROJECT'));
             $projectsEditable = yovel_admin_projects_editable_schema($company, $projectsTarget);
@@ -78,7 +84,13 @@ $projectsMetrics = is_array($projectsData['metrics'] ?? null) ? $projectsData['m
     <aside data-projects-tools-panel data-grid-span="8" class="min-w-0 space-y-5 lg:sticky lg:top-4 lg:self-start">
         <section class="space-y-3 border-b pb-5">
             <h2 class="text-sm font-semibold">Actions and tools</h2>
-            <?php if ($projectsSection === 'form-builder'): ?>
+            <?php if ($projectsSection === 'dashboard'): ?>
+                <button type="button" data-projects-tour-start class="inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">
+                    <span class="material-symbols-rounded text-base" aria-hidden="true">tour</span>Show Tour
+                </button>
+            <?php elseif ($projectsSection === 'projects'): ?>
+                <p class="text-sm text-muted-foreground">Use the master actions to add Projects, classifications, templates, and complete template graphs.</p>
+            <?php elseif ($projectsSection === 'form-builder'): ?>
                 <?php
                 ob_start();
                 if ($projectsError !== ''): ?><div role="alert" class="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive"><?= $projectsEscape($projectsError) ?></div><?php endif; ?>
@@ -123,24 +135,52 @@ $projectsMetrics = is_array($projectsData['metrics'] ?? null) ? $projectsData['m
                 require __DIR__ . '/record-modal.php';
                 ?>
             <?php else: ?>
-                <p class="text-sm text-muted-foreground">Record creation is introduced in the next Projects work package.</p>
+                <p class="text-sm text-muted-foreground">Use the Task tree actions to create, classify, schedule, transition, and retry Project work.</p>
             <?php endif; ?>
         </section>
 
-        <section class="space-y-3">
-            <h2 class="text-sm font-semibold">Owner contracts</h2>
-            <?php foreach ($projectsOwnerStates as $ownerState): ?>
-                <div class="flex items-start justify-between gap-3 border-b pb-2 text-sm">
-                    <span><strong class="block"><?= $projectsEscape($ownerState['owner'] ?? '') ?></strong><code class="text-xs text-muted-foreground"><?= $projectsEscape($ownerState['contract'] ?? '') ?></code></span>
-                    <span class="text-xs font-medium"><?= $projectsEscape($ownerState['state'] ?? 'UNAVAILABLE') ?></span>
+        <?php if ($projectsSection === 'dashboard'): ?>
+            <?php $projectsDashboard = is_array($projectsData['dashboard'] ?? null) ? $projectsData['dashboard'] : []; ?>
+            <section data-projects-dashboard-setup data-projects-tour-target="setup" class="space-y-3">
+                <div>
+                    <h2 class="text-sm font-semibold">Projects setup</h2>
+                    <p class="mt-1 text-xs leading-5 text-muted-foreground">Complete the module-owned foundation before operational packages are enabled.</p>
                 </div>
-            <?php endforeach; ?>
-        </section>
+                <div class="divide-y border-y">
+                    <?php foreach (($projectsDashboard['setup'] ?? []) as $step): ?>
+                        <a href="<?= $projectsEscape($step['href'] ?? '') ?>" class="flex items-center justify-between gap-3 py-3 text-sm">
+                            <span class="flex min-w-0 items-center gap-2"><span class="material-symbols-rounded text-base" aria-hidden="true"><?= !empty($step['complete']) ? 'check_circle' : 'radio_button_unchecked' ?></span><span><?= $projectsEscape($step['label'] ?? '') ?></span></span>
+                            <span class="text-xs text-muted-foreground"><?= !empty($step['complete']) ? 'Ready' : 'Open' ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </section>
 
-        <section class="grid grid-cols-3 gap-2 text-center">
-            <div><strong class="block text-lg"><?= (int) ($projectsMetrics['projects'] ?? 0) ?></strong><span class="text-xs text-muted-foreground">Projects</span></div>
-            <div><strong class="block text-lg"><?= (int) ($projectsMetrics['tasks'] ?? 0) ?></strong><span class="text-xs text-muted-foreground">Tasks</span></div>
-            <div><strong class="block text-lg"><?= (int) ($projectsMetrics['published_forms'] ?? 0) ?></strong><span class="text-xs text-muted-foreground">Forms</span></div>
-        </section>
+            <section data-projects-dashboard-dependencies class="space-y-3 border-t pt-5">
+                <h2 class="text-sm font-semibold">Dependency health</h2>
+                <?php foreach (($projectsDashboard['dependencies'] ?? []) as $dependency): ?>
+                    <div class="flex items-start justify-between gap-3 border-b pb-2 text-sm">
+                        <span class="min-w-0"><strong class="block"><?= $projectsEscape($dependency['label'] ?? '') ?></strong><code class="block truncate text-xs text-muted-foreground"><?= $projectsEscape($dependency['contract'] ?? '') ?></code></span>
+                        <span class="shrink-0 text-xs font-medium" data-dependency-status="<?= $projectsEscape($dependency['status'] ?? '') ?>"><?= $projectsEscape($dependency['status'] ?? '') ?></span>
+                    </div>
+                <?php endforeach; ?>
+            </section>
+        <?php else: ?>
+            <section class="space-y-3">
+                <h2 class="text-sm font-semibold">Owner contracts</h2>
+                <?php foreach ($projectsOwnerStates as $ownerState): ?>
+                    <div class="flex items-start justify-between gap-3 border-b pb-2 text-sm">
+                        <span><strong class="block"><?= $projectsEscape($ownerState['owner'] ?? '') ?></strong><code class="text-xs text-muted-foreground"><?= $projectsEscape($ownerState['contract'] ?? '') ?></code></span>
+                        <span class="text-xs font-medium"><?= $projectsEscape($ownerState['state'] ?? 'UNAVAILABLE') ?></span>
+                    </div>
+                <?php endforeach; ?>
+            </section>
+
+            <section class="grid grid-cols-3 gap-2 text-center">
+                <div><strong class="block text-lg"><?= (int) ($projectsMetrics['projects'] ?? 0) ?></strong><span class="text-xs text-muted-foreground">Projects</span></div>
+                <div><strong class="block text-lg"><?= (int) ($projectsMetrics['tasks'] ?? 0) ?></strong><span class="text-xs text-muted-foreground">Tasks</span></div>
+                <div><strong class="block text-lg"><?= (int) ($projectsMetrics['published_forms'] ?? 0) ?></strong><span class="text-xs text-muted-foreground">Forms</span></div>
+            </section>
+        <?php endif; ?>
     </aside>
 </div>

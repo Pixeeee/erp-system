@@ -409,6 +409,8 @@ function yovel_admin_sales_crm_workspace(array $company, array $admin): array
     $preference = yovel_admin_sales_crm_preference($company, $admin);
     $definitions = [
         ['section' => 'leads', 'label' => 'Leads', 'scope' => 'crm', 'available' => true, 'dependency_state' => ''],
+        ['section' => 'prospects', 'label' => 'Prospects', 'scope' => 'crm', 'available' => true, 'dependency_state' => ''],
+        ['section' => 'appointments', 'label' => 'Appointments', 'scope' => 'crm', 'available' => true, 'dependency_state' => ''],
         ['section' => 'opportunities', 'label' => 'Opportunities', 'scope' => 'crm', 'available' => false, 'dependency_state' => 'Available after SC-04'],
         ['section' => 'campaigns', 'label' => 'Campaigns', 'scope' => 'crm', 'available' => true, 'dependency_state' => ''],
         ['section' => 'customers', 'label' => 'Customers', 'scope' => 'selling', 'available' => false, 'dependency_state' => 'Available after SC-06'],
@@ -430,7 +432,11 @@ function yovel_admin_sales_crm_workspace(array $company, array $admin): array
         'Key Reports' => [],
     ];
     if ($access['crm']) {
-        $directory['Key Reports'][] = ['section' => 'salesperson-performance', 'label' => 'Salesperson performance', 'scope' => 'crm', 'available' => false, 'href' => '', 'dependency_state' => 'Available after SC-10'];
+        $directory['Key Reports'][] = ['section' => 'leads', 'label' => 'Lead details', 'scope' => 'crm', 'available' => true, 'href' => './?view=sales-crm&section=leads&report=lead-details', 'dependency_state' => ''];
+        $directory['Key Reports'][] = ['section' => 'leads', 'label' => 'Lead conversion time', 'scope' => 'crm', 'available' => true, 'href' => './?view=sales-crm&section=leads&report=lead-conversion-time', 'dependency_state' => ''];
+        $directory['Key Reports'][] = ['section' => 'leads', 'label' => 'Lead owner efficiency', 'scope' => 'crm', 'available' => true, 'href' => './?view=sales-crm&section=leads&report=lead-owner-efficiency', 'dependency_state' => ''];
+        $directory['Key Reports'][] = ['section' => 'prospects', 'label' => 'Prospects engaged but not converted', 'scope' => 'crm', 'available' => true, 'href' => './?view=sales-crm&section=prospects&report=prospects-engaged', 'dependency_state' => ''];
+        $directory['Key Reports'][] = ['section' => 'leads', 'label' => 'Address and contacts', 'scope' => 'crm', 'available' => true, 'href' => './?view=sales-crm&section=leads&report=address-contacts', 'dependency_state' => ''];
     }
     if ($access['selling']) {
         $directory['Key Reports'][] = ['section' => 'sales-analytics', 'label' => 'Sales analytics', 'scope' => 'selling', 'available' => false, 'href' => '', 'dependency_state' => 'Available after SC-10'];
@@ -468,6 +474,84 @@ function yovel_admin_sales_crm_handle_post(array $company, array $admin, string 
         'sales_crm_save_preference' => [
             'message' => yovel_admin_save_sales_crm_preference($company, $admin, $input),
             'section' => (string) ($input['section'] ?? 'leads'),
+        ],
+        'sales_crm_dashboard_save_lead' => [
+            'message' => (static function () use ($company, $admin): string {
+                try {
+                    return yovel_admin_save_sales_lead($company, $admin);
+                } catch (Throwable $error) {
+                    yovel_admin_sales_crm_clear_rehydration('lead');
+                    throw $error;
+                }
+            })(),
+            'section' => 'dashboard',
+        ],
+        'sales_crm_save_prospect' => [
+            'message' => (static function () use ($company, $admin, $input): string {
+                $editing = trim((string) ($input['prospect_key'] ?? '')) !== '';
+                yovel_admin_sales_prospect_save($company, $admin, $input);
+                return $editing ? 'Prospect updated.' : 'Prospect created.';
+            })(),
+            'section' => 'prospects',
+        ],
+        'sales_crm_save_appointment' => [
+            'message' => (static function () use ($company, $admin, $input): string {
+                $editing = trim((string) ($input['appointment_key'] ?? '')) !== '';
+                yovel_admin_sales_appointment_save($company, $admin, $input);
+                return $editing ? 'Appointment updated.' : 'Appointment created.';
+            })(),
+            'section' => 'appointments',
+        ],
+        'sales_crm_save_appointment_settings' => [
+            'message' => (static function () use ($company, $admin, $input): string {
+                yovel_admin_sales_appointment_settings_save($company, $admin, $input);
+                return 'Appointment settings saved.';
+            })(),
+            'section' => 'appointments',
+        ],
+        'sales_crm_save_appointment_slot' => [
+            'message' => (static function () use ($company, $admin, $input): string {
+                yovel_admin_sales_appointment_slot_save($company, $admin, $input);
+                return 'Appointment slot saved.';
+            })(),
+            'section' => 'appointments',
+        ],
+        'sales_crm_save_note' => [
+            'message' => (static function () use ($company, $admin, $input): string {
+                yovel_admin_sales_crm_note_save($company, $admin, $input);
+                return 'CRM Note created.';
+            })(),
+            'section' => (string) ($input['section'] ?? 'leads'),
+        ],
+        'sales_crm_save_reference' => [
+            'message' => (static function () use ($company, $admin, $input): string {
+                yovel_admin_sales_reference_save($company, $admin, (string) ($input['reference_type'] ?? ''), $input);
+                return 'Sales reference saved.';
+            })(),
+            'section' => 'prospects',
+        ],
+        'sales_crm_assign_lead' => [
+            'message' => (static function () use ($company, $admin, $input): string {
+                yovel_admin_sales_lead_assign($company, $admin, $input);
+                return 'Lead assignment saved.';
+            })(),
+            'section' => 'leads',
+        ],
+        'sales_crm_request_lead_conversion' => [
+            'message' => (static function () use ($company, $admin, $input): string {
+                $saved = yovel_admin_sales_lead_conversion_request($company, $admin, $input);
+                return (string) ($saved['dependency_status'] ?? '') === 'AVAILABLE'
+                    ? 'Lead conversion request queued.'
+                    : 'Lead conversion request queued; required owner services are unavailable.';
+            })(),
+            'section' => 'leads',
+        ],
+        'sales_crm_import_leads' => [
+            'message' => (static function () use ($company, $admin, $input): string {
+                $result = yovel_admin_sales_lead_import($company, $admin, (string) ($input['csv_data'] ?? ''));
+                return 'Lead import completed: ' . (int) $result['created'] . ' created, ' . (int) $result['updated'] . ' updated.';
+            })(),
+            'section' => 'leads',
         ],
         'sales_crm_save_campaign' => [
             'message' => (static function () use ($company, $admin, $input): string {

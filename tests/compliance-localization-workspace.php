@@ -38,7 +38,7 @@ compliance_test_assert(
     'Responsive source order must keep the main panel first.'
 );
 compliance_test_assert(
-    strpos($markup, 'data-confirm-dialog') > strpos($markup, '</form>'),
+    strrpos($markup, 'data-confirm-dialog') > strrpos($markup, '</form>'),
     'Confirmation dialog must remain a body-owned sibling of the non-mutating form.'
 );
 compliance_test_assert(!str_contains($markup, 'method="post"'), 'WP-01 must not expose a POST form.');

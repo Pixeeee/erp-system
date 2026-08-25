@@ -1,5 +1,9 @@
 <?php
 /** Workspace variables are prepared by bootstrap/controller.php. */
+if ($activeSalesCrmSection === 'dashboard') {
+    require __DIR__ . '/dashboard.php';
+    return;
+}
 ?>
                                 <style>
                                     @media (min-width: 1280px) {
@@ -35,7 +39,7 @@
                                             $salesCrmDestinations[(string) $destination['section']] = $destination;
                                         }
                                     }
-                                    $activeSalesCrmScope = in_array($activeSalesCrmSection, ['leads', 'opportunities', 'campaigns', 'salesperson-performance'], true) ? 'crm' : 'selling';
+                                    $activeSalesCrmScope = in_array($activeSalesCrmSection, ['leads', 'prospects', 'appointments', 'opportunities', 'campaigns', 'salesperson-performance'], true) ? 'crm' : 'selling';
                                     $activeSalesCrmAllowed = !empty($salesCrmAccess[$activeSalesCrmScope]);
                                 ?>
                                 <div class="grid min-h-0 gap-3">
@@ -132,6 +136,16 @@
                                                             <span class="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= count($convertedSalesLeads) ?> converted</span>
                                                             <button type="button" id="yovel-sales-lead-modal-open" data-record-modal-open="yovel-sales-lead-modal" class="inline-flex h-9 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Add Lead</button>
                                                         </div>
+                                                    <?php elseif ($activeSalesCrmSection === 'prospects' && $activeSalesCrmAllowed): ?>
+                                                        <div class="flex flex-wrap justify-end gap-2">
+                                                            <span class="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= count($salesCrmData['lead_package']['prospects'] ?? []) ?> prospects</span>
+                                                            <button type="button" data-record-modal-open="yovel-sales-prospect-modal" class="inline-flex h-9 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Add Prospect</button>
+                                                        </div>
+                                                    <?php elseif ($activeSalesCrmSection === 'appointments' && $activeSalesCrmAllowed): ?>
+                                                        <div class="flex flex-wrap justify-end gap-2">
+                                                            <span class="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"><?= count($salesCrmData['lead_package']['appointments'] ?? []) ?> appointments</span>
+                                                            <button type="button" data-record-modal-open="yovel-sales-appointment-modal" class="inline-flex h-9 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Add Appointment</button>
+                                                        </div>
                                                     <?php elseif ($activeSalesCrmSection === 'campaigns' && $activeSalesCrmAllowed): ?>
                                                         <?php $campaignHeaderRows = is_array($salesCrmData['campaigns'] ?? null) ? $salesCrmData['campaigns'] : []; ?>
                                                         <div class="flex flex-wrap justify-end gap-2">
@@ -217,6 +231,11 @@
                                                         </table>
                                                     </div>
                                                 <?php endif; ?>
+                                                <?php require __DIR__ . '/leads.php'; ?>
+                                            <?php elseif ($activeSalesCrmSection === 'prospects'): ?>
+                                                <?php require __DIR__ . '/prospects.php'; ?>
+                                            <?php elseif ($activeSalesCrmSection === 'appointments'): ?>
+                                                <?php require __DIR__ . '/appointments.php'; ?>
                                             <?php elseif ($activeSalesCrmSection === 'campaigns'): ?>
                                                 <?php require __DIR__ . '/campaigns.php'; ?>
                                             <?php else: ?>

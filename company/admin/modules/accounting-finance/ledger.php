@@ -465,7 +465,7 @@ function yovel_admin_general_ledger_foreign_amount(array $entry,string $side):st
     $column=$side==='debit'?'transaction_debit':'transaction_credit';$baseColumn=$side==='debit'?'debit':'credit';$stored=(string)($entry[$column]??'0');if(is_numeric($stored)&&bccomp($stored,'0',6)===1)return number_format((float)$stored,6,'.','');$rate=(string)($entry['exchange_rate']??'1');if(!is_numeric($rate)||bccomp($rate,'0',8)!==1)$rate='1';return number_format((float)bcdiv((string)($entry[$baseColumn]??'0'),$rate,8),6,'.','');
 }
 
-function yovel_admin_reverse_general_ledger_transaction(ADOConnection $db, array $company, array $admin, string $transactionKey, string $postingDate, string $reason, bool $manageTransaction = true, bool $ensureSchema = true): array
+function yovel_admin_reverse_general_ledger_transaction(ADOConnection $db, array $company, array $admin, string $transactionKey, string $postingDate, string $reason, bool $manageTransaction = true, bool $ensureSchema = true, array $options = []): array
 {
     if (!yovel_admin_is_uuid($transactionKey)) {
         throw new InvalidArgumentException('General Ledger transaction key is invalid.');
@@ -508,17 +508,228 @@ function yovel_admin_reverse_general_ledger_transaction(ADOConnection $db, array
         'remarks' => $reason,
         'base_currency' => (string)($original['base_currency'] ?? 'PHP'),
     ], $entries);
+    $checkpoint = $options['checkpoint'] ?? null;
+    if ($checkpoint !== null && !is_callable($checkpoint)) {
+        throw new InvalidArgumentException('General Ledger reversal checkpoint must be callable.');
+    }
     return yovel_admin_post_general_ledger_transaction($db, $company, $admin, [
-        'transaction_key' => bx_uuid(),
+        'transaction_key' => trim((string) ($options['transaction_key'] ?? '')) ?: bx_uuid(),
         'posting_date' => $postingDate,
-        'voucher_type' => 'REVERSAL',
-        'voucher_no' => 'REV-' . substr((string) $original['voucher_no'], 0, 116),
-        'source_module' => (string) ($original['source_module'] ?? 'ACCOUNTING_FINANCE'),
+        'voucher_type' => (string) ($options['voucher_type'] ?? 'REVERSAL'),
+        'voucher_no' => (string) ($options['voucher_no'] ?? ('REV-' . substr((string) $original['voucher_no'], 0, 116))),
+        'source_module' => (string) ($options['source_module'] ?? ($original['source_module'] ?? 'ACCOUNTING_FINANCE')),
         'source_record_key' => (string) ($original['source_record_key'] ?? ''),
         'reversal_of_transaction_key' => $transactionKey,
+        'idempotency_key' => (string) ($options['idempotency_key'] ?? ''),
+        'operation_type' => (string) ($options['operation_type'] ?? ''),
+        'operation_key' => (string) ($options['operation_key'] ?? ''),
+        'base_currency' => (string) ($options['base_currency'] ?? ($original['base_currency'] ?? 'PHP')),
         'remarks' => $reason,
         'entries' => $reversalEntries,
-    ], $manageTransaction, $ensureSchema);
+    ], $manageTransaction, $ensureSchema, $checkpoint);
+}
+
+function yovel_admin_finance_asset_posting_contract(): array
+{
+    return [
+        'contract' => 'accounting-finance.asset-posting.v1',
+        'owner' => 'accounting-finance',
+        'owner_function' => 'yovel_admin_finance_asset_posting_request',
+        'signature' => 'yovel_admin_finance_asset_posting_request(ADOConnection $db, array $company, array $admin, array $request): array',
+        'transaction_owner' => 'CALLER',
+        'operations' => ['DRAFT', 'POST', 'REVERSE'],
+    ];
+}
+
+function yovel_admin_finance_asset_posting_draft(ADOConnection $db, array $company, array $request): array
+{
+    [, $companyKeyHash] = yovel_admin_finance_dependency_read_scope($company);
+    $postingDate = yovel_admin_optional_date((string) ($request['posting_date'] ?? ''), 'Asset posting date');
+    if ($postingDate === '') {
+        throw new InvalidArgumentException('Asset posting date is required.');
+    }
+    $voucherType = strtoupper(yovel_admin_general_ledger_text($request['voucher_type'] ?? '', 80, 'Asset voucher type', true));
+    if (!in_array($voucherType, ['ASSET_ACQUISITION', 'ASSET_DEPRECIATION', 'ASSET_DISPOSAL', 'ASSET_ADJUSTMENT'], true)) {
+        throw new InvalidArgumentException('Asset voucher type is not allow-listed.');
+    }
+    $voucherNo = yovel_admin_general_ledger_text($request['voucher_no'] ?? '', 120, 'Asset voucher number', true);
+    $sourceRecordKey = trim((string) ($request['source_record_key'] ?? ''));
+    if (!yovel_admin_is_uuid($sourceRecordKey)) {
+        throw new InvalidArgumentException('Asset source record key is invalid.');
+    }
+    $inputEntries = $request['entries'] ?? [];
+    if (!is_array($inputEntries) || count($inputEntries) < 2 || count($inputEntries) > 1000) {
+        throw new InvalidArgumentException('Asset posting must contain between 2 and 1000 entries.');
+    }
+    $entries = [];
+    $totalDebit = '0.000000';
+    $totalCredit = '0.000000';
+    foreach (array_values($inputEntries) as $index => $inputEntry) {
+        if (!is_array($inputEntry)) {
+            throw new InvalidArgumentException('Asset posting entries must be structured rows.');
+        }
+        $reference = yovel_admin_finance_account_reference($company, trim((string) ($inputEntry['account_key'] ?? '')));
+        if (($reference['ok'] ?? false) !== true || !is_array($reference['record'] ?? null)) {
+            throw new InvalidArgumentException('Every Asset posting account must be active and belong to this company.');
+        }
+        $account = $reference['record'];
+        if (!empty($account['freeze_account'])) {
+            throw new InvalidArgumentException('Asset postings cannot use a frozen account.');
+        }
+        $debit = yovel_admin_general_ledger_decimal($inputEntry['debit'] ?? '0', 'Asset debit');
+        $credit = yovel_admin_general_ledger_decimal($inputEntry['credit'] ?? '0', 'Asset credit');
+        $hasDebit = bccomp($debit, '0', 6) === 1;
+        $hasCredit = bccomp($credit, '0', 6) === 1;
+        if ($hasDebit === $hasCredit) {
+            throw new InvalidArgumentException('Every Asset posting row must contain exactly one positive debit or credit amount.');
+        }
+        $entries[] = [
+            'line_no' => $index + 1,
+            'account_key' => (string) $account['account_key'],
+            'account_code' => (string) $account['account_code'],
+            'account_name' => (string) $account['account_name'],
+            'debit' => $debit,
+            'credit' => $credit,
+        ];
+        $totalDebit = bcadd($totalDebit, $debit, 6);
+        $totalCredit = bcadd($totalCredit, $credit, 6);
+    }
+    if (bccomp($totalDebit, $totalCredit, 6) !== 0) {
+        throw new InvalidArgumentException('Asset posting debits and credits must balance.');
+    }
+    $hashPayload = [
+        'company_key_hash' => $companyKeyHash,
+        'posting_date' => $postingDate,
+        'voucher_type' => $voucherType,
+        'voucher_no' => $voucherNo,
+        'source_record_key' => $sourceRecordKey,
+        'entries' => $entries,
+    ];
+    return [
+        'contract' => 'accounting-finance.asset-posting.v1',
+        'operation' => 'DRAFT',
+        'company_key_hash' => $companyKeyHash,
+        'posting_date' => $postingDate,
+        'voucher_type' => $voucherType,
+        'voucher_no' => $voucherNo,
+        'source_record_key' => $sourceRecordKey,
+        'entry_count' => count($entries),
+        'entries' => $entries,
+        'total_debit' => yovel_admin_finance_money($totalDebit),
+        'total_credit' => yovel_admin_finance_money($totalCredit),
+        'calculation_hash' => hash('sha256', json_encode($hashPayload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES)),
+    ];
+}
+
+function yovel_admin_finance_asset_posting_idempotency_key(array $request): string
+{
+    return yovel_admin_general_ledger_text($request['idempotency_key'] ?? '', 120, 'Asset posting idempotency key', true);
+}
+
+function yovel_admin_finance_asset_posting_request(ADOConnection $db, array $company, array $admin, array $request): array
+{
+    $operation = strtoupper(trim((string) ($request['operation'] ?? 'DRAFT')));
+    if (!in_array($operation, ['DRAFT', 'POST', 'REVERSE'], true)) {
+        throw new InvalidArgumentException('Asset posting operation is invalid.');
+    }
+    if ($operation === 'DRAFT') {
+        return yovel_admin_finance_asset_posting_draft($db, $company, $request);
+    }
+
+    [, $companyKeyHash] = yovel_admin_finance_scope($company, $admin);
+    if ($db->transCnt < 1) {
+        throw new RuntimeException('Asset posting requires a caller transaction.');
+    }
+    $idempotencyKey = yovel_admin_finance_asset_posting_idempotency_key($request);
+    $checkpoint = $request['checkpoint'] ?? null;
+    if ($checkpoint !== null && !is_callable($checkpoint)) {
+        throw new InvalidArgumentException('Asset posting checkpoint must be callable.');
+    }
+
+    if ($operation === 'POST') {
+        $draft = yovel_admin_finance_asset_posting_draft($db, $company, $request);
+        $posted = yovel_admin_post_general_ledger_transaction($db, $company, $admin, [
+            'transaction_key' => (string) ($request['transaction_key'] ?? ''),
+            'posting_date' => $draft['posting_date'],
+            'voucher_type' => $draft['voucher_type'],
+            'voucher_no' => $draft['voucher_no'],
+            'source_module' => 'ASSETS_MAINTENANCE',
+            'source_record_key' => $draft['source_record_key'],
+            'operation_type' => 'ASSET_POSTING',
+            'operation_key' => $draft['source_record_key'],
+            'idempotency_key' => $idempotencyKey,
+            'base_currency' => (string) ($request['base_currency'] ?? ($company['base_currency'] ?? 'PHP')),
+            'remarks' => (string) ($request['remarks'] ?? ''),
+            'entries' => $request['entries'],
+        ], false, false, $checkpoint);
+        return [
+            'contract' => 'accounting-finance.asset-posting.v1',
+            'operation' => 'POST',
+            'company_key_hash' => $companyKeyHash,
+            'calculation_hash' => $draft['calculation_hash'],
+        ] + $posted;
+    }
+
+    $originalTransactionKey = trim((string) ($request['transaction_key'] ?? ''));
+    if (!yovel_admin_is_uuid($originalTransactionKey)) {
+        throw new InvalidArgumentException('Asset reversal transaction key is invalid.');
+    }
+    $postingDate = yovel_admin_optional_date((string) ($request['posting_date'] ?? ''), 'Asset reversal posting date');
+    if ($postingDate === '') {
+        throw new InvalidArgumentException('Asset reversal posting date is required.');
+    }
+    $reason = yovel_admin_general_ledger_text($request['reason'] ?? '', 1000, 'Asset reversal reason', true);
+    $original = $db->GetRow(
+        'SELECT transaction_key,source_module,source_record_key FROM project_company_general_ledger_transaction WHERE company_key_hash=? AND transaction_key=? FOR UPDATE',
+        [$companyKeyHash, $originalTransactionKey]
+    );
+    if (!is_array($original) || $original === [] || (string) ($original['source_module'] ?? '') !== 'ASSETS_MAINTENANCE') {
+        throw new InvalidArgumentException('Asset-owned General Ledger transaction was not found.');
+    }
+    $existing = $db->GetRow(
+        'SELECT transaction_key,reversal_of_transaction_key,posting_date,transaction_remarks,entry_count,CAST(total_debit AS CHAR) total_debit,CAST(total_credit AS CHAR) total_credit FROM project_company_general_ledger_transaction WHERE company_key_hash=? AND idempotency_key=? FOR UPDATE',
+        [$companyKeyHash, $idempotencyKey]
+    );
+    if (is_array($existing) && $existing !== []) {
+        if ((string) ($existing['reversal_of_transaction_key'] ?? '') !== $originalTransactionKey
+            || (string) ($existing['posting_date'] ?? '') !== $postingDate
+            || (string) ($existing['transaction_remarks'] ?? '') !== $reason) {
+            throw new InvalidArgumentException('Asset posting idempotency key was already used for different content.');
+        }
+        return [
+            'contract' => 'accounting-finance.asset-posting.v1',
+            'operation' => 'REVERSE',
+            'company_key_hash' => $companyKeyHash,
+            'transaction_key' => (string) $existing['transaction_key'],
+            'reversal_of_transaction_key' => $originalTransactionKey,
+            'entry_count' => (int) $existing['entry_count'],
+            'total_debit' => number_format((float) $existing['total_debit'], 6, '.', ''),
+            'total_credit' => number_format((float) $existing['total_credit'], 6, '.', ''),
+            'idempotent' => true,
+        ];
+    }
+    $reversal = yovel_admin_reverse_general_ledger_transaction(
+        $db,
+        $company,
+        $admin,
+        $originalTransactionKey,
+        $postingDate,
+        $reason,
+        false,
+        false,
+        [
+            'source_module' => 'ASSETS_MAINTENANCE',
+            'idempotency_key' => $idempotencyKey,
+            'operation_type' => 'ASSET_REVERSAL',
+            'operation_key' => (string) ($original['source_record_key'] ?? ''),
+            'checkpoint' => $checkpoint,
+        ]
+    );
+    return [
+        'contract' => 'accounting-finance.asset-posting.v1',
+        'operation' => 'REVERSE',
+        'company_key_hash' => $companyKeyHash,
+    ] + $reversal;
 }
 
 function yovel_admin_general_ledger_filters(array $input): array

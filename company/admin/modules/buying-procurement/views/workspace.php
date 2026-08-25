@@ -8,6 +8,9 @@ $buyingMeta = $buyingSections[$buyingSection];
 $buyingData = is_array($activeModuleData ?? null) ? $activeModuleData : [];
 $buyingCounts = is_array($buyingData['counts'] ?? null) ? $buyingData['counts'] : [];
 $buyingDependencies = is_array($buyingData['dependencies'] ?? null) ? $buyingData['dependencies'] : [];
+$buyingDashboard = is_array($buyingData['dashboard'] ?? null) ? $buyingData['dashboard'] : [];
+$buyingDashboardSetup = is_array($buyingDashboard['setup'] ?? null) ? $buyingDashboard['setup'] : [];
+$buyingDashboardAlerts = is_array($buyingDashboard['alerts'] ?? null) ? $buyingDashboard['alerts'] : [];
 $buyingFormState = is_array($activeModuleFormState ?? null) ? $activeModuleFormState : [];
 $buyingFormInput = is_array($buyingFormState['input'] ?? null) ? $buyingFormState['input'] : [];
 $buyingFormError = trim((string) ($buyingFormState['error'] ?? ''));
@@ -18,6 +21,26 @@ $buyingReopenSettingsModal = $buyingFormError !== '' && $buyingFormAction === 's
 $buyingReopenSupplierModal = $buyingFormError !== '' && $buyingFormAction === 'save_buying_supplier';
 $buyingReopenScorecardModal = $buyingFormError !== '' && $buyingFormAction === 'save_buying_scorecard';
 $buyingReopenScorecardPeriodModal = $buyingFormError !== '' && $buyingFormAction === 'calculate_buying_scorecard_period';
+$buyingReopenRfqModal = $buyingFormError !== '' && $buyingFormAction === 'save_buying_rfq';
+$buyingRfqLifecycleActions = [
+    'submit_buying_rfq',
+    'cancel_buying_rfq',
+    'amend_buying_rfq',
+    'mark_buying_rfq_received',
+    'retry_buying_rfq_dispatch',
+];
+$buyingReopenRfqLifecycleModal = $buyingFormError !== '' && in_array($buyingFormAction, $buyingRfqLifecycleActions, true);
+$buyingReopenSupplierQuotationModal = $buyingFormError !== '' && $buyingFormAction === 'save_buying_supplier_quotation';
+$buyingSupplierQuotationLifecycleActions = [
+    'submit_buying_supplier_quotation',
+    'stop_buying_supplier_quotation',
+    'resume_buying_supplier_quotation',
+    'expire_buying_supplier_quotation',
+    'cancel_buying_supplier_quotation',
+    'amend_buying_supplier_quotation',
+];
+$buyingReopenSupplierQuotationLifecycleModal = $buyingFormError !== '' && in_array($buyingFormAction, $buyingSupplierQuotationLifecycleActions, true);
+$buyingReopenSupplierQuotationMapModal = $buyingFormError !== '' && $buyingFormAction === 'map_buying_rfq_to_supplier_quotation';
 $buyingLifecycleActions = [
     'hold_buying_supplier',
     'release_buying_supplier',
@@ -72,6 +95,8 @@ $buyingCountKey = match ($buyingSection) {
                     <?php require __DIR__ . '/suppliers.php'; ?>
                 <?php elseif ($buyingSection === 'supplier-scorecards'): ?>
                     <?php require __DIR__ . '/scorecards.php'; ?>
+                <?php elseif (in_array($buyingSection, ['request-for-quotation', 'supplier-quotations'], true)): ?>
+                    <?php require __DIR__ . '/sourcing.php'; ?>
                 <?php elseif ($buyingSection === 'buying-settings'): ?>
                     <?php require __DIR__ . '/settings.php'; ?>
                 <?php elseif (in_array($buyingSection, ['material-requests', 'purchase-receipts', 'purchase-analytics', 'reports'], true)): ?>
@@ -102,6 +127,25 @@ $buyingCountKey = match ($buyingSection) {
             </header>
             <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain p-5">
                 <div class="grid gap-5">
+                    <?php if ($buyingSection === 'dashboard'): ?>
+                        <section data-buying-dashboard-setup data-buying-tour-target="setup">
+                            <?php $buyingSetupComplete = count(array_filter($buyingDashboardSetup, static fn (array $item): bool => !empty($item['complete']))); ?>
+                            <div class="flex items-center justify-between gap-3"><h3 class="text-sm font-semibold">Setup progress</h3><span class="text-xs text-muted-foreground"><?= $buyingSetupComplete ?>/<?= count($buyingDashboardSetup) ?></span></div>
+                            <div class="mt-2 divide-y border-y">
+                                <?php foreach ($buyingDashboardSetup as $item): ?>
+                                    <div class="flex min-h-10 items-center justify-between gap-3 py-2 text-sm"><span class="flex min-w-0 items-center gap-2"><span class="material-symbols-rounded text-base <?= !empty($item['complete']) ? 'text-emerald-600' : 'text-muted-foreground' ?>" aria-hidden="true"><?= !empty($item['complete']) ? 'check_circle' : 'radio_button_unchecked' ?></span><span><?= bx_h((string) $item['label']) ?></span></span><?php if (empty($item['complete']) && is_string($item['href'] ?? null)): ?><a href="<?= bx_h((string) $item['href']) ?>" class="shrink-0 text-xs font-medium text-primary">Open</a><?php endif; ?></div>
+                                <?php endforeach; ?>
+                            </div>
+                        </section>
+                        <section data-buying-dashboard-alerts data-buying-tour-target="alerts" class="border-t pt-4">
+                            <h3 class="text-sm font-semibold">Alerts</h3>
+                            <?php if ($buyingDashboardAlerts === []): ?><p class="mt-2 text-sm text-muted-foreground">No procurement alerts.</p><?php else: ?><div class="mt-2 divide-y"><?php foreach ($buyingDashboardAlerts as $alert): ?><div class="py-2.5"><div class="flex items-start justify-between gap-3"><p class="text-sm leading-5"><?= bx_h((string) $alert['label']) ?></p><span class="shrink-0 text-[11px] font-medium <?= (string) $alert['severity'] === 'CRITICAL' ? 'text-destructive' : 'text-muted-foreground' ?>"><?= bx_h((string) $alert['severity']) ?></span></div><?php if (is_string($alert['href'] ?? null)): ?><a href="<?= bx_h((string) $alert['href']) ?>" class="mt-1 inline-block text-xs font-medium text-primary">Review</a><?php endif; ?></div><?php endforeach; ?></div><?php endif; ?>
+                        </section>
+                        <section data-buying-tour-target="form-builder" class="border-t pt-4">
+                            <h3 class="text-sm font-semibold">Quick actions</h3>
+                            <div class="mt-3 flex flex-wrap gap-2"><button type="button" data-buying-tour-start class="inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><span class="material-symbols-rounded text-base" aria-hidden="true">tour</span>Show Tour</button><button type="button" data-record-modal-open="buying-form-target-modal" class="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground"><span class="material-symbols-rounded text-base" aria-hidden="true">view_quilt</span>Form Builder</button></div>
+                        </section>
+                    <?php endif; ?>
                     <nav aria-label="Buying and Procurement sections" class="grid gap-1">
                         <?php foreach ($buyingSections as $sectionKey => $sectionMeta): ?>
                             <a class="flex min-h-9 items-center gap-2 rounded-md px-3 text-sm <?= $buyingSection === $sectionKey ? 'bg-primary text-primary-foreground' : 'hover:bg-muted' ?>" href="./?view=buying-procurement&amp;section=<?= bx_h((string) $sectionKey) ?>">
@@ -124,7 +168,7 @@ $buyingCountKey = match ($buyingSection) {
                         <?php if (empty($buyingDependencies['finance']['available'])): ?><p class="mt-1 text-xs text-muted-foreground">Finance contract unavailable</p><?php endif; ?>
                         <?php if (empty($buyingDependencies['operations_notification']['available'])): ?><p class="mt-1 text-xs text-muted-foreground">Operations notification contract unavailable; scorecards remain operational.</p><?php endif; ?>
                     </section>
-                    <section class="border-t pt-4">
+                    <?php if ($buyingSection !== 'dashboard'): ?><section class="border-t pt-4">
                         <div class="flex flex-wrap gap-2">
                             <button type="button" data-record-modal-open="buying-form-target-modal" class="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground">
                                 <span class="material-symbols-rounded text-base" aria-hidden="true">tune</span>Configure form
@@ -137,7 +181,7 @@ $buyingCountKey = match ($buyingSection) {
                                 <button type="submit" class="inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted"><span class="material-symbols-rounded text-base" aria-hidden="true">refresh</span>Check dependencies</button>
                             </form>
                         </div>
-                    </section>
+                    </section><?php endif; ?>
                 </div>
             </div>
         </aside>
@@ -165,7 +209,7 @@ $buyingCountKey = match ($buyingSection) {
 </div>
 
 <?php if ($buyingSection === 'dashboard'): ?>
-<div data-buying-tour hidden class="fixed inset-0 z-[60] bg-background/50" aria-hidden="true">
+<div data-buying-tour hidden class="fixed inset-0 bg-background/50" style="z-index: 100;" aria-hidden="true">
     <section class="fixed bottom-4 right-4 w-[min(24rem,calc(100vw-2rem))] rounded-lg border bg-popover p-4 text-popover-foreground shadow-lg" role="dialog" aria-modal="true" aria-labelledby="buying-tour-title">
         <p class="text-xs font-medium text-muted-foreground">Procurement workspace tour</p><h2 id="buying-tour-title" data-buying-tour-title class="mt-1 text-base font-semibold"></h2><p data-buying-tour-body class="mt-2 text-sm leading-6 text-muted-foreground"></p>
         <div class="mt-4 flex items-center justify-between gap-3"><button type="button" data-buying-tour-skip class="h-9 rounded-md border px-3 text-sm">Skip</button><div class="flex gap-2"><button type="button" data-buying-tour-back class="h-9 rounded-md border px-3 text-sm">Back</button><button type="button" data-buying-tour-next class="h-9 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground">Next</button></div></div>
@@ -178,9 +222,13 @@ $buyingCountKey = match ($buyingSection) {
     const trigger = document.querySelector('[data-buying-tour-start]');
     if (!root || !overlay || !trigger) return;
     const steps = [
-        ['setup', 'Procurement readiness', 'Start with company-scoped suppliers and verify the owner-service contracts.'],
-        ['checklist', 'Setup checklist', 'Each row reflects current server-backed setup and dependency state.'],
-        ['shortcuts', 'Operational shortcuts', 'Move directly to sourcing, orders, suppliers, or configurable forms.'],
+        ['summary', 'Procurement position', 'Review live supplier totals and explicit document availability.'],
+        ['queue', 'Action queue', 'Resolve supplier holds, setup gaps, and scorecard restrictions.'],
+        ['activity', 'Recent activity', 'Trace authorized Buying changes for this company.'],
+        ['setup', 'Setup progress', 'Complete supplier, settings, scorecard, and Form Builder readiness.'],
+        ['alerts', 'Alerts and dependencies', 'See local exceptions and unavailable owner contracts.'],
+        ['directories', 'Reports and masters', 'Open implemented destinations and identify packages that are not ready.'],
+        ['form-builder', 'Procurement forms', 'Open the module Form Builder or restart this tour at any time.'],
     ];
     const title = overlay.querySelector('[data-buying-tour-title]');
     const body = overlay.querySelector('[data-buying-tour-body]');
@@ -196,7 +244,15 @@ $buyingCountKey = match ($buyingSection) {
     back.addEventListener('click', () => { if (index > 0) index -= 1; render(); });
     next.addEventListener('click', () => { if (index >= steps.length - 1) close(); else { index += 1; render(); } });
     skip.addEventListener('click', close);
-    overlay.addEventListener('keydown', (event) => { if (event.key === 'Escape') { event.preventDefault(); close(); } });
+    overlay.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') { event.preventDefault(); close(); return; }
+        if (event.key === 'Tab') {
+            const controls = [skip, back, next].filter((control) => !control.disabled);
+            const first = controls[0]; const last = controls[controls.length - 1];
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        }
+    });
 })();
 </script>
 <?php endif; ?>

@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 function yovel_admin_projects_schema(): void
 {
+    static $ready = false;
+    if ($ready) {
+        return;
+    }
     $db = bx_db();
     $statements = [
         "CREATE TABLE IF NOT EXISTS project_company_project_settings (
@@ -94,6 +98,7 @@ function yovel_admin_projects_schema(): void
             project_name VARCHAR(190) NOT NULL,
             project_type_key CHAR(36) NULL,
             customer_key CHAR(36) NULL,
+            project_lead_employee_key CHAR(36) NULL,
             project_status ENUM('OPEN','ON_HOLD','COMPLETED','CANCELLED','DELETED') NOT NULL DEFAULT 'OPEN',
             completion_method ENUM('MANUAL','TASK_COMPLETION','TASK_PROGRESS','TASK_WEIGHT') NOT NULL DEFAULT 'MANUAL',
             percent_complete DECIMAL(7,4) NOT NULL DEFAULT 0,
@@ -164,6 +169,11 @@ function yovel_admin_projects_schema(): void
             completed_on DATE NULL,
             is_group TINYINT(1) NOT NULL DEFAULT 0,
             task_weight DECIMAL(9,4) NOT NULL DEFAULT 0,
+            sort_order INT UNSIGNED NOT NULL DEFAULT 100,
+            assigned_employee_key CHAR(36) NULL,
+            assignment_request_key CHAR(64) NULL,
+            assignment_status ENUM('UNASSIGNED','PENDING','SYNCED','FAILED') NOT NULL DEFAULT 'UNASSIGNED',
+            assignment_error_code VARCHAR(64) NULL,
             external_assignment_key CHAR(36) NULL,
             form_schema_key CHAR(36) NULL,
             form_schema_version INT UNSIGNED NULL,
@@ -172,8 +182,11 @@ function yovel_admin_projects_schema(): void
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             UNIQUE KEY uq_project_task_code (company_key_hash, task_code),
+            UNIQUE KEY uq_project_task_assignment_request (company_key_hash, assignment_request_key),
             INDEX idx_project_task_project (company_key_hash, project_key, task_status),
-            INDEX idx_project_task_parent (company_key_hash, parent_task_key)
+            INDEX idx_project_task_parent (company_key_hash, parent_task_key),
+            INDEX idx_project_task_order (company_key_hash, project_key, sort_order, task_key),
+            INDEX idx_project_task_assignment (company_key_hash, assignment_status, assigned_employee_key)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
         "CREATE TABLE IF NOT EXISTS project_company_project_task_dependency (
             x_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -251,5 +264,36 @@ function yovel_admin_projects_schema(): void
     foreach ($statements as $statement) {
         yovel_admin_projects_db_execute($db, $statement, [], 'Projects schema update');
     }
+    yovel_admin_projects_db_execute(
+        $db,
+        'ALTER TABLE project_company_project_record
+         ADD COLUMN IF NOT EXISTS project_lead_employee_key CHAR(36) NULL AFTER customer_key',
+        [],
+        'Projects project-lead schema update'
+    );
+    yovel_admin_projects_db_execute(
+        $db,
+        'ALTER TABLE project_company_project_record
+         ADD INDEX IF NOT EXISTS idx_project_record_lead (company_key_hash, project_lead_employee_key)',
+        [],
+        'Projects project-lead index update'
+    );
+    foreach ([
+        "ADD COLUMN IF NOT EXISTS sort_order INT UNSIGNED NOT NULL DEFAULT 100 AFTER task_weight",
+        "ADD COLUMN IF NOT EXISTS assigned_employee_key CHAR(36) NULL AFTER sort_order",
+        "ADD COLUMN IF NOT EXISTS assignment_request_key CHAR(64) NULL AFTER assigned_employee_key",
+        "ADD COLUMN IF NOT EXISTS assignment_status ENUM('UNASSIGNED','PENDING','SYNCED','FAILED') NOT NULL DEFAULT 'UNASSIGNED' AFTER assignment_request_key",
+        "ADD COLUMN IF NOT EXISTS assignment_error_code VARCHAR(64) NULL AFTER assignment_status",
+        'ADD UNIQUE INDEX IF NOT EXISTS uq_project_task_assignment_request (company_key_hash, assignment_request_key)',
+        'ADD INDEX IF NOT EXISTS idx_project_task_order (company_key_hash, project_key, sort_order, task_key)',
+        'ADD INDEX IF NOT EXISTS idx_project_task_assignment (company_key_hash, assignment_status, assigned_employee_key)',
+    ] as $taskAlter) {
+        yovel_admin_projects_db_execute(
+            $db,
+            'ALTER TABLE project_company_project_task ' . $taskAlter,
+            [],
+            'Projects task schema update'
+        );
+    }
+    $ready = true;
 }
-

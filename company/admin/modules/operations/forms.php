@@ -4,6 +4,7 @@ declare(strict_types=1);
 function yovel_admin_operations_builder_targets(): array
 {
     return [
+        'dashboard' => 'Operations Dashboard',
         'scheduled-jobs' => 'Scheduled Job',
         'notifications' => 'Notification Handoff',
         'background-workers' => 'Background Worker',
@@ -15,12 +16,21 @@ function yovel_admin_operations_builder_targets(): array
         'governed-deletion' => 'Governed Deletion Request',
         'authorization-setup' => 'Authorization Policy',
         'company-defaults' => 'Company Default Projection',
+        'workforce-directory' => 'Workforce Projection',
+        'workforce-calendars' => 'Workforce Calendar Projection',
+        'commercial-masters' => 'Commercial Master Projection',
+        'catalog-units' => 'Catalog and Unit Projection',
     ];
 }
 
 function yovel_admin_operations_protected_fields(): array
 {
     return [
+        'dashboard' => [
+            ['key' => 'dashboard_widget_key', 'label' => 'Widget key', 'type' => 'SHORT_TEXT'],
+            ['key' => 'widget_type', 'label' => 'Widget type', 'type' => 'DROPDOWN'],
+            ['key' => 'status', 'label' => 'Status', 'type' => 'DROPDOWN'],
+        ],
         'scheduled-jobs' => [
             ['key' => 'job_key', 'label' => 'Job key', 'type' => 'SHORT_TEXT'],
             ['key' => 'job_type', 'label' => 'Job type', 'type' => 'DROPDOWN'],
@@ -74,6 +84,26 @@ function yovel_admin_operations_protected_fields(): array
         'company-defaults' => [
             ['key' => 'owner_record_key', 'label' => 'Owner record key', 'type' => 'SHORT_TEXT'],
             ['key' => 'owner_contract', 'label' => 'Owner contract', 'type' => 'SHORT_TEXT'],
+            ['key' => 'projection_status', 'label' => 'Projection status', 'type' => 'DROPDOWN'],
+        ],
+        'workforce-directory' => [
+            ['key' => 'owner_record_key', 'label' => 'Owner record key', 'type' => 'SHORT_TEXT'],
+            ['key' => 'workforce_record_type', 'label' => 'Workforce record type', 'type' => 'DROPDOWN'],
+            ['key' => 'projection_status', 'label' => 'Projection status', 'type' => 'DROPDOWN'],
+        ],
+        'workforce-calendars' => [
+            ['key' => 'owner_record_key', 'label' => 'Owner record key', 'type' => 'SHORT_TEXT'],
+            ['key' => 'calendar_record_type', 'label' => 'Calendar record type', 'type' => 'DROPDOWN'],
+            ['key' => 'projection_status', 'label' => 'Projection status', 'type' => 'DROPDOWN'],
+        ],
+        'commercial-masters' => [
+            ['key' => 'owner_record_key', 'label' => 'Owner record key', 'type' => 'SHORT_TEXT'],
+            ['key' => 'commercial_record_type', 'label' => 'Commercial record type', 'type' => 'DROPDOWN'],
+            ['key' => 'projection_status', 'label' => 'Projection status', 'type' => 'DROPDOWN'],
+        ],
+        'catalog-units' => [
+            ['key' => 'owner_record_key', 'label' => 'Owner record key', 'type' => 'SHORT_TEXT'],
+            ['key' => 'catalog_record_type', 'label' => 'Catalog record type', 'type' => 'DROPDOWN'],
             ['key' => 'projection_status', 'label' => 'Projection status', 'type' => 'DROPDOWN'],
         ],
     ];
