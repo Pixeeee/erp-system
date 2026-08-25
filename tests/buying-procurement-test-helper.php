@@ -84,4 +84,3 @@ function buying_test_secondary_company(ADOConnection $db, string $excludedCompan
         'company_name' => (string) $row['company_name'],
     ];
 }
-

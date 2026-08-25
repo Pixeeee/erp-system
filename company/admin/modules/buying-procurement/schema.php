@@ -494,4 +494,3 @@ function yovel_admin_buying_schema(): void
         yovel_admin_db_execute($db, $statement, [], 'Buying / Procurement schema update');
     }
 }
-
